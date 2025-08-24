@@ -292,9 +292,9 @@ const StudentInformation = () => {
   const filteredStudents = students.filter(student => {
     return (
       (!searchId || student.id.toLowerCase().includes(searchId.toLowerCase())) &&
-      (!selectedProgram || student.program.includes(selectedProgram)) &&
-      (!selectedCampus || student.campus === selectedCampus) &&
-      (!selectedSemester || student.semester === selectedSemester)
+      (!selectedProgram || selectedProgram === 'all' || student.program.includes(selectedProgram)) &&
+      (!selectedCampus || selectedCampus === 'all' || student.campus === selectedCampus) &&
+      (!selectedSemester || selectedSemester === 'all' || student.semester === selectedSemester)
     )
   })
 
