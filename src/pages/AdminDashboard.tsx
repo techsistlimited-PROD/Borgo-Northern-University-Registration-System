@@ -333,7 +333,7 @@ const StudentInformation = () => {
                   <SelectValue placeholder="Select program" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Programs</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
                   {programs.map((program) => (
                     <SelectItem key={program} value={program.split(' ')[0]}>{program}</SelectItem>
                   ))}
@@ -348,7 +348,7 @@ const StudentInformation = () => {
                   <SelectValue placeholder="Select campus" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Campuses</SelectItem>
+                  <SelectItem value="all">All Campuses</SelectItem>
                   <SelectItem value="Main Campus">Main Campus</SelectItem>
                   <SelectItem value="Khulna Campus">Khulna Campus</SelectItem>
                 </SelectContent>
@@ -362,7 +362,7 @@ const StudentInformation = () => {
                   <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Semesters</SelectItem>
+                  <SelectItem value="all">All Semesters</SelectItem>
                   <SelectItem value="Fall 2024">Fall 2024</SelectItem>
                   <SelectItem value="Spring 2024">Spring 2024</SelectItem>
                   <SelectItem value="Summer 2024">Summer 2024</SelectItem>

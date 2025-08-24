@@ -283,7 +283,7 @@ export const ClassRoutineManagement = () => {
                 <SelectValue placeholder="Time Slot" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Slots</SelectItem>
+                <SelectItem value="all">All Slots</SelectItem>
                 {timeSlots.map((slot) => (
                   <SelectItem key={slot.id} value={slot.id}>{slot.time}</SelectItem>
                 ))}
@@ -295,7 +295,7 @@ export const ClassRoutineManagement = () => {
                 <SelectValue placeholder="Day" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Days</SelectItem>
+                <SelectItem value="all">All Days</SelectItem>
                 <SelectItem value="sunday">Sunday</SelectItem>
                 <SelectItem value="monday">Monday</SelectItem>
                 <SelectItem value="tuesday">Tuesday</SelectItem>
@@ -309,7 +309,7 @@ export const ClassRoutineManagement = () => {
                 <SelectValue placeholder="Availability" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Rooms</SelectItem>
+                <SelectItem value="all">All Rooms</SelectItem>
                 <SelectItem value="available">Available</SelectItem>
                 <SelectItem value="occupied">Occupied</SelectItem>
                 <SelectItem value="maintenance">Maintenance</SelectItem>
@@ -321,7 +321,7 @@ export const ClassRoutineManagement = () => {
                 <SelectValue placeholder="Building" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Buildings</SelectItem>
+                <SelectItem value="all">All Buildings</SelectItem>
                 <SelectItem value="main">Main Building</SelectItem>
                 <SelectItem value="engineering">Engineering Block</SelectItem>
                 <SelectItem value="business">Business Building</SelectItem>
