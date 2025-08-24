@@ -261,9 +261,9 @@ const AdminDashboardOverview = ({ user }: { user: any }) => (
 
 const StudentInformation = () => {
   const [searchId, setSearchId] = useState('')
-  const [selectedProgram, setSelectedProgram] = useState('')
-  const [selectedCampus, setSelectedCampus] = useState('')
-  const [selectedSemester, setSelectedSemester] = useState('')
+  const [selectedProgram, setSelectedProgram] = useState('all')
+  const [selectedCampus, setSelectedCampus] = useState('all')
+  const [selectedSemester, setSelectedSemester] = useState('all')
 
   const students = [
     { id: '2021-1-60-001', name: 'John Doe', semester: 'Fall 2024', program: 'CSE', campus: 'Main Campus' },
