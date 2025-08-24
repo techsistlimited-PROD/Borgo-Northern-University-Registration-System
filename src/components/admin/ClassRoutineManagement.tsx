@@ -35,9 +35,9 @@ import {
 
 export const ClassRoutineManagement = () => {
   const [activeTab, setActiveTab] = useState('upload') // 'upload', 'rooms', 'schedule', 'attendance'
-  const [selectedSemester, setSelectedSemester] = useState('')
-  const [selectedProgram, setSelectedProgram] = useState('')
-  const [selectedSlot, setSelectedSlot] = useState('')
+  const [selectedSemester, setSelectedSemester] = useState('all')
+  const [selectedProgram, setSelectedProgram] = useState('all')
+  const [selectedSlot, setSelectedSlot] = useState('all')
   
   const rooms = [
     { 
