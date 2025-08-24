@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -19,12 +19,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
-  Users, 
-  Calendar, 
-  BookOpen, 
-  Settings, 
-  LogOut, 
+import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
+import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
+import {
+  Users,
+  Calendar,
+  BookOpen,
+  Settings,
+  LogOut,
   Search,
   Plus,
   Edit,
@@ -853,13 +855,13 @@ export default function AdminDashboard() {
       case 'courses':
         return <Courses />
       case 'syllabuses':
-        return <div className="text-center py-12"><h2 className="text-2xl text-deep-plum">Syllabuses Management - Coming Soon</h2></div>
+        return <Syllabuses />
       case 'offer-courses':
-        return <div className="text-center py-12"><h2 className="text-2xl text-deep-plum">Course Offering - Coming Soon</h2></div>
+        return <OfferCourses />
       case 'section-management':
-        return <div className="text-center py-12"><h2 className="text-2xl text-deep-plum">Section Management - Coming Soon</h2></div>
+        return <SectionManagement />
       case 'class-routine':
-        return <div className="text-center py-12"><h2 className="text-2xl text-deep-plum">Class Routine & Room Management - Coming Soon</h2></div>
+        return <ClassRoutineManagement />
       default:
         return <AdminDashboardOverview user={user} />
     }
