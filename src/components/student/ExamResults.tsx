@@ -92,8 +92,11 @@ const semesterWiseTranscript = [
   }
 ]
 
-export const ExamResults = () => {
-  const [activeTab, setActiveTab] = useState('clearance')
+interface ExamResultsProps {
+  activeTab?: string
+}
+
+export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
   const [selectedSemester, setSelectedSemester] = useState('')
   const [selectedExamType, setSelectedExamType] = useState('')
   const [selectedResultSemester, setSelectedResultSemester] = useState('')
@@ -142,7 +145,7 @@ export const ExamResults = () => {
         </Badge>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs value={activeTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="clearance">Clearance for Assessment</TabsTrigger>
           <TabsTrigger value="results">Result</TabsTrigger>

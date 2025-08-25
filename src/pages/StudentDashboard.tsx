@@ -36,10 +36,27 @@ const Sidebar = ({ activeTab, setActiveTab }: {
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'waiver-info', label: 'Waiver Info', icon: Gift },
     { id: 'semester-schedule', label: 'Semester Schedule', icon: Calendar },
-    { id: 'semester-registration', label: 'Semester Registration', icon: ClipboardList },
+    {
+      id: 'semester-registration',
+      label: 'Semester Registration',
+      icon: ClipboardList,
+      subItems: [
+        { id: 'last-registration', label: 'Last Registration' },
+        { id: 'new-registration', label: 'New Registration' },
+        { id: 'all-registration', label: 'All Registration' }
+      ]
+    },
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
     { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
-    { id: 'exam-results', label: 'Exam and Results', icon: Award },
+    {
+      id: 'exam-results',
+      label: 'Exam and Results',
+      icon: Award,
+      subItems: [
+        { id: 'clearance-assessment', label: 'Clearance for Assessment' },
+        { id: 'results', label: 'Results' }
+      ]
+    },
     {
       id: 'payment-info',
       label: 'Payment Information',
@@ -84,16 +101,16 @@ const Sidebar = ({ activeTab, setActiveTab }: {
                 <span>{item.label}</span>
               </button>
               
-              {/* Payment Information Submenu */}
-              {item.id === 'payment-info' && (activeTab === item.id || (item.subItems && item.subItems.some(sub => sub.id === activeTab))) && (
+              {/* Submenus for components with tabs */}
+              {item.subItems && (activeTab === item.id || item.subItems.some(sub => sub.id === activeTab)) && (
                 <div className="ml-6 mb-2 space-y-1">
-                  {item.subItems?.map((subItem) => (
+                  {item.subItems.map((subItem) => (
                     <button
                       key={subItem.id}
                       onClick={() => setActiveTab(subItem.id)}
                       className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                         activeTab === subItem.id
-                          ? 'bg-accent-purple text-white' 
+                          ? 'bg-accent-purple text-white'
                           : 'text-gray-600 hover:bg-lavender-bg'
                       }`}
                     >
@@ -142,20 +159,39 @@ export default function StudentDashboard() {
         return <WaiverInfo />
       case 'semester-schedule':
         return <SemesterSchedule />
+
+      // Semester Registration cases
       case 'semester-registration':
-        return <SemesterRegistration />
+      case 'last-registration':
+        return <SemesterRegistration activeTab="last" />
+      case 'new-registration':
+        return <SemesterRegistration activeTab="new" />
+      case 'all-registration':
+        return <SemesterRegistration activeTab="all" />
+
       case 'class-routine':
         return <ClassRoutine />
       case 'ter-form':
         return <TERForm />
+
+      // Exam Results cases
       case 'exam-results':
-        return <ExamResults />
+      case 'clearance-assessment':
+        return <ExamResults activeTab="clearance" />
+      case 'results':
+        return <ExamResults activeTab="results" />
+
+      // Payment Information cases
       case 'payment-info':
       case 'payable-list':
+        return <PaymentInformation activeTab="payable" />
       case 'payment-history':
+        return <PaymentInformation activeTab="history" />
       case 'financial-summary':
+        return <PaymentInformation activeTab="summary" />
       case 'detailed-report':
-        return <PaymentInformation />
+        return <PaymentInformation activeTab="detailed" />
+
       default:
         return <StudentDashboardOverview user={user} />
     }
@@ -173,10 +209,10 @@ export default function StudentDashboard() {
               {activeTab === 'dashboard' && 'Dashboard'}
               {activeTab === 'waiver-info' && 'Waiver Information'}
               {activeTab === 'semester-schedule' && 'Semester Schedule'}
-              {activeTab === 'semester-registration' && 'Semester Registration'}
+              {(activeTab === 'semester-registration' || activeTab === 'last-registration' || activeTab === 'new-registration' || activeTab === 'all-registration') && 'Semester Registration'}
               {activeTab === 'class-routine' && 'Class Routine'}
               {activeTab === 'ter-form' && 'TER Fill Up'}
-              {activeTab === 'exam-results' && 'Exam and Results'}
+              {(activeTab === 'exam-results' || activeTab === 'clearance-assessment' || activeTab === 'results') && 'Exam and Results'}
               {(activeTab === 'payment-info' || activeTab === 'payable-list' || activeTab === 'payment-history' || activeTab === 'financial-summary' || activeTab === 'detailed-report') && 'Payment Information'}
             </h1>
             <p className="text-sm text-gray-600">Welcome to Northern University Student Portal</p>

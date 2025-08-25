@@ -123,8 +123,11 @@ const currentSemesterInfo = {
   advisorContact: '01712345678'
 }
 
-export const SemesterRegistration = () => {
-  const [activeTab, setActiveTab] = useState('last')
+interface SemesterRegistrationProps {
+  activeTab?: string
+}
+
+export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistrationProps) => {
   const [selectedCourses, setSelectedCourses] = useState<{[key: string]: {selected: boolean, section: string}}>({})
   const [registrationClosed, setRegistrationClosed] = useState(false) // In real app, this would be calculated based on dates
 
@@ -167,7 +170,7 @@ export const SemesterRegistration = () => {
         </Badge>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs value={activeTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="last">Last Registration</TabsTrigger>
           <TabsTrigger value="new">New Registration</TabsTrigger>

@@ -209,7 +209,11 @@ const detailedReport = {
   grandTotalDues: 11100.00
 }
 
-export const PaymentInformation = () => {
+interface PaymentInformationProps {
+  activeTab?: string
+}
+
+export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformationProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -220,7 +224,7 @@ export const PaymentInformation = () => {
         </Badge>
       </div>
 
-      <Tabs defaultValue="payable" className="space-y-4">
+      <Tabs value={activeTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="payable">Payable List</TabsTrigger>
           <TabsTrigger value="history">Payment History</TabsTrigger>
