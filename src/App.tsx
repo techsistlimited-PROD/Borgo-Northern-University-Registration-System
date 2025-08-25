@@ -5,6 +5,7 @@ import StudentLogin from '@/pages/StudentLogin'
 import AdvisorLogin from '@/pages/AdvisorLogin'
 import AdminLogin from '@/pages/AdminLogin'
 import StudentDashboard from '@/pages/StudentDashboard'
+import AdminDashboard from '@/pages/AdminDashboard'
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
@@ -41,24 +42,6 @@ function AdvisorDashboard() {
   )
 }
 
-function AdminDashboard() {
-  const { logout } = useAuth()
-  
-  return (
-    <div className="min-h-screen bg-lavender-bg flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-deep-plum mb-4">Admin Dashboard</h1>
-        <p className="text-gray-600 mb-6">Coming soon - Complete administrative control</p>
-        <button 
-          onClick={() => { logout(); window.location.href = '/' }}
-          className="px-6 py-2 bg-deep-plum text-white rounded-lg hover:bg-accent-purple transition-colors"
-        >
-          Logout
-        </button>
-      </div>
-    </div>
-  )
-}
 
 function AppRoutes() {
   return (
