@@ -10,18 +10,22 @@ import { SemesterSchedule } from '@/components/student/SemesterSchedule'
 import { SemesterRegistration } from '@/components/student/SemesterRegistration'
 import { ClassRoutine } from '@/components/student/ClassRoutine'
 import { PaymentInformation } from '@/components/student/PaymentInformation'
-import { 
+import { TERForm } from '@/components/student/TERForm'
+import { ExamResults } from '@/components/student/ExamResults'
+import {
   Home,
-  Users, 
-  Calendar, 
-  BookOpen, 
-  LogOut, 
+  Users,
+  Calendar,
+  BookOpen,
+  LogOut,
   Search,
   Gift,
   ClipboardList,
   GraduationCap,
   CreditCard,
-  Clock
+  Clock,
+  FileText,
+  Award
 } from 'lucide-react'
 
 const Sidebar = ({ activeTab, setActiveTab }: { 
@@ -34,9 +38,11 @@ const Sidebar = ({ activeTab, setActiveTab }: {
     { id: 'semester-schedule', label: 'Semester Schedule', icon: Calendar },
     { id: 'semester-registration', label: 'Semester Registration', icon: ClipboardList },
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
-    { 
-      id: 'payment-info', 
-      label: 'Payment Information', 
+    { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
+    { id: 'exam-results', label: 'Exam and Results', icon: Award },
+    {
+      id: 'payment-info',
+      label: 'Payment Information',
       icon: CreditCard,
       subItems: [
         { id: 'payable-list', label: 'Payable List' },
@@ -140,6 +146,10 @@ export default function StudentDashboard() {
         return <SemesterRegistration />
       case 'class-routine':
         return <ClassRoutine />
+      case 'ter-form':
+        return <TERForm />
+      case 'exam-results':
+        return <ExamResults />
       case 'payment-info':
       case 'payable-list':
       case 'payment-history':
@@ -165,6 +175,8 @@ export default function StudentDashboard() {
               {activeTab === 'semester-schedule' && 'Semester Schedule'}
               {activeTab === 'semester-registration' && 'Semester Registration'}
               {activeTab === 'class-routine' && 'Class Routine'}
+              {activeTab === 'ter-form' && 'TER Fill Up'}
+              {activeTab === 'exam-results' && 'Exam and Results'}
               {(activeTab === 'payment-info' || activeTab === 'payable-list' || activeTab === 'payment-history' || activeTab === 'financial-summary' || activeTab === 'detailed-report') && 'Payment Information'}
             </h1>
             <p className="text-sm text-gray-600">Welcome to Northern University Student Portal</p>
