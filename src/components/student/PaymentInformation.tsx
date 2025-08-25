@@ -158,15 +158,53 @@ const detailedReport = {
         { costHead: 'Semester Fee', costAmount: 6000.00, deductiveAmount: 0.00, payable: 6000.00, paymentDate: '18/07/2024', receiptNo: '00162847', paidAmount: 7800.00 },
         { costHead: 'Total Course Fee', costAmount: 25600.00, deductiveAmount: 0.00, payable: 25600.00, paymentDate: '05/10/2024', receiptNo: '00169524', paidAmount: 9530.00 },
         { costHead: 'Merit Scholarship', costAmount: 0.00, deductiveAmount: 5120.00, payable: -5120.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 },
-        { costHead: 'Computer Lab & Library Fee', costAmount: 5500.00, deductiveAmount: 0.00, payable: 5500.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 }
+        { costHead: 'Computer Lab & Library Fee', costAmount: 5500.00, deductiveAmount: 0.00, payable: 5500.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 },
+        { costHead: 'Others Deduction', costAmount: 0.00, deductiveAmount: 4380.00, payable: -4380.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 }
       ],
-      totalCost: 46850.00,
+      totalCost: 47450.00,
       totalPaid: 46830.00,
       semesterDues: 20.00,
       duesTillSemester: 20.00
+    },
+    {
+      semester: 'Spring 2025',
+      details: [
+        { costHead: 'Semester Fee', costAmount: 6000.00, deductiveAmount: 0.00, payable: 6000.00, paymentDate: '28/11/2024', receiptNo: '0095', paidAmount: 28000.00 },
+        { costHead: 'Total Course Fee', costAmount: 41600.00, deductiveAmount: 0.00, payable: 41600.00, paymentDate: '12/01/2025', receiptNo: '0042', paidAmount: 12820.00 },
+        { costHead: 'Merit Scholarship', costAmount: 0.00, deductiveAmount: 8320.00, payable: -8320.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 }
+      ],
+      totalCost: 39280.00,
+      totalPaid: 40820.00,
+      semesterDues: -20.00,
+      duesTillSemester: 0.00
+    },
+    {
+      semester: 'Summer 2025',
+      details: [
+        { costHead: 'Semester Fee', costAmount: 6000.00, deductiveAmount: 0.00, payable: 6000.00, paymentDate: '30/03/2025', receiptNo: '0008', paidAmount: 15200.00 },
+        { costHead: 'Total Course Fee', costAmount: 32000.00, deductiveAmount: 0.00, payable: 32000.00, paymentDate: '15/05/2025', receiptNo: '0067', paidAmount: 22000.00 },
+        { costHead: 'Special Exam Fee (Final)', costAmount: 4200.00, deductiveAmount: 0.00, payable: 4200.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 },
+        { costHead: 'Merit Scholarship', costAmount: 0.00, deductiveAmount: 6400.00, payable: -6400.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 }
+      ],
+      totalCost: 35800.00,
+      totalPaid: 37200.00,
+      semesterDues: 4000.00,
+      duesTillSemester: 4000.00
+    },
+    {
+      semester: 'Fall 2025',
+      details: [
+        { costHead: 'Merit Scholarship', costAmount: 0.00, deductiveAmount: 9600.00, payable: -9600.00, paymentDate: '30/07/2025', receiptNo: '00225841', paidAmount: 38500.00 },
+        { costHead: 'Semester Fee', costAmount: 6000.00, deductiveAmount: 0.00, payable: 6000.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 },
+        { costHead: 'Total Course Fee', costAmount: 48000.00, deductiveAmount: 0.00, payable: 48000.00, paymentDate: '', receiptNo: '', paidAmount: 0.00 }
+      ],
+      totalCost: 44400.00,
+      totalPaid: 38500.00,
+      semesterDues: 7100.00,
+      duesTillSemester: 11100.00
     }
   ],
-  grandTotalCost: 174450.00,
+  grandTotalCost: 166930.00,
   grandTotalPaid: 163350.00,
   grandTotalDues: 11100.00
 }
@@ -434,16 +472,78 @@ export const PaymentInformation = () => {
                 </div>
               </div>
 
-              {/* This would include detailed semester-wise breakdown */}
-              <div className="space-y-6">
-                <h4 className="font-semibold text-deep-plum">Semester-wise Financial Details</h4>
-                <p className="text-gray-600">
-                  Detailed semester-wise financial breakdown would be displayed here, including all cost heads, 
-                  payments, deductions, and running balances for each semester.
-                </p>
-                
+              {/* Detailed semester-wise breakdown */}
+              <div className="space-y-8">
+                <h4 className="font-semibold text-deep-plum text-lg">Semester-wise Financial Details</h4>
+
+                {detailedReport.semesters.map((semesterData, index) => (
+                  <div key={index} className="border rounded-lg p-6 bg-white shadow-sm">
+                    <h5 className="text-lg font-bold text-deep-plum mb-4">{semesterData.semester}</h5>
+
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Cost Head/Waiver</TableHead>
+                            <TableHead className="text-right">Cost Amount</TableHead>
+                            <TableHead className="text-right">Deductive Amount</TableHead>
+                            <TableHead className="text-right">Payable</TableHead>
+                            <TableHead>Payment Date</TableHead>
+                            <TableHead>Money Receipt No</TableHead>
+                            <TableHead className="text-right">Paid Amount</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {semesterData.details.map((detail, detailIndex) => (
+                            <TableRow key={detailIndex}>
+                              <TableCell className="font-medium">{detail.costHead}</TableCell>
+                              <TableCell className="text-right">৳{detail.costAmount.toFixed(2)}</TableCell>
+                              <TableCell className="text-right text-green-600">৳{detail.deductiveAmount.toFixed(2)}</TableCell>
+                              <TableCell className={`text-right font-semibold ${detail.payable < 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                ৳{detail.payable.toFixed(2)}
+                              </TableCell>
+                              <TableCell className="text-sm">{detail.paymentDate || '-'}</TableCell>
+                              <TableCell className="font-mono text-sm">{detail.receiptNo || '-'}</TableCell>
+                              <TableCell className="text-right font-semibold text-green-600">
+                                {detail.paidAmount > 0 ? `৳${detail.paidAmount.toFixed(2)}` : '-'}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Total Cost in {semesterData.semester}:</span>
+                          <span className="font-bold text-blue-600">৳{semesterData.totalCost.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Total Paid in {semesterData.semester}:</span>
+                          <span className="font-bold text-green-600">৳{semesterData.totalPaid.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="font-medium">Dues in {semesterData.semester}:</span>
+                          <span className={`font-bold ${semesterData.semesterDues > 0 ? 'text-red-600' : semesterData.semesterDues < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                            ৳{semesterData.semesterDues.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="font-medium">Dues till {semesterData.semester}:</span>
+                          <span className={`font-bold ${semesterData.duesTillSemester > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            ৳{semesterData.duesTillSemester.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
                 {/* Summary totals */}
-                <div className="grid md:grid-cols-3 gap-4 mt-6 pt-6 border-t-2 border-deep-plum">
+                <div className="grid md:grid-cols-3 gap-4 mt-8 pt-6 border-t-2 border-deep-plum">
                   <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
                     <div className="text-xl font-bold text-blue-600">৳{detailedReport.grandTotalCost.toFixed(2)}</div>
                     <div className="text-sm text-blue-700">Grand Total Cost</div>
