@@ -588,7 +588,11 @@ export const OfferCourses = () => {
 
 export const SectionManagement = () => {
   const [activeView, setActiveView] = useState('view') // 'view', 'create', 'edit'
-  
+  const [filterProgram, setFilterProgram] = useState('')
+  const [filterCourse, setFilterCourse] = useState('')
+  const [filterTeacher, setFilterTeacher] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+
   const sections = [
     {
       id: 1,
@@ -600,25 +604,105 @@ export const SectionManagement = () => {
       capacity: 50,
       enrolled: 45,
       teacher: 'Dr. Ahmad Hassan',
+      teacherId: 'T001',
       days: 'Sunday & Tuesday',
       timeSlot: '10:00 - 11:30 AM',
-      room: 'Room 301'
+      room: 'Room 301',
+      status: 'Active'
     },
     {
       id: 2,
       year: '2024',
       program: 'CSE',
-      semester: '8th', 
+      semester: '8th',
       course: 'CSE401 - Software Engineering',
       sectionName: 'B',
       capacity: 50,
       enrolled: 50,
       teacher: 'Prof. Sarah Ahmed',
+      teacherId: 'T002',
       days: 'Monday & Wednesday',
       timeSlot: '02:00 - 03:30 PM',
-      room: 'Room 302'
+      room: 'Room 302',
+      status: 'Full'
+    },
+    {
+      id: 3,
+      year: '2024',
+      program: 'BBA',
+      semester: '6th',
+      course: 'BBA401 - Strategic Management',
+      sectionName: 'A',
+      capacity: 40,
+      enrolled: 35,
+      teacher: 'Dr. Fatima Rahman',
+      teacherId: 'T004',
+      days: 'Thursday & Friday',
+      timeSlot: '08:00 - 09:30 AM',
+      room: 'Room 201',
+      status: 'Active'
+    },
+    {
+      id: 4,
+      year: '2024',
+      program: 'EEE',
+      semester: '4th',
+      course: 'EEE201 - Circuit Analysis',
+      sectionName: 'A',
+      capacity: 45,
+      enrolled: 38,
+      teacher: 'Prof. Ahmed Hassan',
+      teacherId: 'T005',
+      days: 'Monday & Wednesday',
+      timeSlot: '10:00 - 11:30 AM',
+      room: 'Room 401',
+      status: 'Active'
     }
   ]
+
+  const teachers = [
+    { id: 'T001', name: 'Dr. Ahmad Hassan', department: 'CSE' },
+    { id: 'T002', name: 'Prof. Sarah Ahmed', department: 'CSE' },
+    { id: 'T003', name: 'Dr. Mohammad Ali', department: 'CSE' },
+    { id: 'T004', name: 'Dr. Fatima Rahman', department: 'BBA' },
+    { id: 'T005', name: 'Prof. Ahmed Hassan', department: 'EEE' },
+  ]
+
+  const courses = [
+    { code: 'CSE401', title: 'Software Engineering', program: 'CSE' },
+    { code: 'BBA401', title: 'Strategic Management', program: 'BBA' },
+    { code: 'EEE201', title: 'Circuit Analysis', program: 'EEE' },
+  ]
+
+  const filteredSections = sections.filter(section => {
+    const matchesProgram = !filterProgram || section.program === filterProgram
+    const matchesCourse = !filterCourse || section.course.includes(filterCourse)
+    const matchesTeacher = !filterTeacher || section.teacherId === filterTeacher
+    const matchesSearch = !searchTerm ||
+      section.sectionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      section.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      section.teacher.toLowerCase().includes(searchTerm.toLowerCase())
+
+    return matchesProgram && matchesCourse && matchesTeacher && matchesSearch
+  })
+
+  const handleDeleteSection = (sectionId: number) => {
+    if (confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
+      alert(`Section deleted successfully!`)
+    }
+  }
+
+  const handleChangeTeacher = (sectionId: number) => {
+    const newTeacherId = prompt('Enter new teacher ID:')
+    if (newTeacherId) {
+      const teacher = teachers.find(t => t.id === newTeacherId)
+      if (teacher) {
+        alert(`Teacher changed to ${teacher.name} for section ${sectionId}`)
+      } else {
+        alert('Teacher not found!')
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
