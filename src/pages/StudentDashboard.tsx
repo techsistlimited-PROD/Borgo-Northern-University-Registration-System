@@ -127,11 +127,29 @@ const Sidebar = ({ activeTab, setActiveTab }: {
   )
 }
 
+// Student holds and financial information - initial state
+const initialStudentHolds = {
+  hasFinancialHold: true,
+  hasConductHold: false,
+  hasAcademicHold: false,
+  financialDetails: {
+    totalDue: 45000,
+    semesterFee: 35000,
+    libraryFine: 500,
+    hostleDue: 9500,
+    lastPaymentDate: '2024-08-15',
+    nextInstallmentDue: '2024-12-15'
+  },
+  conductDetails: null,
+  academicDetails: null
+}
+
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [showProfile, setShowProfile] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [studentHolds, setStudentHolds] = useState(initialStudentHolds)
   const { user, logout } = useAuth()
 
   const handleLogout = () => {
