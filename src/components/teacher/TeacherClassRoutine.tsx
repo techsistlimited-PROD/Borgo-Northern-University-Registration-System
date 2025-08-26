@@ -282,10 +282,56 @@ function ClassListView({ schedule }: { schedule: ClassSchedule[] }) {
   )
 }
 
+// Semester calendar configuration
+const semesterConfig = {
+  'Fall 2024': {
+    startDate: new Date('2024-01-25'),
+    midtermWeek: 8,
+    endOfClassesWeek: 15,
+    currentWeek: 3 // Simulated current week
+  },
+  'Spring 2024': {
+    startDate: new Date('2024-05-15'),
+    midtermWeek: 8,
+    endOfClassesWeek: 15,
+    currentWeek: 10
+  },
+  'Summer 2024': {
+    startDate: new Date('2024-09-10'),
+    midtermWeek: 6,
+    endOfClassesWeek: 12,
+    currentWeek: 12
+  }
+}
+
 export default function TeacherClassRoutine() {
   const [selectedSemester, setSelectedSemester] = useState('Fall 2024')
   const [selectedWeek, setSelectedWeek] = useState(1)
   const [activeView, setActiveView] = useState<'grid' | 'list'>('grid')
+
+  const currentSemesterConfig = semesterConfig[selectedSemester as keyof typeof semesterConfig]
+
+  const getWeekStatus = (week: number) => {
+    const currentWeek = currentSemesterConfig.currentWeek
+    if (week < currentWeek) return 'past'
+    if (week === currentWeek) return 'current'
+    return 'upcoming'
+  }
+
+  const getWeekLabel = (week: number) => {
+    if (week === currentSemesterConfig.midtermWeek) return 'Midterm Week'
+    if (week === currentSemesterConfig.endOfClassesWeek) return 'End of Classes'
+    return `Week ${week}`
+  }
+
+  const getWeekStatusColor = (status: string) => {
+    switch (status) {
+      case 'past': return 'text-gray-500 bg-gray-100'
+      case 'current': return 'text-green-700 bg-green-100 font-semibold'
+      case 'upcoming': return 'text-blue-700 bg-blue-100'
+      default: return 'text-gray-700 bg-gray-50'
+    }
+  }
 
   const handleExportSchedule = () => {
     // Mock export functionality
