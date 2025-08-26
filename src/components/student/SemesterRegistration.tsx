@@ -227,6 +227,13 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
     studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
   )
 
+  // Update registration blocked state when student holds change
+  useEffect(() => {
+    setRegistrationBlocked(
+      studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
+    )
+  }, [studentHolds])
+
   useEffect(() => {
     // Check for completed courses that student is trying to register for
     const checkCompletedCourses = () => {
