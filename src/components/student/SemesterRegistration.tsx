@@ -600,7 +600,31 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
 
         {/* New Registration Tab */}
         <TabsContent value="new" className="space-y-4">
-          {registrationClosed ? (
+          {registrationBlocked ? (
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <Lock className="w-16 h-16 text-red-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-red-800 mb-2">Registration Blocked</h3>
+                  <p className="text-red-700">
+                    Your registration is currently blocked due to active holds. Please resolve the issues shown above to proceed.
+                  </p>
+                  <div className="mt-4 flex justify-center space-x-3">
+                    {studentHolds.hasFinancialHold && (
+                      <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Pay Dues
+                      </Button>
+                    )}
+                    <Button variant="outline" onClick={() => alert('Contact support: +880-1711-123456')}>
+                      <Phone className="w-4 h-4 mr-2" />
+                      Contact Support
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : registrationClosed ? (
             <Card className="border-red-200 bg-red-50">
               <CardContent className="pt-6">
                 <div className="text-center">
