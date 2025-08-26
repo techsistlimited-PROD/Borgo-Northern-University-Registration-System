@@ -505,7 +505,7 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-green-800">Total Paid Amount:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ৳{totalPaidAmount.toLocaleString()}
+                    ৳{history.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}
                   </span>
                 </div>
               </div>
