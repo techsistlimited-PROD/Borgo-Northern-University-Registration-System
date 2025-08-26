@@ -22,6 +22,7 @@ import {
 import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
 import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
 import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
+import StudentSectionChange from '@/components/admin/StudentSectionChange'
 import {
   Users,
   Calendar,
