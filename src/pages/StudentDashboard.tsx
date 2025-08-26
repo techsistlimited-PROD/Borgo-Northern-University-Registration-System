@@ -224,13 +224,13 @@ export default function StudentDashboard() {
       // Payment Information cases
       case 'payment-info':
       case 'payable-list':
-        return <PaymentInformation activeTab="payable" onPaymentUpdate={handlePaymentUpdate} />
+        return <PaymentInformation activeTab="payable" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'payment-history':
-        return <PaymentInformation activeTab="history" onPaymentUpdate={handlePaymentUpdate} />
+        return <PaymentInformation activeTab="history" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'financial-summary':
-        return <PaymentInformation activeTab="summary" onPaymentUpdate={handlePaymentUpdate} />
+        return <PaymentInformation activeTab="summary" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'detailed-report':
-        return <PaymentInformation activeTab="detailed" onPaymentUpdate={handlePaymentUpdate} />
+        return <PaymentInformation activeTab="detailed" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
 
       default:
         return <StudentDashboardOverview user={user} />
