@@ -471,13 +471,22 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
                       <p className="text-red-800 font-semibold">Outstanding Dues: ৳{semester.presentDues.toLocaleString()}</p>
                       <p className="text-red-600 text-sm">Payment required to unlock registration</p>
                     </div>
-                    <Button
-                      onClick={() => openPaymentModal(index)}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
-                    >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Pay Now (Demo) - bKash or Cash
-                    </Button>
+                    <div className="space-y-2">
+                      <Button
+                        onClick={() => openPaymentModal(index)}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Pay Now (Demo) - bKash or Cash
+                      </Button>
+                      <Button
+                        onClick={() => simulatePayment(index, semester.presentDues, 'Quick Pay')}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                        variant="outline"
+                      >
+                        💸 Pay All Outstanding (₹{semester.presentDues.toLocaleString()}) - Quick Demo
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
