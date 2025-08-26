@@ -292,7 +292,7 @@ function StudentReports() {
           <CardContent>
             <div className="flex space-x-4">
               <Button onClick={() => handleExport('pdf')} variant="outline">
-                <FilePdf className="w-4 h-4 mr-2" />
+                <FileType className="w-4 h-4 mr-2" />
                 Export as PDF
               </Button>
               <Button onClick={() => handleExport('excel')} variant="outline">
@@ -300,7 +300,7 @@ function StudentReports() {
                 Export as Excel
               </Button>
               <Button onClick={() => handleExport('word')} variant="outline">
-                <FileWord className="w-4 h-4 mr-2" />
+                <File className="w-4 h-4 mr-2" />
                 Export as Word
               </Button>
             </div>
