@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { 
+import {
   BookOpen,
   Clock,
   CheckCircle,
@@ -27,7 +27,16 @@ import {
   User,
   Phone,
   Calendar,
-  GraduationCap
+  GraduationCap,
+  DollarSign,
+  AlertTriangle,
+  Bell,
+  CreditCard,
+  Lock,
+  Unlock,
+  FileText,
+  MessageCircle,
+  Info
 } from 'lucide-react'
 
 // Mock data for last registration
