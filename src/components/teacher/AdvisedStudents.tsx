@@ -35,7 +35,7 @@ interface Student {
   totalCredits: number
   registrationStatus: 'pending' | 'approved' | 'hold'
   lastRegistrationDate: string
-  advisorNote?: string
+  teacherNote?: string
 }
 
 interface RegisteredCourse {
@@ -77,7 +77,7 @@ const advisedStudents: Student[] = [
     totalCredits: 96,
     registrationStatus: 'pending',
     lastRegistrationDate: '2024-01-15',
-    advisorNote: 'Strong performance in core subjects'
+    teacherNote: 'Strong performance in core subjects'
   },
   {
     id: '2',
@@ -91,7 +91,7 @@ const advisedStudents: Student[] = [
     totalCredits: 102,
     registrationStatus: 'approved',
     lastRegistrationDate: '2024-01-10',
-    advisorNote: 'Excellent academic performance, recommended for advanced courses'
+    teacherNote: 'Excellent academic performance, recommended for advanced courses'
   },
   {
     id: '3',
@@ -105,7 +105,7 @@ const advisedStudents: Student[] = [
     totalCredits: 84,
     registrationStatus: 'hold',
     lastRegistrationDate: '2024-01-12',
-    advisorNote: 'Needs to improve performance in mathematics courses'
+    teacherNote: 'Needs to improve performance in mathematics courses'
   },
   {
     id: '4',
@@ -223,10 +223,10 @@ function StudentRegistrationDetails({
             </div>
           </div>
           
-          {student.advisorNote && (
+          {student.teacherNote && (
             <div className="mt-4 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
-                <strong>Advisor Note:</strong> {student.advisorNote}
+                <strong>Teacher Note:</strong> {student.teacherNote}
               </p>
             </div>
           )}
@@ -333,7 +333,7 @@ function StudentRegistrationDetails({
           <div className="flex items-center space-x-2">
             <AlertTriangle className="w-5 h-5 text-red-500" />
             <span className="text-red-600 font-medium">
-              Registration on hold - Student needs to meet with advisor
+              Registration on hold - Student needs to meet with teacher
             </span>
           </div>
         )}
@@ -502,7 +502,7 @@ export default function AdvisedStudents() {
           ? { 
               ...student, 
               registrationStatus: 'hold' as const,
-              advisorNote: `Registration held: ${reason}`
+              teacherNote: `Registration held: ${reason}`
             }
           : student
       ))
