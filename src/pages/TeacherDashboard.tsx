@@ -366,6 +366,8 @@ export default function TeacherDashboard() {
         return <TeacherDashboardOverview />
       case 'class-routine':
         return <TeacherClassRoutine />
+      case 'schedule-view':
+        return <ExamSchedule />
       case 'mark-attendance':
         return <AttendanceMarking />
       case 'attendance-reports':
