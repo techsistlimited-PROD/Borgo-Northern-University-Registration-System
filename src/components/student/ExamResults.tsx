@@ -118,9 +118,15 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
       alert('Please select both semester and exam type.')
       return
     }
-    
+
+    // Show preview modal instead of direct download
+    setShowPreviewModal(true)
+  }
+
+  const handleActualDownload = () => {
     // In real app, this would generate and download the clearance form
     alert(`Downloading clearance form for ${selectedExamType} exam in ${selectedSemester}`)
+    setShowPreviewModal(false)
   }
 
   const getSelectedSemesterResult = () => {
