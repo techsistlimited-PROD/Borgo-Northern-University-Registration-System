@@ -817,62 +817,6 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
 
         {/* New Registration Tab */}
         <TabsContent value="new" className="space-y-4">
-          {/* Success message when registration is unlocked */}
-          {!registrationBlocked && studentHolds && (
-            <Card className="border-green-500 bg-green-50">
-              <CardContent className="pt-6">
-                <div className="text-center mb-6">
-                  <Unlock className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-green-800 mb-2">🎉 Registration Available!</h3>
-                  <p className="text-green-700">
-                    ✅ All dues cleared. You can now register for the {currentSemesterInfo.semester} semester.
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-green-800 mb-2">✨ Available Features:</h4>
-                    <div className="space-y-1 text-green-700">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Course Selection & Management
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Section Selection with Availability
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Real-time Credit Calculation
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-green-800 mb-2">🛡️ Smart Validations:</h4>
-                    <div className="space-y-1 text-green-700">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Credit Overload Warnings
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Teacher Approval Workflow
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Complete Registration Submission
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 text-center">
-                  <p className="text-green-600 font-medium">Scroll down to access all registration features!</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {registrationBlocked ? (
             <Card className="border-red-200 bg-red-50">
               <CardContent className="pt-6">
@@ -909,74 +853,151 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                 </div>
               </CardContent>
             </Card>
+          ) : registrationSubmitted ? (
+            // Show current registration status after submission
+            <Card className="border-blue-500 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="text-blue-800 flex items-center space-x-2">
+                  <Clock className="w-5 h-5" />
+                  <span>Registration Status</span>
+                </CardTitle>
+                <CardDescription>Your registration has been submitted for advisor review</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Clock className="w-5 h-5 text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">Status: Advisor Clearance Pending</span>
+                  </div>
+                  <p className="text-yellow-700 text-sm">
+                    Your registration has been submitted to {currentSemesterInfo.teacherName} for approval.
+                  </p>
+                </div>
+
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-blue-800">Academic Advisor</h4>
+                    <Badge className="bg-blue-100 text-blue-800">Contact Available</Badge>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4 text-blue-600" />
+                      <span className="text-blue-700">{currentSemesterInfo.teacherName}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-4 h-4 text-blue-600" />
+                      <span className="text-blue-700">{currentSemesterInfo.teacherContact}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-blue-800 mb-3">Current Registration Information</h4>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Course Code</TableHead>
+                        <TableHead>Course Title</TableHead>
+                        <TableHead>Section</TableHead>
+                        <TableHead>Credits</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(selectedCourses)
+                        .filter(([_, data]) => data.selected && data.section)
+                        .map(([courseCode, data]) => {
+                          const course = availableCourses.find(c => c.courseCode === courseCode)
+                          return (
+                            <TableRow key={courseCode}>
+                              <TableCell className="font-medium">{courseCode}</TableCell>
+                              <TableCell>{course?.courseTitle}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{data.section}</Badge>
+                              </TableCell>
+                              <TableCell>{course?.credit}</TableCell>
+                            </TableRow>
+                          )
+                        })}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <p className="font-semibold text-gray-800">
+                      Total Credits: {getTotalSelectedCredits()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             <>
-              {/* Current Semester Info */}
-              <Card className="border-green-200 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="text-green-800">Current Semester Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Semester:</span>
-                        <span className="font-bold text-green-800">{currentSemesterInfo.semester}</span>
+              {/* Advisor Information */}
+              <Card className="border-blue-200 bg-blue-50">
+                <CardContent className="pt-6">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-semibold text-blue-800 mb-2">Academic Advisor</h3>
+                    <div className="flex items-center justify-center space-x-6">
+                      <div className="flex items-center space-x-2">
+                        <User className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium text-blue-700">{currentSemesterInfo.teacherName}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Registration Start:</span>
-                        <span>{currentSemesterInfo.registrationStartDate}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Registration End:</span>
-                        <span>{currentSemesterInfo.registrationEndDate}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Class Start:</span>
-                        <span>{currentSemesterInfo.classStartDate}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Academic Advisor:</span>
-                        <span>{currentSemesterInfo.teacherName}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Contact:</span>
-                        <span>{currentSemesterInfo.teacherContact}</span>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium text-blue-700">{currentSemesterInfo.teacherContact}</span>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Course Selection */}
+              {/* Course Selection Table */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <GraduationCap className="w-6 h-6 text-deep-plum" />
-                    <span>🎓 New Registration - Course Selection</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Select courses for {currentSemesterInfo.semester} semester. Full registration features are now active!
-                  </CardDescription>
+                  <CardTitle>Course Registration - {currentSemesterInfo.semester}</CardTitle>
+                  <CardDescription>Select courses and sections for the current semester</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-4 flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      Selected Credits: <span className="font-bold text-deep-plum">{getTotalSelectedCredits()}</span> / 21 (Max)
-                    </span>
-                  </div>
+                  {/* Error Messages */}
+                  {Object.keys(prerequisiteErrors).length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      {Object.entries(prerequisiteErrors).map(([courseCode, error]) => (
+                        <div key={courseCode} className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="flex items-start space-x-2">
+                            <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                            <div>
+                              <p className="font-medium text-red-800">{courseCode}</p>
+                              <p className="text-red-700 text-sm">{error}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {Object.keys(sectionErrors).length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      {Object.entries(sectionErrors).map(([courseCode, error]) => (
+                        <div key={courseCode} className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                          <div className="flex items-start space-x-2">
+                            <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5" />
+                            <div>
+                              <p className="font-medium text-orange-800">{courseCode}</p>
+                              <p className="text-orange-700 text-sm">{error}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-12">Select</TableHead>
+                        <TableHead className="w-16">Select</TableHead>
                         <TableHead>Course Code</TableHead>
                         <TableHead>Course Title</TableHead>
-                        <TableHead>Credit</TableHead>
+                        <TableHead>Credits</TableHead>
                         <TableHead>Section</TableHead>
+                        <TableHead>Capacity</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -997,99 +1018,52 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                             <Select
                               disabled={!selectedCourses[course.courseCode]?.selected}
                               onValueChange={(value) => handleSectionSelection(course.courseCode, value)}
+                              value={selectedCourses[course.courseCode]?.section || ''}
                             >
-                              <SelectTrigger className="w-20">
+                              <SelectTrigger className="w-24">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
                                 {course.sections.map((section) => (
-                                  <SelectItem key={section} value={section}>
-                                    {section}
+                                  <SelectItem
+                                    key={section.name}
+                                    value={section.name}
+                                    disabled={!section.available}
+                                  >
+                                    {section.name} {!section.available ? '(Full)' : ''}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {course.sections.map((section) => (
+                                <div key={section.name} className={`${!section.available ? 'text-red-600' : 'text-green-600'}`}>
+                                  {section.name}: {section.enrolled}/{section.capacity}
+                                </div>
+                              ))}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
 
-                  <div className="mt-6 space-y-4">
-                    {/* Warnings and Notices */}
-                    <div className="space-y-2">
-                      {getTotalSelectedCredits() > 18 && (
-                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start space-x-2">
-                          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
-                          <div>
-                            <p className="text-yellow-800 font-medium">Credit Overload Warning</p>
-                            <p className="text-yellow-700 text-sm">
-                              You have selected {getTotalSelectedCredits()} credits. Overload (&gt;18 credits) requires special approval.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      {getTotalSelectedCredits() < 12 && getTotalSelectedCredits() > 0 && (
-                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-2">
-                          <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                          <div>
-                            <p className="text-blue-800 font-medium">Minimum Credit Notice</p>
-                            <p className="text-blue-700 text-sm">
-                              Minimum 12 credits required for full-time status. Current: {getTotalSelectedCredits()} credits.
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                  <div className="mt-6 flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        Total Selected Credits: <span className="text-deep-plum font-bold">{getTotalSelectedCredits()}</span>
+                      </p>
                     </div>
-
-                    {/* Teacher Approval Notice */}
-                    <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <div className="flex items-start space-x-2">
-                        <User className="w-5 h-5 text-purple-600 mt-0.5" />
-                        <div>
-                          <p className="text-purple-800 font-medium">Teacher Approval Required</p>
-                          <p className="text-purple-700 text-sm">
-                            Your registration will be sent to {currentSemesterInfo.teacherName} for approval.
-                            You can edit your registration until it is approved.
-                          </p>
-                          <div className="mt-2 flex items-center space-x-4 text-sm">
-                            <span className="text-purple-600">
-                              <Phone className="w-4 h-4 inline mr-1" />
-                              {currentSemesterInfo.teacherContact}
-                            </span>
-                            <span className="text-purple-600">
-                              <Clock className="w-4 h-4 inline mr-1" />
-                              Auto-notification if pending &gt;72 hours
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm text-gray-600">
-                        <AlertCircle className="w-4 h-4 inline mr-1" />
-                        Please ensure you select sections for all chosen courses
-                      </div>
-                      <Button
-                        onClick={handleSubmitRegistration}
-                        className="nu-button-primary"
-                        disabled={getTotalSelectedCredits() === 0 || registrationBlocked}
-                      >
-                        {registrationBlocked ? (
-                          <>
-                            <Lock className="w-4 h-4 mr-2" />
-                            Registration Blocked
-                          </>
-                        ) : (
-                          <>
-                            <FileText className="w-4 h-4 mr-2" />
-                            Complete New Registration
-                          </>
-                        )}
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={handleSubmitRegistration}
+                      className="bg-deep-plum hover:bg-deep-plum/90"
+                      disabled={getTotalSelectedCredits() === 0}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Submit for Advisor Review
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
