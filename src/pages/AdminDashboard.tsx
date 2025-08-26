@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/table'
 import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
 import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
+import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
 import {
   Users,
   Calendar,
