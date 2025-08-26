@@ -284,7 +284,10 @@ export default function AttendanceMarking() {
           </div>
 
           {selectedSectionData && (
-            <div className="p-4 bg-blue-50 rounded-lg">
+            <div className={`p-4 rounded-lg ${
+              attendanceType === 'class' ? 'bg-blue-50' :
+              attendanceType === 'midterm' ? 'bg-purple-50' : 'bg-red-50'
+            }`}>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-deep-plum">
@@ -293,6 +296,15 @@ export default function AttendanceMarking() {
                   <p className="text-sm text-gray-600">
                     Section {selectedSectionData.sectionName} • {selectedSectionData.schedule}
                   </p>
+                  <div className="mt-2">
+                    <Badge variant={
+                      attendanceType === 'class' ? 'default' :
+                      attendanceType === 'midterm' ? 'secondary' : 'destructive'
+                    }>
+                      {attendanceType === 'class' ? 'Regular Class Attendance' :
+                       attendanceType === 'midterm' ? 'Midterm Exam Attendance' : 'Final Exam Attendance'}
+                    </Badge>
+                  </div>
                 </div>
                 <Badge variant="outline">
                   <Users className="w-4 h-4 mr-1" />
