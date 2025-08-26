@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import TeacherClassRoutine from '@/components/teacher/TeacherClassRoutine'
 import AttendanceMarking from '@/components/teacher/AttendanceMarking'
+import AttendanceReports from '@/components/teacher/AttendanceReports'
 import {
   Calendar,
   Users,
@@ -360,6 +361,8 @@ export default function TeacherDashboard() {
         return <TeacherClassRoutine />
       case 'mark-attendance':
         return <AttendanceMarking />
+      case 'attendance-reports':
+        return <AttendanceReports />
       case 'continuous-assessment':
         return (
           <div className="text-center py-20">
