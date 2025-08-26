@@ -119,8 +119,8 @@ const currentSemesterInfo = {
   registrationStartDate: '01/10/2025',
   registrationEndDate: '15/10/2025',
   classStartDate: '20/10/2025',
-  advisorName: 'Dr. Aminul Islam',
-  advisorContact: '01712345678'
+  teacherName: 'Dr. Aminul Islam',
+  teacherContact: '01712345678'
 }
 
 interface SemesterRegistrationProps {
