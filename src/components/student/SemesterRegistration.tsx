@@ -754,9 +754,12 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
               {/* Course Selection */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Available Courses</CardTitle>
+                  <CardTitle className="flex items-center space-x-2">
+                    <GraduationCap className="w-6 h-6 text-deep-plum" />
+                    <span>🎓 New Registration - Course Selection</span>
+                  </CardTitle>
                   <CardDescription>
-                    Select courses for {currentSemesterInfo.semester} semester
+                    Select courses for {currentSemesterInfo.semester} semester. Full registration features are now active!
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
