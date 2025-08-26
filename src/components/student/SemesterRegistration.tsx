@@ -39,6 +39,89 @@ import {
   Info
 } from 'lucide-react'
 
+// Student holds and financial information
+const studentHolds = {
+  hasFinancialHold: true,
+  hasConductHold: false,
+  hasAcademicHold: false,
+  financialDetails: {
+    totalDue: 45000,
+    semesterFee: 35000,
+    libraryFine: 500,
+    hostleDue: 9500,
+    lastPaymentDate: '2024-08-15',
+    nextInstallmentDue: '2024-12-15'
+  },
+  conductDetails: null,
+  academicDetails: null
+}
+
+// Notification system
+const notifications = [
+  {
+    id: 1,
+    type: 'warning',
+    title: 'Financial Hold Active',
+    message: 'Your registration is blocked due to outstanding dues of ৳45,000. Please clear your dues to proceed.',
+    timestamp: '2024-01-15 14:30',
+    isRead: false,
+    priority: 'high'
+  },
+  {
+    id: 2,
+    type: 'info',
+    title: 'Registration Reminder',
+    message: 'Fall 2024 registration ends in 3 days. Please complete your course selection.',
+    timestamp: '2024-01-14 09:00',
+    isRead: true,
+    priority: 'medium'
+  },
+  {
+    id: 3,
+    type: 'success',
+    title: 'Teacher Approval Required',
+    message: 'Your registration is pending approval from Dr. Aminul Islam. Contact: 01712345678',
+    timestamp: '2024-01-13 16:45',
+    isRead: false,
+    priority: 'high'
+  },
+  {
+    id: 4,
+    type: 'info',
+    title: 'Registration Period Started',
+    message: 'Fall 2024 semester registration is now open. Last date: January 20, 2024.',
+    timestamp: '2024-01-10 08:00',
+    isRead: true,
+    priority: 'medium'
+  }
+]
+
+// Pre-registration schedule
+const preRegistrationSchedule = {
+  isPreRegistrationOpen: true,
+  preRegistrationStart: '2024-01-05',
+  preRegistrationEnd: '2024-01-12',
+  mainRegistrationStart: '2024-01-15',
+  mainRegistrationEnd: '2024-01-20',
+  classStartDate: '2024-01-25'
+}
+
+// Performance and remaining courses data
+const academicPerformance = {
+  overallCGPA: 3.45,
+  totalCreditsCompleted: 84,
+  totalCreditsRequired: 144,
+  remainingCredits: 60,
+  expectedGraduationSemester: 'Fall 2025',
+  remainingCourses: [
+    { courseCode: 'CSE 4101', courseTitle: 'Software Project Management', credits: 3, isCore: true },
+    { courseCode: 'CSE 4102', courseTitle: 'Software Project Lab', credits: 1, isCore: true },
+    { courseCode: 'CSE 4201', courseTitle: 'Machine Learning', credits: 3, isCore: false },
+    { courseCode: 'CSE 4301', courseTitle: 'Computer Security', credits: 3, isCore: false },
+    { courseCode: 'CSE 4999', courseTitle: 'Final Project', credits: 4, isCore: true }
+  ]
+}
+
 // Mock data for last registration
 const lastRegistration = {
   semester: 'Summer 2025',
