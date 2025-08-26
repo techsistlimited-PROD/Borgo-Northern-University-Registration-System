@@ -852,7 +852,7 @@ export default function AdminDashboard() {
       case 'students':
         return <StudentInformation />
       case 'semester-schedule':
-        return <SemesterSchedule />
+        return <SemesterScheduleManagement />
       case 'courses':
         return <Courses />
       case 'syllabuses':
