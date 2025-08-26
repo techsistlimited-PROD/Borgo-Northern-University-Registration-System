@@ -217,9 +217,24 @@ const currentSemesterInfo = {
 
 interface SemesterRegistrationProps {
   activeTab?: string
+  studentHolds?: {
+    hasFinancialHold: boolean
+    hasConductHold: boolean
+    hasAcademicHold: boolean
+    financialDetails: {
+      totalDue: number
+      semesterFee: number
+      libraryFine: number
+      hostleDue: number
+      lastPaymentDate: string
+      nextInstallmentDue: string
+    }
+    conductDetails: any
+    academicDetails: any
+  }
 }
 
-export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistrationProps) => {
+export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: SemesterRegistrationProps) => {
   const [selectedCourses, setSelectedCourses] = useState<{[key: string]: {selected: boolean, section: string}}>({})
   const [registrationClosed, setRegistrationClosed] = useState(false) // In real app, this would be calculated based on dates
   const [showNotifications, setShowNotifications] = useState(false)
