@@ -33,7 +33,9 @@ interface Student {
   email: string
   phone: string
   program: string
-  semester: string
+  campus: string
+  admissionSemester: string
+  currentSemester: string
   cgpa: number
   totalCredits: number
   registrationStatus: 'pending' | 'approved' | 'hold'
