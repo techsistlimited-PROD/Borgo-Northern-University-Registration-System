@@ -172,7 +172,14 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
                   <div key={`${day}-${timeSlot}`} className="border border-gray-200 p-2 min-h-[100px]">
                     {class_ ? (
                       <div className={`p-3 rounded-lg border-2 h-full ${getStatusColor(class_.status)}`}>
-                        <div className="font-medium text-sm">{class_.courseCode}</div>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="font-medium text-sm">{class_.courseCode}</div>
+                          <div className="text-xs">
+                            {weekStatus === 'past' && '✓'}
+                            {weekStatus === 'current' && '▶'}
+                            {weekStatus === 'upcoming' && '⏸'}
+                          </div>
+                        </div>
                         <div className="text-xs mt-1">Section {class_.section}</div>
                         <div className="text-xs mt-1 flex items-center">
                           <MapPin className="w-3 h-3 mr-1" />
@@ -181,6 +188,11 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
                         <div className="text-xs mt-1 flex items-center">
                           <Users className="w-3 h-3 mr-1" />
                           {class_.studentsEnrolled}/{class_.maxCapacity}
+                        </div>
+                        <div className="text-xs mt-1 opacity-75">
+                          {weekStatus === 'past' && 'Completed'}
+                          {weekStatus === 'current' && 'This Week'}
+                          {weekStatus === 'upcoming' && 'Scheduled'}
                         </div>
                       </div>
                     ) : (
