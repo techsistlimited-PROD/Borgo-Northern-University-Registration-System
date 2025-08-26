@@ -230,6 +230,7 @@ const detailedReport = {
 interface PaymentInformationProps {
   activeTab?: string
   onPaymentUpdate?: (totalOutstanding: number) => void
+  onNavigateToRegistration?: () => void
 }
 
 export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: PaymentInformationProps) => {
