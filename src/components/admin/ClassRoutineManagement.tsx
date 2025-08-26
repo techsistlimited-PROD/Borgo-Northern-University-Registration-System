@@ -254,9 +254,88 @@ export const ClassRoutineManagement = () => {
             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Upload Routine File</h3>
             <p className="text-gray-500 mb-4">Drag and drop your Excel/CSV file here, or click to browse</p>
-            <Button className="nu-button-primary">
-              Choose File
-            </Button>
+
+            <div className="space-y-4">
+              <div className="flex justify-center space-x-4">
+                <Button
+                  className="nu-button-primary"
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                >
+                  Choose File
+                </Button>
+                <Button variant="outline" onClick={downloadTemplate}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Template
+                </Button>
+              </div>
+
+              <input
+                id="file-upload"
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+
+              {uploadedFile && (
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Selected file: {uploadedFile.name}</span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setUploadedFile(null)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+
+                  {isUploading && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Processing...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {!isUploading && (
+                    <Button
+                      onClick={processFile}
+                      className="w-full mt-2"
+                      disabled={isUploading}
+                    >
+                      Process File
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {uploadErrors.length > 0 && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h4 className="text-red-800 font-semibold mb-2">Validation Errors:</h4>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    {uploadErrors.map((error, index) => (
+                      <li key={index}>• {error}</li>
+                    ))}
+                  </ul>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => setUploadErrors([])}
+                  >
+                    Clear Errors
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="mt-4 p-4 bg-blue-50 rounded-lg">
