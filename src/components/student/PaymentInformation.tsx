@@ -485,11 +485,15 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
                         Pay Now (Demo) - bKash or Cash
                       </Button>
                       <Button
-                        onClick={() => simulatePayment(index, semester.presentDues, 'Quick Pay')}
+                        onClick={() => {
+                          // Calculate total outstanding across all semesters
+                          const totalOutstanding = financials[financials.length - 1]?.cumulativeDues || 0
+                          simulatePayment(index, totalOutstanding, 'Pay All Outstanding')
+                        }}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                         variant="outline"
                       >
-                        💸 Pay All Outstanding (₹{semester.presentDues.toLocaleString()}) - Quick Demo
+                        💸 Pay All Outstanding (₹{(financials[financials.length - 1]?.cumulativeDues || 0).toLocaleString()}) - Quick Demo
                       </Button>
                     </div>
                   </div>
