@@ -66,6 +66,37 @@ const attendanceRecords: AttendanceRecord[] = [
   { id: '8', studentId: '2021-1-60-005', studentName: 'Rashid Hasan', date: '2024-01-15', status: 'absent', courseCode: 'CSE303', section: 'A' }
 ]
 
+// Mock exam attendance data
+interface ExamAttendanceRecord {
+  id: string
+  studentId: string
+  studentName: string
+  courseCode: string
+  section: string
+  examType: 'midterm' | 'final'
+  examDate: string
+  status: 'present' | 'absent'
+}
+
+const examAttendanceRecords: ExamAttendanceRecord[] = [
+  { id: '1', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', courseCode: 'CSE401', section: 'A', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '2', studentId: '2021-1-60-002', studentName: 'Fatima Khan', courseCode: 'CSE401', section: 'A', examType: 'midterm', examDate: '2024-02-15', status: 'absent' },
+  { id: '3', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', courseCode: 'CSE401', section: 'A', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '4', studentId: '2021-1-60-004', studentName: 'Ayesha Ahmed', courseCode: 'CSE401', section: 'A', examType: 'midterm', examDate: '2024-02-15', status: 'absent' },
+  { id: '5', studentId: '2021-1-60-005', studentName: 'Rashid Hasan', courseCode: 'CSE401', section: 'A', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+
+  { id: '6', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', courseCode: 'CSE401', section: 'A', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '7', studentId: '2021-1-60-002', studentName: 'Fatima Khan', courseCode: 'CSE401', section: 'A', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '8', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', courseCode: 'CSE401', section: 'A', examType: 'final', examDate: '2024-03-20', status: 'absent' },
+  { id: '9', studentId: '2021-1-60-004', studentName: 'Ayesha Ahmed', courseCode: 'CSE401', section: 'A', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '10', studentId: '2021-1-60-005', studentName: 'Rashid Hasan', courseCode: 'CSE401', section: 'A', examType: 'final', examDate: '2024-03-20', status: 'present' },
+
+  { id: '11', studentId: '2021-1-60-006', studentName: 'Sarah Islam', courseCode: 'CSE303', section: 'A', examType: 'midterm', examDate: '2024-02-18', status: 'present' },
+  { id: '12', studentId: '2021-1-60-007', studentName: 'Karim Hassan', courseCode: 'CSE303', section: 'A', examType: 'midterm', examDate: '2024-02-18', status: 'absent' },
+  { id: '13', studentId: '2021-1-60-008', studentName: 'Nadia Ahmed', courseCode: 'CSE303', section: 'A', examType: 'final', examDate: '2024-03-25', status: 'present' },
+  { id: '14', studentId: '2021-1-60-009', studentName: 'Omar Khan', courseCode: 'CSE303', section: 'A', examType: 'final', examDate: '2024-03-25', status: 'absent' }
+]
+
 const sections = [
   { id: 'CSE401-A', label: 'CSE401 - Section A', courseCode: 'CSE401', section: 'A' },
   { id: 'CSE401-B', label: 'CSE401 - Section B', courseCode: 'CSE401', section: 'B' },
