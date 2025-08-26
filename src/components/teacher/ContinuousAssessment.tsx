@@ -175,7 +175,7 @@ function CreateAssessment({ onClose, onSave }: { onClose: () => void; onSave: (a
                   </SelectItem>
                   <SelectItem value="presentation">
                     <div className="flex items-center space-x-2">
-                      <PresentationChart className="w-4 h-4" />
+                      <Presentation className="w-4 h-4" />
                       <span>Presentation</span>
                     </div>
                   </SelectItem>
