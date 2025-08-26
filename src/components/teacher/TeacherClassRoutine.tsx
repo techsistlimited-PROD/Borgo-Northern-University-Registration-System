@@ -175,7 +175,7 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
                         <div className="flex items-center justify-between mb-1">
                           <div className="font-medium text-sm">{class_.courseCode}</div>
                           <div className="text-xs">
-                            {weekStatus === 'past' && '✓'}
+                            {weekStatus === 'past' && '���'}
                             {weekStatus === 'current' && '▶'}
                             {weekStatus === 'upcoming' && '⏸'}
                           </div>
@@ -211,7 +211,7 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
   )
 }
 
-function ClassListView({ schedule }: { schedule: ClassSchedule[] }) {
+function ClassListView({ schedule, weekStatus }: { schedule: ClassSchedule[]; weekStatus: string }) {
   const [sortBy, setSortBy] = useState<'day' | 'time' | 'course'>('day')
 
   const sortedSchedule = [...schedule].sort((a, b) => {
