@@ -298,7 +298,7 @@ function AssessmentsList({ assessments, onEdit, onDelete }: {
     switch (type) {
       case 'class-test': return <FileText className="w-4 h-4 text-blue-600" />
       case 'quiz': return <ClipboardList className="w-4 h-4 text-green-600" />
-      case 'presentation': return <PresentationChart className="w-4 h-4 text-purple-600" />
+      case 'presentation': return <Presentation className="w-4 h-4 text-purple-600" />
       case 'assignment': return <BookOpen className="w-4 h-4 text-orange-600" />
       default: return <FileText className="w-4 h-4" />
     }
