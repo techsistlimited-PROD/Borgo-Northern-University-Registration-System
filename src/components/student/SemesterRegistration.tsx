@@ -302,7 +302,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                         <span>{currentSemesterInfo.teacherName}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Advisor Contact:</span>
+                        <span className="font-medium text-green-700">Contact:</span>
                         <span>{currentSemesterInfo.teacherContact}</span>
                       </div>
                     </div>
