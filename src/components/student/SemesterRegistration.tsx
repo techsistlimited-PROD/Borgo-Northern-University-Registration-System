@@ -436,16 +436,23 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
   }
 
   const handleSubmitRegistration = () => {
-    const selectedCount = Object.values(selectedCourses).filter(course => course.selected).length
+    // Validate that all selected courses have sections
+    const selectedCourseEntries = Object.entries(selectedCourses).filter(([_, data]) => data.selected)
+    const coursesWithoutSections = selectedCourseEntries.filter(([_, data]) => !data.section)
+
+    if (coursesWithoutSections.length > 0) {
+      alert('Please select sections for all chosen courses before submitting.')
+      return
+    }
+
+    const selectedCount = selectedCourseEntries.length
     const totalCredits = getTotalSelectedCredits()
 
-    // In real app, this would submit to backend
-    alert(`🎉 NEW REGISTRATION COMPLETED!\n\n📚 Courses Selected: ${selectedCount}\n⚡ Total Credits: ${totalCredits}\n👨‍🏫 Sent to ${currentSemesterInfo.teacherName} for approval\n\n✅ Your registration has been successfully submitted using the new registration system!\n\nRedirecting to Last Registration to view your submission...`)
+    // Submit registration
+    setRegistrationSubmitted(true)
+    setAdvisorApprovalStatus('pending')
 
-    // Update to show completed registration in "Last Registration"
-    setTimeout(() => {
-      alert('You can now view your submitted registration in the "Last Registration" tab.')
-    }, 1000)
+    alert(`✅ REGISTRATION SUBMITTED FOR ADVISOR REVIEW\n\n📚 Courses Selected: ${selectedCount}\n⚡ Total Credits: ${totalCredits}\n👨‍🏫 Sent to ${currentSemesterInfo.teacherName} for approval\n\nStatus: Advisor Clearance Pending\n\nYou can view your submission details below.`)
   }
 
   return (
