@@ -124,16 +124,90 @@ const lastRegistration = {
   ]
 }
 
-// Mock data for available courses in new registration
+// Mock data for available courses in new registration with prerequisites and capacity
 const availableCourses = [
-  { courseCode: 'CSE 3101', courseTitle: 'Operating Systems', credit: 3.0, sections: ['A', 'B', 'C'] },
-  { courseCode: 'CSE 3102', courseTitle: 'Operating Systems Lab', credit: 1.0, sections: ['A', 'B', 'C'] },
-  { courseCode: 'CSE 3201', courseTitle: 'Computer Graphics', credit: 3.0, sections: ['A', 'B'] },
-  { courseCode: 'CSE 3202', courseTitle: 'Computer Graphics Lab', credit: 1.0, sections: ['A', 'B'] },
-  { courseCode: 'CSE 3301', courseTitle: 'Artificial Intelligence', credit: 3.0, sections: ['A'] },
-  { courseCode: 'MATH 3101', courseTitle: 'Numerical Analysis', credit: 3.0, sections: ['A', 'B'] },
-  { courseCode: 'ENG 3101', courseTitle: 'Business Communication', credit: 2.0, sections: ['A', 'B', 'C'] }
+  {
+    courseCode: 'CSE 3101',
+    courseTitle: 'Operating Systems',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 40, enrolled: 38, available: true },
+      { name: 'B', capacity: 40, enrolled: 40, available: false }, // Full section
+      { name: 'C', capacity: 45, enrolled: 32, available: true }
+    ],
+    prerequisites: ['CSE 2101'] // Student passed this
+  },
+  {
+    courseCode: 'CSE 3102',
+    courseTitle: 'Operating Systems Lab',
+    credit: 1.0,
+    sections: [
+      { name: 'A', capacity: 20, enrolled: 18, available: true },
+      { name: 'B', capacity: 20, enrolled: 20, available: false }, // Full section
+      { name: 'C', capacity: 22, enrolled: 15, available: true }
+    ],
+    prerequisites: ['CSE 2102']
+  },
+  {
+    courseCode: 'CSE 3201',
+    courseTitle: 'Computer Graphics',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 35, enrolled: 28, available: true },
+      { name: 'B', capacity: 35, enrolled: 30, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this in last semester
+  },
+  {
+    courseCode: 'CSE 3202',
+    courseTitle: 'Computer Graphics Lab',
+    credit: 1.0,
+    sections: [
+      { name: 'A', capacity: 18, enrolled: 15, available: true },
+      { name: 'B', capacity: 18, enrolled: 16, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this prerequisite
+  },
+  {
+    courseCode: 'CSE 3301',
+    courseTitle: 'Artificial Intelligence',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 30, enrolled: 25, available: true }
+    ],
+    prerequisites: ['CSE 2201']
+  },
+  {
+    courseCode: 'MATH 3101',
+    courseTitle: 'Numerical Analysis',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 50, enrolled: 45, available: true },
+      { name: 'B', capacity: 50, enrolled: 42, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this prerequisite
+  },
+  {
+    courseCode: 'ENG 3101',
+    courseTitle: 'Business Communication',
+    credit: 2.0,
+    sections: [
+      { name: 'A', capacity: 60, enrolled: 55, available: true },
+      { name: 'B', capacity: 60, enrolled: 58, available: true },
+      { name: 'C', capacity: 60, enrolled: 52, available: true }
+    ],
+    prerequisites: [] // No prerequisites
+  }
 ]
+
+// Student's academic history - courses passed and failed
+const studentAcademicHistory = {
+  passedCourses: ['CSE 1101', 'CSE 1102', 'CSE 1201', 'CSE 1202', 'CSE 1221', 'ENG 1101', 'ENG 1201', 'MATH 1101', 'MATH 1201', 'CSE 2101', 'CSE 2102', 'CSE 2201', 'CSE 2202'],
+  failedCourses: ['MATH 2101'], // Failed Linear Algebra last semester
+  lastSemesterResults: {
+    'MATH 2101': { grade: 'F', gpa: 0.0, semester: 'Summer 2025' }
+  }
+}
 
 // Mock data for all registrations
 const allRegistrations = [
