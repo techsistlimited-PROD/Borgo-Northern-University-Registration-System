@@ -133,10 +133,10 @@ const initialStudentHolds = {
   hasConductHold: false,
   hasAcademicHold: false,
   financialDetails: {
-    totalDue: 45000,
-    semesterFee: 35000,
-    libraryFine: 500,
-    hostleDue: 9500,
+    totalDue: 11100, // Matches actual cumulative dues from financial summary
+    semesterFee: 7100,
+    libraryFine: 0,
+    hostleDue: 4000,
     lastPaymentDate: '2024-08-15',
     nextInstallmentDue: '2024-12-15'
   },
