@@ -445,6 +445,19 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
                     </TableBody>
                   </Table>
                 </div>
+
+                {/* Simulate Payment Button */}
+                {semester.presentDues > 0 && (
+                  <div className="mt-6 pt-4 border-t">
+                    <Button
+                      onClick={() => openPaymentModal(index)}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Simulate Payment (Demo)
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
