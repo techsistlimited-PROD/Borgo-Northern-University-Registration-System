@@ -7,9 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  FileText, 
-  Download, 
+import {
+  FileText,
+  Download,
   Filter,
   Calendar,
   Users,
@@ -23,8 +23,8 @@ import {
   Settings,
   Eye,
   FileSpreadsheet,
-  FilePdf,
-  FileWord
+  FileType,
+  File
 } from 'lucide-react'
 
 interface ReportFilter {
