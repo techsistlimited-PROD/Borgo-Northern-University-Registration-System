@@ -32,12 +32,12 @@ export default function Index() {
             Welcome to NU Registration System
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Access your student portal, teacher dashboard, advisor portal, or administrative panel.
+            Access your student portal, teacher dashboard, or administrative panel.
             Choose your role below to get started.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {/* Student Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
@@ -57,29 +57,6 @@ export default function Index() {
               </Link>
               <p className="text-xs text-gray-500 mt-2">
                 Demo ID: 2021-1-60-001
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Advisor Portal */}
-          <Card className="text-center group hover:scale-105 transition-transform duration-300">
-            <CardHeader className="pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-deep-plum">Advisor Portal</CardTitle>
-              <CardDescription>
-                Guide students, approve registrations, and monitor academic progress
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/advisor-login">
-                <Button className="w-full nu-button-primary">
-                  Access Advisor Portal
-                </Button>
-              </Link>
-              <p className="text-xs text-gray-500 mt-2">
-                Demo ID: ADV001
               </p>
             </CardContent>
           </Card>
