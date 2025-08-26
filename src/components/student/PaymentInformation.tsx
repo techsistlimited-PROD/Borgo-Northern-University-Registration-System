@@ -709,6 +709,67 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
           </div>
         </CardContent>
       </Card>
+
+      {/* Payment Simulation Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Simulate Payment</DialogTitle>
+            <DialogDescription>
+              Simulate a payment to demonstrate the system. This is for demonstration purposes only.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="amount">Payment Amount (৳)</Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="Enter amount"
+                value={simulationAmount}
+                onChange={(e) => setSimulationAmount(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="method">Payment Method</Label>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bkash">bKash</SelectItem>
+                  <SelectItem value="cash">Cash</SelectItem>
+                  <SelectItem value="bank">Bank Transfer</SelectItem>
+                  <SelectItem value="card">Credit/Debit Card</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedSemesterIndex !== null && payables[selectedSemesterIndex] && (
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm font-medium text-blue-800">
+                  Current dues for {payables[selectedSemesterIndex].semester}:
+                  <span className="font-bold"> ৳{payables[selectedSemesterIndex].presentDues.toLocaleString()}</span>
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPaymentModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleSimulatePayment}>
+              Simulate Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
