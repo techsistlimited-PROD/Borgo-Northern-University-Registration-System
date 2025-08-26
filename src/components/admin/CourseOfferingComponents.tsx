@@ -165,18 +165,73 @@ export const Syllabuses = () => {
 export const OfferCourses = () => {
   const [mode, setMode] = useState('single') // 'single' or 'bulk'
   const [selectedCourse, setSelectedCourse] = useState('')
-  
+  const [selectedSection, setSelectedSection] = useState('')
+  const [teacherEmployeeId, setTeacherEmployeeId] = useState('')
+  const [sectionCapacity, setSectionCapacity] = useState('')
+  const [bulkStudentRange, setBulkStudentRange] = useState({ from: '', to: '' })
+
   const courses = [
-    { code: 'CSE401', title: 'Software Engineering', capacity: '310/350' },
-    { code: 'CSE403', title: 'Database Systems', capacity: '180/200' },
-    { code: 'BBA401', title: 'Strategic Management', capacity: '95/120' },
+    { code: 'CSE401', title: 'Software Engineering', capacity: '310/350', credits: 3 },
+    { code: 'CSE403', title: 'Database Systems', capacity: '180/200', credits: 3 },
+    { code: 'BBA401', title: 'Strategic Management', capacity: '95/120', credits: 3 },
+    { code: 'CSE301', title: 'Data Structures', capacity: '240/280', credits: 3 },
+    { code: 'EEE201', title: 'Circuit Analysis', capacity: '150/180', credits: 3 },
   ]
 
   const sections = [
-    { id: 'A', capacity: '45/50', status: 'Available' },
-    { id: 'B', capacity: '50/50', status: 'Full' },
-    { id: 'C', capacity: '30/50', status: 'Available' },
+    { id: 'A', capacity: 45, enrolled: 45, maxCapacity: 50, status: 'Full', teacher: 'Dr. Rahman Ahmed', teacherId: 'T001', schedule: 'Sun, Tue 10:00-11:30', room: 'Room 301' },
+    { id: 'B', capacity: 50, enrolled: 48, maxCapacity: 50, status: 'Available', teacher: 'Prof. Sarah Khan', teacherId: 'T002', schedule: 'Mon, Wed 14:00-15:30', room: 'Room 302' },
+    { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '' },
   ]
+
+  const teachers = [
+    { id: 'T001', name: 'Dr. Rahman Ahmed', department: 'CSE', email: 'rahman.ahmed@nu.edu.bd' },
+    { id: 'T002', name: 'Prof. Sarah Khan', department: 'CSE', email: 'sarah.khan@nu.edu.bd' },
+    { id: 'T003', name: 'Dr. Mohammad Ali', department: 'CSE', email: 'mohammad.ali@nu.edu.bd' },
+    { id: 'T004', name: 'Dr. Fatima Rahman', department: 'BBA', email: 'fatima.rahman@nu.edu.bd' },
+    { id: 'T005', name: 'Prof. Ahmed Hassan', department: 'EEE', email: 'ahmed.hassan@nu.edu.bd' },
+  ]
+
+  const handleAssignTeacher = () => {
+    if (!selectedCourse || !selectedSection || !teacherEmployeeId) {
+      alert('Please select course, section, and teacher')
+      return
+    }
+    alert(`Teacher ${teacherEmployeeId} assigned to ${selectedCourse} Section ${selectedSection}`)
+  }
+
+  const handleBulkAssignment = () => {
+    if (!selectedCourse || !selectedSection || !bulkStudentRange.from || !bulkStudentRange.to) {
+      alert('Please fill all required fields for bulk assignment')
+      return
+    }
+
+    const fromId = parseInt(bulkStudentRange.from.split('-').pop() || '0')
+    const toId = parseInt(bulkStudentRange.to.split('-').pop() || '0')
+    const studentCount = toId - fromId + 1
+
+    const section = sections.find(s => s.id === selectedSection)
+    if (section && (section.enrolled + studentCount) > section.maxCapacity) {
+      alert(`Section capacity exceeded! Available spots: ${section.maxCapacity - section.enrolled}`)
+      return
+    }
+
+    alert(`${studentCount} students assigned to ${selectedCourse} Section ${selectedSection}`)
+  }
+
+  const handleCreateSection = () => {
+    if (!selectedCourse || !sectionCapacity) {
+      alert('Please select course and set capacity')
+      return
+    }
+    alert(`New section created for ${selectedCourse} with capacity ${sectionCapacity}`)
+  }
+
+  const handleDeleteSection = (sectionId: string) => {
+    if (confirm(`Are you sure you want to delete Section ${sectionId}?`)) {
+      alert(`Section ${sectionId} deleted successfully`)
+    }
+  }
 
   return (
     <div className="space-y-6">
