@@ -223,7 +223,9 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
   const [registrationClosed, setRegistrationClosed] = useState(false) // In real app, this would be calculated based on dates
   const [showNotifications, setShowNotifications] = useState(false)
   const [unreadNotifications, setUnreadNotifications] = useState(notifications.filter(n => !n.isRead).length)
-  const [registrationBlocked, setRegistrationBlocked] = useState(studentHolds.hasFinancialHold || studentHolds.hasConductHold || studentHolds.hasAcademicHold)
+  const [registrationBlocked, setRegistrationBlocked] = useState(
+    studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
+  )
 
   useEffect(() => {
     // Check for completed courses that student is trying to register for
