@@ -274,7 +274,8 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
       return copy
     })
 
-    // Update financials
+    // Update financials and check if all dues are cleared
+    let totalOutstanding = 0
     setFinancials(prev => {
       const copy = [...prev]
       const semesterName = semester.semester
@@ -294,12 +295,18 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
             copy[i].cumulativeDues = copy[i-1].cumulativeDues + copy[i].dues
           }
         }
+        totalOutstanding = copy[copy.length - 1]?.cumulativeDues || 0
       }
       return copy
     })
 
-    // Show success message
-    alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!`)
+    // Show success message with registration status
+    if (totalOutstanding <= 0) {
+      alert(`🎉 Payment Successful!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ All dues cleared!\n🔓 Registration is now UNLOCKED!\n\nYou can now proceed to "New Registration" to register for courses.`)
+    } else {
+      alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!\n\nRemaining dues: ৳${totalOutstanding.toLocaleString()}`)
+    }
+
     setShowPaymentModal(false)
     setSimulationAmount('')
     setPaymentMethod('')
