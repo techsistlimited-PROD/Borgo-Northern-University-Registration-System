@@ -229,10 +229,19 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
 
   // Update registration blocked state when student holds change
   useEffect(() => {
-    setRegistrationBlocked(
-      studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
-    )
-  }, [studentHolds])
+    const wasBlocked = registrationBlocked
+    const isNowBlocked = studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
+
+    setRegistrationBlocked(isNowBlocked)
+
+    // Show success message when registration becomes unblocked (payment cleared)
+    if (wasBlocked && !isNowBlocked && studentHolds) {
+      // Small delay to ensure UI updates first
+      setTimeout(() => {
+        alert('🎉 Registration Unlocked!\n\nYour dues have been cleared and registration is now available.\nYou can now register for courses in the current semester.')
+      }, 500)
+    }
+  }, [studentHolds, registrationBlocked])
 
   useEffect(() => {
     // Check for completed courses that student is trying to register for
