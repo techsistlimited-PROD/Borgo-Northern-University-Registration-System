@@ -505,7 +505,7 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-green-800">Total Paid Amount:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ��{history.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}
+                    ৳{history.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -555,15 +555,15 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
               
               <div className="mt-6 grid md:grid-cols-3 gap-4">
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">৳{totalPayable.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-blue-600">৳{financials.reduce((sum, item) => sum + item.payable, 0).toFixed(2)}</div>
                   <div className="text-sm text-blue-700">Total Payable</div>
                 </div>
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">৳{totalPaid.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-green-600">৳{financials.reduce((sum, item) => sum + item.paid, 0).toFixed(2)}</div>
                   <div className="text-sm text-green-700">Total Paid</div>
                 </div>
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-red-600">৳{totalDues.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-red-600">৳{(financials[financials.length - 1]?.cumulativeDues || 0).toFixed(2)}</div>
                   <div className="text-sm text-red-700">Total Outstanding</div>
                 </div>
               </div>
