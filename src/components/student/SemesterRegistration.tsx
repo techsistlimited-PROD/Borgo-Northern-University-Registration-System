@@ -310,10 +310,20 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
     const wasBlocked = registrationBlocked
     const isNowBlocked = studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
 
+    console.log('🔒 Registration state check:', {
+      wasBlocked,
+      isNowBlocked,
+      hasFinancialHold: studentHolds?.hasFinancialHold,
+      hasConductHold: studentHolds?.hasConductHold,
+      hasAcademicHold: studentHolds?.hasAcademicHold,
+      totalDue: studentHolds?.financialDetails?.totalDue
+    })
+
     setRegistrationBlocked(isNowBlocked)
 
     // Show success message when registration becomes unblocked (payment cleared)
     if (wasBlocked && !isNowBlocked && studentHolds) {
+      console.log('🎉 Registration unlocked! Showing success message.')
       // Small delay to ensure UI updates first
       setTimeout(() => {
         alert('🎉 Registration Unlocked!\n\nYour dues have been cleared and registration is now available.\nYou can now register for courses in the current semester.')
