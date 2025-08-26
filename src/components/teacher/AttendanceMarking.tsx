@@ -103,6 +103,7 @@ export default function AttendanceMarking() {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   )
+  const [attendanceType, setAttendanceType] = useState<'class' | 'midterm' | 'final'>('class')
   const [attendance, setAttendance] = useState<Record<string, 'present' | 'absent' | 'late'>>({})
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -144,14 +145,29 @@ export default function AttendanceMarking() {
     }
 
     setIsSaving(true)
-    
+
     try {
-      // Mock API call
+      // Mock API call - different handling for exam attendance
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
+      const attendanceTypeText = attendanceType === 'class' ? 'class' :
+                                attendanceType === 'midterm' ? 'midterm exam' : 'final exam'
+
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
-      
+
+      // Log exam attendance for reporting
+      if (attendanceType !== 'class') {
+        console.log(`${attendanceType} exam attendance saved:`, {
+          section: selectedSection,
+          date: selectedDate,
+          attendance,
+          type: attendanceType
+        })
+      }
+
+      alert(`${attendanceTypeText.charAt(0).toUpperCase() + attendanceTypeText.slice(1)} attendance saved successfully!`)
+
       // Reset form after successful save
       setAttendance({})
     } catch (error) {
@@ -225,7 +241,7 @@ export default function AttendanceMarking() {
           <CardDescription>Select the section and date for attendance marking</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="section">Select Section</Label>
               <Select value={selectedSection} onValueChange={setSelectedSection}>
@@ -243,6 +259,20 @@ export default function AttendanceMarking() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="attendanceType">Attendance Type</Label>
+              <Select value={attendanceType} onValueChange={(value: 'class' | 'midterm' | 'final') => setAttendanceType(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="class">Regular Class</SelectItem>
+                  <SelectItem value="midterm">Midterm Exam</SelectItem>
+                  <SelectItem value="final">Final Exam</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="date">Select Date</Label>
               <Input
                 id="date"
@@ -254,7 +284,10 @@ export default function AttendanceMarking() {
           </div>
 
           {selectedSectionData && (
-            <div className="p-4 bg-blue-50 rounded-lg">
+            <div className={`p-4 rounded-lg ${
+              attendanceType === 'class' ? 'bg-blue-50' :
+              attendanceType === 'midterm' ? 'bg-purple-50' : 'bg-red-50'
+            }`}>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-deep-plum">
@@ -263,6 +296,15 @@ export default function AttendanceMarking() {
                   <p className="text-sm text-gray-600">
                     Section {selectedSectionData.sectionName} • {selectedSectionData.schedule}
                   </p>
+                  <div className="mt-2">
+                    <Badge variant={
+                      attendanceType === 'class' ? 'default' :
+                      attendanceType === 'midterm' ? 'secondary' : 'destructive'
+                    }>
+                      {attendanceType === 'class' ? 'Regular Class Attendance' :
+                       attendanceType === 'midterm' ? 'Midterm Exam Attendance' : 'Final Exam Attendance'}
+                    </Badge>
+                  </div>
                 </div>
                 <Badge variant="outline">
                   <Users className="w-4 h-4 mr-1" />

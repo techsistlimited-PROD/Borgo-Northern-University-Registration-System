@@ -10,6 +10,8 @@ import CumulativeScore from '@/components/teacher/CumulativeScore'
 import MidtermMarks from '@/components/teacher/MidtermMarks'
 import FinalMarks from '@/components/teacher/FinalMarks'
 import AdvisedStudents from '@/components/teacher/AdvisedStudents'
+import AcademicHistory from '@/components/teacher/AcademicHistory'
+import ExamSchedule from '@/components/teacher/ExamSchedule'
 import {
   Calendar,
   Users,
@@ -63,9 +65,9 @@ function TeacherSidebar({ activeTab, setActiveTab, onLogout }: {
         { id: 'final-marks', label: 'Final Marks' }
       ]
     },
-    { 
-      id: 'students', 
-      label: 'My Students', 
+    {
+      id: 'students',
+      label: 'Advising List',
       icon: Users,
       subItems: [
         { id: 'advised-students', label: 'Advised Students' },
@@ -364,6 +366,8 @@ export default function TeacherDashboard() {
         return <TeacherDashboardOverview />
       case 'class-routine':
         return <TeacherClassRoutine />
+      case 'schedule-view':
+        return <ExamSchedule />
       case 'mark-attendance':
         return <AttendanceMarking />
       case 'attendance-reports':
@@ -378,6 +382,8 @@ export default function TeacherDashboard() {
         return <FinalMarks />
       case 'advised-students':
         return <AdvisedStudents />
+      case 'academic-history':
+        return <AcademicHistory />
       default:
         return (
           <div className="text-center py-20">

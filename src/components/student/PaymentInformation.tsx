@@ -1,7 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -211,9 +229,136 @@ const detailedReport = {
 
 interface PaymentInformationProps {
   activeTab?: string
+  onPaymentUpdate?: (totalOutstanding: number) => void
+  onNavigateToRegistration?: () => void
 }
 
-export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformationProps) => {
+export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onNavigateToRegistration }: PaymentInformationProps) => {
+  // Convert mock data to state for simulation
+  const [payables, setPayables] = useState(payableData)
+  const [history, setHistory] = useState(paymentHistory)
+  const [financials, setFinancials] = useState(financialSummary)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedSemesterIndex, setSelectedSemesterIndex] = useState<number | null>(null)
+  const [simulationAmount, setSimulationAmount] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('')
+
+  // Update parent component when outstanding balance changes
+  useEffect(() => {
+    const totalOutstanding = financials[financials.length - 1]?.cumulativeDues || 0
+    onPaymentUpdate?.(totalOutstanding)
+  }, [financials, onPaymentUpdate])
+
+  const simulatePayment = (semesterIndex: number, amount: number, method: string) => {
+    console.log('🔥 Payment simulation started:', { semesterIndex, amount, method })
+
+    const semester = payables[semesterIndex]
+    const newPayment = {
+      serial: history.length + 1,
+      semester: semester.semester,
+      paymentDate: new Date().toLocaleDateString('en-GB'),
+      receiptNo: `SIM-${Date.now()}`,
+      amount,
+      currency: 'Taka',
+    }
+
+    // Update payment history
+    setHistory(prev => [newPayment, ...prev])
+
+    // Update payables
+    setPayables(prev => {
+      const copy = [...prev]
+      copy[semesterIndex] = {
+        ...copy[semesterIndex],
+        totalReceived: (copy[semesterIndex].totalReceived || 0) + amount,
+        presentDues: Math.max(0, (copy[semesterIndex].presentDues || 0) - amount),
+        thirtyPercentPresentDues: Math.max(0, (copy[semesterIndex].thirtyPercentPresentDues || 0) - amount)
+      }
+      return copy
+    })
+
+    // Update financials and check if all dues are cleared
+    let totalOutstanding = 0
+    setFinancials(prev => {
+      const copy = [...prev]
+      const semesterName = semester.semester
+      const idx = copy.findIndex(i => i.semester === semesterName)
+      if (idx !== -1) {
+        const oldDues = copy[idx].dues
+        copy[idx] = {
+          ...copy[idx],
+          paid: copy[idx].paid + amount,
+          dues: Math.max(0, copy[idx].payable - (copy[idx].paid + amount))
+        }
+
+        console.log('📊 Semester updated:', {
+          semester: semesterName,
+          oldDues,
+          newDues: copy[idx].dues,
+          totalPaid: copy[idx].paid
+        })
+
+        // Recalculate cumulative dues
+        for (let i = 0; i < copy.length; i++) {
+          if (i === 0) {
+            copy[i].cumulativeDues = copy[i].dues
+          } else {
+            copy[i].cumulativeDues = copy[i-1].cumulativeDues + copy[i].dues
+          }
+        }
+        totalOutstanding = copy[copy.length - 1]?.cumulativeDues || 0
+        console.log('💰 New total outstanding:', totalOutstanding)
+      }
+      return copy
+    })
+
+    // IMMEDIATELY call onPaymentUpdate with new total
+    console.log('📞 Calling onPaymentUpdate with:', totalOutstanding)
+    if (onPaymentUpdate) {
+      onPaymentUpdate(totalOutstanding)
+    }
+
+    // Show success message with registration status
+    if (totalOutstanding <= 0) {
+      const message = `🎉 PAYMENT SUCCESSFUL!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ ALL DUES CLEARED!\n🔓 REGISTRATION NOW UNLOCKED!\n\n🎓 NEW REGISTRATION FEATURES NOW AVAILABLE:\n• Course Selection from Available Courses\n• Section Selection with Real-time Availability\n• Credit Hour Calculation & Validation\n• Overload & Minimum Credit Warnings\n• Teacher Approval Workflow\n• Complete Registration Submission\n\n➡️ Click "New Registration" to access all features!`
+      alert(message)
+
+      // Optional: Auto-navigate to registration after a short delay
+      if (onNavigateToRegistration) {
+        setTimeout(() => {
+          if (confirm('🎓 Ready to register for courses?\n\nWould you like to go to New Registration now to access all the registration features?')) {
+            onNavigateToRegistration()
+          }
+        }, 1500)
+      }
+    } else {
+      alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!\n\nRemaining dues: ৳${totalOutstanding.toLocaleString()}`)
+    }
+
+    setShowPaymentModal(false)
+    setSimulationAmount('')
+    setPaymentMethod('')
+  }
+
+  const openPaymentModal = (semesterIndex: number) => {
+    setSelectedSemesterIndex(semesterIndex)
+    setShowPaymentModal(true)
+  }
+
+  const handleSimulatePayment = () => {
+    if (!simulationAmount || !paymentMethod || selectedSemesterIndex === null) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const amount = parseFloat(simulationAmount)
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount')
+      return
+    }
+
+    simulatePayment(selectedSemesterIndex, amount, paymentMethod)
+  }
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -234,7 +379,7 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
 
         {/* Payable List Tab */}
         <TabsContent value="payable" className="space-y-4">
-          {payableData.map((semester, index) => (
+          {payables.map((semester, index) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -335,6 +480,36 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
                     </TableBody>
                   </Table>
                 </div>
+
+                {/* Simulate Payment Button */}
+                {semester.presentDues > 0 && (
+                  <div className="mt-6 pt-4 border-t border-red-200 bg-red-50 -mx-6 -mb-6 px-6 pb-6 rounded-b-lg">
+                    <div className="mb-3 text-center">
+                      <p className="text-red-800 font-semibold">Outstanding Dues: ৳{semester.presentDues.toLocaleString()}</p>
+                      <p className="text-red-600 text-sm">Payment required to unlock registration</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Button
+                        onClick={() => openPaymentModal(index)}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Pay Now (Demo) - bKash or Cash
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          // Calculate total outstanding across all semesters
+                          const totalOutstanding = financials[financials.length - 1]?.cumulativeDues || 0
+                          simulatePayment(index, totalOutstanding, 'Pay All Outstanding')
+                        }}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                        variant="outline"
+                      >
+                        💸 Pay All Outstanding (₹{(financials[financials.length - 1]?.cumulativeDues || 0).toLocaleString()}) - Quick Demo
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -363,7 +538,7 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paymentHistory.map((payment) => (
+                  {history.map((payment) => (
                     <TableRow key={payment.serial}>
                       <TableCell>{payment.serial}</TableCell>
                       <TableCell className="font-medium">{payment.semester}</TableCell>
@@ -382,7 +557,7 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-green-800">Total Paid Amount:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ৳{totalPaidAmount.toLocaleString()}
+                    ৳{history.reduce((sum, payment) => sum + payment.amount, 0).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -413,7 +588,7 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {financialSummary.map((item, index) => (
+                  {financials.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell className="font-medium">{item.semester}</TableCell>
@@ -432,15 +607,15 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
               
               <div className="mt-6 grid md:grid-cols-3 gap-4">
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">৳{totalPayable.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-blue-600">৳{financials.reduce((sum, item) => sum + item.payable, 0).toFixed(2)}</div>
                   <div className="text-sm text-blue-700">Total Payable</div>
                 </div>
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">৳{totalPaid.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-green-600">৳{financials.reduce((sum, item) => sum + item.paid, 0).toFixed(2)}</div>
                   <div className="text-sm text-green-700">Total Paid</div>
                 </div>
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-red-600">৳{totalDues.toFixed(2)}</div>
+                  <div className="text-2xl font-bold text-red-600">৳{(financials[financials.length - 1]?.cumulativeDues || 0).toFixed(2)}</div>
                   <div className="text-sm text-red-700">Total Outstanding</div>
                 </div>
               </div>
@@ -586,6 +761,87 @@ export const PaymentInformation = ({ activeTab = 'payable' }: PaymentInformation
           </div>
         </CardContent>
       </Card>
+
+      {/* Payment Simulation Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Simulate Payment</DialogTitle>
+            <DialogDescription>
+              Simulate a payment to demonstrate the system. This is for demonstration purposes only.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="amount">Payment Amount (৳)</Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="Enter amount"
+                value={simulationAmount}
+                onChange={(e) => setSimulationAmount(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="method">Payment Method</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'bkash' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('bkash')}
+                  className="h-16 flex flex-col items-center justify-center space-y-1"
+                >
+                  <CreditCard className="w-6 h-6" />
+                  <span className="text-sm font-medium">bKash</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'cash' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('cash')}
+                  className="h-16 flex flex-col items-center justify-center space-y-1"
+                >
+                  <DollarSign className="w-6 h-6" />
+                  <span className="text-sm font-medium">Cash</span>
+                </Button>
+              </div>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Or select other payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bank">Bank Transfer</SelectItem>
+                  <SelectItem value="card">Credit/Debit Card</SelectItem>
+                  <SelectItem value="rocket">Rocket</SelectItem>
+                  <SelectItem value="nagad">Nagad</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedSemesterIndex !== null && payables[selectedSemesterIndex] && (
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm font-medium text-blue-800">
+                  Current dues for {payables[selectedSemesterIndex].semester}:
+                  <span className="font-bold"> ৳{payables[selectedSemesterIndex].presentDues.toLocaleString()}</span>
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPaymentModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleSimulatePayment}>
+              Simulate Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

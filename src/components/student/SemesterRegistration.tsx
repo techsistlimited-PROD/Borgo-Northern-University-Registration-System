@@ -39,22 +39,6 @@ import {
   Info
 } from 'lucide-react'
 
-// Student holds and financial information
-const studentHolds = {
-  hasFinancialHold: true,
-  hasConductHold: false,
-  hasAcademicHold: false,
-  financialDetails: {
-    totalDue: 45000,
-    semesterFee: 35000,
-    libraryFine: 500,
-    hostleDue: 9500,
-    lastPaymentDate: '2024-08-15',
-    nextInstallmentDue: '2024-12-15'
-  },
-  conductDetails: null,
-  academicDetails: null
-}
 
 // Notification system
 const notifications = [
@@ -140,16 +124,90 @@ const lastRegistration = {
   ]
 }
 
-// Mock data for available courses in new registration
+// Mock data for available courses in new registration with prerequisites and capacity
 const availableCourses = [
-  { courseCode: 'CSE 3101', courseTitle: 'Operating Systems', credit: 3.0, sections: ['A', 'B', 'C'] },
-  { courseCode: 'CSE 3102', courseTitle: 'Operating Systems Lab', credit: 1.0, sections: ['A', 'B', 'C'] },
-  { courseCode: 'CSE 3201', courseTitle: 'Computer Graphics', credit: 3.0, sections: ['A', 'B'] },
-  { courseCode: 'CSE 3202', courseTitle: 'Computer Graphics Lab', credit: 1.0, sections: ['A', 'B'] },
-  { courseCode: 'CSE 3301', courseTitle: 'Artificial Intelligence', credit: 3.0, sections: ['A'] },
-  { courseCode: 'MATH 3101', courseTitle: 'Numerical Analysis', credit: 3.0, sections: ['A', 'B'] },
-  { courseCode: 'ENG 3101', courseTitle: 'Business Communication', credit: 2.0, sections: ['A', 'B', 'C'] }
+  {
+    courseCode: 'CSE 3101',
+    courseTitle: 'Operating Systems',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 40, enrolled: 38, available: true },
+      { name: 'B', capacity: 40, enrolled: 40, available: false }, // Full section
+      { name: 'C', capacity: 45, enrolled: 32, available: true }
+    ],
+    prerequisites: ['CSE 2101'] // Student passed this
+  },
+  {
+    courseCode: 'CSE 3102',
+    courseTitle: 'Operating Systems Lab',
+    credit: 1.0,
+    sections: [
+      { name: 'A', capacity: 20, enrolled: 18, available: true },
+      { name: 'B', capacity: 20, enrolled: 20, available: false }, // Full section
+      { name: 'C', capacity: 22, enrolled: 15, available: true }
+    ],
+    prerequisites: ['CSE 2102']
+  },
+  {
+    courseCode: 'CSE 3201',
+    courseTitle: 'Computer Graphics',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 35, enrolled: 28, available: true },
+      { name: 'B', capacity: 35, enrolled: 30, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this in last semester
+  },
+  {
+    courseCode: 'CSE 3202',
+    courseTitle: 'Computer Graphics Lab',
+    credit: 1.0,
+    sections: [
+      { name: 'A', capacity: 18, enrolled: 15, available: true },
+      { name: 'B', capacity: 18, enrolled: 16, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this prerequisite
+  },
+  {
+    courseCode: 'CSE 3301',
+    courseTitle: 'Artificial Intelligence',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 30, enrolled: 25, available: true }
+    ],
+    prerequisites: ['CSE 2201']
+  },
+  {
+    courseCode: 'MATH 3101',
+    courseTitle: 'Numerical Analysis',
+    credit: 3.0,
+    sections: [
+      { name: 'A', capacity: 50, enrolled: 45, available: true },
+      { name: 'B', capacity: 50, enrolled: 42, available: true }
+    ],
+    prerequisites: ['MATH 2101'] // Student failed this prerequisite
+  },
+  {
+    courseCode: 'ENG 3101',
+    courseTitle: 'Business Communication',
+    credit: 2.0,
+    sections: [
+      { name: 'A', capacity: 60, enrolled: 55, available: true },
+      { name: 'B', capacity: 60, enrolled: 58, available: true },
+      { name: 'C', capacity: 60, enrolled: 52, available: true }
+    ],
+    prerequisites: [] // No prerequisites
+  }
 ]
+
+// Student's academic history - courses passed and failed
+const studentAcademicHistory = {
+  passedCourses: ['CSE 1101', 'CSE 1102', 'CSE 1201', 'CSE 1202', 'CSE 1221', 'ENG 1101', 'ENG 1201', 'MATH 1101', 'MATH 1201', 'CSE 2101', 'CSE 2102', 'CSE 2201', 'CSE 2202'],
+  failedCourses: ['MATH 2101'], // Failed Linear Algebra last semester
+  lastSemesterResults: {
+    'MATH 2101': { grade: 'F', gpa: 0.0, semester: 'Summer 2025' }
+  }
+}
 
 // Mock data for all registrations
 const allRegistrations = [
@@ -217,14 +275,61 @@ const currentSemesterInfo = {
 
 interface SemesterRegistrationProps {
   activeTab?: string
+  studentHolds?: {
+    hasFinancialHold: boolean
+    hasConductHold: boolean
+    hasAcademicHold: boolean
+    financialDetails: {
+      totalDue: number
+      semesterFee: number
+      libraryFine: number
+      hostleDue: number
+      lastPaymentDate: string
+      nextInstallmentDue: string
+    }
+    conductDetails: any
+    academicDetails: any
+  }
 }
 
-export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistrationProps) => {
+export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: SemesterRegistrationProps) => {
   const [selectedCourses, setSelectedCourses] = useState<{[key: string]: {selected: boolean, section: string}}>({})
   const [registrationClosed, setRegistrationClosed] = useState(false) // In real app, this would be calculated based on dates
   const [showNotifications, setShowNotifications] = useState(false)
   const [unreadNotifications, setUnreadNotifications] = useState(notifications.filter(n => !n.isRead).length)
-  const [registrationBlocked, setRegistrationBlocked] = useState(studentHolds.hasFinancialHold || studentHolds.hasConductHold || studentHolds.hasAcademicHold)
+  const [registrationBlocked, setRegistrationBlocked] = useState(
+    studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
+  )
+  const [registrationSubmitted, setRegistrationSubmitted] = useState(false)
+  const [advisorApprovalStatus, setAdvisorApprovalStatus] = useState('pending') // pending, approved, rejected
+  const [prerequisiteErrors, setPrerequisiteErrors] = useState<{[key: string]: string}>({})
+  const [sectionErrors, setSectionErrors] = useState<{[key: string]: string}>({})
+
+  // Update registration blocked state when student holds change
+  useEffect(() => {
+    const wasBlocked = registrationBlocked
+    const isNowBlocked = studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
+
+    console.log('🔒 Registration state check:', {
+      wasBlocked,
+      isNowBlocked,
+      hasFinancialHold: studentHolds?.hasFinancialHold,
+      hasConductHold: studentHolds?.hasConductHold,
+      hasAcademicHold: studentHolds?.hasAcademicHold,
+      totalDue: studentHolds?.financialDetails?.totalDue
+    })
+
+    setRegistrationBlocked(isNowBlocked)
+
+    // Show success message when registration becomes unblocked (payment cleared)
+    if (wasBlocked && !isNowBlocked && studentHolds) {
+      console.log('🎉 Registration unlocked! Showing success message.')
+      // Small delay to ensure UI updates first
+      setTimeout(() => {
+        alert('🎉 Registration Unlocked!\n\nYour dues have been cleared and registration is now available.\nYou can now register for courses in the current semester.')
+      }, 500)
+    }
+  }, [studentHolds, registrationBlocked])
 
   useEffect(() => {
     // Check for completed courses that student is trying to register for
@@ -254,14 +359,77 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
     setUnreadNotifications(prev => Math.max(0, prev - 1))
   }
 
+  const checkPrerequisites = (courseCode: string) => {
+    const course = availableCourses.find(c => c.courseCode === courseCode)
+    if (!course || !course.prerequisites.length) return true
+
+    const missingPrereqs = course.prerequisites.filter(prereq => {
+      // Check if student failed this prerequisite
+      if (studentAcademicHistory.failedCourses.includes(prereq)) {
+        return true
+      }
+      // Check if student hasn't passed this prerequisite
+      return !studentAcademicHistory.passedCourses.includes(prereq)
+    })
+
+    if (missingPrereqs.length > 0) {
+      const errorMsg = `You have not met the prerequisite for this course. Missing: ${missingPrereqs.join(', ')}`
+      setPrerequisiteErrors(prev => ({ ...prev, [courseCode]: errorMsg }))
+      return false
+    }
+
+    // Clear any previous error
+    setPrerequisiteErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[courseCode]
+      return newErrors
+    })
+    return true
+  }
+
   const handleCourseSelection = (courseCode: string, selected: boolean) => {
+    if (selected) {
+      // Check prerequisites before allowing selection
+      if (!checkPrerequisites(courseCode)) {
+        return // Don't select if prerequisites not met
+      }
+    } else {
+      // Clear any errors when deselecting
+      setPrerequisiteErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[courseCode]
+        return newErrors
+      })
+      setSectionErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[courseCode]
+        return newErrors
+      })
+    }
+
     setSelectedCourses(prev => ({
       ...prev,
-      [courseCode]: { ...prev[courseCode], selected }
+      [courseCode]: { ...prev[courseCode], selected, section: selected ? prev[courseCode]?.section || '' : '' }
     }))
   }
 
   const handleSectionSelection = (courseCode: string, section: string) => {
+    const course = availableCourses.find(c => c.courseCode === courseCode)
+    const selectedSection = course?.sections.find(s => s.name === section)
+
+    if (selectedSection && !selectedSection.available) {
+      const errorMsg = `Section ${section} is already filled (${selectedSection.enrolled}/${selectedSection.capacity}). Please try a different section.`
+      setSectionErrors(prev => ({ ...prev, [courseCode]: errorMsg }))
+      return // Don't select unavailable section
+    }
+
+    // Clear section error if selection is valid
+    setSectionErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[courseCode]
+      return newErrors
+    })
+
     setSelectedCourses(prev => ({
       ...prev,
       [courseCode]: { ...prev[courseCode], section }
@@ -278,9 +446,23 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
   }
 
   const handleSubmitRegistration = () => {
-    // In real app, this would submit to backend
-    alert('Registration submitted successfully! Redirecting to Last Registration...')
-    setActiveTab('last')
+    // Validate that all selected courses have sections
+    const selectedCourseEntries = Object.entries(selectedCourses).filter(([_, data]) => data.selected)
+    const coursesWithoutSections = selectedCourseEntries.filter(([_, data]) => !data.section)
+
+    if (coursesWithoutSections.length > 0) {
+      alert('Please select sections for all chosen courses before submitting.')
+      return
+    }
+
+    const selectedCount = selectedCourseEntries.length
+    const totalCredits = getTotalSelectedCredits()
+
+    // Submit registration
+    setRegistrationSubmitted(true)
+    setAdvisorApprovalStatus('pending')
+
+    alert(`✅ REGISTRATION SUBMITTED FOR ADVISOR REVIEW\n\n📚 Courses Selected: ${selectedCount}\n⚡ Total Credits: ${totalCredits}\n👨‍🏫 Sent to ${currentSemesterInfo.teacherName} for approval\n\nStatus: Advisor Clearance Pending\n\nYou can view your submission details below.`)
   }
 
   return (
@@ -347,6 +529,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
         </Card>
       )}
 
+
       {/* Student Holds Alert */}
       {registrationBlocked && (
         <Card className="border-red-500 bg-red-50">
@@ -358,34 +541,42 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {studentHolds.hasFinancialHold && (
+              {studentHolds?.hasFinancialHold && (
                 <div className="p-4 bg-red-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <DollarSign className="w-6 h-6 text-red-600 mt-1" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-red-800">Financial Hold</h4>
                       <p className="text-red-700 text-sm mt-1">
-                        You have outstanding dues of ৳{studentHolds.financialDetails.totalDue.toLocaleString()}.
+                        You have outstanding dues of ৳{studentHolds.financialDetails?.totalDue?.toLocaleString()}.
                         Registration is blocked until payment is made.
                       </p>
                       <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="font-medium">Semester Fee:</span> ৳{studentHolds.financialDetails.semesterFee.toLocaleString()}
+                          <span className="font-medium">Semester Fee:</span> ৳{studentHolds.financialDetails?.semesterFee?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Hostel Due:</span> ৳{studentHolds.financialDetails.hostleDue.toLocaleString()}
+                          <span className="font-medium">Hostel Due:</span> ৳{studentHolds.financialDetails?.hostleDue?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Library Fine:</span> ৳{studentHolds.financialDetails.libraryFine.toLocaleString()}
+                          <span className="font-medium">Library Fine:</span> ৳{studentHolds.financialDetails?.libraryFine?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails.nextInstallmentDue}
+                          <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails?.nextInstallmentDue}
                         </div>
                       </div>
+                      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-yellow-800 font-medium text-sm mb-2">
+                          🎯 For Demo: Go to "Payment Information" → "Payable List" → Click "Pay All Outstanding - Quick Demo"
+                        </p>
+                        <p className="text-yellow-700 text-xs">
+                          This will instantly clear all dues and unlock the complete New Registration features!
+                        </p>
+                      </div>
                       <div className="mt-4 flex space-x-3">
-                        <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
+                        <Button onClick={() => alert('Go to Payment Information → Payable List to make demo payment')} className="bg-green-600 hover:bg-green-700">
                           <CreditCard className="w-4 h-4 mr-2" />
-                          Pay Online
+                          Go to Payment
                         </Button>
                         <Button variant="outline" onClick={contactFinanceOffice}>
                           <Phone className="w-4 h-4 mr-2" />
@@ -397,7 +588,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                 </div>
               )}
 
-              {studentHolds.hasConductHold && (
+              {studentHolds?.hasConductHold && (
                 <div className="p-4 bg-yellow-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <AlertTriangle className="w-6 h-6 text-yellow-600 mt-1" />
@@ -415,7 +606,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                 </div>
               )}
 
-              {studentHolds.hasAcademicHold && (
+              {studentHolds?.hasAcademicHold && (
                 <div className="p-4 bg-orange-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <GraduationCap className="w-6 h-6 text-orange-600 mt-1" />
@@ -610,7 +801,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                     Your registration is currently blocked due to active holds. Please resolve the issues shown above to proceed.
                   </p>
                   <div className="mt-4 flex justify-center space-x-3">
-                    {studentHolds.hasFinancialHold && (
+                    {studentHolds?.hasFinancialHold && (
                       <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
                         <CreditCard className="w-4 h-4 mr-2" />
                         Pay Dues
@@ -636,71 +827,151 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                 </div>
               </CardContent>
             </Card>
+          ) : registrationSubmitted ? (
+            // Show current registration status after submission
+            <Card className="border-blue-500 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="text-blue-800 flex items-center space-x-2">
+                  <Clock className="w-5 h-5" />
+                  <span>Registration Status</span>
+                </CardTitle>
+                <CardDescription>Your registration has been submitted for advisor review</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Clock className="w-5 h-5 text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">Status: Advisor Clearance Pending</span>
+                  </div>
+                  <p className="text-yellow-700 text-sm">
+                    Your registration has been submitted to {currentSemesterInfo.teacherName} for approval.
+                  </p>
+                </div>
+
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-blue-800">Academic Advisor</h4>
+                    <Badge className="bg-blue-100 text-blue-800">Contact Available</Badge>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-2">
+                      <User className="w-4 h-4 text-blue-600" />
+                      <span className="text-blue-700">{currentSemesterInfo.teacherName}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-4 h-4 text-blue-600" />
+                      <span className="text-blue-700">{currentSemesterInfo.teacherContact}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-blue-800 mb-3">Current Registration Information</h4>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Course Code</TableHead>
+                        <TableHead>Course Title</TableHead>
+                        <TableHead>Section</TableHead>
+                        <TableHead>Credits</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(selectedCourses)
+                        .filter(([_, data]) => data.selected && data.section)
+                        .map(([courseCode, data]) => {
+                          const course = availableCourses.find(c => c.courseCode === courseCode)
+                          return (
+                            <TableRow key={courseCode}>
+                              <TableCell className="font-medium">{courseCode}</TableCell>
+                              <TableCell>{course?.courseTitle}</TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{data.section}</Badge>
+                              </TableCell>
+                              <TableCell>{course?.credit}</TableCell>
+                            </TableRow>
+                          )
+                        })}
+                    </TableBody>
+                  </Table>
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <p className="font-semibold text-gray-800">
+                      Total Credits: {getTotalSelectedCredits()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ) : (
             <>
-              {/* Current Semester Info */}
-              <Card className="border-green-200 bg-green-50">
-                <CardHeader>
-                  <CardTitle className="text-green-800">Current Semester Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Semester:</span>
-                        <span className="font-bold text-green-800">{currentSemesterInfo.semester}</span>
+              {/* Advisor Information */}
+              <Card className="border-blue-200 bg-blue-50">
+                <CardContent className="pt-6">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-semibold text-blue-800 mb-2">Academic Advisor</h3>
+                    <div className="flex items-center justify-center space-x-6">
+                      <div className="flex items-center space-x-2">
+                        <User className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium text-blue-700">{currentSemesterInfo.teacherName}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Registration Start:</span>
-                        <span>{currentSemesterInfo.registrationStartDate}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Registration End:</span>
-                        <span>{currentSemesterInfo.registrationEndDate}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Class Start:</span>
-                        <span>{currentSemesterInfo.classStartDate}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Academic Advisor:</span>
-                        <span>{currentSemesterInfo.teacherName}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Contact:</span>
-                        <span>{currentSemesterInfo.teacherContact}</span>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-5 h-5 text-blue-600" />
+                        <span className="font-medium text-blue-700">{currentSemesterInfo.teacherContact}</span>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Course Selection */}
+              {/* Course Selection Table */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Available Courses</CardTitle>
-                  <CardDescription>
-                    Select courses for {currentSemesterInfo.semester} semester
-                  </CardDescription>
+                  <CardTitle>Course Registration - {currentSemesterInfo.semester}</CardTitle>
+                  <CardDescription>Select courses and sections for the current semester</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-4 flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      Selected Credits: <span className="font-bold text-deep-plum">{getTotalSelectedCredits()}</span> / 21 (Max)
-                    </span>
-                  </div>
+                  {/* Error Messages */}
+                  {Object.keys(prerequisiteErrors).length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      {Object.entries(prerequisiteErrors).map(([courseCode, error]) => (
+                        <div key={courseCode} className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="flex items-start space-x-2">
+                            <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                            <div>
+                              <p className="font-medium text-red-800">{courseCode}</p>
+                              <p className="text-red-700 text-sm">{error}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {Object.keys(sectionErrors).length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      {Object.entries(sectionErrors).map(([courseCode, error]) => (
+                        <div key={courseCode} className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                          <div className="flex items-start space-x-2">
+                            <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5" />
+                            <div>
+                              <p className="font-medium text-orange-800">{courseCode}</p>
+                              <p className="text-orange-700 text-sm">{error}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-12">Select</TableHead>
+                        <TableHead className="w-16">Select</TableHead>
                         <TableHead>Course Code</TableHead>
                         <TableHead>Course Title</TableHead>
-                        <TableHead>Credit</TableHead>
+                        <TableHead>Credits</TableHead>
                         <TableHead>Section</TableHead>
+                        <TableHead>Capacity</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -721,99 +992,52 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                             <Select
                               disabled={!selectedCourses[course.courseCode]?.selected}
                               onValueChange={(value) => handleSectionSelection(course.courseCode, value)}
+                              value={selectedCourses[course.courseCode]?.section || ''}
                             >
-                              <SelectTrigger className="w-20">
+                              <SelectTrigger className="w-24">
                                 <SelectValue placeholder="Select" />
                               </SelectTrigger>
                               <SelectContent>
                                 {course.sections.map((section) => (
-                                  <SelectItem key={section} value={section}>
-                                    {section}
+                                  <SelectItem
+                                    key={section.name}
+                                    value={section.name}
+                                    disabled={!section.available}
+                                  >
+                                    {section.name} {!section.available ? '(Full)' : ''}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {course.sections.map((section) => (
+                                <div key={section.name} className={`${!section.available ? 'text-red-600' : 'text-green-600'}`}>
+                                  {section.name}: {section.enrolled}/{section.capacity}
+                                </div>
+                              ))}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
 
-                  <div className="mt-6 space-y-4">
-                    {/* Warnings and Notices */}
-                    <div className="space-y-2">
-                      {getTotalSelectedCredits() > 18 && (
-                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start space-x-2">
-                          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
-                          <div>
-                            <p className="text-yellow-800 font-medium">Credit Overload Warning</p>
-                            <p className="text-yellow-700 text-sm">
-                              You have selected {getTotalSelectedCredits()} credits. Overload (&gt;18 credits) requires special approval.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      {getTotalSelectedCredits() < 12 && getTotalSelectedCredits() > 0 && (
-                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-2">
-                          <Info className="w-5 h-5 text-blue-600 mt-0.5" />
-                          <div>
-                            <p className="text-blue-800 font-medium">Minimum Credit Notice</p>
-                            <p className="text-blue-700 text-sm">
-                              Minimum 12 credits required for full-time status. Current: {getTotalSelectedCredits()} credits.
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                  <div className="mt-6 flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        Total Selected Credits: <span className="text-deep-plum font-bold">{getTotalSelectedCredits()}</span>
+                      </p>
                     </div>
-
-                    {/* Teacher Approval Notice */}
-                    <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                      <div className="flex items-start space-x-2">
-                        <User className="w-5 h-5 text-purple-600 mt-0.5" />
-                        <div>
-                          <p className="text-purple-800 font-medium">Teacher Approval Required</p>
-                          <p className="text-purple-700 text-sm">
-                            Your registration will be sent to {currentSemesterInfo.teacherName} for approval.
-                            You can edit your registration until it is approved.
-                          </p>
-                          <div className="mt-2 flex items-center space-x-4 text-sm">
-                            <span className="text-purple-600">
-                              <Phone className="w-4 h-4 inline mr-1" />
-                              {currentSemesterInfo.teacherContact}
-                            </span>
-                            <span className="text-purple-600">
-                              <Clock className="w-4 h-4 inline mr-1" />
-                              Auto-notification if pending &gt;72 hours
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm text-gray-600">
-                        <AlertCircle className="w-4 h-4 inline mr-1" />
-                        Please ensure you select sections for all chosen courses
-                      </div>
-                      <Button
-                        onClick={handleSubmitRegistration}
-                        className="nu-button-primary"
-                        disabled={getTotalSelectedCredits() === 0 || registrationBlocked}
-                      >
-                        {registrationBlocked ? (
-                          <>
-                            <Lock className="w-4 h-4 mr-2" />
-                            Registration Blocked
-                          </>
-                        ) : (
-                          <>
-                            <FileText className="w-4 h-4 mr-2" />
-                            Submit for Approval
-                          </>
-                        )}
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={handleSubmitRegistration}
+                      className="bg-deep-plum hover:bg-deep-plum/90"
+                      disabled={getTotalSelectedCredits() === 0}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Submit for Advisor Review
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

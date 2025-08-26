@@ -127,11 +127,29 @@ const Sidebar = ({ activeTab, setActiveTab }: {
   )
 }
 
+// Student holds and financial information - initial state
+const initialStudentHolds = {
+  hasFinancialHold: true,
+  hasConductHold: false,
+  hasAcademicHold: false,
+  financialDetails: {
+    totalDue: 11100, // Matches actual cumulative dues from financial summary
+    semesterFee: 7100,
+    libraryFine: 0,
+    hostleDue: 4000,
+    lastPaymentDate: '2024-08-15',
+    nextInstallmentDue: '2024-12-15'
+  },
+  conductDetails: null,
+  academicDetails: null
+}
+
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [showProfile, setShowProfile] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [studentHolds, setStudentHolds] = useState(initialStudentHolds)
   const { user, logout } = useAuth()
 
   const handleLogout = () => {
@@ -151,6 +169,32 @@ export default function StudentDashboard() {
     setShowChangePassword(true)
   }
 
+  const handlePaymentUpdate = (totalOutstanding: number) => {
+    console.log('🎯 handlePaymentUpdate called with:', totalOutstanding)
+
+    // Clear financial hold if total outstanding is 0 or less
+    if (totalOutstanding <= 0) {
+      console.log('✅ Clearing financial hold - registration should unlock!')
+      setStudentHolds(prev => ({
+        ...prev,
+        hasFinancialHold: false,
+        financialDetails: {
+          ...prev.financialDetails,
+          totalDue: 0
+        }
+      }))
+    } else {
+      console.log('⚠️ Still have outstanding dues:', totalOutstanding)
+      setStudentHolds(prev => ({
+        ...prev,
+        financialDetails: {
+          ...prev.financialDetails,
+          totalDue: totalOutstanding
+        }
+      }))
+    }
+  }
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -163,11 +207,11 @@ export default function StudentDashboard() {
       // Semester Registration cases
       case 'semester-registration':
       case 'last-registration':
-        return <SemesterRegistration activeTab="last" />
+        return <SemesterRegistration activeTab="last" studentHolds={studentHolds} />
       case 'new-registration':
-        return <SemesterRegistration activeTab="new" />
+        return <SemesterRegistration activeTab="new" studentHolds={studentHolds} />
       case 'all-registration':
-        return <SemesterRegistration activeTab="all" />
+        return <SemesterRegistration activeTab="all" studentHolds={studentHolds} />
 
       case 'class-routine':
         return <ClassRoutine />
@@ -184,13 +228,13 @@ export default function StudentDashboard() {
       // Payment Information cases
       case 'payment-info':
       case 'payable-list':
-        return <PaymentInformation activeTab="payable" />
+        return <PaymentInformation activeTab="payable" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'payment-history':
-        return <PaymentInformation activeTab="history" />
+        return <PaymentInformation activeTab="history" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'financial-summary':
-        return <PaymentInformation activeTab="summary" />
+        return <PaymentInformation activeTab="summary" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
       case 'detailed-report':
-        return <PaymentInformation activeTab="detailed" />
+        return <PaymentInformation activeTab="detailed" onPaymentUpdate={handlePaymentUpdate} onNavigateToRegistration={() => setActiveTab('new-registration')} />
 
       default:
         return <StudentDashboardOverview user={user} />

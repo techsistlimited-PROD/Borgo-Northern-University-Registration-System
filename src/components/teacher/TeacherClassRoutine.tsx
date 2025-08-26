@@ -116,7 +116,7 @@ const timeSlots = [
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday']
 
-function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
+function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[]; weekStatus: string }) {
   const getClassForTimeSlot = (day: string, timeSlot: string) => {
     return schedule.find(class_ => {
       const classTime = `${class_.startTime}-${class_.endTime}`
@@ -125,6 +125,18 @@ function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
   }
 
   const getStatusColor = (status: string) => {
+    // Override colors based on week status
+    if (weekStatus === 'past') {
+      return 'bg-green-100 border-green-300 text-green-800' // Classes taken
+    }
+    if (weekStatus === 'current') {
+      return 'bg-yellow-100 border-yellow-300 text-yellow-800' // Current/ongoing
+    }
+    if (weekStatus === 'upcoming') {
+      return 'bg-blue-100 border-blue-300 text-blue-800' // Scheduled/upcoming
+    }
+
+    // Default status colors
     switch (status) {
       case 'scheduled': return 'bg-blue-100 border-blue-300 text-blue-800'
       case 'ongoing': return 'bg-green-100 border-green-300 text-green-800'
@@ -160,7 +172,14 @@ function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
                   <div key={`${day}-${timeSlot}`} className="border border-gray-200 p-2 min-h-[100px]">
                     {class_ ? (
                       <div className={`p-3 rounded-lg border-2 h-full ${getStatusColor(class_.status)}`}>
-                        <div className="font-medium text-sm">{class_.courseCode}</div>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="font-medium text-sm">{class_.courseCode}</div>
+                          <div className="text-xs">
+                            {weekStatus === 'past' && '✓'}
+                            {weekStatus === 'current' && '▶'}
+                            {weekStatus === 'upcoming' && '⏸'}
+                          </div>
+                        </div>
                         <div className="text-xs mt-1">Section {class_.section}</div>
                         <div className="text-xs mt-1 flex items-center">
                           <MapPin className="w-3 h-3 mr-1" />
@@ -169,6 +188,11 @@ function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
                         <div className="text-xs mt-1 flex items-center">
                           <Users className="w-3 h-3 mr-1" />
                           {class_.studentsEnrolled}/{class_.maxCapacity}
+                        </div>
+                        <div className="text-xs mt-1 opacity-75">
+                          {weekStatus === 'past' && 'Completed'}
+                          {weekStatus === 'current' && 'This Week'}
+                          {weekStatus === 'upcoming' && 'Scheduled'}
                         </div>
                       </div>
                     ) : (
@@ -187,7 +211,7 @@ function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
   )
 }
 
-function ClassListView({ schedule }: { schedule: ClassSchedule[] }) {
+function ClassListView({ schedule, weekStatus }: { schedule: ClassSchedule[]; weekStatus: string }) {
   const [sortBy, setSortBy] = useState<'day' | 'time' | 'course'>('day')
 
   const sortedSchedule = [...schedule].sort((a, b) => {
@@ -265,13 +289,15 @@ function ClassListView({ schedule }: { schedule: ClassSchedule[] }) {
                   </div>
                 </div>
                 
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    View Details
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Take Attendance
-                  </Button>
+                <div className="flex items-center space-x-2">
+                  <Badge variant={
+                    weekStatus === 'past' ? 'default' :
+                    weekStatus === 'current' ? 'secondary' : 'outline'
+                  }>
+                    {weekStatus === 'past' && '✓ Completed'}
+                    {weekStatus === 'current' && '▶ This Week'}
+                    {weekStatus === 'upcoming' && '⏸ Scheduled'}
+                  </Badge>
                 </div>
               </div>
             </CardContent>
@@ -282,10 +308,56 @@ function ClassListView({ schedule }: { schedule: ClassSchedule[] }) {
   )
 }
 
+// Semester calendar configuration
+const semesterConfig = {
+  'Fall 2024': {
+    startDate: new Date('2024-01-25'),
+    midtermWeek: 8,
+    endOfClassesWeek: 15,
+    currentWeek: 3 // Simulated current week
+  },
+  'Spring 2024': {
+    startDate: new Date('2024-05-15'),
+    midtermWeek: 8,
+    endOfClassesWeek: 15,
+    currentWeek: 10
+  },
+  'Summer 2024': {
+    startDate: new Date('2024-09-10'),
+    midtermWeek: 6,
+    endOfClassesWeek: 12,
+    currentWeek: 12
+  }
+}
+
 export default function TeacherClassRoutine() {
   const [selectedSemester, setSelectedSemester] = useState('Fall 2024')
   const [selectedWeek, setSelectedWeek] = useState(1)
   const [activeView, setActiveView] = useState<'grid' | 'list'>('grid')
+
+  const currentSemesterConfig = semesterConfig[selectedSemester as keyof typeof semesterConfig]
+
+  const getWeekStatus = (week: number) => {
+    const currentWeek = currentSemesterConfig.currentWeek
+    if (week < currentWeek) return 'past'
+    if (week === currentWeek) return 'current'
+    return 'upcoming'
+  }
+
+  const getWeekLabel = (week: number) => {
+    if (week === currentSemesterConfig.midtermWeek) return 'Midterm Week'
+    if (week === currentSemesterConfig.endOfClassesWeek) return 'End of Classes'
+    return `Week ${week}`
+  }
+
+  const getWeekStatusColor = (status: string) => {
+    switch (status) {
+      case 'past': return 'text-gray-500 bg-gray-100'
+      case 'current': return 'text-green-700 bg-green-100 font-semibold'
+      case 'upcoming': return 'text-blue-700 bg-blue-100'
+      default: return 'text-gray-700 bg-gray-50'
+    }
+  }
 
   const handleExportSchedule = () => {
     // Mock export functionality
@@ -343,7 +415,19 @@ export default function TeacherClassRoutine() {
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="text-sm font-medium px-3">Week {selectedWeek}</span>
+              <div className={`px-3 py-1 rounded-lg text-sm ${getWeekStatusColor(getWeekStatus(selectedWeek))}`}>
+                <div className="flex items-center space-x-2">
+                  <span>{getWeekLabel(selectedWeek)}</span>
+                  {getWeekStatus(selectedWeek) === 'current' && <Clock className="w-4 h-4" />}
+                  {selectedWeek === currentSemesterConfig.midtermWeek && <Calendar className="w-4 h-4" />}
+                  {selectedWeek === currentSemesterConfig.endOfClassesWeek && <Calendar className="w-4 h-4" />}
+                </div>
+                <div className="text-xs opacity-75">
+                  {getWeekStatus(selectedWeek) === 'past' && 'Classes Taken'}
+                  {getWeekStatus(selectedWeek) === 'current' && 'Running Week'}
+                  {getWeekStatus(selectedWeek) === 'upcoming' && 'Upcoming'}
+                </div>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -376,9 +460,9 @@ export default function TeacherClassRoutine() {
         </CardHeader>
         <CardContent>
           {activeView === 'grid' ? (
-            <WeeklyScheduleGrid schedule={teacherSchedule} />
+            <WeeklyScheduleGrid schedule={teacherSchedule} weekStatus={getWeekStatus(selectedWeek)} />
           ) : (
-            <ClassListView schedule={teacherSchedule} />
+            <ClassListView schedule={teacherSchedule} weekStatus={getWeekStatus(selectedWeek)} />
           )}
         </CardContent>
       </Card>
