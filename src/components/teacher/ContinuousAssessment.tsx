@@ -7,10 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Plus, 
-  Calendar, 
-  Users, 
+import {
+  Plus,
+  Calendar,
+  Users,
   Edit,
   Trash2,
   Save,
@@ -19,7 +19,7 @@ import {
   Clock,
   Award,
   BookOpen,
-  PresentationChart,
+  Presentation,
   ClipboardList,
   CheckCircle,
   AlertCircle
