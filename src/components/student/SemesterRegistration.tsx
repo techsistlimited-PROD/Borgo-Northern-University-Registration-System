@@ -621,12 +621,53 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
           {!registrationBlocked && studentHolds && (
             <Card className="border-green-500 bg-green-50">
               <CardContent className="pt-6">
-                <div className="text-center">
+                <div className="text-center mb-6">
                   <Unlock className="w-16 h-16 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-green-800 mb-2">Registration Available!</h3>
+                  <h3 className="text-xl font-semibold text-green-800 mb-2">🎉 Registration Available!</h3>
                   <p className="text-green-700">
                     ✅ All dues cleared. You can now register for the {currentSemesterInfo.semester} semester.
                   </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-green-800 mb-2">✨ Available Features:</h4>
+                    <div className="space-y-1 text-green-700">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Course Selection & Management
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Section Selection with Availability
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Real-time Credit Calculation
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-green-800 mb-2">🛡️ Smart Validations:</h4>
+                    <div className="space-y-1 text-green-700">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Credit Overload Warnings
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Teacher Approval Workflow
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Complete Registration Submission
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-center">
+                  <p className="text-green-600 font-medium">Scroll down to access all registration features!</p>
                 </div>
               </CardContent>
             </Card>
