@@ -222,6 +222,37 @@ interface SemesterRegistrationProps {
 export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistrationProps) => {
   const [selectedCourses, setSelectedCourses] = useState<{[key: string]: {selected: boolean, section: string}}>({})
   const [registrationClosed, setRegistrationClosed] = useState(false) // In real app, this would be calculated based on dates
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [unreadNotifications, setUnreadNotifications] = useState(notifications.filter(n => !n.isRead).length)
+  const [registrationBlocked, setRegistrationBlocked] = useState(studentHolds.hasFinancialHold || studentHolds.hasConductHold || studentHolds.hasAcademicHold)
+
+  useEffect(() => {
+    // Check for completed courses that student is trying to register for
+    const checkCompletedCourses = () => {
+      // Mock check - in real app, this would check against academic history
+      const completedCourses = ['CSE 2301'] // Example completed course
+      selectedCourses && Object.keys(selectedCourses).forEach(courseCode => {
+        if (completedCourses.includes(courseCode) && selectedCourses[courseCode].selected) {
+          alert(`Warning: You have already completed ${courseCode} with a passing grade. Please contact ACAD if you need to re-register.`)
+        }
+      })
+    }
+
+    checkCompletedCourses()
+  }, [selectedCourses])
+
+  const handlePayDues = () => {
+    alert('Redirecting to payment portal...')
+    // In real app, this would redirect to payment system
+  }
+
+  const contactFinanceOffice = () => {
+    alert('Contact Finance Office: +880-1711-123456 or finance@nu.edu.bd')
+  }
+
+  const markNotificationAsRead = (notificationId: number) => {
+    setUnreadNotifications(prev => Math.max(0, prev - 1))
+  }
 
   const handleCourseSelection = (courseCode: string, selected: boolean) => {
     setSelectedCourses(prev => ({
