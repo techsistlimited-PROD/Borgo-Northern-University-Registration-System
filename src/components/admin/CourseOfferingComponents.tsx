@@ -709,13 +709,13 @@ export const SectionManagement = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-deep-plum">Section Management</h1>
         <div className="flex space-x-2">
-          <Button 
+          <Button
             variant={activeView === 'view' ? 'default' : 'outline'}
             onClick={() => setActiveView('view')}
           >
             View Sections
           </Button>
-          <Button 
+          <Button
             variant={activeView === 'create' ? 'default' : 'outline'}
             onClick={() => setActiveView('create')}
             className="flex items-center space-x-2"
@@ -725,74 +725,210 @@ export const SectionManagement = () => {
           </Button>
         </div>
       </div>
-      
+
       {activeView === 'view' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>All Sections</CardTitle>
-            <CardDescription>Manage course sections and their details</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Year</TableHead>
-                  <TableHead>Program</TableHead>
-                  <TableHead>Semester</TableHead>
-                  <TableHead>Course</TableHead>
-                  <TableHead>Section</TableHead>
-                  <TableHead>Capacity</TableHead>
-                  <TableHead>Teacher</TableHead>
-                  <TableHead>Schedule</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sections.map((section) => (
-                  <TableRow key={section.id}>
-                    <TableCell>{section.year}</TableCell>
-                    <TableCell>{section.program}</TableCell>
-                    <TableCell>{section.semester}</TableCell>
-                    <TableCell>{section.course}</TableCell>
-                    <TableCell>
-                      <span className="font-semibold">{section.sectionName}</span>
-                    </TableCell>
-                    <TableCell>
-                      <span className={section.enrolled === section.capacity ? 'text-red-600' : 'text-green-600'}>
-                        {section.enrolled}/{section.capacity}
-                      </span>
-                    </TableCell>
-                    <TableCell>{section.teacher}</TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <div>{section.days}</div>
-                        <div className="text-gray-500">{section.timeSlot}</div>
-                        <div className="text-gray-500">{section.room}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+        <>
+          {/* Filters */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Section Filters</CardTitle>
+              <CardDescription>Filter and search sections</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                  <Label>Program</Label>
+                  <Select value={filterProgram} onValueChange={setFilterProgram}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Programs" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Programs</SelectItem>
+                      <SelectItem value="CSE">CSE</SelectItem>
+                      <SelectItem value="BBA">BBA</SelectItem>
+                      <SelectItem value="EEE">EEE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Course</Label>
+                  <Select value={filterCourse} onValueChange={setFilterCourse}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Courses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Courses</SelectItem>
+                      {courses.map((course) => (
+                        <SelectItem key={course.code} value={course.code}>
+                          {course.code} - {course.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Teacher</Label>
+                  <Select value={filterTeacher} onValueChange={setFilterTeacher}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Teachers" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Teachers</SelectItem>
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id}>
+                          {teacher.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Search</Label>
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Input
+                      placeholder="Search sections..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-end">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setFilterProgram('')
+                      setFilterCourse('')
+                      setFilterTeacher('')
+                      setSearchTerm('')
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sections Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>All Sections ({filteredSections.length})</CardTitle>
+              <CardDescription>Manage course sections and their details</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Year</TableHead>
+                    <TableHead>Program</TableHead>
+                    <TableHead>Course</TableHead>
+                    <TableHead>Section</TableHead>
+                    <TableHead>Capacity</TableHead>
+                    <TableHead>Teacher</TableHead>
+                    <TableHead>Schedule</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {filteredSections.map((section) => (
+                    <TableRow key={section.id}>
+                      <TableCell>{section.year}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{section.program}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{section.course}</div>
+                        <div className="text-sm text-gray-500">{section.semester} Semester</div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-semibold text-lg">{section.sectionName}</span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <span className={section.enrolled === section.capacity ? 'text-red-600 font-medium' : 'text-green-600'}>
+                            {section.enrolled}/{section.capacity}
+                          </span>
+                          <Badge variant={section.status === 'Full' ? 'destructive' : 'default'}>
+                            {section.status}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{section.teacher}</div>
+                          <div className="text-sm text-gray-500">ID: {section.teacherId}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div className="font-medium">{section.days}</div>
+                          <div className="text-gray-500">{section.timeSlot}</div>
+                          <div className="text-gray-500">{section.room}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={section.status === 'Active' ? 'default' : section.status === 'Full' ? 'destructive' : 'secondary'}>
+                          {section.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleChangeTeacher(section.id)}
+                            title="Change Teacher"
+                          >
+                            <Users className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            title="Edit Section"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteSection(section.id)}
+                            className="text-red-600 hover:text-red-700"
+                            title="Delete Section"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {filteredSections.length === 0 && (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">No Sections Found</h3>
+                  <p className="text-gray-500">No sections match your current filter criteria</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </>
       )}
-      
+
       {activeView === 'create' && (
         <Card>
           <CardHeader>
             <CardTitle>Create New Section</CardTitle>
-            <CardDescription>Add a new course section</CardDescription>
+            <CardDescription>Add a new course section with teacher assignment</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="space-y-6">
@@ -809,7 +945,7 @@ export const SectionManagement = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label>Program</Label>
                   <Select>
@@ -823,7 +959,7 @@ export const SectionManagement = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label>Semester</Label>
                   <Select>
@@ -843,8 +979,8 @@ export const SectionManagement = () => {
                   </Select>
                 </div>
               </div>
-              
-              <div className="grid md:grid-cols-3 gap-4">
+
+              <div className="grid md:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <Label>Course</Label>
                   <Select>
@@ -852,24 +988,86 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="Select course" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="cse401">CSE401 - Software Engineering</SelectItem>
-                      <SelectItem value="cse403">CSE403 - Database Systems</SelectItem>
-                      <SelectItem value="bba401">BBA401 - Strategic Management</SelectItem>
+                      {courses.map((course) => (
+                        <SelectItem key={course.code} value={course.code}>
+                          {course.code} - {course.title}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label>Section Name</Label>
                   <Input placeholder="e.g., A, B, C" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label>Capacity</Label>
                   <Input type="number" placeholder="Maximum students" />
                 </div>
+
+                <div className="space-y-2">
+                  <Label>Teacher</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Assign teacher" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id}>
+                          {teacher.id} - {teacher.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Schedule Days</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select days" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sun-tue">Sunday & Tuesday</SelectItem>
+                      <SelectItem value="mon-wed">Monday & Wednesday</SelectItem>
+                      <SelectItem value="thu-fri">Thursday & Friday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Time Slot</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0800-0930">08:00 - 09:30 AM</SelectItem>
+                      <SelectItem value="1000-1130">10:00 - 11:30 AM</SelectItem>
+                      <SelectItem value="1400-1530">02:00 - 03:30 PM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Room</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select room" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="room201">Room 201</SelectItem>
+                      <SelectItem value="room301">Room 301</SelectItem>
+                      <SelectItem value="room401">Room 401</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               <div className="flex space-x-4">
                 <Button type="submit" className="nu-button-primary">
                   Create Section
