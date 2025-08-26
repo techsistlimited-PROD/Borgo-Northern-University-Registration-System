@@ -405,7 +405,7 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                 </div>
               )}
 
-              {studentHolds.hasConductHold && (
+              {studentHolds?.hasConductHold && (
                 <div className="p-4 bg-yellow-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <AlertTriangle className="w-6 h-6 text-yellow-600 mt-1" />
@@ -423,7 +423,7 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                 </div>
               )}
 
-              {studentHolds.hasAcademicHold && (
+              {studentHolds?.hasAcademicHold && (
                 <div className="p-4 bg-orange-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <GraduationCap className="w-6 h-6 text-orange-600 mt-1" />
