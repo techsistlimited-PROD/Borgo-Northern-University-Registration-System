@@ -9,7 +9,6 @@ export interface User {
   email?: string
   program?: string
   semester?: string
-  advisorId?: string
 }
 
 interface AuthContextType {
