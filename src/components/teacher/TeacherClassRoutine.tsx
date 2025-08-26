@@ -125,6 +125,18 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
   }
 
   const getStatusColor = (status: string) => {
+    // Override colors based on week status
+    if (weekStatus === 'past') {
+      return 'bg-green-100 border-green-300 text-green-800' // Classes taken
+    }
+    if (weekStatus === 'current') {
+      return 'bg-yellow-100 border-yellow-300 text-yellow-800' // Current/ongoing
+    }
+    if (weekStatus === 'upcoming') {
+      return 'bg-blue-100 border-blue-300 text-blue-800' // Scheduled/upcoming
+    }
+
+    // Default status colors
     switch (status) {
       case 'scheduled': return 'bg-blue-100 border-blue-300 text-blue-800'
       case 'ongoing': return 'bg-green-100 border-green-300 text-green-800'
