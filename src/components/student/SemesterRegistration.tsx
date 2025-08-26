@@ -443,10 +443,18 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                           <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails?.nextInstallmentDue}
                         </div>
                       </div>
+                      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-yellow-800 font-medium text-sm mb-2">
+                          🎯 For Demo: Go to "Payment Information" → "Payable List" → Click "Pay All Outstanding - Quick Demo"
+                        </p>
+                        <p className="text-yellow-700 text-xs">
+                          This will instantly clear all dues and unlock the complete New Registration features!
+                        </p>
+                      </div>
                       <div className="mt-4 flex space-x-3">
-                        <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
+                        <Button onClick={() => alert('Go to Payment Information → Payable List to make demo payment')} className="bg-green-600 hover:bg-green-700">
                           <CreditCard className="w-4 h-4 mr-2" />
-                          Pay Online
+                          Go to Payment
                         </Button>
                         <Button variant="outline" onClick={contactFinanceOffice}>
                           <Phone className="w-4 h-4 mr-2" />
