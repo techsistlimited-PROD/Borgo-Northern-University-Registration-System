@@ -538,6 +538,355 @@ function StudentWiseReport() {
   )
 }
 
+function ExamAttendanceReport() {
+  const [selectedSection, setSelectedSection] = useState<string>('')
+  const [selectedSemester, setSelectedSemester] = useState<string>('')
+
+  const semesters = ['Fall 2024', 'Spring 2024', 'Summer 2024']
+
+  const getMidtermAbsentees = () => {
+    if (!selectedSection) return []
+
+    const sectionData = sections.find(s => s.id === selectedSection)
+    if (!sectionData) return []
+
+    // Filter midterm exam records for absent students
+    return examAttendanceRecords.filter(record =>
+      record.courseCode === sectionData.courseCode &&
+      record.section === sectionData.section &&
+      record.examType === 'midterm' &&
+      record.status === 'absent'
+    )
+  }
+
+  const absentStudents = getMidtermAbsentees()
+
+  const handleDownloadReport = () => {
+    alert('Midterm exam absentees report downloaded successfully!')
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="section">Section</Label>
+              <Select value={selectedSection} onValueChange={setSelectedSection}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select section" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sections.map(section => (
+                    <SelectItem key={section.id} value={section.id}>
+                      {section.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="semester">Semester</Label>
+              <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select semester" />
+                </SelectTrigger>
+                <SelectContent>
+                  {semesters.map(semester => (
+                    <SelectItem key={semester} value={semester}>
+                      {semester}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="md:col-span-2 flex items-end">
+              <Button onClick={handleDownloadReport} disabled={!selectedSection} className="w-full">
+                <Download className="w-4 h-4 mr-2" />
+                Download Report
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Summary */}
+      {selectedSection && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-3">
+              <XCircle className="w-8 h-8 text-red-600" />
+              <div>
+                <h3 className="font-semibold text-red-800">Midterm Exam Absentees</h3>
+                <p className="text-red-700 text-sm">
+                  {absentStudents.length} student(s) were absent during midterm examination
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Absentees List */}
+      {selectedSection && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-700">Students Absent in Midterm Exam</CardTitle>
+            <CardDescription>
+              List of students who missed the midterm examination (as reported by course teacher)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {absentStudents.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-200">
+                  <thead>
+                    <tr className="bg-red-50">
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student ID</th>
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student Name</th>
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Course</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Section</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Exam Date</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {absentStudents.map((student, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="border border-gray-200 px-4 py-3 font-mono">
+                          {student.studentId}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 font-medium">
+                          {student.studentName}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3">
+                          {student.courseCode}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          {student.section}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          {new Date(student.examDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          <Badge variant="destructive">
+                            <XCircle className="w-3 h-3 mr-1" />
+                            Absent
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                <p className="text-green-600 font-medium">No students were absent in the midterm exam!</p>
+                <p className="text-gray-500 text-sm">All students attended the midterm examination.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}
+
+function FinalExamAttendanceReport() {
+  const [selectedSection, setSelectedSection] = useState<string>('')
+  const [selectedSemester, setSelectedSemester] = useState<string>('')
+
+  const semesters = ['Fall 2024', 'Spring 2024', 'Summer 2024']
+
+  const getFinalExamAttendance = () => {
+    if (!selectedSection) return []
+
+    const sectionData = sections.find(s => s.id === selectedSection)
+    if (!sectionData) return []
+
+    // Get all students who have final exam records for this section
+    const finalExamRecords = examAttendanceRecords.filter(record =>
+      record.courseCode === sectionData.courseCode &&
+      record.section === sectionData.section &&
+      record.examType === 'final'
+    )
+
+    return finalExamRecords
+  }
+
+  const finalExamStudents = getFinalExamAttendance()
+
+  const handleDownloadReport = () => {
+    alert('Final exam attendance report downloaded successfully!')
+  }
+
+  const getAttendanceStats = () => {
+    const total = finalExamStudents.length
+    const attended = finalExamStudents.filter(s => s.status === 'present').length
+    const absent = finalExamStudents.filter(s => s.status === 'absent').length
+    return { total, attended, absent }
+  }
+
+  const stats = getAttendanceStats()
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="section">Section</Label>
+              <Select value={selectedSection} onValueChange={setSelectedSection}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select section" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sections.map(section => (
+                    <SelectItem key={section.id} value={section.id}>
+                      {section.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="semester">Semester</Label>
+              <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select semester" />
+                </SelectTrigger>
+                <SelectContent>
+                  {semesters.map(semester => (
+                    <SelectItem key={semester} value={semester}>
+                      {semester}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="md:col-span-2 flex items-end">
+              <Button onClick={handleDownloadReport} disabled={!selectedSection} className="w-full">
+                <Download className="w-4 h-4 mr-2" />
+                Download Report
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Summary Stats */}
+      {selectedSection && finalExamStudents.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-deep-plum">{stats.total}</p>
+                <p className="text-sm text-gray-600">Total Students</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">{stats.attended}</p>
+                <p className="text-sm text-gray-600">Attended</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-red-600">{stats.absent}</p>
+                <p className="text-sm text-gray-600">Absent</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Final Exam Attendance List */}
+      {selectedSection && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-purple-700">Final Exam Attendance List</CardTitle>
+            <CardDescription>
+              Final exam attendance with Y for attended and N for absent
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {finalExamStudents.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-200">
+                  <thead>
+                    <tr className="bg-purple-50">
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student ID</th>
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student Name</th>
+                      <th className="border border-gray-200 px-4 py-3 text-left font-medium">Course</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Section</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Exam Date</th>
+                      <th className="border border-gray-200 px-4 py-3 text-center font-medium">Attended</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {finalExamStudents.map((student, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="border border-gray-200 px-4 py-3 font-mono">
+                          {student.studentId}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 font-medium">
+                          {student.studentName}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3">
+                          {student.courseCode}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          {student.section}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          {new Date(student.examDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </td>
+                        <td className="border border-gray-200 px-4 py-3 text-center">
+                          <span className={`text-2xl font-bold ${
+                            student.status === 'present' ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {student.status === 'present' ? 'Y' : 'N'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500">No final exam attendance data available for the selected section</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  )
+}
+
 export default function AttendanceReports() {
   return (
     <div className="space-y-6">
