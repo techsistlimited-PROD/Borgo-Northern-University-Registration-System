@@ -618,7 +618,7 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                     Your registration is currently blocked due to active holds. Please resolve the issues shown above to proceed.
                   </p>
                   <div className="mt-4 flex justify-center space-x-3">
-                    {studentHolds.hasFinancialHold && (
+                    {studentHolds?.hasFinancialHold && (
                       <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
                         <CreditCard className="w-4 h-4 mr-2" />
                         Pay Dues
