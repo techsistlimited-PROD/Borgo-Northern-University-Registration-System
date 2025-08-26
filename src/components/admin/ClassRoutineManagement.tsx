@@ -38,6 +38,72 @@ export const ClassRoutineManagement = () => {
   const [selectedSemester, setSelectedSemester] = useState('all')
   const [selectedProgram, setSelectedProgram] = useState('all')
   const [selectedSlot, setSelectedSlot] = useState('all')
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadErrors, setUploadErrors] = useState<string[]>([])
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel', // .xls
+        'text/csv' // .csv
+      ]
+
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload only Excel (.xlsx, .xls) or CSV (.csv) files')
+        return
+      }
+
+      setUploadedFile(file)
+      setUploadErrors([])
+    }
+  }
+
+  const processFile = async () => {
+    if (!uploadedFile) {
+      alert('Please select a file first')
+      return
+    }
+
+    setIsUploading(true)
+    setUploadProgress(0)
+
+    // Mock file processing with progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          setIsUploading(false)
+
+          // Mock validation errors
+          const mockErrors = [
+            'Row 5: Invalid time slot format. Expected HH:MM-HH:MM',
+            'Row 12: Room R999 does not exist in the system',
+            'Row 18: Teacher ID T999 not found'
+          ]
+
+          if (Math.random() > 0.7) { // 30% chance of errors
+            setUploadErrors(mockErrors.slice(0, Math.floor(Math.random() * 3) + 1))
+          } else {
+            alert('File processed successfully! Routine uploaded.')
+            setUploadedFile(null)
+          }
+
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
+  }
+
+  const downloadTemplate = () => {
+    // Mock download template functionality
+    alert('Template downloaded: class_routine_template.xlsx')
+  }
   
   const rooms = [
     { 
