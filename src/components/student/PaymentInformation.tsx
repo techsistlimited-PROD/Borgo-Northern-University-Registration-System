@@ -219,6 +219,93 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
   const [payables, setPayables] = useState(payableData)
   const [history, setHistory] = useState(paymentHistory)
   const [financials, setFinancials] = useState(financialSummary)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedSemesterIndex, setSelectedSemesterIndex] = useState<number | null>(null)
+  const [simulationAmount, setSimulationAmount] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('')
+
+  // Update parent component when outstanding balance changes
+  useEffect(() => {
+    const totalOutstanding = financials[financials.length - 1]?.cumulativeDues || 0
+    onPaymentUpdate?.(totalOutstanding)
+  }, [financials, onPaymentUpdate])
+
+  const simulatePayment = (semesterIndex: number, amount: number, method: string) => {
+    const semester = payables[semesterIndex]
+    const newPayment = {
+      serial: history.length + 1,
+      semester: semester.semester,
+      paymentDate: new Date().toLocaleDateString('en-GB'),
+      receiptNo: `SIM-${Date.now()}`,
+      amount,
+      currency: 'Taka',
+    }
+
+    // Update payment history
+    setHistory(prev => [newPayment, ...prev])
+
+    // Update payables
+    setPayables(prev => {
+      const copy = [...prev]
+      copy[semesterIndex] = {
+        ...copy[semesterIndex],
+        totalReceived: (copy[semesterIndex].totalReceived || 0) + amount,
+        presentDues: Math.max(0, (copy[semesterIndex].presentDues || 0) - amount),
+        thirtyPercentPresentDues: Math.max(0, (copy[semesterIndex].thirtyPercentPresentDues || 0) - amount)
+      }
+      return copy
+    })
+
+    // Update financials
+    setFinancials(prev => {
+      const copy = [...prev]
+      const semesterName = semester.semester
+      const idx = copy.findIndex(i => i.semester === semesterName)
+      if (idx !== -1) {
+        copy[idx] = {
+          ...copy[idx],
+          paid: copy[idx].paid + amount,
+          dues: Math.max(0, copy[idx].payable - (copy[idx].paid + amount))
+        }
+
+        // Recalculate cumulative dues
+        for (let i = 0; i < copy.length; i++) {
+          if (i === 0) {
+            copy[i].cumulativeDues = copy[i].dues
+          } else {
+            copy[i].cumulativeDues = copy[i-1].cumulativeDues + copy[i].dues
+          }
+        }
+      }
+      return copy
+    })
+
+    // Show success message
+    alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!`)
+    setShowPaymentModal(false)
+    setSimulationAmount('')
+    setPaymentMethod('')
+  }
+
+  const openPaymentModal = (semesterIndex: number) => {
+    setSelectedSemesterIndex(semesterIndex)
+    setShowPaymentModal(true)
+  }
+
+  const handleSimulatePayment = () => {
+    if (!simulationAmount || !paymentMethod || selectedSemesterIndex === null) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const amount = parseFloat(simulationAmount)
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount')
+      return
+    }
+
+    simulatePayment(selectedSemesterIndex, amount, paymentMethod)
+  }
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
