@@ -10,6 +10,7 @@ import CumulativeScore from '@/components/teacher/CumulativeScore'
 import MidtermMarks from '@/components/teacher/MidtermMarks'
 import FinalMarks from '@/components/teacher/FinalMarks'
 import AdvisedStudents from '@/components/teacher/AdvisedStudents'
+import AcademicHistory from '@/components/teacher/AcademicHistory'
 import {
   Calendar,
   Users,
