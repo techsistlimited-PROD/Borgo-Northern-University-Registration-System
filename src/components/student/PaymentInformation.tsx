@@ -250,6 +250,8 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
   }, [financials, onPaymentUpdate])
 
   const simulatePayment = (semesterIndex: number, amount: number, method: string) => {
+    console.log('🔥 Payment simulation started:', { semesterIndex, amount, method })
+
     const semester = payables[semesterIndex]
     const newPayment = {
       serial: history.length + 1,
@@ -282,11 +284,19 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
       const semesterName = semester.semester
       const idx = copy.findIndex(i => i.semester === semesterName)
       if (idx !== -1) {
+        const oldDues = copy[idx].dues
         copy[idx] = {
           ...copy[idx],
           paid: copy[idx].paid + amount,
           dues: Math.max(0, copy[idx].payable - (copy[idx].paid + amount))
         }
+
+        console.log('📊 Semester updated:', {
+          semester: semesterName,
+          oldDues,
+          newDues: copy[idx].dues,
+          totalPaid: copy[idx].paid
+        })
 
         // Recalculate cumulative dues
         for (let i = 0; i < copy.length; i++) {
@@ -297,11 +307,13 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
           }
         }
         totalOutstanding = copy[copy.length - 1]?.cumulativeDues || 0
+        console.log('💰 New total outstanding:', totalOutstanding)
       }
       return copy
     })
 
     // IMMEDIATELY call onPaymentUpdate with new total
+    console.log('📞 Calling onPaymentUpdate with:', totalOutstanding)
     if (onPaymentUpdate) {
       onPaymentUpdate(totalOutstanding)
     }
