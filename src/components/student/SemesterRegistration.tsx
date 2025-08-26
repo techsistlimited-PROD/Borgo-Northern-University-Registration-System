@@ -35,7 +35,7 @@ const lastRegistration = {
   semester: 'Summer 2025',
   semesterNo: 4,
   registrationType: 'Regular',
-  isApprovedByAdvisor: true,
+  isApprovedByTeacher: true,
   totalCreditTaken: 15.0,
   registeredCourses: [
     { serial: 1, courseCode: 'CSE 2301', courseTitle: 'Database Management Systems', section: 'A', creditHour: 3.0 },
