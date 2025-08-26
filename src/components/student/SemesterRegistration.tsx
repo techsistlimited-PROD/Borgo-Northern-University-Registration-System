@@ -300,6 +300,10 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
   const [registrationBlocked, setRegistrationBlocked] = useState(
     studentHolds?.hasFinancialHold || studentHolds?.hasConductHold || studentHolds?.hasAcademicHold || false
   )
+  const [registrationSubmitted, setRegistrationSubmitted] = useState(false)
+  const [advisorApprovalStatus, setAdvisorApprovalStatus] = useState('pending') // pending, approved, rejected
+  const [prerequisiteErrors, setPrerequisiteErrors] = useState<{[key: string]: string}>({})
+  const [sectionErrors, setSectionErrors] = useState<{[key: string]: string}>({})
 
   // Update registration blocked state when student holds change
   useEffect(() => {
