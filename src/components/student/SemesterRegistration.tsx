@@ -287,11 +287,232 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-deep-plum">Semester Registration</h1>
-        <Badge className="bg-blue-100 text-blue-800">
-          <BookOpen className="w-4 h-4 mr-1" />
-          Course Registration
-        </Badge>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative"
+          >
+            <Bell className="w-4 h-4 mr-2" />
+            Notifications
+            {unreadNotifications > 0 && (
+              <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-1 min-w-5 h-5 text-xs">
+                {unreadNotifications}
+              </Badge>
+            )}
+          </Button>
+          <Badge className="bg-blue-100 text-blue-800">
+            <BookOpen className="w-4 h-4 mr-1" />
+            Course Registration
+          </Badge>
+        </div>
       </div>
+
+      {/* Notifications Panel */}
+      {showNotifications && (
+        <Card className="border-blue-200">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Bell className="w-5 h-5" />
+              <span>Notifications</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`p-3 rounded-lg border-l-4 ${
+                    notification.type === 'warning' ? 'border-yellow-400 bg-yellow-50' :
+                    notification.type === 'error' ? 'border-red-400 bg-red-50' :
+                    notification.type === 'success' ? 'border-green-400 bg-green-50' :
+                    'border-blue-400 bg-blue-50'
+                  } ${!notification.isRead ? 'ring-2 ring-blue-200' : ''}`}
+                  onClick={() => markNotificationAsRead(notification.id)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-sm">{notification.title}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                      <p className="text-xs text-gray-500 mt-2">{notification.timestamp}</p>
+                    </div>
+                    <Badge variant={notification.priority === 'high' ? 'destructive' : notification.priority === 'medium' ? 'default' : 'secondary'}>
+                      {notification.priority}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Student Holds Alert */}
+      {registrationBlocked && (
+        <Card className="border-red-500 bg-red-50">
+          <CardHeader>
+            <CardTitle className="text-red-800 flex items-center space-x-2">
+              <Lock className="w-5 h-5" />
+              <span>Registration Blocked</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {studentHolds.hasFinancialHold && (
+                <div className="p-4 bg-red-100 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <DollarSign className="w-6 h-6 text-red-600 mt-1" />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-red-800">Financial Hold</h4>
+                      <p className="text-red-700 text-sm mt-1">
+                        You have outstanding dues of ৳{studentHolds.financialDetails.totalDue.toLocaleString()}.
+                        Registration is blocked until payment is made.
+                      </p>
+                      <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium">Semester Fee:</span> ৳{studentHolds.financialDetails.semesterFee.toLocaleString()}
+                        </div>
+                        <div>
+                          <span className="font-medium">Hostel Due:</span> ৳{studentHolds.financialDetails.hostleDue.toLocaleString()}
+                        </div>
+                        <div>
+                          <span className="font-medium">Library Fine:</span> ৳{studentHolds.financialDetails.libraryFine.toLocaleString()}
+                        </div>
+                        <div>
+                          <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails.nextInstallmentDue}
+                        </div>
+                      </div>
+                      <div className="mt-4 flex space-x-3">
+                        <Button onClick={handlePayDues} className="bg-green-600 hover:bg-green-700">
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Pay Online
+                        </Button>
+                        <Button variant="outline" onClick={contactFinanceOffice}>
+                          <Phone className="w-4 h-4 mr-2" />
+                          Contact Finance
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {studentHolds.hasConductHold && (
+                <div className="p-4 bg-yellow-100 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <AlertTriangle className="w-6 h-6 text-yellow-600 mt-1" />
+                    <div>
+                      <h4 className="font-semibold text-yellow-800">Conduct Hold</h4>
+                      <p className="text-yellow-700 text-sm mt-1">
+                        There is a conduct hold on your account. Please contact the Student Affairs office.
+                      </p>
+                      <Button variant="outline" className="mt-3">
+                        <Phone className="w-4 h-4 mr-2" />
+                        Contact Student Affairs
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {studentHolds.hasAcademicHold && (
+                <div className="p-4 bg-orange-100 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <GraduationCap className="w-6 h-6 text-orange-600 mt-1" />
+                    <div>
+                      <h4 className="font-semibold text-orange-800">Academic Hold</h4>
+                      <p className="text-orange-700 text-sm mt-1">
+                        There is an academic hold on your account. Please contact the Academic office.
+                      </p>
+                      <Button variant="outline" className="mt-3">
+                        <Phone className="w-4 h-4 mr-2" />
+                        Contact ACAD
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pre-Registration Notice */}
+      {preRegistrationSchedule.isPreRegistrationOpen && (
+        <Card className="border-blue-500 bg-blue-50">
+          <CardHeader>
+            <CardTitle className="text-blue-800 flex items-center space-x-2">
+              <Calendar className="w-5 h-5" />
+              <span>Pre-Registration Period</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-blue-700 font-medium">Pre-Registration:</span>
+                  <span className="text-blue-800">{preRegistrationSchedule.preRegistrationStart} - {preRegistrationSchedule.preRegistrationEnd}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-blue-700 font-medium">Main Registration:</span>
+                  <span className="text-blue-800">{preRegistrationSchedule.mainRegistrationStart} - {preRegistrationSchedule.mainRegistrationEnd}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-blue-700 font-medium">Classes Start:</span>
+                  <span className="text-blue-800">{preRegistrationSchedule.classStartDate}</span>
+                </div>
+                <p className="text-blue-700 text-sm">
+                  <Info className="w-4 h-4 inline mr-1" />
+                  Pre-register now to secure your preferred courses and sections.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Academic Performance Summary */}
+      <Card className="border-purple-200 bg-purple-50">
+        <CardHeader>
+          <CardTitle className="text-purple-800 flex items-center space-x-2">
+            <GraduationCap className="w-5 h-5" />
+            <span>Academic Progress</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-4 gap-4 mb-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-purple-800">{academicPerformance.overallCGPA}</p>
+              <p className="text-sm text-purple-600">Overall CGPA</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-purple-800">{academicPerformance.totalCreditsCompleted}</p>
+              <p className="text-sm text-purple-600">Credits Completed</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-purple-800">{academicPerformance.remainingCredits}</p>
+              <p className="text-sm text-purple-600">Credits Remaining</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-purple-800">{academicPerformance.expectedGraduationSemester}</p>
+              <p className="text-sm text-purple-600">Expected Graduation</p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <h4 className="font-semibold text-purple-800 mb-2">Remaining Core Courses</h4>
+            <div className="flex flex-wrap gap-2">
+              {academicPerformance.remainingCourses.filter(c => c.isCore).map(course => (
+                <Badge key={course.courseCode} variant="outline" className="text-purple-700">
+                  {course.courseCode} - {course.credits} credits
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Tabs value={activeTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
