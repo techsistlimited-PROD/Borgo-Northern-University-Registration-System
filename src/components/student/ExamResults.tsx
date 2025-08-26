@@ -100,6 +100,7 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
   const [selectedSemester, setSelectedSemester] = useState('')
   const [selectedExamType, setSelectedExamType] = useState('')
   const [selectedResultSemester, setSelectedResultSemester] = useState('')
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
   const examTypes = ['Mid Term', 'Final']
