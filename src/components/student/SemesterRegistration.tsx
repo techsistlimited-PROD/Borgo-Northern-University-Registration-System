@@ -203,7 +203,7 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                     <span>{lastRegistration.registrationType}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-medium text-gray-700">Advisor Approved:</span>
+                    <span className="font-medium text-gray-700">Teacher Approved:</span>
                     <Badge className={lastRegistration.isApprovedByAdvisor ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
                       {lastRegistration.isApprovedByAdvisor ? (
                         <CheckCircle className="w-3 h-3 mr-1" />
