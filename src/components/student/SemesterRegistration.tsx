@@ -519,42 +519,6 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
         </Card>
       )}
 
-      {/* Demo Guide for New Registration Features */}
-      {registrationBlocked && (
-        <Card className="border-blue-500 bg-blue-50 mb-4">
-          <CardHeader>
-            <CardTitle className="text-blue-800 flex items-center space-x-2">
-              <Info className="w-5 h-5" />
-              <span>🎓 NEW REGISTRATION FEATURES DEMO GUIDE</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold text-blue-800 mb-3">📚 Features Available After Payment:</h4>
-                <ul className="space-y-2 text-sm text-blue-700">
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Smart Course Selection Interface</li>
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Real-time Section Management</li>
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Automatic Credit Calculation</li>
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Overload & Minimum Credit Warnings</li>
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Teacher Approval Workflow</li>
-                  <li className="flex items-center"><CheckCircle className="w-4 h-4 mr-2" />Complete Registration Submission</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-blue-800 mb-3">🎯 Quick Demo Steps:</h4>
-                <ol className="space-y-2 text-sm text-blue-700">
-                  <li className="flex items-start"><span className="font-bold mr-2">1.</span>Go to "Payment Information" → "Payable List"</li>
-                  <li className="flex items-start"><span className="font-bold mr-2">2.</span>Click "Pay All Outstanding - Quick Demo"</li>
-                  <li className="flex items-start"><span className="font-bold mr-2">3.</span>Return to "New Registration" tab</li>
-                  <li className="flex items-start"><span className="font-bold mr-2">4.</span>See all features unlocked!</li>
-                  <li className="flex items-start"><span className="font-bold mr-2">5.</span>Test course selection & submission</li>
-                </ol>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Student Holds Alert */}
       {registrationBlocked && (
