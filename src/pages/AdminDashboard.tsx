@@ -57,9 +57,9 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Student Information', icon: Users },
     { id: 'semester-schedule', label: 'Create Semester Schedule', icon: CalendarPlus },
-    { 
-      id: 'course-offering', 
-      label: 'Course Offering Menu', 
+    {
+      id: 'course-offering',
+      label: 'Course Offering Menu',
       icon: BookOpen,
       subItems: [
         { id: 'courses', label: 'Courses', icon: BookPlus },
@@ -69,6 +69,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
       ]
     },
     { id: 'class-routine', label: 'Central Class Routine & Room Management', icon: Building },
+    { id: 'section-change', label: 'Change Students\' Section', icon: Users },
   ]
 
   return (
