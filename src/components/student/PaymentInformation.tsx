@@ -303,7 +303,17 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
 
     // Show success message with registration status
     if (totalOutstanding <= 0) {
-      alert(`🎉 Payment Successful!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ All dues cleared!\n🔓 Registration is now UNLOCKED!\n\nYou can now proceed to "New Registration" to register for courses.`)
+      const message = `🎉 Payment Successful!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ All dues cleared!\n🔓 Registration is now UNLOCKED!\n\nYou can now proceed to "New Registration" to register for courses.`
+      alert(message)
+
+      // Optional: Auto-navigate to registration after a short delay
+      if (onNavigateToRegistration) {
+        setTimeout(() => {
+          if (confirm('Would you like to go to New Registration now?')) {
+            onNavigateToRegistration()
+          }
+        }, 1000)
+      }
     } else {
       alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!\n\nRemaining dues: ৳${totalOutstanding.toLocaleString()}`)
     }
