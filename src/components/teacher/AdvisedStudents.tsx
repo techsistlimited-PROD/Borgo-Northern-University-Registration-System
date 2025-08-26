@@ -700,9 +700,45 @@ export default function AdvisedStudents() {
         </Card>
       </div>
 
-      {/* Search */}
+      {/* Enhanced Search and Filters */}
       <Card>
-        <CardContent className="p-4">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center space-x-2">
+              <Search className="w-5 h-5" />
+              <span>Student Search & Filters</span>
+              {getActiveFilterCount() > 0 && (
+                <Badge variant="default" className="ml-2">
+                  {getActiveFilterCount()} active
+                </Badge>
+              )}
+            </CardTitle>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center space-x-2"
+              >
+                <Filter className="w-4 h-4" />
+                <span>{showFilters ? 'Hide' : 'Show'} Filters</span>
+              </Button>
+              {getActiveFilterCount() > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="flex items-center space-x-2 text-red-600 hover:text-red-700"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Clear All</span>
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Basic Search */}
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
@@ -712,6 +748,133 @@ export default function AdvisedStudents() {
               className="pl-10"
             />
           </div>
+
+          {/* Advanced Filters */}
+          {showFilters && (
+            <div className="space-y-4 border-t pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="program">Program</Label>
+                  <Select value={programFilter} onValueChange={setProgramFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Programs" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Programs</SelectItem>
+                      {uniquePrograms.map(program => (
+                        <SelectItem key={program} value={program}>
+                          {program}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="campus">Campus</Label>
+                  <Select value={campusFilter} onValueChange={setCampusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Campuses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Campuses</SelectItem>
+                      {uniqueCampuses.map(campus => (
+                        <SelectItem key={campus} value={campus}>
+                          {campus}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="admission">Admission Semester</Label>
+                  <Select value={admissionSemesterFilter} onValueChange={setAdmissionSemesterFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Semesters" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Semesters</SelectItem>
+                      {uniqueAdmissionSemesters.map(semester => (
+                        <SelectItem key={semester} value={semester}>
+                          {semester}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="status">Registration Status</Label>
+                  <Select value={registrationStatusFilter} onValueChange={setRegistrationStatusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Statuses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Statuses</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="hold">On Hold</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Active Filters Display */}
+              {getActiveFilterCount() > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Active Filters:</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {searchTerm && (
+                      <Badge variant="secondary" className="flex items-center space-x-1">
+                        <span>Search: "{searchTerm}"</span>
+                        <X
+                          className="w-3 h-3 cursor-pointer hover:text-red-500"
+                          onClick={() => setSearchTerm('')}
+                        />
+                      </Badge>
+                    )}
+                    {programFilter && (
+                      <Badge variant="secondary" className="flex items-center space-x-1">
+                        <span>Program: {programFilter}</span>
+                        <X
+                          className="w-3 h-3 cursor-pointer hover:text-red-500"
+                          onClick={() => setProgramFilter('')}
+                        />
+                      </Badge>
+                    )}
+                    {campusFilter && (
+                      <Badge variant="secondary" className="flex items-center space-x-1">
+                        <span>Campus: {campusFilter}</span>
+                        <X
+                          className="w-3 h-3 cursor-pointer hover:text-red-500"
+                          onClick={() => setCampusFilter('')}
+                        />
+                      </Badge>
+                    )}
+                    {admissionSemesterFilter && (
+                      <Badge variant="secondary" className="flex items-center space-x-1">
+                        <span>Admission: {admissionSemesterFilter}</span>
+                        <X
+                          className="w-3 h-3 cursor-pointer hover:text-red-500"
+                          onClick={() => setAdmissionSemesterFilter('')}
+                        />
+                      </Badge>
+                    )}
+                    {registrationStatusFilter && (
+                      <Badge variant="secondary" className="flex items-center space-x-1">
+                        <span>Status: {registrationStatusFilter}</span>
+                        <X
+                          className="w-3 h-3 cursor-pointer hover:text-red-500"
+                          onClick={() => setRegistrationStatusFilter('')}
+                        />
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 
