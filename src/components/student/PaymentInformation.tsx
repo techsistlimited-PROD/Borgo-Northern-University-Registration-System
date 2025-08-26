@@ -303,16 +303,16 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
 
     // Show success message with registration status
     if (totalOutstanding <= 0) {
-      const message = `🎉 Payment Successful!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ All dues cleared!\n🔓 Registration is now UNLOCKED!\n\nYou can now proceed to "New Registration" to register for courses.`
+      const message = `🎉 PAYMENT SUCCESSFUL!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ ALL DUES CLEARED!\n🔓 REGISTRATION NOW UNLOCKED!\n\n🎓 NEW REGISTRATION FEATURES NOW AVAILABLE:\n• Course Selection from Available Courses\n• Section Selection with Real-time Availability\n• Credit Hour Calculation & Validation\n• Overload & Minimum Credit Warnings\n• Teacher Approval Workflow\n• Complete Registration Submission\n\n➡️ Click "New Registration" to access all features!`
       alert(message)
 
       // Optional: Auto-navigate to registration after a short delay
       if (onNavigateToRegistration) {
         setTimeout(() => {
-          if (confirm('Would you like to go to New Registration now?')) {
+          if (confirm('🎓 Ready to register for courses?\n\nWould you like to go to New Registration now to access all the registration features?')) {
             onNavigateToRegistration()
           }
-        }, 1000)
+        }, 1500)
       }
     } else {
       alert(`Payment of ৳${amount.toLocaleString()} simulated successfully via ${method}!\n\nRemaining dues: ৳${totalOutstanding.toLocaleString()}`)
