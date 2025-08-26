@@ -169,6 +169,28 @@ export default function StudentDashboard() {
     setShowChangePassword(true)
   }
 
+  const handlePaymentUpdate = (totalOutstanding: number) => {
+    // Clear financial hold if total outstanding is 0 or less
+    if (totalOutstanding <= 0) {
+      setStudentHolds(prev => ({
+        ...prev,
+        hasFinancialHold: false,
+        financialDetails: {
+          ...prev.financialDetails,
+          totalDue: 0
+        }
+      }))
+    } else {
+      setStudentHolds(prev => ({
+        ...prev,
+        financialDetails: {
+          ...prev.financialDetails,
+          totalDue: totalOutstanding
+        }
+      }))
+    }
+  }
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
