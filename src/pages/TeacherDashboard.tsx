@@ -9,6 +9,7 @@ import ContinuousAssessment from '@/components/teacher/ContinuousAssessment'
 import CumulativeScore from '@/components/teacher/CumulativeScore'
 import MidtermMarks from '@/components/teacher/MidtermMarks'
 import FinalMarks from '@/components/teacher/FinalMarks'
+import AdvisedStudents from '@/components/teacher/AdvisedStudents'
 import {
   Calendar,
   Users,
@@ -376,13 +377,7 @@ export default function TeacherDashboard() {
       case 'final-marks':
         return <FinalMarks />
       case 'advised-students':
-        return (
-          <div className="text-center py-20">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">Advised Students</h2>
-            <p className="text-gray-500">Coming soon - Manage your advised students and course approvals</p>
-          </div>
-        )
+        return <AdvisedStudents />
       default:
         return (
           <div className="text-center py-20">
