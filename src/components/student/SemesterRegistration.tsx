@@ -617,6 +617,21 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
 
         {/* New Registration Tab */}
         <TabsContent value="new" className="space-y-4">
+          {/* Success message when registration is unlocked */}
+          {!registrationBlocked && studentHolds && (
+            <Card className="border-green-500 bg-green-50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <Unlock className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-green-800 mb-2">Registration Available!</h3>
+                  <p className="text-green-700">
+                    ✅ All dues cleared. You can now register for the {currentSemesterInfo.semester} semester.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {registrationBlocked ? (
             <Card className="border-red-200 bg-red-50">
               <CardContent className="pt-6">
