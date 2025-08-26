@@ -6,6 +6,7 @@ import TeacherClassRoutine from '@/components/teacher/TeacherClassRoutine'
 import AttendanceMarking from '@/components/teacher/AttendanceMarking'
 import AttendanceReports from '@/components/teacher/AttendanceReports'
 import ContinuousAssessment from '@/components/teacher/ContinuousAssessment'
+import CumulativeScore from '@/components/teacher/CumulativeScore'
 import {
   Calendar,
   Users,
@@ -366,6 +367,8 @@ export default function TeacherDashboard() {
         return <AttendanceReports />
       case 'continuous-assessment':
         return <ContinuousAssessment />
+      case 'cumulative-score':
+        return <CumulativeScore />
       case 'advised-students':
         return (
           <div className="text-center py-20">
