@@ -460,9 +460,9 @@ export default function TeacherClassRoutine() {
         </CardHeader>
         <CardContent>
           {activeView === 'grid' ? (
-            <WeeklyScheduleGrid schedule={teacherSchedule} />
+            <WeeklyScheduleGrid schedule={teacherSchedule} weekStatus={getWeekStatus(selectedWeek)} />
           ) : (
-            <ClassListView schedule={teacherSchedule} />
+            <ClassListView schedule={teacherSchedule} weekStatus={getWeekStatus(selectedWeek)} />
           )}
         </CardContent>
       </Card>
