@@ -24,6 +24,7 @@ import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagemen
 import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
 import StudentSectionChange from '@/components/admin/StudentSectionChange'
 import AdvisorAssignmentManagement from '@/components/admin/AdvisorAssignmentManagement'
+import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
 import {
   Users,
   Calendar,
