@@ -486,7 +486,7 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paymentHistory.map((payment) => (
+                  {history.map((payment) => (
                     <TableRow key={payment.serial}>
                       <TableCell>{payment.serial}</TableCell>
                       <TableCell className="font-medium">{payment.semester}</TableCell>
