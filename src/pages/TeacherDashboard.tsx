@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import TeacherClassRoutine from '@/components/teacher/TeacherClassRoutine'
 import AttendanceMarking from '@/components/teacher/AttendanceMarking'
 import AttendanceReports from '@/components/teacher/AttendanceReports'
+import ContinuousAssessment from '@/components/teacher/ContinuousAssessment'
 import {
   Calendar,
   Users,
@@ -364,13 +365,7 @@ export default function TeacherDashboard() {
       case 'attendance-reports':
         return <AttendanceReports />
       case 'continuous-assessment':
-        return (
-          <div className="text-center py-20">
-            <ClipboardCheck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">Continuous Assessment</h2>
-            <p className="text-gray-500">Coming soon - Manage class tests, quizzes, and assignments</p>
-          </div>
-        )
+        return <ContinuousAssessment />
       case 'advised-students':
         return (
           <div className="text-center py-20">
