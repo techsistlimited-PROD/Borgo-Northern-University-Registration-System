@@ -472,6 +472,168 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
           </Tabs>
         </TabsContent>
       </Tabs>
+
+      {/* Assessment Clearance Preview Modal */}
+      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Assessment Clearance Form Preview</DialogTitle>
+            <DialogDescription>
+              Preview of your exam clearance form for {selectedExamType} exam in {selectedSemester}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 p-4 bg-white border border-gray-200 rounded-lg">
+            {/* Header */}
+            <div className="text-center border-b pb-4">
+              <div className="flex items-center justify-center space-x-3 mb-2">
+                <div className="w-12 h-12 bg-deep-plum rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold">NU</span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-deep-plum">Northern University</h2>
+                  <p className="text-sm text-gray-600">Dhaka, Bangladesh</p>
+                </div>
+              </div>
+              <h3 className="text-lg font-semibold">EXAMINATION CLEARANCE CERTIFICATE</h3>
+              <p className="text-sm text-gray-600">{selectedSemester} • {selectedExamType} Examination</p>
+            </div>
+
+            {/* Student Information */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-600">Student Name:</label>
+                <p className="font-semibold">Ahmed Hassan Rahman</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Student ID:</label>
+                <p className="font-semibold">20241601234</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Program:</label>
+                <p className="font-semibold">CSE - Bachelor of Science in Computer Science and Engineering</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Semester:</label>
+                <p className="font-semibold">{selectedSemester}</p>
+              </div>
+            </div>
+
+            {/* Clearance Status */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-deep-plum border-b pb-2">Clearance Status</h4>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="font-medium">Academic Standing</span>
+                  <Badge className="bg-green-100 text-green-800">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Clear
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="font-medium">Financial Obligations</span>
+                  <Badge className="bg-green-100 text-green-800">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Paid
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="font-medium">Library Clearance</span>
+                  <Badge className="bg-green-100 text-green-800">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Clear
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="font-medium">TER Submission</span>
+                  <Badge className="bg-green-100 text-green-800">
+                    <CheckCircle className="w-4 h-4 mr-1" />
+                    Completed
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Registered Courses */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-deep-plum border-b pb-2">Registered Courses for {selectedExamType} Exam</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse border border-gray-200">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="border border-gray-200 px-3 py-2 text-left">Course Code</th>
+                      <th className="border border-gray-200 px-3 py-2 text-left">Course Title</th>
+                      <th className="border border-gray-200 px-3 py-2 text-center">Credits</th>
+                      <th className="border border-gray-200 px-3 py-2 text-center">Section</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE401</td>
+                      <td className="border border-gray-200 px-3 py-2">Database Management Systems</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">A</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE403</td>
+                      <td className="border border-gray-200 px-3 py-2">Software Engineering</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">B</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE405</td>
+                      <td className="border border-gray-200 px-3 py-2">Computer Networks</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">A</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-200 px-3 py-2 font-mono">ENG102</td>
+                      <td className="border border-gray-200 px-3 py-2">Technical Writing</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">2</td>
+                      <td className="border border-gray-200 px-3 py-2 text-center">C</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Authorization */}
+            <div className="pt-4 border-t space-y-4">
+              <div className="flex justify-between items-end">
+                <div className="text-center">
+                  <div className="w-40 border-b border-gray-400 mb-2"></div>
+                  <p className="text-sm font-medium">Student Signature</p>
+                  <p className="text-xs text-gray-500">Date: {new Date().toLocaleDateString()}</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-40 border-b border-gray-400 mb-2"></div>
+                  <p className="text-sm font-medium">Registrar Office</p>
+                  <p className="text-xs text-gray-500">Date: {new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded">
+                This clearance certificate is valid only for the {selectedExamType} examination of {selectedSemester}.
+                <br />
+                Certificate ID: CLR-{Date.now()}-{selectedExamType.toUpperCase()}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPreviewModal(false)}
+            >
+              Close Preview
+            </Button>
+            <Button onClick={handleActualDownload}>
+              <Download className="w-4 h-4 mr-2" />
+              Download PDF
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
