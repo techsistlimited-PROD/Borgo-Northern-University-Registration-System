@@ -175,7 +175,7 @@ function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[
                         <div className="flex items-center justify-between mb-1">
                           <div className="font-medium text-sm">{class_.courseCode}</div>
                           <div className="text-xs">
-                            {weekStatus === 'past' && '���'}
+                            {weekStatus === 'past' && '✓'}
                             {weekStatus === 'current' && '▶'}
                             {weekStatus === 'upcoming' && '⏸'}
                           </div>
@@ -289,13 +289,15 @@ function ClassListView({ schedule, weekStatus }: { schedule: ClassSchedule[]; we
                   </div>
                 </div>
                 
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    View Details
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Take Attendance
-                  </Button>
+                <div className="flex items-center space-x-2">
+                  <Badge variant={
+                    weekStatus === 'past' ? 'default' :
+                    weekStatus === 'current' ? 'secondary' : 'outline'
+                  }>
+                    {weekStatus === 'past' && '✓ Completed'}
+                    {weekStatus === 'current' && '▶ This Week'}
+                    {weekStatus === 'upcoming' && '⏸ Scheduled'}
+                  </Badge>
                 </div>
               </div>
             </CardContent>
