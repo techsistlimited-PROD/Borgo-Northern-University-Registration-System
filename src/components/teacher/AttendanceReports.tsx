@@ -900,7 +900,7 @@ export default function AttendanceReports() {
 
       {/* Report Tabs */}
       <Tabs defaultValue="date-wise" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="date-wise" className="flex items-center space-x-2">
             <Calendar className="w-4 h-4" />
             <span>Date-wise Report</span>
@@ -908,6 +908,14 @@ export default function AttendanceReports() {
           <TabsTrigger value="student-wise" className="flex items-center space-x-2">
             <Users className="w-4 h-4" />
             <span>Student-wise Report</span>
+          </TabsTrigger>
+          <TabsTrigger value="exam-absences" className="flex items-center space-x-2">
+            <XCircle className="w-4 h-4" />
+            <span>Midterm Absences</span>
+          </TabsTrigger>
+          <TabsTrigger value="final-attendance" className="flex items-center space-x-2">
+            <CheckCircle className="w-4 h-4" />
+            <span>Final Exam List</span>
           </TabsTrigger>
         </TabsList>
 
@@ -917,6 +925,14 @@ export default function AttendanceReports() {
 
         <TabsContent value="student-wise" className="space-y-6">
           <StudentWiseReport />
+        </TabsContent>
+
+        <TabsContent value="exam-absences" className="space-y-6">
+          <ExamAttendanceReport />
+        </TabsContent>
+
+        <TabsContent value="final-attendance" className="space-y-6">
+          <FinalExamAttendanceReport />
         </TabsContent>
       </Tabs>
     </div>
