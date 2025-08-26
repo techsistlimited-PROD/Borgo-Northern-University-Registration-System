@@ -546,6 +546,8 @@ export default function AdminDashboard() {
         return <SectionManagement />
       case 'class-routine':
         return <ClassRoutineManagement />
+      case 'section-change':
+        return <StudentSectionChange />
       default:
         return <AdminDashboardOverview user={user} />
     }
