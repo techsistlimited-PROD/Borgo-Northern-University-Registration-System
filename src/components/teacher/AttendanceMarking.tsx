@@ -226,7 +226,7 @@ export default function AttendanceMarking() {
           <CardDescription>Select the section and date for attendance marking</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="section">Select Section</Label>
               <Select value={selectedSection} onValueChange={setSelectedSection}>
@@ -239,6 +239,20 @@ export default function AttendanceMarking() {
                       {section.courseCode} - Section {section.sectionName} ({section.totalStudents} students)
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="attendanceType">Attendance Type</Label>
+              <Select value={attendanceType} onValueChange={(value: 'class' | 'midterm' | 'final') => setAttendanceType(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="class">Regular Class</SelectItem>
+                  <SelectItem value="midterm">Midterm Exam</SelectItem>
+                  <SelectItem value="final">Final Exam</SelectItem>
                 </SelectContent>
               </Select>
             </div>
