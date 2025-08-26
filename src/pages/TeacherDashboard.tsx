@@ -63,9 +63,9 @@ function TeacherSidebar({ activeTab, setActiveTab, onLogout }: {
         { id: 'final-marks', label: 'Final Marks' }
       ]
     },
-    { 
-      id: 'students', 
-      label: 'My Students', 
+    {
+      id: 'students',
+      label: 'Advising List',
       icon: Users,
       subItems: [
         { id: 'advised-students', label: 'Advised Students' },
