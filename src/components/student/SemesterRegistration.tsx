@@ -366,28 +366,28 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {studentHolds.hasFinancialHold && (
+              {studentHolds?.hasFinancialHold && (
                 <div className="p-4 bg-red-100 rounded-lg">
                   <div className="flex items-start space-x-3">
                     <DollarSign className="w-6 h-6 text-red-600 mt-1" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-red-800">Financial Hold</h4>
                       <p className="text-red-700 text-sm mt-1">
-                        You have outstanding dues of ৳{studentHolds.financialDetails.totalDue.toLocaleString()}.
+                        You have outstanding dues of ৳{studentHolds.financialDetails?.totalDue?.toLocaleString()}.
                         Registration is blocked until payment is made.
                       </p>
                       <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="font-medium">Semester Fee:</span> ৳{studentHolds.financialDetails.semesterFee.toLocaleString()}
+                          <span className="font-medium">Semester Fee:</span> ৳{studentHolds.financialDetails?.semesterFee?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Hostel Due:</span> ৳{studentHolds.financialDetails.hostleDue.toLocaleString()}
+                          <span className="font-medium">Hostel Due:</span> ৳{studentHolds.financialDetails?.hostleDue?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Library Fine:</span> ৳{studentHolds.financialDetails.libraryFine.toLocaleString()}
+                          <span className="font-medium">Library Fine:</span> ৳{studentHolds.financialDetails?.libraryFine?.toLocaleString()}
                         </div>
                         <div>
-                          <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails.nextInstallmentDue}
+                          <span className="font-medium">Next Installment:</span> {studentHolds.financialDetails?.nextInstallmentDue}
                         </div>
                       </div>
                       <div className="mt-4 flex space-x-3">
