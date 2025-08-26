@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/RegistrationAuthContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import TeacherClassRoutine from '@/components/teacher/TeacherClassRoutine'
+import AttendanceMarking from '@/components/teacher/AttendanceMarking'
 import {
   Calendar,
   Users,
@@ -358,13 +359,7 @@ export default function TeacherDashboard() {
       case 'class-routine':
         return <TeacherClassRoutine />
       case 'mark-attendance':
-        return (
-          <div className="text-center py-20">
-            <UserCheck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">Mark Attendance</h2>
-            <p className="text-gray-500">Coming soon - Mark student attendance for your classes</p>
-          </div>
-        )
+        return <AttendanceMarking />
       case 'continuous-assessment':
         return (
           <div className="text-center py-20">
