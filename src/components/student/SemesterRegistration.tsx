@@ -739,18 +739,81 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                     </TableBody>
                   </Table>
 
-                  <div className="mt-6 flex justify-between items-center">
-                    <div className="text-sm text-gray-600">
-                      <AlertCircle className="w-4 h-4 inline mr-1" />
-                      Please ensure you select sections for all chosen courses
+                  <div className="mt-6 space-y-4">
+                    {/* Warnings and Notices */}
+                    <div className="space-y-2">
+                      {getTotalSelectedCredits() > 18 && (
+                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start space-x-2">
+                          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                          <div>
+                            <p className="text-yellow-800 font-medium">Credit Overload Warning</p>
+                            <p className="text-yellow-700 text-sm">
+                              You have selected {getTotalSelectedCredits()} credits. Overload (&gt;18 credits) requires special approval.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {getTotalSelectedCredits() < 12 && getTotalSelectedCredits() > 0 && (
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start space-x-2">
+                          <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+                          <div>
+                            <p className="text-blue-800 font-medium">Minimum Credit Notice</p>
+                            <p className="text-blue-700 text-sm">
+                              Minimum 12 credits required for full-time status. Current: {getTotalSelectedCredits()} credits.
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <Button 
-                      onClick={handleSubmitRegistration}
-                      className="nu-button-primary"
-                      disabled={getTotalSelectedCredits() === 0}
-                    >
-                      Submit Registration
-                    </Button>
+
+                    {/* Teacher Approval Notice */}
+                    <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                      <div className="flex items-start space-x-2">
+                        <User className="w-5 h-5 text-purple-600 mt-0.5" />
+                        <div>
+                          <p className="text-purple-800 font-medium">Teacher Approval Required</p>
+                          <p className="text-purple-700 text-sm">
+                            Your registration will be sent to {currentSemesterInfo.teacherName} for approval.
+                            You can edit your registration until it is approved.
+                          </p>
+                          <div className="mt-2 flex items-center space-x-4 text-sm">
+                            <span className="text-purple-600">
+                              <Phone className="w-4 h-4 inline mr-1" />
+                              {currentSemesterInfo.teacherContact}
+                            </span>
+                            <span className="text-purple-600">
+                              <Clock className="w-4 h-4 inline mr-1" />
+                              Auto-notification if pending &gt;72 hours
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-gray-600">
+                        <AlertCircle className="w-4 h-4 inline mr-1" />
+                        Please ensure you select sections for all chosen courses
+                      </div>
+                      <Button
+                        onClick={handleSubmitRegistration}
+                        className="nu-button-primary"
+                        disabled={getTotalSelectedCredits() === 0 || registrationBlocked}
+                      >
+                        {registrationBlocked ? (
+                          <>
+                            <Lock className="w-4 h-4 mr-2" />
+                            Registration Blocked
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="w-4 h-4 mr-2" />
+                            Submit for Approval
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
