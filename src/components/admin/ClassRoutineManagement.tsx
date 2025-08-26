@@ -106,43 +106,110 @@ export const ClassRoutineManagement = () => {
   }
   
   const rooms = [
-    { 
-      id: 'R101', 
-      name: 'Room 101', 
-      capacity: 50, 
+    {
+      id: 'R101',
+      name: 'Room 101',
+      capacity: 50,
       type: 'Classroom',
       building: 'Main Building',
+      floor: '1st Floor',
       status: 'Available',
-      currentClass: null
+      currentClass: null,
+      nextClass: 'BBA201 - Section A (10:00-11:30)',
+      todaySchedule: [
+        { time: '10:00-11:30', course: 'BBA201', section: 'A' },
+        { time: '14:00-15:30', course: 'CSE301', section: 'B' }
+      ],
+      utilization: 85 // percentage
     },
-    { 
-      id: 'R102', 
-      name: 'Room 102', 
-      capacity: 45, 
+    {
+      id: 'R102',
+      name: 'Room 102',
+      capacity: 45,
       type: 'Classroom',
       building: 'Main Building',
+      floor: '1st Floor',
       status: 'Occupied',
-      currentClass: 'CSE401 - Section A'
+      currentClass: 'CSE401 - Section A (08:00-09:30)',
+      nextClass: 'EEE201 - Section A (12:00-13:30)',
+      todaySchedule: [
+        { time: '08:00-09:30', course: 'CSE401', section: 'A' },
+        { time: '12:00-13:30', course: 'EEE201', section: 'A' }
+      ],
+      utilization: 70
     },
-    { 
-      id: 'LAB1', 
-      name: 'Computer Lab 1', 
-      capacity: 30, 
+    {
+      id: 'LAB1',
+      name: 'Computer Lab 1',
+      capacity: 30,
       type: 'Laboratory',
       building: 'Engineering Block',
+      floor: '2nd Floor',
       status: 'Available',
-      currentClass: null
+      currentClass: null,
+      nextClass: 'CSE403 Lab - Section A (14:00-15:30)',
+      todaySchedule: [
+        { time: '14:00-15:30', course: 'CSE403', section: 'A' }
+      ],
+      utilization: 40
     },
-    { 
-      id: 'LAB2', 
-      name: 'Computer Lab 2', 
-      capacity: 30, 
+    {
+      id: 'LAB2',
+      name: 'Computer Lab 2',
+      capacity: 30,
       type: 'Laboratory',
       building: 'Engineering Block',
+      floor: '2nd Floor',
       status: 'Maintenance',
-      currentClass: null
+      currentClass: null,
+      nextClass: null,
+      todaySchedule: [],
+      utilization: 0
+    },
+    {
+      id: 'R201',
+      name: 'Room 201',
+      capacity: 60,
+      type: 'Classroom',
+      building: 'Business Building',
+      floor: '2nd Floor',
+      status: 'Available',
+      currentClass: null,
+      nextClass: 'BBA401 - Section A (16:00-17:30)',
+      todaySchedule: [
+        { time: '16:00-17:30', course: 'BBA401', section: 'A' }
+      ],
+      utilization: 25
     }
   ]
+
+  const checkRoomConflicts = () => {
+    // Mock conflict detection
+    const conflicts = [
+      {
+        room: 'R102',
+        time: '10:00-11:30',
+        conflictingClasses: ['CSE401 - Section A', 'BBA201 - Section B'],
+        severity: 'High'
+      },
+      {
+        room: 'LAB1',
+        time: '14:00-15:30',
+        conflictingClasses: ['CSE403 - Section A', 'CSE403 - Section B'],
+        severity: 'Medium'
+      }
+    ]
+
+    if (conflicts.length > 0) {
+      alert(`Found ${conflicts.length} room conflicts. Check the conflicts panel for details.`)
+    } else {
+      alert('No room conflicts detected.')
+    }
+  }
+
+  const generateRoomReport = () => {
+    alert('Room utilization report generated and downloaded.')
+  }
 
   const timeSlots = [
     { id: '1', time: '08:00 - 09:30', type: 'Day' },
