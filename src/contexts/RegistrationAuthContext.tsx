@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-export type UserRole = 'student' | 'advisor' | 'admin' | 'teacher'
+export type UserRole = 'student' | 'admin' | 'teacher'
 
 export interface User {
   id: string
@@ -24,7 +24,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // Demo credentials
 const demoCredentials = {
   student: { username: '2021-1-60-001', password: 'student123' },
-  advisor: { username: 'ADV001', password: 'advisor123' },
   admin: { username: 'admin', password: 'admin123' },
   teacher: { username: 'T001', password: 'teacher123' }
 }
@@ -37,14 +36,7 @@ const demoUsers: Record<string, User> = {
     role: 'student',
     email: 'john.doe@nu.edu.bd',
     program: 'Computer Science & Engineering',
-    semester: 'Fall 2024',
-    advisorId: 'ADV001'
-  },
-  'ADV001': {
-    id: 'ADV001',
-    name: 'Dr. Sarah Johnson',
-    role: 'advisor',
-    email: 'sarah.johnson@nu.edu.bd'
+    semester: 'Fall 2024'
   },
   'admin': {
     id: 'admin',
