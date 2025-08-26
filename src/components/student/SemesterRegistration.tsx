@@ -298,12 +298,12 @@ export const SemesterRegistration = ({ activeTab = 'last' }: SemesterRegistratio
                         <span>{currentSemesterInfo.classStartDate}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-green-700">Advisor:</span>
-                        <span>{currentSemesterInfo.advisorName}</span>
+                        <span className="font-medium text-green-700">Academic Advisor:</span>
+                        <span>{currentSemesterInfo.teacherName}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-green-700">Advisor Contact:</span>
-                        <span>{currentSemesterInfo.advisorContact}</span>
+                        <span>{currentSemesterInfo.teacherContact}</span>
                       </div>
                     </div>
                   </div>
