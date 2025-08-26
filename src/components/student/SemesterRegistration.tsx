@@ -885,7 +885,7 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
                         ) : (
                           <>
                             <FileText className="w-4 h-4 mr-2" />
-                            Submit for Approval
+                            Complete New Registration
                           </>
                         )}
                       </Button>
