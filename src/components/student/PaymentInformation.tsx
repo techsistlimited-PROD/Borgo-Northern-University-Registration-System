@@ -750,17 +750,37 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Label htmlFor="method">Payment Method</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'bkash' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('bkash')}
+                  className="h-16 flex flex-col items-center justify-center space-y-1"
+                >
+                  <CreditCard className="w-6 h-6" />
+                  <span className="text-sm font-medium">bKash</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'cash' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('cash')}
+                  className="h-16 flex flex-col items-center justify-center space-y-1"
+                >
+                  <DollarSign className="w-6 h-6" />
+                  <span className="text-sm font-medium">Cash</span>
+                </Button>
+              </div>
               <Select value={paymentMethod} onValueChange={setPaymentMethod}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select payment method" />
+                  <SelectValue placeholder="Or select other payment method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bkash">bKash</SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
                   <SelectItem value="bank">Bank Transfer</SelectItem>
                   <SelectItem value="card">Credit/Debit Card</SelectItem>
+                  <SelectItem value="rocket">Rocket</SelectItem>
+                  <SelectItem value="nagad">Nagad</SelectItem>
                 </SelectContent>
               </Select>
             </div>
