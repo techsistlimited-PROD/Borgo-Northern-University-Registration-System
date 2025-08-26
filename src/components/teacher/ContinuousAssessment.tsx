@@ -131,7 +131,7 @@ function CreateAssessment({ onClose, onSave }: { onClose: () => void; onSave: (a
     switch (type) {
       case 'class-test': return <FileText className="w-4 h-4" />
       case 'quiz': return <ClipboardList className="w-4 h-4" />
-      case 'presentation': return <PresentationChart className="w-4 h-4" />
+      case 'presentation': return <Presentation className="w-4 h-4" />
       case 'assignment': return <BookOpen className="w-4 h-4" />
       default: return <FileText className="w-4 h-4" />
     }
