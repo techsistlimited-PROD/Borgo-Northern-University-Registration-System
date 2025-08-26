@@ -288,7 +288,7 @@ function StudentRegistrationDetails({
             <div>
               <CardTitle className="flex items-center space-x-2">
                 <BookOpen className="w-5 h-5" />
-                <span>Registered Courses - {student.semester}</span>
+                <span>Registered Courses - {student.currentSemester}</span>
               </CardTitle>
               <CardDescription>
                 Total Credits: {totalCredits} | Registration Date: {new Date(student.lastRegistrationDate).toLocaleDateString()}
