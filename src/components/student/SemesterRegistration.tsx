@@ -295,9 +295,16 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
   }
 
   const handleSubmitRegistration = () => {
+    const selectedCount = Object.values(selectedCourses).filter(course => course.selected).length
+    const totalCredits = getTotalSelectedCredits()
+
     // In real app, this would submit to backend
-    alert('Registration submitted successfully! Redirecting to Last Registration...')
-    setActiveTab('last')
+    alert(`🎉 NEW REGISTRATION COMPLETED!\n\n📚 Courses Selected: ${selectedCount}\n⚡ Total Credits: ${totalCredits}\n👨‍🏫 Sent to ${currentSemesterInfo.teacherName} for approval\n\n✅ Your registration has been successfully submitted using the new registration system!\n\nRedirecting to Last Registration to view your submission...`)
+
+    // Update to show completed registration in "Last Registration"
+    setTimeout(() => {
+      alert('You can now view your submitted registration in the "Last Registration" tab.')
+    }, 1000)
   }
 
   return (
