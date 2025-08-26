@@ -236,28 +236,28 @@ export const OfferCourses = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-deep-plum">Course Offering</h1>
+        <h1 className="text-3xl font-bold text-deep-plum">Course Offering & Section Management</h1>
         <div className="flex space-x-2">
-          <Button 
+          <Button
             variant={mode === 'single' ? 'default' : 'outline'}
             onClick={() => setMode('single')}
           >
-            Single Student
+            Single Entry
           </Button>
-          <Button 
+          <Button
             variant={mode === 'bulk' ? 'default' : 'outline'}
             onClick={() => setMode('bulk')}
           >
-            Bulk Students
+            Bulk Entry
           </Button>
         </div>
       </div>
-      
+
       {/* Course Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>Course Selection</CardTitle>
-          <CardDescription>Select course and configure offering details</CardDescription>
+          <CardTitle>Course & Section Configuration</CardTitle>
+          <CardDescription>Select course and manage sections with teacher assignments</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
@@ -273,7 +273,7 @@ export const OfferCourses = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Program</Label>
               <Select>
@@ -287,7 +287,7 @@ export const OfferCourses = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Course</Label>
               <Select value={selectedCourse} onValueChange={setSelectedCourse}>
@@ -297,175 +297,287 @@ export const OfferCourses = () => {
                 <SelectContent>
                   {courses.map((course) => (
                     <SelectItem key={course.code} value={course.code}>
-                      {course.code} - {course.title}
+                      {course.code} - {course.title} ({course.credits} credits)
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
-          
+
           {selectedCourse && (
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <div className="flex items-center space-x-2 mb-2">
                 <Users className="w-5 h-5 text-blue-600" />
-                <span className="font-semibold">Course Capacity Status</span>
+                <span className="font-semibold">Course Information</span>
               </div>
-              <p className="text-sm text-gray-600">
-                Total capacity: {courses.find(c => c.code === selectedCourse)?.capacity} students
-              </p>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <p>Total capacity: {courses.find(c => c.code === selectedCourse)?.capacity} students</p>
+                <p>Credits: {courses.find(c => c.code === selectedCourse)?.credits}</p>
+              </div>
             </div>
           )}
         </CardContent>
       </Card>
-      
+
+      {/* Section Management */}
+      {selectedCourse && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Existing Sections</CardTitle>
+            <CardDescription>Manage sections and teacher assignments for {selectedCourse}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {sections.map((section) => (
+                <div key={section.id} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h4 className="text-lg font-semibold">Section {section.id}</h4>
+                        <Badge variant={section.status === 'Full' ? 'destructive' : 'default'}>
+                          {section.enrolled}/{section.maxCapacity} students
+                        </Badge>
+                        <Badge variant="outline">{section.status}</Badge>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p><span className="font-medium">Teacher:</span> {section.teacher || 'Not assigned'}</p>
+                          <p><span className="font-medium">Teacher ID:</span> {section.teacherId || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p><span className="font-medium">Schedule:</span> {section.schedule || 'Not set'}</p>
+                          <p><span className="font-medium">Room:</span> {section.room || 'Not assigned'}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-2">
+                      <Button variant="outline" size="sm">
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteSection(section.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Create New Section */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                <h4 className="text-lg font-semibold mb-3">Create New Section</h4>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Section Capacity</Label>
+                    <Input
+                      type="number"
+                      placeholder="Max students"
+                      value={sectionCapacity}
+                      onChange={(e) => setSectionCapacity(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Teacher Employee ID</Label>
+                    <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select teacher" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teachers.map((teacher) => (
+                          <SelectItem key={teacher.id} value={teacher.id}>
+                            {teacher.id} - {teacher.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button onClick={handleCreateSection} className="w-full">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Section
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Teacher Assignment */}
+      {selectedCourse && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Teacher Assignment</CardTitle>
+            <CardDescription>Assign or update teachers for existing sections</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="space-y-2">
+                <Label>Section</Label>
+                <Select value={selectedSection} onValueChange={setSelectedSection}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select section" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sections.map((section) => (
+                      <SelectItem key={section.id} value={section.id}>
+                        Section {section.id}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Teacher</Label>
+                <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select teacher" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {teachers.map((teacher) => (
+                      <SelectItem key={teacher.id} value={teacher.id}>
+                        {teacher.id} - {teacher.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Schedule</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select schedule" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="st-1000">Sun, Tue 10:00-11:30</SelectItem>
+                    <SelectItem value="mw-1400">Mon, Wed 14:00-15:30</SelectItem>
+                    <SelectItem value="tr-0800">Thu, Fri 08:00-09:30</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-end">
+                <Button onClick={handleAssignTeacher} className="w-full">
+                  Assign Teacher
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Student Assignment */}
       {selectedCourse && (
         <Card>
           <CardHeader>
             <CardTitle>
-              {mode === 'single' ? 'Add Single Student' : 'Add Multiple Students'}
+              {mode === 'single' ? 'Single Student Assignment' : 'Bulk Student Assignment'}
             </CardTitle>
             <CardDescription>
-              Assign students to course sections
+              Assign students to course sections with capacity enforcement
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {mode === 'single' ? (
                 <div className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>Student ID</Label>
                       <Input placeholder="Enter student ID" />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label>Section</Label>
-                      <Select>
+                      <Select value={selectedSection} onValueChange={setSelectedSection}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select section" />
                         </SelectTrigger>
                         <SelectContent>
                           {sections.map((section) => (
-                            <SelectItem 
-                              key={section.id} 
+                            <SelectItem
+                              key={section.id}
                               value={section.id}
                               disabled={section.status === 'Full'}
                             >
-                              Section {section.id} - {section.capacity} 
+                              Section {section.id} - {section.enrolled}/{section.maxCapacity}
                               {section.status === 'Full' && ' (Full)'}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
+
+                    <div className="flex items-end">
+                      <Button className="w-full">Add Student</Button>
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label>From Student ID</Label>
-                      <Input placeholder="Starting ID" />
+                      <Input
+                        placeholder="Starting ID"
+                        value={bulkStudentRange.from}
+                        onChange={(e) => setBulkStudentRange(prev => ({ ...prev, from: e.target.value }))}
+                      />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label>To Student ID</Label>
-                      <Input placeholder="Ending ID" />
+                      <Input
+                        placeholder="Ending ID"
+                        value={bulkStudentRange.to}
+                        onChange={(e) => setBulkStudentRange(prev => ({ ...prev, to: e.target.value }))}
+                      />
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label>Section</Label>
-                      <Select>
+                      <Select value={selectedSection} onValueChange={setSelectedSection}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select section" />
                         </SelectTrigger>
                         <SelectContent>
                           {sections.map((section) => (
                             <SelectItem key={section.id} value={section.id}>
-                              Section {section.id} - {section.capacity}
+                              Section {section.id} - {section.enrolled}/{section.maxCapacity}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
+
+                    <div className="flex items-end">
+                      <Button onClick={handleBulkAssignment} className="w-full">
+                        Bulk Assign
+                      </Button>
+                    </div>
                   </div>
-                  
+
                   <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start space-x-2">
                     <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-yellow-800">Capacity Check</p>
                       <p className="text-sm text-yellow-700">
-                        System will automatically check if the selected section has enough capacity for the student range.
+                        System will automatically check section capacity and prevent over-enrollment.
                       </p>
                     </div>
                   </div>
                 </div>
               )}
-              
-              {/* Class Schedule */}
-              <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold text-deep-plum mb-4">Class Schedule</h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Weekdays</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select days" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="st">Sunday & Tuesday</SelectItem>
-                        <SelectItem value="mw">Monday & Wednesday</SelectItem>
-                        <SelectItem value="tr">Tuesday & Thursday</SelectItem>
-                        <SelectItem value="mwf">Monday, Wednesday & Friday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label>Time Slot</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0800-0930">08:00 - 09:30 AM</SelectItem>
-                        <SelectItem value="1000-1130">10:00 - 11:30 AM</SelectItem>
-                        <SelectItem value="1200-1330">12:00 - 01:30 PM</SelectItem>
-                        <SelectItem value="1400-1530">02:00 - 03:30 PM</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label>Teacher Employee ID</Label>
-                    <Input placeholder="Enter teacher ID" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label>Room</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select room" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="room101">Room 101</SelectItem>
-                        <SelectItem value="room102">Room 102</SelectItem>
-                        <SelectItem value="lab1">Computer Lab 1</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex space-x-4 pt-4">
-                <Button className="nu-button-primary">
-                  {mode === 'single' ? 'Add Student' : 'Add Students'}
-                </Button>
-                <Button variant="outline">Check Conflicts</Button>
-                <Button variant="outline">Reset Form</Button>
-              </div>
             </div>
           </CardContent>
         </Card>
