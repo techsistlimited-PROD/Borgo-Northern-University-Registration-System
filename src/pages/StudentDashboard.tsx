@@ -203,11 +203,11 @@ export default function StudentDashboard() {
       // Semester Registration cases
       case 'semester-registration':
       case 'last-registration':
-        return <SemesterRegistration activeTab="last" />
+        return <SemesterRegistration activeTab="last" studentHolds={studentHolds} />
       case 'new-registration':
-        return <SemesterRegistration activeTab="new" />
+        return <SemesterRegistration activeTab="new" studentHolds={studentHolds} />
       case 'all-registration':
-        return <SemesterRegistration activeTab="all" />
+        return <SemesterRegistration activeTab="all" studentHolds={studentHolds} />
 
       case 'class-routine':
         return <ClassRoutine />
