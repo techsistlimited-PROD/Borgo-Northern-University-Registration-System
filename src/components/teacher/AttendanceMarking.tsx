@@ -103,6 +103,7 @@ export default function AttendanceMarking() {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   )
+  const [attendanceType, setAttendanceType] = useState<'class' | 'midterm' | 'final'>('class')
   const [attendance, setAttendance] = useState<Record<string, 'present' | 'absent' | 'late'>>({})
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
