@@ -349,14 +349,77 @@ export const SemesterRegistration = ({ activeTab = 'last', studentHolds }: Semes
     setUnreadNotifications(prev => Math.max(0, prev - 1))
   }
 
+  const checkPrerequisites = (courseCode: string) => {
+    const course = availableCourses.find(c => c.courseCode === courseCode)
+    if (!course || !course.prerequisites.length) return true
+
+    const missingPrereqs = course.prerequisites.filter(prereq => {
+      // Check if student failed this prerequisite
+      if (studentAcademicHistory.failedCourses.includes(prereq)) {
+        return true
+      }
+      // Check if student hasn't passed this prerequisite
+      return !studentAcademicHistory.passedCourses.includes(prereq)
+    })
+
+    if (missingPrereqs.length > 0) {
+      const errorMsg = `You have not met the prerequisite for this course. Missing: ${missingPrereqs.join(', ')}`
+      setPrerequisiteErrors(prev => ({ ...prev, [courseCode]: errorMsg }))
+      return false
+    }
+
+    // Clear any previous error
+    setPrerequisiteErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[courseCode]
+      return newErrors
+    })
+    return true
+  }
+
   const handleCourseSelection = (courseCode: string, selected: boolean) => {
+    if (selected) {
+      // Check prerequisites before allowing selection
+      if (!checkPrerequisites(courseCode)) {
+        return // Don't select if prerequisites not met
+      }
+    } else {
+      // Clear any errors when deselecting
+      setPrerequisiteErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[courseCode]
+        return newErrors
+      })
+      setSectionErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[courseCode]
+        return newErrors
+      })
+    }
+
     setSelectedCourses(prev => ({
       ...prev,
-      [courseCode]: { ...prev[courseCode], selected }
+      [courseCode]: { ...prev[courseCode], selected, section: selected ? prev[courseCode]?.section || '' : '' }
     }))
   }
 
   const handleSectionSelection = (courseCode: string, section: string) => {
+    const course = availableCourses.find(c => c.courseCode === courseCode)
+    const selectedSection = course?.sections.find(s => s.name === section)
+
+    if (selectedSection && !selectedSection.available) {
+      const errorMsg = `Section ${section} is already filled (${selectedSection.enrolled}/${selectedSection.capacity}). Please try a different section.`
+      setSectionErrors(prev => ({ ...prev, [courseCode]: errorMsg }))
+      return // Don't select unavailable section
+    }
+
+    // Clear section error if selection is valid
+    setSectionErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors[courseCode]
+      return newErrors
+    })
+
     setSelectedCourses(prev => ({
       ...prev,
       [courseCode]: { ...prev[courseCode], section }
