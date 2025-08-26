@@ -8,6 +8,7 @@ import AttendanceReports from '@/components/teacher/AttendanceReports'
 import ContinuousAssessment from '@/components/teacher/ContinuousAssessment'
 import CumulativeScore from '@/components/teacher/CumulativeScore'
 import MidtermMarks from '@/components/teacher/MidtermMarks'
+import FinalMarks from '@/components/teacher/FinalMarks'
 import {
   Calendar,
   Users,
@@ -372,6 +373,8 @@ export default function TeacherDashboard() {
         return <CumulativeScore />
       case 'midterm-marks':
         return <MidtermMarks />
+      case 'final-marks':
+        return <FinalMarks />
       case 'advised-students':
         return (
           <div className="text-center py-20">
