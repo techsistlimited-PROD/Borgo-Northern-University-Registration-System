@@ -523,10 +523,50 @@ export default function AdvisedStudents() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [showHistory, setShowHistory] = useState(false)
 
-  const filteredStudents = students.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Advanced filter states
+  const [programFilter, setProgramFilter] = useState('')
+  const [campusFilter, setCampusFilter] = useState('')
+  const [admissionSemesterFilter, setAdmissionSemesterFilter] = useState('')
+  const [registrationStatusFilter, setRegistrationStatusFilter] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Get unique values for filter options
+  const uniquePrograms = [...new Set(students.map(s => s.program))].sort()
+  const uniqueCampuses = [...new Set(students.map(s => s.campus))].sort()
+  const uniqueAdmissionSemesters = [...new Set(students.map(s => s.admissionSemester))].sort()
+
+  const filteredStudents = students.filter(student => {
+    // Text search filter
+    const matchesSearch = !searchTerm ||
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+
+    // Advanced filters
+    const matchesProgram = !programFilter || student.program === programFilter
+    const matchesCampus = !campusFilter || student.campus === campusFilter
+    const matchesAdmissionSemester = !admissionSemesterFilter || student.admissionSemester === admissionSemesterFilter
+    const matchesRegistrationStatus = !registrationStatusFilter || student.registrationStatus === registrationStatusFilter
+
+    return matchesSearch && matchesProgram && matchesCampus && matchesAdmissionSemester && matchesRegistrationStatus
+  })
+
+  const clearAllFilters = () => {
+    setSearchTerm('')
+    setProgramFilter('')
+    setCampusFilter('')
+    setAdmissionSemesterFilter('')
+    setRegistrationStatusFilter('')
+  }
+
+  const getActiveFilterCount = () => {
+    let count = 0
+    if (searchTerm) count++
+    if (programFilter) count++
+    if (campusFilter) count++
+    if (admissionSemesterFilter) count++
+    if (registrationStatusFilter) count++
+    return count
+  }
 
   const handleApproveRegistration = (studentId: string) => {
     setStudents(prev => prev.map(student =>
