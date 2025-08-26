@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useAuth } from '@/contexts/RegistrationAuthContext'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Calendar, 
-  Users, 
-  BookOpen, 
-  ClipboardCheck, 
-  BarChart3, 
-  GraduationCap, 
+import TeacherClassRoutine from '@/components/teacher/TeacherClassRoutine'
+import {
+  Calendar,
+  Users,
+  BookOpen,
+  ClipboardCheck,
+  BarChart3,
+  GraduationCap,
   UserCheck,
   Bell,
   Clock,
@@ -355,13 +356,7 @@ export default function TeacherDashboard() {
       case 'dashboard':
         return <TeacherDashboardOverview />
       case 'class-routine':
-        return (
-          <div className="text-center py-20">
-            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">Class Routine</h2>
-            <p className="text-gray-500">Coming soon - View your class schedule and routine</p>
-          </div>
-        )
+        return <TeacherClassRoutine />
       case 'mark-attendance':
         return (
           <div className="text-center py-20">
