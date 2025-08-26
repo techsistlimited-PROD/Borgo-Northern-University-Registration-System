@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
@@ -583,7 +583,7 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
                 <li>• Payment deadlines are strictly enforced. Late payments may incur penalties</li>
                 <li>• Keep all payment receipts for your records</li>
                 <li>• For payment-related queries, contact the Finance Office</li>
-                <li>�� Online payment options are available through the university portal</li>
+                <li>• Online payment options are available through the university portal</li>
                 <li>• Merit-based waivers are automatically applied to qualifying students</li>
                 <li>• Installment payments must be made according to the schedule</li>
               </ul>
