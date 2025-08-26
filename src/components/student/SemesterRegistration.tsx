@@ -39,22 +39,6 @@ import {
   Info
 } from 'lucide-react'
 
-// Student holds and financial information
-const studentHolds = {
-  hasFinancialHold: true,
-  hasConductHold: false,
-  hasAcademicHold: false,
-  financialDetails: {
-    totalDue: 45000,
-    semesterFee: 35000,
-    libraryFine: 500,
-    hostleDue: 9500,
-    lastPaymentDate: '2024-08-15',
-    nextInstallmentDue: '2024-12-15'
-  },
-  conductDetails: null,
-  academicDetails: null
-}
 
 // Notification system
 const notifications = [
