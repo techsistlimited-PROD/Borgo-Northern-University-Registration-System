@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, Users, Settings } from 'lucide-react'
+import { GraduationCap, Users, Settings, BookOpen } from 'lucide-react'
 
 const Header = () => (
   <header className="bg-white shadow-sm border-b">
@@ -32,7 +32,7 @@ export default function Index() {
             Welcome to NU Registration System
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Access your student portal, advisor dashboard, or administrative panel.
+            Access your student portal, teacher dashboard, or administrative panel.
             Choose your role below to get started.
           </p>
         </div>
@@ -61,25 +61,25 @@ export default function Index() {
             </CardContent>
           </Card>
 
-          {/* Advisor Portal */}
+          {/* Teacher Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
               <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Users className="w-8 h-8 text-white" />
+                <BookOpen className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-deep-plum">Advisor Portal</CardTitle>
+              <CardTitle className="text-deep-plum">Teacher Portal</CardTitle>
               <CardDescription>
-                Guide students, approve registrations, and monitor academic progress
+                Manage classes, mark attendance, grade students, and track academic progress
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link to="/advisor-login">
+              <Link to="/teacher-login">
                 <Button className="w-full nu-button-primary">
-                  Access Advisor Portal
+                  Access Teacher Portal
                 </Button>
               </Link>
               <p className="text-xs text-gray-500 mt-2">
-                Demo ID: ADV001
+                Demo ID: T001
               </p>
             </CardContent>
           </Card>

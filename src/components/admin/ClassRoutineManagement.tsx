@@ -38,45 +38,178 @@ export const ClassRoutineManagement = () => {
   const [selectedSemester, setSelectedSemester] = useState('all')
   const [selectedProgram, setSelectedProgram] = useState('all')
   const [selectedSlot, setSelectedSlot] = useState('all')
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadErrors, setUploadErrors] = useState<string[]>([])
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/vnd.ms-excel', // .xls
+        'text/csv' // .csv
+      ]
+
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload only Excel (.xlsx, .xls) or CSV (.csv) files')
+        return
+      }
+
+      setUploadedFile(file)
+      setUploadErrors([])
+    }
+  }
+
+  const processFile = async () => {
+    if (!uploadedFile) {
+      alert('Please select a file first')
+      return
+    }
+
+    setIsUploading(true)
+    setUploadProgress(0)
+
+    // Mock file processing with progress
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          setIsUploading(false)
+
+          // Mock validation errors
+          const mockErrors = [
+            'Row 5: Invalid time slot format. Expected HH:MM-HH:MM',
+            'Row 12: Room R999 does not exist in the system',
+            'Row 18: Teacher ID T999 not found'
+          ]
+
+          if (Math.random() > 0.7) { // 30% chance of errors
+            setUploadErrors(mockErrors.slice(0, Math.floor(Math.random() * 3) + 1))
+          } else {
+            alert('File processed successfully! Routine uploaded.')
+            setUploadedFile(null)
+          }
+
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
+  }
+
+  const downloadTemplate = () => {
+    // Mock download template functionality
+    alert('Template downloaded: class_routine_template.xlsx')
+  }
   
   const rooms = [
-    { 
-      id: 'R101', 
-      name: 'Room 101', 
-      capacity: 50, 
+    {
+      id: 'R101',
+      name: 'Room 101',
+      capacity: 50,
       type: 'Classroom',
       building: 'Main Building',
+      floor: '1st Floor',
       status: 'Available',
-      currentClass: null
+      currentClass: null,
+      nextClass: 'BBA201 - Section A (10:00-11:30)',
+      todaySchedule: [
+        { time: '10:00-11:30', course: 'BBA201', section: 'A' },
+        { time: '14:00-15:30', course: 'CSE301', section: 'B' }
+      ],
+      utilization: 85 // percentage
     },
-    { 
-      id: 'R102', 
-      name: 'Room 102', 
-      capacity: 45, 
+    {
+      id: 'R102',
+      name: 'Room 102',
+      capacity: 45,
       type: 'Classroom',
       building: 'Main Building',
+      floor: '1st Floor',
       status: 'Occupied',
-      currentClass: 'CSE401 - Section A'
+      currentClass: 'CSE401 - Section A (08:00-09:30)',
+      nextClass: 'EEE201 - Section A (12:00-13:30)',
+      todaySchedule: [
+        { time: '08:00-09:30', course: 'CSE401', section: 'A' },
+        { time: '12:00-13:30', course: 'EEE201', section: 'A' }
+      ],
+      utilization: 70
     },
-    { 
-      id: 'LAB1', 
-      name: 'Computer Lab 1', 
-      capacity: 30, 
+    {
+      id: 'LAB1',
+      name: 'Computer Lab 1',
+      capacity: 30,
       type: 'Laboratory',
       building: 'Engineering Block',
+      floor: '2nd Floor',
       status: 'Available',
-      currentClass: null
+      currentClass: null,
+      nextClass: 'CSE403 Lab - Section A (14:00-15:30)',
+      todaySchedule: [
+        { time: '14:00-15:30', course: 'CSE403', section: 'A' }
+      ],
+      utilization: 40
     },
-    { 
-      id: 'LAB2', 
-      name: 'Computer Lab 2', 
-      capacity: 30, 
+    {
+      id: 'LAB2',
+      name: 'Computer Lab 2',
+      capacity: 30,
       type: 'Laboratory',
       building: 'Engineering Block',
+      floor: '2nd Floor',
       status: 'Maintenance',
-      currentClass: null
+      currentClass: null,
+      nextClass: null,
+      todaySchedule: [],
+      utilization: 0
+    },
+    {
+      id: 'R201',
+      name: 'Room 201',
+      capacity: 60,
+      type: 'Classroom',
+      building: 'Business Building',
+      floor: '2nd Floor',
+      status: 'Available',
+      currentClass: null,
+      nextClass: 'BBA401 - Section A (16:00-17:30)',
+      todaySchedule: [
+        { time: '16:00-17:30', course: 'BBA401', section: 'A' }
+      ],
+      utilization: 25
     }
   ]
+
+  const checkRoomConflicts = () => {
+    // Mock conflict detection
+    const conflicts = [
+      {
+        room: 'R102',
+        time: '10:00-11:30',
+        conflictingClasses: ['CSE401 - Section A', 'BBA201 - Section B'],
+        severity: 'High'
+      },
+      {
+        room: 'LAB1',
+        time: '14:00-15:30',
+        conflictingClasses: ['CSE403 - Section A', 'CSE403 - Section B'],
+        severity: 'Medium'
+      }
+    ]
+
+    if (conflicts.length > 0) {
+      alert(`Found ${conflicts.length} room conflicts. Check the conflicts panel for details.`)
+    } else {
+      alert('No room conflicts detected.')
+    }
+  }
+
+  const generateRoomReport = () => {
+    alert('Room utilization report generated and downloaded.')
+  }
 
   const timeSlots = [
     { id: '1', time: '08:00 - 09:30', type: 'Day' },
@@ -188,9 +321,88 @@ export const ClassRoutineManagement = () => {
             <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Upload Routine File</h3>
             <p className="text-gray-500 mb-4">Drag and drop your Excel/CSV file here, or click to browse</p>
-            <Button className="nu-button-primary">
-              Choose File
-            </Button>
+
+            <div className="space-y-4">
+              <div className="flex justify-center space-x-4">
+                <Button
+                  className="nu-button-primary"
+                  onClick={() => document.getElementById('file-upload')?.click()}
+                >
+                  Choose File
+                </Button>
+                <Button variant="outline" onClick={downloadTemplate}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Template
+                </Button>
+              </div>
+
+              <input
+                id="file-upload"
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+
+              {uploadedFile && (
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Selected file: {uploadedFile.name}</span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setUploadedFile(null)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+
+                  {isUploading && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Processing...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+
+                  {!isUploading && (
+                    <Button
+                      onClick={processFile}
+                      className="w-full mt-2"
+                      disabled={isUploading}
+                    >
+                      Process File
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {uploadErrors.length > 0 && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <h4 className="text-red-800 font-semibold mb-2">Validation Errors:</h4>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    {uploadErrors.map((error, index) => (
+                      <li key={index}>• {error}</li>
+                    ))}
+                  </ul>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => setUploadErrors([])}
+                  >
+                    Clear Errors
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="mt-4 p-4 bg-blue-50 rounded-lg">
@@ -271,13 +483,70 @@ export const ClassRoutineManagement = () => {
 
   const renderRoomManagement = () => (
     <div className="space-y-6">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Rooms</p>
+                <p className="text-2xl font-bold text-deep-plum">{rooms.length}</p>
+              </div>
+              <Building className="w-8 h-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Available</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {rooms.filter(r => r.status === 'Available').length}
+                </p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Occupied</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {rooms.filter(r => r.status === 'Occupied').length}
+                </p>
+              </div>
+              <XCircle className="w-8 h-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Avg. Utilization</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {Math.round(rooms.reduce((sum, r) => sum + r.utilization, 0) / rooms.length)}%
+                </p>
+              </div>
+              <Users className="w-8 h-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Room Filters</CardTitle>
-          <CardDescription>Filter rooms by availability and usage</CardDescription>
+          <CardTitle>Room Filters & Management</CardTitle>
+          <CardDescription>Filter rooms and manage conflicts</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4 mb-4">
             <Select value={selectedSlot} onValueChange={setSelectedSlot}>
               <SelectTrigger>
                 <SelectValue placeholder="Time Slot" />
@@ -289,7 +558,7 @@ export const ClassRoutineManagement = () => {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Day" />
@@ -303,7 +572,7 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="thursday">Thursday</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Availability" />
@@ -315,7 +584,7 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="maintenance">Maintenance</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Building" />
@@ -327,67 +596,105 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="business">Business Building</SelectItem>
               </SelectContent>
             </Select>
+
+            <div className="flex space-x-2">
+              <Button variant="outline" onClick={checkRoomConflicts} className="flex-1">
+                Check Conflicts
+              </Button>
+              <Button variant="outline" onClick={generateRoomReport} className="flex-1">
+                <Download className="w-4 h-4 mr-1" />
+                Report
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Room Status Overview</CardTitle>
-          <CardDescription>Real-time room availability and usage</CardDescription>
+          <CardDescription>Real-time room availability and detailed schedule</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Room ID</TableHead>
-                <TableHead>Room Name</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Building</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Current Class</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rooms.map((room) => (
-                <TableRow key={room.id}>
-                  <TableCell className="font-medium">{room.id}</TableCell>
-                  <TableCell>{room.name}</TableCell>
-                  <TableCell>{room.capacity}</TableCell>
-                  <TableCell>{room.type}</TableCell>
-                  <TableCell>{room.building}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      {room.status === 'Available' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                      {room.status === 'Occupied' && <XCircle className="w-4 h-4 text-red-500" />}
-                      {room.status === 'Maintenance' && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
-                      <span className={
-                        room.status === 'Available' ? 'text-green-600' :
-                        room.status === 'Occupied' ? 'text-red-600' : 'text-yellow-600'
-                      }>
-                        {room.status}
-                      </span>
+          <div className="space-y-4">
+            {rooms.map((room) => (
+              <div key={room.id} className="border rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-lg font-semibold">{room.name}</h3>
+                      <span className="text-sm text-gray-500">({room.id})</span>
+                      <div className="flex items-center space-x-2">
+                        {room.status === 'Available' && <CheckCircle className="w-4 h-4 text-green-500" />}
+                        {room.status === 'Occupied' && <XCircle className="w-4 h-4 text-red-500" />}
+                        {room.status === 'Maintenance' && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
+                        <span className={`text-sm font-medium ${
+                          room.status === 'Available' ? 'text-green-600' :
+                          room.status === 'Occupied' ? 'text-red-600' : 'text-yellow-600'
+                        }`}>
+                          {room.status}
+                        </span>
+                      </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    {room.currentClass || '-'}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Edit className="w-4 h-4" />
-                      </Button>
+
+                    <div className="grid md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium">Capacity:</span> {room.capacity} students
+                      </div>
+                      <div>
+                        <span className="font-medium">Type:</span> {room.type}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {room.building}, {room.floor}
+                      </div>
+                      <div>
+                        <span className="font-medium">Utilization:</span>
+                        <span className={`ml-1 ${room.utilization >= 80 ? 'text-red-600' : room.utilization >= 60 ? 'text-yellow-600' : 'text-green-600'}`}>
+                          {room.utilization}%
+                        </span>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+                    <div className="mt-3 space-y-2">
+                      {room.currentClass && (
+                        <div className="p-2 bg-red-50 rounded text-sm">
+                          <span className="font-medium text-red-800">Currently:</span> {room.currentClass}
+                        </div>
+                      )}
+
+                      {room.nextClass && (
+                        <div className="p-2 bg-blue-50 rounded text-sm">
+                          <span className="font-medium text-blue-800">Next:</span> {room.nextClass}
+                        </div>
+                      )}
+
+                      {room.todaySchedule.length > 0 && (
+                        <div className="p-2 bg-gray-50 rounded">
+                          <div className="text-sm font-medium text-gray-700 mb-1">Today's Schedule:</div>
+                          <div className="flex flex-wrap gap-2">
+                            {room.todaySchedule.map((schedule, idx) => (
+                              <span key={idx} className="text-xs bg-gray-200 px-2 py-1 rounded">
+                                {schedule.time}: {schedule.course}-{schedule.section}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <Button size="sm" variant="outline" title="View Details">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" title="Edit Room">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

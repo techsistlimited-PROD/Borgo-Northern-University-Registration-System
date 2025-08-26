@@ -21,6 +21,10 @@ import {
 } from '@/components/ui/table'
 import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
 import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
+import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
+import StudentSectionChange from '@/components/admin/StudentSectionChange'
+import AdvisorAssignmentManagement from '@/components/admin/AdvisorAssignmentManagement'
+import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
 import {
   Users,
   Calendar,
@@ -55,9 +59,9 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Student Information', icon: Users },
     { id: 'semester-schedule', label: 'Create Semester Schedule', icon: CalendarPlus },
-    { 
-      id: 'course-offering', 
-      label: 'Course Offering Menu', 
+    {
+      id: 'course-offering',
+      label: 'Course Offering Menu',
       icon: BookOpen,
       subItems: [
         { id: 'courses', label: 'Courses', icon: BookPlus },
@@ -67,6 +71,9 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
       ]
     },
     { id: 'class-routine', label: 'Central Class Routine & Room Management', icon: Building },
+    { id: 'section-change', label: 'Change Students\' Section', icon: Users },
+    { id: 'advisor-assignment', label: 'Student Advisor Assignment', icon: UserPlus },
+    { id: 'reports', label: 'Comprehensive Reports', icon: BarChart3 },
   ]
 
   return (
@@ -419,325 +426,6 @@ const StudentInformation = () => {
   )
 }
 
-const SemesterSchedule = () => {
-  const [formData, setFormData] = useState({
-    campus: '',
-    program: '',
-    semesterType: '',
-    registrationStartDate: '',
-    registrationStartTime: '',
-    registrationEndDate: '',
-    registrationEndTime: '',
-    classStartDate: '',
-    classEndDate: '',
-    firstInstallmentDate: '',
-    secondInstallmentDate: '',
-    thirdInstallmentDate: '',
-    midTermStartDate: '',
-    midTermEndDate: '',
-    firstExamStartDate: '',
-    firstExamEndDate: '',
-    terFillUpStartDate: '',
-    terFillUpEndDate: '',
-    addDropStartDate: '',
-    addDropEndDate: '',
-    semesterDropDate: '',
-  })
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-  }
-
-  const programs = [
-    'BBA (Bachelor of Business Administration)',
-    'CSE (Computer Science & Engineering)',
-    'EEE (Electrical and Electronic Engineering)',
-    'Textile Engineering (Bachelor of Textile Engineering)',
-    'B. Pharm (Bachelor of Pharmacy)',
-    'BA (Hons) in ELL (English Language & Literature)',
-    'LLB (Bachelor of Laws)',
-    'MBA (Master of Business Administration)',
-    'MBM (Master of Business Management)',
-    'MAE (Master of Arts in English)',
-    'MAELT (Master of Arts in English Language and Teaching)',
-    'MPH (Master of Public Health)',
-    'LLM (Master of Laws)'
-  ]
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-deep-plum">Create Semester Schedule</h1>
-        <Button className="nu-button-primary flex items-center space-x-2">
-          <Calendar className="w-4 h-4" />
-          <span>View Schedules</span>
-        </Button>
-      </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Semester Information</CardTitle>
-          <CardDescription>Configure semester schedule and important dates</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-6">
-            {/* Basic Information */}
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="campus">Campus</Label>
-                <Select value={formData.campus} onValueChange={(value) => handleInputChange('campus', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select campus" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="main">Main Campus</SelectItem>
-                    <SelectItem value="khulna">Khulna Campus</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="program">Program</Label>
-                <Select value={formData.program} onValueChange={(value) => handleInputChange('program', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select program" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {programs.map((program) => (
-                      <SelectItem key={program} value={program}>{program}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="semesterType">Semester Type</Label>
-                <Select value={formData.semesterType} onValueChange={(value) => handleInputChange('semesterType', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select semester type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="tri">Tri-Semester</SelectItem>
-                    <SelectItem value="bi">Bi-Semester</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            {/* Registration Dates */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-deep-plum mb-4">Registration Period</h3>
-              <div className="grid md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="regStartDate">Registration Start Date</Label>
-                  <Input
-                    id="regStartDate"
-                    type="date"
-                    value={formData.registrationStartDate}
-                    onChange={(e) => handleInputChange('registrationStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="regStartTime">Start Time</Label>
-                  <Input
-                    id="regStartTime"
-                    type="time"
-                    value={formData.registrationStartTime}
-                    onChange={(e) => handleInputChange('registrationStartTime', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="regEndDate">Registration End Date</Label>
-                  <Input
-                    id="regEndDate"
-                    type="date"
-                    value={formData.registrationEndDate}
-                    onChange={(e) => handleInputChange('registrationEndDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="regEndTime">End Time</Label>
-                  <Input
-                    id="regEndTime"
-                    type="time"
-                    value={formData.registrationEndTime}
-                    onChange={(e) => handleInputChange('registrationEndTime', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Class Period */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-deep-plum mb-4">Class Period</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="classStartDate">Class Start Date</Label>
-                  <Input
-                    id="classStartDate"
-                    type="date"
-                    value={formData.classStartDate}
-                    onChange={(e) => handleInputChange('classStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="classEndDate">Class End Date</Label>
-                  <Input
-                    id="classEndDate"
-                    type="date"
-                    value={formData.classEndDate}
-                    onChange={(e) => handleInputChange('classEndDate', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Payment Installments */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-deep-plum mb-4">Payment Installments</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstInstallment">First Installment Last Date</Label>
-                  <Input
-                    id="firstInstallment"
-                    type="date"
-                    value={formData.firstInstallmentDate}
-                    onChange={(e) => handleInputChange('firstInstallmentDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="secondInstallment">Second Installment Last Date</Label>
-                  <Input
-                    id="secondInstallment"
-                    type="date"
-                    value={formData.secondInstallmentDate}
-                    onChange={(e) => handleInputChange('secondInstallmentDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="thirdInstallment">Third Installment Last Date</Label>
-                  <Input
-                    id="thirdInstallment"
-                    type="date"
-                    value={formData.thirdInstallmentDate}
-                    onChange={(e) => handleInputChange('thirdInstallmentDate', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* Examinations */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-deep-plum mb-4">Examination Periods</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="midTermStart">Mid Term Start Date</Label>
-                  <Input
-                    id="midTermStart"
-                    type="date"
-                    value={formData.midTermStartDate}
-                    onChange={(e) => handleInputChange('midTermStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="midTermEnd">Mid Term Last Date</Label>
-                  <Input
-                    id="midTermEnd"
-                    type="date"
-                    value={formData.midTermEndDate}
-                    onChange={(e) => handleInputChange('midTermEndDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="firstExamStart">First Exam Start Date</Label>
-                  <Input
-                    id="firstExamStart"
-                    type="date"
-                    value={formData.firstExamStartDate}
-                    onChange={(e) => handleInputChange('firstExamStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="firstExamEnd">First Exam Last Date</Label>
-                  <Input
-                    id="firstExamEnd"
-                    type="date"
-                    value={formData.firstExamEndDate}
-                    onChange={(e) => handleInputChange('firstExamEndDate', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            {/* TER and Add/Drop */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-deep-plum mb-4">TER and Course Modifications</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="terFillUpStart">TER Fill Up Start Date</Label>
-                  <Input
-                    id="terFillUpStart"
-                    type="date"
-                    value={formData.terFillUpStartDate}
-                    onChange={(e) => handleInputChange('terFillUpStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="terFillUpEnd">TER Fill Up Last Date</Label>
-                  <Input
-                    id="terFillUpEnd"
-                    type="date"
-                    value={formData.terFillUpEndDate}
-                    onChange={(e) => handleInputChange('terFillUpEndDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="semesterDrop">Semester Drop Last Date</Label>
-                  <Input
-                    id="semesterDrop"
-                    type="date"
-                    value={formData.semesterDropDate}
-                    onChange={(e) => handleInputChange('semesterDropDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="addDropStart">Add/Drop Start Date</Label>
-                  <Input
-                    id="addDropStart"
-                    type="date"
-                    value={formData.addDropStartDate}
-                    onChange={(e) => handleInputChange('addDropStartDate', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="addDropEnd">Add/Drop Last Date</Label>
-                  <Input
-                    id="addDropEnd"
-                    type="date"
-                    value={formData.addDropEndDate}
-                    onChange={(e) => handleInputChange('addDropEndDate', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex space-x-4 pt-6 border-t">
-              <Button type="submit" className="nu-button-primary">
-                Create Semester Schedule
-              </Button>
-              <Button type="button" variant="outline">
-                Save as Draft
-              </Button>
-              <Button type="button" variant="outline">
-                Reset Form
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  )
-}
 
 const Courses = () => (
   <div className="space-y-6">
@@ -851,7 +539,7 @@ export default function AdminDashboard() {
       case 'students':
         return <StudentInformation />
       case 'semester-schedule':
-        return <SemesterSchedule />
+        return <SemesterScheduleManagement />
       case 'courses':
         return <Courses />
       case 'syllabuses':
@@ -862,6 +550,12 @@ export default function AdminDashboard() {
         return <SectionManagement />
       case 'class-routine':
         return <ClassRoutineManagement />
+      case 'section-change':
+        return <StudentSectionChange />
+      case 'advisor-assignment':
+        return <AdvisorAssignmentManagement />
+      case 'reports':
+        return <ComprehensiveReports />
       default:
         return <AdminDashboardOverview user={user} />
     }

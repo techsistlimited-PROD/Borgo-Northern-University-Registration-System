@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, GraduationCap } from 'lucide-react'
 
-export default function AdvisorLogin() {
+export default function TeacherLogin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,11 +20,11 @@ export default function AdvisorLogin() {
     setError('')
 
     try {
-      const success = await login({ ...credentials, role: 'advisor' })
+      const success = await login({ ...credentials, role: 'teacher' })
       if (success) {
-        navigate('/advisor/dashboard')
+        navigate('/teacher/dashboard')
       } else {
-        setError('Invalid advisor ID or password')
+        setError('Invalid teacher ID or password')
       }
     } catch (err) {
       setError('Login failed. Please try again.')
@@ -44,21 +44,21 @@ export default function AdvisorLogin() {
         <Card className="w-full">
           <CardHeader className="text-center">
             <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
-              <Users className="w-8 h-8 text-white" />
+              <GraduationCap className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl font-bold text-deep-plum">Advisor Login</CardTitle>
+            <CardTitle className="text-2xl font-bold text-deep-plum">Teacher Portal</CardTitle>
             <CardDescription>
-              Access your advising portal to guide students
+              Access your teaching dashboard to manage classes and students
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username">Advisor ID</Label>
+                <Label htmlFor="username">Teacher ID</Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="e.g., ADV001"
+                  placeholder="e.g., T001"
                   value={credentials.username}
                   onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
                   required
@@ -92,8 +92,8 @@ export default function AdvisorLogin() {
             
             <div className="mt-4 p-3 bg-mint-green/20 rounded-md">
               <p className="text-sm text-gray-700 font-medium">Demo Credentials:</p>
-              <p className="text-sm text-gray-600">Advisor ID: ADV001</p>
-              <p className="text-sm text-gray-600">Password: advisor123</p>
+              <p className="text-sm text-gray-600">Teacher ID: T001</p>
+              <p className="text-sm text-gray-600">Password: teacher123</p>
             </div>
           </CardContent>
         </Card>
