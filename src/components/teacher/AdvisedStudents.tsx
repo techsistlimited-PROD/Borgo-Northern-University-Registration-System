@@ -239,6 +239,11 @@ function StudentRegistrationDetails({
                 <h3 className="text-xl font-bold text-deep-plum">{student.name}</h3>
                 <p className="text-gray-600">ID: {student.studentId}</p>
                 <p className="text-gray-600">{student.program}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Badge variant="outline">{student.campus}</Badge>
+                  <Badge variant="outline">Admitted: {student.admissionSemester}</Badge>
+                  <Badge variant="outline">Current: {student.currentSemester}</Badge>
+                </div>
                 <div className="flex items-center space-x-4 mt-2">
                   <div className="flex items-center space-x-1">
                     <Phone className="w-4 h-4 text-gray-500" />
