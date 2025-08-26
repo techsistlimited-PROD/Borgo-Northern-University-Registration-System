@@ -145,14 +145,29 @@ export default function AttendanceMarking() {
     }
 
     setIsSaving(true)
-    
+
     try {
-      // Mock API call
+      // Mock API call - different handling for exam attendance
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
+      const attendanceTypeText = attendanceType === 'class' ? 'class' :
+                                attendanceType === 'midterm' ? 'midterm exam' : 'final exam'
+
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
-      
+
+      // Log exam attendance for reporting
+      if (attendanceType !== 'class') {
+        console.log(`${attendanceType} exam attendance saved:`, {
+          section: selectedSection,
+          date: selectedDate,
+          attendance,
+          type: attendanceType
+        })
+      }
+
+      alert(`${attendanceTypeText.charAt(0).toUpperCase() + attendanceTypeText.slice(1)} attendance saved successfully!`)
+
       // Reset form after successful save
       setAttendance({})
     } catch (error) {
