@@ -344,7 +344,7 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: P
 
         {/* Payable List Tab */}
         <TabsContent value="payable" className="space-y-4">
-          {payableData.map((semester, index) => (
+          {payables.map((semester, index) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
