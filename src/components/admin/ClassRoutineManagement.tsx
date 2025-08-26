@@ -483,13 +483,70 @@ export const ClassRoutineManagement = () => {
 
   const renderRoomManagement = () => (
     <div className="space-y-6">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Rooms</p>
+                <p className="text-2xl font-bold text-deep-plum">{rooms.length}</p>
+              </div>
+              <Building className="w-8 h-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Available</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {rooms.filter(r => r.status === 'Available').length}
+                </p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Occupied</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {rooms.filter(r => r.status === 'Occupied').length}
+                </p>
+              </div>
+              <XCircle className="w-8 h-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Avg. Utilization</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {Math.round(rooms.reduce((sum, r) => sum + r.utilization, 0) / rooms.length)}%
+                </p>
+              </div>
+              <Users className="w-8 h-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Room Filters</CardTitle>
-          <CardDescription>Filter rooms by availability and usage</CardDescription>
+          <CardTitle>Room Filters & Management</CardTitle>
+          <CardDescription>Filter rooms and manage conflicts</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4 mb-4">
             <Select value={selectedSlot} onValueChange={setSelectedSlot}>
               <SelectTrigger>
                 <SelectValue placeholder="Time Slot" />
@@ -501,7 +558,7 @@ export const ClassRoutineManagement = () => {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Day" />
@@ -515,7 +572,7 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="thursday">Thursday</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Availability" />
@@ -527,7 +584,7 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="maintenance">Maintenance</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select>
               <SelectTrigger>
                 <SelectValue placeholder="Building" />
@@ -539,67 +596,105 @@ export const ClassRoutineManagement = () => {
                 <SelectItem value="business">Business Building</SelectItem>
               </SelectContent>
             </Select>
+
+            <div className="flex space-x-2">
+              <Button variant="outline" onClick={checkRoomConflicts} className="flex-1">
+                Check Conflicts
+              </Button>
+              <Button variant="outline" onClick={generateRoomReport} className="flex-1">
+                <Download className="w-4 h-4 mr-1" />
+                Report
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Room Status Overview</CardTitle>
-          <CardDescription>Real-time room availability and usage</CardDescription>
+          <CardDescription>Real-time room availability and detailed schedule</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Room ID</TableHead>
-                <TableHead>Room Name</TableHead>
-                <TableHead>Capacity</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Building</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Current Class</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rooms.map((room) => (
-                <TableRow key={room.id}>
-                  <TableCell className="font-medium">{room.id}</TableCell>
-                  <TableCell>{room.name}</TableCell>
-                  <TableCell>{room.capacity}</TableCell>
-                  <TableCell>{room.type}</TableCell>
-                  <TableCell>{room.building}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      {room.status === 'Available' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                      {room.status === 'Occupied' && <XCircle className="w-4 h-4 text-red-500" />}
-                      {room.status === 'Maintenance' && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
-                      <span className={
-                        room.status === 'Available' ? 'text-green-600' :
-                        room.status === 'Occupied' ? 'text-red-600' : 'text-yellow-600'
-                      }>
-                        {room.status}
-                      </span>
+          <div className="space-y-4">
+            {rooms.map((room) => (
+              <div key={room.id} className="border rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="text-lg font-semibold">{room.name}</h3>
+                      <span className="text-sm text-gray-500">({room.id})</span>
+                      <div className="flex items-center space-x-2">
+                        {room.status === 'Available' && <CheckCircle className="w-4 h-4 text-green-500" />}
+                        {room.status === 'Occupied' && <XCircle className="w-4 h-4 text-red-500" />}
+                        {room.status === 'Maintenance' && <AlertTriangle className="w-4 h-4 text-yellow-500" />}
+                        <span className={`text-sm font-medium ${
+                          room.status === 'Available' ? 'text-green-600' :
+                          room.status === 'Occupied' ? 'text-red-600' : 'text-yellow-600'
+                        }`}>
+                          {room.status}
+                        </span>
+                      </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    {room.currentClass || '-'}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Edit className="w-4 h-4" />
-                      </Button>
+
+                    <div className="grid md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium">Capacity:</span> {room.capacity} students
+                      </div>
+                      <div>
+                        <span className="font-medium">Type:</span> {room.type}
+                      </div>
+                      <div>
+                        <span className="font-medium">Location:</span> {room.building}, {room.floor}
+                      </div>
+                      <div>
+                        <span className="font-medium">Utilization:</span>
+                        <span className={`ml-1 ${room.utilization >= 80 ? 'text-red-600' : room.utilization >= 60 ? 'text-yellow-600' : 'text-green-600'}`}>
+                          {room.utilization}%
+                        </span>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+
+                    <div className="mt-3 space-y-2">
+                      {room.currentClass && (
+                        <div className="p-2 bg-red-50 rounded text-sm">
+                          <span className="font-medium text-red-800">Currently:</span> {room.currentClass}
+                        </div>
+                      )}
+
+                      {room.nextClass && (
+                        <div className="p-2 bg-blue-50 rounded text-sm">
+                          <span className="font-medium text-blue-800">Next:</span> {room.nextClass}
+                        </div>
+                      )}
+
+                      {room.todaySchedule.length > 0 && (
+                        <div className="p-2 bg-gray-50 rounded">
+                          <div className="text-sm font-medium text-gray-700 mb-1">Today's Schedule:</div>
+                          <div className="flex flex-wrap gap-2">
+                            {room.todaySchedule.map((schedule, idx) => (
+                              <span key={idx} className="text-xs bg-gray-200 px-2 py-1 rounded">
+                                {schedule.time}: {schedule.course}-{schedule.section}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <Button size="sm" variant="outline" title="View Details">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline" title="Edit Room">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
