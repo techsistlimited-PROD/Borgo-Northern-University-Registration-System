@@ -379,6 +379,8 @@ export default function TeacherDashboard() {
         return <FinalMarks />
       case 'advised-students':
         return <AdvisedStudents />
+      case 'academic-history':
+        return <AcademicHistory />
       default:
         return (
           <div className="text-center py-20">
