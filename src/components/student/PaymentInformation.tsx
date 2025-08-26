@@ -301,6 +301,11 @@ export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onN
       return copy
     })
 
+    // IMMEDIATELY call onPaymentUpdate with new total
+    if (onPaymentUpdate) {
+      onPaymentUpdate(totalOutstanding)
+    }
+
     // Show success message with registration status
     if (totalOutstanding <= 0) {
       const message = `🎉 PAYMENT SUCCESSFUL!\n\nPayment of ৳${amount.toLocaleString()} via ${method} completed successfully.\n\n✅ ALL DUES CLEARED!\n🔓 REGISTRATION NOW UNLOCKED!\n\n🎓 NEW REGISTRATION FEATURES NOW AVAILABLE:\n• Course Selection from Available Courses\n• Section Selection with Real-time Availability\n• Credit Hour Calculation & Validation\n• Overload & Minimum Credit Warnings\n• Teacher Approval Workflow\n• Complete Registration Submission\n\n➡️ Click "New Registration" to access all features!`
