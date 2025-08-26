@@ -116,7 +116,7 @@ const timeSlots = [
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday']
 
-function WeeklyScheduleGrid({ schedule }: { schedule: ClassSchedule[] }) {
+function WeeklyScheduleGrid({ schedule, weekStatus }: { schedule: ClassSchedule[]; weekStatus: string }) {
   const getClassForTimeSlot = (day: string, timeSlot: string) => {
     return schedule.find(class_ => {
       const classTime = `${class_.startTime}-${class_.endTime}`
