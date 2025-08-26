@@ -170,8 +170,11 @@ export default function StudentDashboard() {
   }
 
   const handlePaymentUpdate = (totalOutstanding: number) => {
+    console.log('🎯 handlePaymentUpdate called with:', totalOutstanding)
+
     // Clear financial hold if total outstanding is 0 or less
     if (totalOutstanding <= 0) {
+      console.log('✅ Clearing financial hold - registration should unlock!')
       setStudentHolds(prev => ({
         ...prev,
         hasFinancialHold: false,
@@ -181,6 +184,7 @@ export default function StudentDashboard() {
         }
       }))
     } else {
+      console.log('⚠️ Still have outstanding dues:', totalOutstanding)
       setStudentHolds(prev => ({
         ...prev,
         financialDetails: {
