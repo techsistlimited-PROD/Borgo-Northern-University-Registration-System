@@ -389,7 +389,19 @@ export default function TeacherClassRoutine() {
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="text-sm font-medium px-3">Week {selectedWeek}</span>
+              <div className={`px-3 py-1 rounded-lg text-sm ${getWeekStatusColor(getWeekStatus(selectedWeek))}`}>
+                <div className="flex items-center space-x-2">
+                  <span>{getWeekLabel(selectedWeek)}</span>
+                  {getWeekStatus(selectedWeek) === 'current' && <Clock className="w-4 h-4" />}
+                  {selectedWeek === currentSemesterConfig.midtermWeek && <Calendar className="w-4 h-4" />}
+                  {selectedWeek === currentSemesterConfig.endOfClassesWeek && <Calendar className="w-4 h-4" />}
+                </div>
+                <div className="text-xs opacity-75">
+                  {getWeekStatus(selectedWeek) === 'past' && 'Classes Taken'}
+                  {getWeekStatus(selectedWeek) === 'current' && 'Running Week'}
+                  {getWeekStatus(selectedWeek) === 'upcoming' && 'Upcoming'}
+                </div>
+              </div>
               <Button
                 variant="outline"
                 size="sm"
