@@ -68,7 +68,7 @@ interface SemesterResult {
   totalCredits: number
 }
 
-// Mock data
+// Mock data with enhanced information
 const advisedStudents: Student[] = [
   {
     id: '1',
@@ -77,7 +77,9 @@ const advisedStudents: Student[] = [
     email: 'ahmed.rahman@student.nu.edu.bd',
     phone: '+880 1712-345678',
     program: 'Computer Science & Engineering',
-    semester: 'Fall 2024',
+    campus: 'Main Campus',
+    admissionSemester: 'Spring 2021',
+    currentSemester: 'Fall 2024',
     cgpa: 3.75,
     totalCredits: 96,
     registrationStatus: 'pending',
@@ -91,7 +93,9 @@ const advisedStudents: Student[] = [
     email: 'fatima.khan@student.nu.edu.bd',
     phone: '+880 1789-123456',
     program: 'Computer Science & Engineering',
-    semester: 'Fall 2024',
+    campus: 'Main Campus',
+    admissionSemester: 'Spring 2021',
+    currentSemester: 'Fall 2024',
     cgpa: 3.92,
     totalCredits: 102,
     registrationStatus: 'approved',
@@ -104,8 +108,10 @@ const advisedStudents: Student[] = [
     name: 'Mohammad Ali',
     email: 'mohammad.ali@student.nu.edu.bd',
     phone: '+880 1987-654321',
-    program: 'Computer Science & Engineering',
-    semester: 'Fall 2024',
+    program: 'Business Administration',
+    campus: 'City Campus',
+    admissionSemester: 'Fall 2021',
+    currentSemester: 'Fall 2024',
     cgpa: 3.25,
     totalCredits: 84,
     registrationStatus: 'hold',
@@ -119,11 +125,43 @@ const advisedStudents: Student[] = [
     email: 'ayesha.ahmed@student.nu.edu.bd',
     phone: '+880 1876-543210',
     program: 'Computer Science & Engineering',
-    semester: 'Fall 2024',
+    campus: 'Main Campus',
+    admissionSemester: 'Summer 2021',
+    currentSemester: 'Fall 2024',
     cgpa: 3.68,
     totalCredits: 90,
     registrationStatus: 'pending',
     lastRegistrationDate: '2024-01-14'
+  },
+  {
+    id: '5',
+    studentId: '2022-1-60-005',
+    name: 'Rashid Hasan',
+    email: 'rashid.hasan@student.nu.edu.bd',
+    phone: '+880 1567-891234',
+    program: 'Electrical & Electronic Engineering',
+    campus: 'Tech Campus',
+    admissionSemester: 'Spring 2022',
+    currentSemester: 'Fall 2024',
+    cgpa: 3.45,
+    totalCredits: 72,
+    registrationStatus: 'approved',
+    lastRegistrationDate: '2024-01-11'
+  },
+  {
+    id: '6',
+    studentId: '2022-1-60-006',
+    name: 'Nusrat Jahan',
+    email: 'nusrat.jahan@student.nu.edu.bd',
+    phone: '+880 1456-789123',
+    program: 'Business Administration',
+    campus: 'City Campus',
+    admissionSemester: 'Fall 2022',
+    currentSemester: 'Fall 2024',
+    cgpa: 3.89,
+    totalCredits: 78,
+    registrationStatus: 'pending',
+    lastRegistrationDate: '2024-01-13'
   }
 ]
 
