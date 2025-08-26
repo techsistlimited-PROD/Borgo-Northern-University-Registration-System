@@ -233,7 +233,7 @@ interface PaymentInformationProps {
   onNavigateToRegistration?: () => void
 }
 
-export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate }: PaymentInformationProps) => {
+export const PaymentInformation = ({ activeTab = 'payable', onPaymentUpdate, onNavigateToRegistration }: PaymentInformationProps) => {
   // Convert mock data to state for simulation
   const [payables, setPayables] = useState(payableData)
   const [history, setHistory] = useState(paymentHistory)
