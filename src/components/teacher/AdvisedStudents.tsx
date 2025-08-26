@@ -903,9 +903,23 @@ export default function AdvisedStudents() {
                   <div>
                     <h4 className="font-semibold text-lg">{student.name}</h4>
                     <p className="text-gray-600">{student.studentId}</p>
-                    <div className="flex items-center space-x-4 mt-1">
+                    <div className="flex items-center space-x-1 mt-1">
+                      <Badge variant="outline" className="text-xs">
+                        {student.program}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {student.campus}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Admitted: {student.admissionSemester}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center space-x-4 mt-2">
                       <span className="text-sm text-gray-500">CGPA: {student.cgpa}</span>
                       <span className="text-sm text-gray-500">Credits: {student.totalCredits}</span>
+                      <span className="text-sm text-gray-500">
+                        Current: {student.currentSemester}
+                      </span>
                       <span className="text-sm text-gray-500">
                         Last Registration: {new Date(student.lastRegistrationDate).toLocaleDateString()}
                       </span>
