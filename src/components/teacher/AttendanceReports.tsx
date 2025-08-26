@@ -416,7 +416,7 @@ function StudentWiseReport() {
                 <p className="text-2xl font-bold text-red-600">
                   {studentWiseData.filter(s => s.attendancePercentage < 60).length}
                 </p>
-                <p className="text-sm text-gray-600">Poor Attendance (<60%)</p>
+                <p className="text-sm text-gray-600">Poor Attendance (&lt;60%)</p>
               </div>
             </CardContent>
           </Card>
