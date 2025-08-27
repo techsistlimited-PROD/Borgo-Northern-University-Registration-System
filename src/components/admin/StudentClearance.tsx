@@ -160,7 +160,6 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
-  const [actionType, setActionType] = useState<'approve' | 'hold' | 'reject' | null>(null)
 
   // Filter data based on clearance type
   const filteredData = mockClearanceData.filter(student => {
