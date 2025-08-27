@@ -236,7 +236,7 @@ function StudentReports() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
+              <h2 className="text-2xl font-bold text-deep-plum">{reportData?.title}</h2>
               <p className="text-gray-600">Generated report based on selected filters</p>
             </div>
             <div className="flex space-x-2">
@@ -252,11 +252,11 @@ function StudentReports() {
 
           <Card>
             <CardContent className="p-0">
-              {mockReportData.data.length > 0 ? (
+              {reportData?.data?.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      {mockReportData.columns.map((column: string, index: number) => (
+                      {reportData?.columns?.map((column: string, index: number) => (
                         <TableHead key={index}>{column}</TableHead>
                       ))}
                     </TableRow>
