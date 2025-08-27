@@ -686,7 +686,7 @@ export const SectionManagement = () => {
 
   const handleDeleteSection = (sectionId: number) => {
     if (confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
-      alert(`Section deleted successfully!`)
+      alert(`Section ${sectionId} deleted successfully!`)
     }
   }
 
