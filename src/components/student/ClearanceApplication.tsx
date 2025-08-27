@@ -85,10 +85,10 @@ export const ClearanceApplication = ({ activeTab = 'exam-clearance' }: Clearance
     }
 
     setSubmitting(true)
-    
+
     // Simulate API call
     setTimeout(() => {
-      alert(`✅ EXAM CLEARANCE APPLICATION SUBMITTED\n\nSemester: ${selectedSemester}\nExam Type: ${selectedExamType}\n\nStatus: Pending Review\n\nYour application has been submitted to the admin for review. You will be notified once approved.`)
+      alert(`✅ EXAM CLEARANCE APPLICATION SUBMITTED\n\nSemester: ${selectedSemester}\nExam Type: ${selectedExamType}\n\nStatus: Pending Review\n\nYour application has been submitted to the admin for review. You will be notified once approved.\n\n📋 IMPORTANT: Please collect your admit card from the Academic Affairs Division office before the exam date.`)
       setSubmitting(false)
       setSelectedSemester('')
       setSelectedExamType('')
