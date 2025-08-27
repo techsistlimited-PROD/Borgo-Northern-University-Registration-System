@@ -127,7 +127,7 @@ interface AdmitCardReportProps {
   onClose?: () => void
 }
 
-export const AdmitCardReport = ({ onClose }: AdmitCardReportProps) => {
+export const AdmitCardReport = ({ onClose: _onClose }: AdmitCardReportProps) => {
   const [filters, setFilters] = useState({
     semester: 'Fall 2024',
     department: 'all',
