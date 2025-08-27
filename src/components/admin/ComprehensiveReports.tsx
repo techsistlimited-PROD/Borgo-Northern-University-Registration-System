@@ -129,6 +129,11 @@ function StudentReports() {
       return
     }
 
+    // Clear semester filter for reports that shouldn't have it
+    if (selectedReportType === 'unregistered-previous' || selectedReportType === 'dropout-list') {
+      setFilters(prev => ({ ...prev, semester: undefined }))
+    }
+
     // Generate mock data for other reports
     const mockData = generateMockReportData(selectedReportType)
     setReportData(mockData)
