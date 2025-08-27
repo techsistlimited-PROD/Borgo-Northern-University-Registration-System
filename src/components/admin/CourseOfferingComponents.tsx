@@ -488,7 +488,7 @@ export const OfferCourses = () => {
               {/* Create New Section */}
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                 <h4 className="text-lg font-semibold mb-3">Create New Section</h4>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label>Section Capacity</Label>
                     <Input
@@ -498,22 +498,60 @@ export const OfferCourses = () => {
                       onChange={(e) => setSectionCapacity(e.target.value)}
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <Label>Teacher Employee ID</Label>
+                    <Label>Unoccupied Teacher</Label>
                     <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select teacher" />
                       </SelectTrigger>
                       <SelectContent>
-                        {teachers.map((teacher) => (
+                        {teachers.filter(teacher => !sections.some(section => section.teacherId === teacher.id)).map((teacher) => (
                           <SelectItem key={teacher.id} value={teacher.id}>
-                            {teacher.id} - {teacher.name}
+                            {teacher.name} ({teacher.id})
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex items-end">
+
+                  <div className="space-y-2">
+                    <Label>Select Weekdays</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose days" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sun-tue">Sunday & Tuesday</SelectItem>
+                        <SelectItem value="mon-wed">Monday & Wednesday</SelectItem>
+                        <SelectItem value="tue-thu">Tuesday & Thursday</SelectItem>
+                        <SelectItem value="wed-fri">Wednesday & Friday</SelectItem>
+                        <SelectItem value="thu-sat">Thursday & Saturday</SelectItem>
+                        <SelectItem value="sat-sun">Saturday & Sunday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Room & Time Slot</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Available slots" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="room301-0800">Room 301 - 08:00-09:30</SelectItem>
+                        <SelectItem value="room302-1000">Room 302 - 10:00-11:30</SelectItem>
+                        <SelectItem value="room303-1200">Room 303 - 12:00-13:30</SelectItem>
+                        <SelectItem value="room401-1400">Room 401 - 14:00-15:30</SelectItem>
+                        <SelectItem value="room402-1600">Room 402 - 16:00-17:30</SelectItem>
+                        <SelectItem value="room501-0930">Room 501 - 09:30-11:00</SelectItem>
+                        <SelectItem value="room502-1130">Room 502 - 11:30-13:00</SelectItem>
+                        <SelectItem value="room503-1530">Room 503 - 15:30-17:00</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-end md:col-span-2 lg:col-span-4">
                     <Button onClick={handleCreateSection} className="w-full">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Section
