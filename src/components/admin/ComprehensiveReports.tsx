@@ -48,7 +48,7 @@ interface ReportFilter {
 }
 
 // Mock data for reports
-const reportData = {
+const mockReportData = {
   semesters: ['Fall 2024', 'Spring 2024', 'Summer 2024', 'Fall 2023'],
   programs: ['CSE', 'BBA', 'EEE', 'Textile Engineering', 'B. Pharm'],
   terms: ['Midterm', 'Final'],
@@ -377,7 +377,7 @@ function StudentReports() {
                       <SelectValue placeholder="Select term" />
                     </SelectTrigger>
                     <SelectContent>
-                      {reportData.terms.map(term => (
+                      {mockReportData.terms.map(term => (
                         <SelectItem key={term} value={term}>{term}</SelectItem>
                       ))}
                     </SelectContent>
@@ -816,7 +816,7 @@ function TeacherReports() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Teachers</SelectItem>
-                        {reportData.teachers.map(teacher => (
+                        {mockReportData.teachers.map(teacher => (
                           <SelectItem key={teacher.id} value={teacher.id}>
                             {teacher.id} - {teacher.name}
                           </SelectItem>
