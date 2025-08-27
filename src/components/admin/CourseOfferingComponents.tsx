@@ -669,19 +669,21 @@ export const OfferCourses = () => {
                     <div className="space-y-2">
                       <Label>From Student ID</Label>
                       <Input
-                        placeholder="Starting ID"
+                        placeholder="e.g., 2021-1-60-001"
                         value={bulkStudentRange.from}
                         onChange={(e) => setBulkStudentRange(prev => ({ ...prev, from: e.target.value }))}
                       />
+                      <p className="text-xs text-gray-500">Start: 2021-1-60-001</p>
                     </div>
 
                     <div className="space-y-2">
                       <Label>To Student ID</Label>
                       <Input
-                        placeholder="Ending ID"
+                        placeholder="e.g., 2021-1-60-050"
                         value={bulkStudentRange.to}
                         onChange={(e) => setBulkStudentRange(prev => ({ ...prev, to: e.target.value }))}
                       />
+                      <p className="text-xs text-gray-500">End: 2021-1-60-050</p>
                     </div>
 
                     <div className="space-y-2">
