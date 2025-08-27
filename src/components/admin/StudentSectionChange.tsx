@@ -16,8 +16,7 @@ import {
   XCircle,
   AlertTriangle,
   UserCheck,
-  FileText,
-  BookOpen
+  FileText
 } from 'lucide-react'
 
 interface Student {
