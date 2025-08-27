@@ -22,6 +22,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { AdminProfileDropdown } from '@/components/admin/AdminProfileDropdown'
+import { AdminProfile, EditAdminProfile, ChangeAdminPassword } from '@/components/admin/AdminProfile'
 import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
 import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
 import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
@@ -35,7 +37,6 @@ import {
   Calendar,
   BookOpen,
   Settings,
-  LogOut,
   Search,
   Plus,
   Edit,
