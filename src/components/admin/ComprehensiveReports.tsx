@@ -130,7 +130,38 @@ function StudentReports() {
     }
 
     // Generate mock data for other reports
-    const mockData = generateMockReportData(selectedReportType)
+    let mockData = generateMockReportData(selectedReportType)
+
+    // Apply filters
+    if (mockData.data) {
+      let filteredData = mockData.data
+
+      // Filter by department
+      if (filters.program && filters.program !== 'all') {
+        filteredData = filteredData.filter((item: any) => item.dept === filters.program)
+      }
+
+      // Filter by search query (student ID)
+      if (searchQuery.trim()) {
+        filteredData = filteredData.filter((item: any) =>
+          item.id.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      }
+
+      // Filter by course type
+      if (filters.courseCode && filters.courseCode !== 'all') {
+        filteredData = filteredData.filter((item: any) =>
+          item.courseType?.toLowerCase() === filters.courseCode
+        )
+      }
+
+      mockData = {
+        ...mockData,
+        data: filteredData,
+        totalCount: filteredData.length
+      }
+    }
+
     setReportData(mockData)
     setShowDetailedView(true)
   }
