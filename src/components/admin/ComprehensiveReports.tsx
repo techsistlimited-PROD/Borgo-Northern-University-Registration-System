@@ -535,7 +535,7 @@ function AttendanceReports() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {mockReportData.columns.map((column: string, index: number) => (
+                  {reportData?.columns?.map((column: string, index: number) => (
                     <TableHead key={index}>{column}</TableHead>
                   ))}
                 </TableRow>
@@ -999,21 +999,21 @@ function AcademicReports() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {mockReportData.columns.map((column: string, index: number) => (
+                  {reportData?.columns?.map((column: string, index: number) => (
                     <TableHead key={index}>{column}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockReportData.data.map((row: any, index: number) => (
+                {reportData?.data?.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>
-                        {mockReportData.title.includes('TER') && cellIndex === 2 ? (
+                        {reportData?.title?.includes('TER') && cellIndex === 2 ? (
                           <Badge className={value === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                             {value}
                           </Badge>
-                        ) : cellIndex === 3 && mockReportData.title.includes('CGPA') ? (
+                        ) : cellIndex === 3 && reportData?.title?.includes('CGPA') ? (
                           <Badge className={parseFloat(value) >= 3.5 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
                             {value}
                           </Badge>
