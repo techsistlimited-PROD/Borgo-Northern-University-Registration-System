@@ -74,6 +74,16 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
     { id: 'class-routine', label: 'Central Class Routine & Room Management', icon: Building },
     { id: 'section-change', label: 'Change Students\' Section', icon: Users },
     { id: 'advisor-assignment', label: 'Student Advisor Assignment', icon: UserPlus },
+    { id: 'ter-reports', label: 'TER Reports', icon: FileText },
+    {
+      id: 'student-clearance',
+      label: 'Student Clearance',
+      icon: GraduationCap,
+      subItems: [
+        { id: 'exam-clearance', label: 'Exam Clearance', icon: Calendar },
+        { id: 'final-clearance', label: 'Final Clearance for Certificates', icon: Award },
+      ]
+    },
     { id: 'reports', label: 'Comprehensive Reports', icon: BarChart3 },
   ]
 
