@@ -47,18 +47,31 @@ export const Syllabuses = () => {
       type: 'Tri-semester',
       courses: [
         { semester: 1, courses: ['CSE101 - Programming Fundamentals', 'MAT101 - Calculus I', 'PHY101 - Physics I', 'ENG101 - English I', 'CSE102 - Programming Lab'] },
-        { semester: 2, courses: ['CSE201 - Data Structures', 'MAT201 - Calculus II', 'PHY201 - Physics II', 'ENG201 - English II', 'CSE202 - Data Structures Lab', 'CSE203 - Digital Logic'] },
+        { semester: 2, courses: ['CSE201 - Data Structures', 'MAT201 - Calculus II', 'PHY201 - Physics II', 'ENG201 - English II', 'CSE202 - Data Structures Lab'] },
         { semester: 3, courses: ['CSE301 - Algorithms', 'MAT301 - Linear Algebra', 'CSE302 - Database Systems', 'CSE303 - Computer Organization', 'CSE304 - Database Lab'] },
-        // Continue for all 12 semesters...
+        { semester: 4, courses: ['CSE401 - Software Engineering', 'CSE402 - Computer Networks', 'CSE403 - Operating Systems', 'EEE201 - Digital Logic Design'] },
+        { semester: 5, courses: ['CSE501 - Artificial Intelligence', 'CSE502 - Machine Learning', 'CSE503 - Web Technologies', 'CSE504 - Mobile App Development'] },
+        { semester: 6, courses: ['CSE601 - Computer Graphics', 'CSE602 - Cyber Security', 'CSE603 - Cloud Computing', 'CSE604 - Data Mining'] },
+        { semester: 7, courses: ['CSE701 - Distributed Systems', 'CSE702 - Blockchain Technology', 'CSE703 - IoT Systems', 'CSE704 - Big Data Analytics'] },
+        { semester: 8, courses: ['CSE801 - Advanced Algorithms', 'CSE802 - Computer Vision', 'CSE803 - Natural Language Processing', 'CSE804 - Robotics'] },
+        { semester: 9, courses: ['CSE901 - Project Work I', 'CSE902 - Research Methodology', 'CSE903 - Ethics in Computing', 'CSE904 - Entrepreneurship'] },
+        { semester: 10, courses: ['CSE1001 - Project Work II', 'CSE1002 - Industry Internship', 'CSE1003 - Advanced Topics in AI', 'CSE1004 - Thesis Writing'] },
+        { semester: 11, courses: ['CSE1101 - Capstone Project I', 'CSE1102 - Seminar & Presentation', 'CSE1103 - Advanced Database Systems', 'CSE1104 - Software Architecture'] },
+        { semester: 12, courses: ['CSE1201 - Capstone Project II', 'CSE1202 - Professional Practice', 'CSE1203 - Advanced Web Technologies', 'CSE1204 - Final Thesis Defense'] }
       ]
     },
     'BBA': {
       semesters: 8, // Bi-semester
-      type: 'Bi-semester', 
+      type: 'Bi-semester',
       courses: [
         { semester: 1, courses: ['BBA101 - Principles of Management', 'ECO101 - Microeconomics', 'ACC101 - Financial Accounting', 'ENG101 - Business English', 'MAT101 - Business Mathematics'] },
         { semester: 2, courses: ['BBA201 - Organizational Behavior', 'ECO201 - Macroeconomics', 'ACC201 - Management Accounting', 'MKT201 - Principles of Marketing', 'FIN201 - Corporate Finance'] },
-        // Continue for all 8 semesters...
+        { semester: 3, courses: ['BBA301 - Strategic Management', 'BBA302 - Human Resource Management', 'BBA303 - Operations Management', 'BBA304 - Business Research Methods'] },
+        { semester: 4, courses: ['BBA401 - International Business', 'BBA402 - E-Commerce', 'BBA403 - Supply Chain Management', 'BBA404 - Business Ethics'] },
+        { semester: 5, courses: ['BBA501 - Leadership & Change Management', 'BBA502 - Digital Marketing', 'BBA503 - Investment Analysis', 'BBA504 - Project Management'] },
+        { semester: 6, courses: ['BBA601 - Business Analytics', 'BBA602 - Entrepreneurship', 'BBA603 - Risk Management', 'BBA604 - Corporate Governance'] },
+        { semester: 7, courses: ['BBA701 - Internship Program', 'BBA702 - Business Simulation', 'BBA703 - Advanced Strategic Management', 'BBA704 - Capstone Project I'] },
+        { semester: 8, courses: ['BBA801 - Final Project Defense', 'BBA802 - Professional Development', 'BBA803 - Global Business Environment', 'BBA804 - Business Consulting'] }
       ]
     }
   }
@@ -144,7 +157,12 @@ export const Syllabuses = () => {
                           </div>
                         </div>
                       ))}
-                      <Button size="sm" variant="outline" className="w-full mt-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full mt-2"
+                        onClick={() => handleAddCourse(selectedProgram, semesterData.semester)}
+                      >
                         <Plus className="w-3 h-3 mr-1" />
                         Add Course
                       </Button>
