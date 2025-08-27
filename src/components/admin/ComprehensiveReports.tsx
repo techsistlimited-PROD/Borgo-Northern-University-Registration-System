@@ -189,6 +189,34 @@ function StudentReports() {
           columns: ['Student ID', 'Name', 'Department', 'Final Clearance Status'],
           totalCount: 6
         }
+      case 'earned-credit-cgpa':
+        return {
+          title: 'Students with Earned Credit & CGPA',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', dept: 'CSE', totalCredit: 102, cgpa: 3.75 },
+            { id: '2021-1-60-002', name: 'Fatima Khan', dept: 'CSE', totalCredit: 89, cgpa: 3.42 },
+            { id: '2021-2-50-015', name: 'Mohammad Ali', dept: 'BBA', totalCredit: 78, cgpa: 3.21 },
+            { id: '2020-3-55-088', name: 'Sarah Ahmed', dept: 'Textile', totalCredit: 120, cgpa: 3.89 },
+            { id: '2022-4-45-012', name: 'Karim Rahman', dept: 'B. Pharm', totalCredit: 67, cgpa: 3.56 },
+            { id: '2021-3-40-105', name: 'Nadia Sultana', dept: 'EEE', totalCredit: 95, cgpa: 3.12 }
+          ],
+          columns: ['Student ID', 'Name', 'Department', 'Total Credit', 'CGPA'],
+          totalCount: 6
+        }
+      case 'pending-approval':
+        return {
+          title: 'Registrations Pending Advisor Approval',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', advisorName: 'Dr. Rahman Ahmed', submissionDate: '2024-01-20', leadTime: 1 },
+            { id: '2021-1-60-002', name: 'Fatima Khan', advisorName: 'Prof. Sarah Khan', submissionDate: '2024-01-19', leadTime: 2 },
+            { id: '2021-2-50-015', name: 'Mohammad Ali', advisorName: 'Dr. Mohammad Ali', submissionDate: '2024-01-15', leadTime: 6 },
+            { id: '2020-3-55-088', name: 'Sarah Ahmed', advisorName: 'Dr. Rahman Ahmed', submissionDate: '2024-01-17', leadTime: 4 },
+            { id: '2022-4-45-012', name: 'Karim Rahman', advisorName: 'Prof. Nusrat Jahan', submissionDate: '2024-01-18', leadTime: 3 },
+            { id: '2021-3-40-105', name: 'Nadia Sultana', advisorName: 'Dr. Khalil Ahmed', submissionDate: '2024-01-14', leadTime: 7 }
+          ],
+          columns: ['Student ID', 'Name', 'Advisor Name', 'Submission Date', 'Lead Time'],
+          totalCount: 6
+        }
       default:
         return {
           title: reportType,
