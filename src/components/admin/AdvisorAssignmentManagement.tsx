@@ -53,18 +53,6 @@ interface Student {
   status: 'active' | 'suspended' | 'graduated' | 'dropped'
 }
 
-interface AdvisorAssignment {
-  id: string
-  studentId: string
-  studentName: string
-  teacherId: string
-  teacherName: string
-  assignmentDate: string
-  assignedBy: string
-  isActive: boolean
-  reassignmentReason?: string
-  previousAdvisor?: string
-}
 
 // Mock data for teachers
 const teachersData: Teacher[] = [
