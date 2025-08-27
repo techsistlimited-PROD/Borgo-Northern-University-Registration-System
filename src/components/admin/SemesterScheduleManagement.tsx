@@ -541,12 +541,12 @@ export default function SemesterScheduleManagement() {
   const schedules = mockSchedules
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingSchedule, setEditingSchedule] = useState<SemesterSchedule | undefined>()
-  const [filterYear, setFilterYear] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
+  const [filterYear, setFilterYear] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
 
   const filteredSchedules = schedules.filter(schedule => {
-    const matchesYear = !filterYear || schedule.academicYear.includes(filterYear)
-    const matchesStatus = !filterStatus || schedule.status === filterStatus
+    const matchesYear = filterYear === 'all' || schedule.academicYear.includes(filterYear)
+    const matchesStatus = filterStatus === 'all' || schedule.status === filterStatus
     return matchesYear && matchesStatus
   })
 
@@ -666,7 +666,7 @@ export default function SemesterScheduleManagement() {
                   <SelectValue placeholder="All Years" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Years</SelectItem>
+                  <SelectItem value="all">All Years</SelectItem>
                   {uniqueYears.map(year => (
                     <SelectItem key={year} value={year}>{year}</SelectItem>
                   ))}
@@ -681,7 +681,7 @@ export default function SemesterScheduleManagement() {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
