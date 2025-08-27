@@ -438,7 +438,7 @@ function SchedulesList({
 
   const handleDelete = (scheduleId: string) => {
     if (confirm('Are you sure you want to delete this schedule?')) {
-      alert('Schedule deleted successfully!')
+      alert(`Schedule ${scheduleId} deleted successfully!`)
     }
   }
 
