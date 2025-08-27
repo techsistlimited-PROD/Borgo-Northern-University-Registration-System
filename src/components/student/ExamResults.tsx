@@ -104,30 +104,10 @@ interface ExamResultsProps {
   activeTab?: string
 }
 
-export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
-  const [selectedSemester, setSelectedSemester] = useState('')
-  const [selectedExamType, setSelectedExamType] = useState('')
+export const ExamResults = ({ activeTab = 'results' }: ExamResultsProps) => {
   const [selectedResultSemester, setSelectedResultSemester] = useState('')
-  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
-  const examTypes = ['Mid Term', 'Final']
-
-  const handleDownloadClearance = () => {
-    if (!selectedSemester || !selectedExamType) {
-      alert('Please select both semester and exam type.')
-      return
-    }
-
-    // Show preview modal instead of direct download
-    setShowPreviewModal(true)
-  }
-
-  const handleActualDownload = () => {
-    // In real app, this would generate and download the clearance form
-    alert(`Downloading clearance form for ${selectedExamType} exam in ${selectedSemester}`)
-    setShowPreviewModal(false)
-  }
 
   const getSelectedSemesterResult = () => {
     if (!selectedResultSemester) return null
