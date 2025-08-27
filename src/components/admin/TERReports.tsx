@@ -180,16 +180,16 @@ const allCourses = [
 interface TERReportsProps {}
 
 export const TERReports = ({}: TERReportsProps) => {
-  const [selectedTeacher, setSelectedTeacher] = useState('')
-  const [selectedCourse, setSelectedCourse] = useState('')
+  const [selectedTeacher, setSelectedTeacher] = useState('all')
+  const [selectedCourse, setSelectedCourse] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [selectedTERDetail, setSelectedTERDetail] = useState<any>(null)
 
   // Filter the data based on selected filters
   const filteredData = mockTERData.filter(item => {
-    const matchesTeacher = !selectedTeacher || item.teacherName === selectedTeacher
-    const matchesCourse = !selectedCourse || item.courseCode === selectedCourse
+    const matchesTeacher = selectedTeacher === 'all' || item.teacherName === selectedTeacher
+    const matchesCourse = selectedCourse === 'all' || item.courseCode === selectedCourse
     const matchesSearch = !searchQuery || 
       item.teacherName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -301,7 +301,7 @@ export const TERReports = ({}: TERReportsProps) => {
                   <SelectValue placeholder="All teachers" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Teachers</SelectItem>
+                  <SelectItem value="all">All Teachers</SelectItem>
                   {allTeachers.map(teacher => (
                     <SelectItem key={teacher} value={teacher}>
                       {teacher}
@@ -318,7 +318,7 @@ export const TERReports = ({}: TERReportsProps) => {
                   <SelectValue placeholder="All courses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Courses</SelectItem>
+                  <SelectItem value="all">All Courses</SelectItem>
                   {allCourses.map(course => (
                     <SelectItem key={course.code} value={course.code}>
                       {course.code} - {course.name}
