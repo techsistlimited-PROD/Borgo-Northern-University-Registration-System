@@ -25,6 +25,7 @@ import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManag
 import StudentSectionChange from '@/components/admin/StudentSectionChange'
 import AdvisorAssignmentManagement from '@/components/admin/AdvisorAssignmentManagement'
 import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
+import { TERReports } from '@/components/admin/TERReports'
 import {
   Users,
   Calendar,
