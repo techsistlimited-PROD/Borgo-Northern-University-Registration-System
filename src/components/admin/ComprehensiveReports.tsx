@@ -239,7 +239,7 @@ function StudentReports() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+              <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
               <p className="text-gray-600">Generated report based on selected filters</p>
             </div>
             <div className="flex space-x-2">
@@ -255,17 +255,17 @@ function StudentReports() {
 
           <Card>
             <CardContent className="p-0">
-              {reportData.data.length > 0 ? (
+              {mockReportData.data.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      {reportData.columns.map((column: string, index: number) => (
+                      {mockReportData.columns.map((column: string, index: number) => (
                         <TableHead key={index}>{column}</TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {reportData.data.map((row: any, index: number) => (
+                    {mockReportData.data.map((row: any, index: number) => (
                       <TableRow key={index}>
                         {Object.values(row).map((value: any, cellIndex: number) => (
                           <TableCell key={cellIndex}>{value}</TableCell>
@@ -345,7 +345,7 @@ function StudentReports() {
                       <SelectValue placeholder="Select semester" />
                     </SelectTrigger>
                     <SelectContent>
-                      {reportData.semesters.map(semester => (
+                      {mockReportData.semesters.map(semester => (
                         <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                       ))}
                     </SelectContent>
@@ -361,7 +361,7 @@ function StudentReports() {
                       <SelectValue placeholder="Select program" />
                     </SelectTrigger>
                     <SelectContent>
-                      {reportData.programs.map(program => (
+                      {mockReportData.programs.map(program => (
                         <SelectItem key={program} value={program}>{program}</SelectItem>
                       ))}
                     </SelectContent>
@@ -519,7 +519,7 @@ function AttendanceReports() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
             <p className="text-gray-600">Attendance report for {filters.semester || 'selected semester'}</p>
           </div>
           <div className="flex space-x-2">
@@ -538,17 +538,17 @@ function AttendanceReports() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {reportData.columns.map((column: string, index: number) => (
+                  {mockReportData.columns.map((column: string, index: number) => (
                     <TableHead key={index}>{column}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reportData.data.map((row: any, index: number) => (
+                {mockReportData.data.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>
-                        {cellIndex === reportData.columns.length - 1 && reportData.title.includes('Attendance Report') ? (
+                        {cellIndex === mockReportData.columns.length - 1 && mockReportData.title.includes('Attendance Report') ? (
                           <Badge className={parseFloat(value) >= 90 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                             {value}
                           </Badge>
@@ -611,7 +611,7 @@ function AttendanceReports() {
                         <SelectValue placeholder="Select semester" />
                       </SelectTrigger>
                       <SelectContent>
-                        {reportData.semesters.map(semester => (
+                        {mockReportData.semesters.map(semester => (
                           <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                         ))}
                       </SelectContent>
@@ -625,7 +625,7 @@ function AttendanceReports() {
                         <SelectValue placeholder="Select course" />
                       </SelectTrigger>
                       <SelectContent>
-                        {reportData.courses.map(course => (
+                        {mockReportData.courses.map(course => (
                           <SelectItem key={course.code} value={course.code}>
                             {course.code} - {course.name}
                           </SelectItem>
@@ -641,7 +641,7 @@ function AttendanceReports() {
                         <SelectValue placeholder="Select program" />
                       </SelectTrigger>
                       <SelectContent>
-                        {reportData.programs.map(program => (
+                        {mockReportData.programs.map(program => (
                           <SelectItem key={program} value={program}>{program}</SelectItem>
                         ))}
                       </SelectContent>
@@ -731,7 +731,7 @@ function TeacherReports() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
             <p className="text-gray-600">Teacher report for {filters.semester || 'all semesters'}</p>
           </div>
           <div className="flex space-x-2">
@@ -750,13 +750,13 @@ function TeacherReports() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {reportData.columns.map((column: string, index: number) => (
+                  {mockReportData.columns.map((column: string, index: number) => (
                     <TableHead key={index}>{column}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reportData.data.map((row: any, index: number) => (
+                {mockReportData.data.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>{value}</TableCell>
@@ -833,7 +833,7 @@ function TeacherReports() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Semesters</SelectItem>
-                        {reportData.semesters.map(semester => (
+                        {mockReportData.semesters.map(semester => (
                           <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                         ))}
                       </SelectContent>
@@ -848,7 +848,7 @@ function TeacherReports() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Programs</SelectItem>
-                        {reportData.programs.map(program => (
+                        {mockReportData.programs.map(program => (
                           <SelectItem key={program} value={program}>{program}</SelectItem>
                         ))}
                       </SelectContent>
@@ -983,7 +983,7 @@ function AcademicReports() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
             <p className="text-gray-600">Academic report for {filters.semester || 'selected criteria'}</p>
           </div>
           <div className="flex space-x-2">
@@ -1002,21 +1002,21 @@ function AcademicReports() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {reportData.columns.map((column: string, index: number) => (
+                  {mockReportData.columns.map((column: string, index: number) => (
                     <TableHead key={index}>{column}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reportData.data.map((row: any, index: number) => (
+                {mockReportData.data.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>
-                        {reportData.title.includes('TER') && cellIndex === 2 ? (
+                        {mockReportData.title.includes('TER') && cellIndex === 2 ? (
                           <Badge className={value === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                             {value}
                           </Badge>
-                        ) : cellIndex === 3 && reportData.title.includes('CGPA') ? (
+                        ) : cellIndex === 3 && mockReportData.title.includes('CGPA') ? (
                           <Badge className={parseFloat(value) >= 3.5 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
                             {value}
                           </Badge>
@@ -1079,7 +1079,7 @@ function AcademicReports() {
                         <SelectValue placeholder="Select semester" />
                       </SelectTrigger>
                       <SelectContent>
-                        {reportData.semesters.map(semester => (
+                        {mockReportData.semesters.map(semester => (
                           <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                         ))}
                       </SelectContent>
@@ -1093,7 +1093,7 @@ function AcademicReports() {
                         <SelectValue placeholder="Select program" />
                       </SelectTrigger>
                       <SelectContent>
-                        {reportData.programs.map(program => (
+                        {mockReportData.programs.map(program => (
                           <SelectItem key={program} value={program}>{program}</SelectItem>
                         ))}
                       </SelectContent>
@@ -1134,7 +1134,7 @@ function AcademicReports() {
                           <SelectValue placeholder="Select course" />
                         </SelectTrigger>
                         <SelectContent>
-                          {reportData.courses.map(course => (
+                          {mockReportData.courses.map(course => (
                             <SelectItem key={course.code} value={course.code}>
                               {course.code} - {course.name}
                             </SelectItem>
