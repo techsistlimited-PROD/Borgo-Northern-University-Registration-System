@@ -164,9 +164,9 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
   // Filter data based on clearance type
   const filteredData = mockClearanceData.filter(student => {
     const matchesType = student.clearanceType === clearanceType
-    const matchesDepartment = !selectedDepartment || student.department === selectedDepartment
-    const matchesSemester = clearanceType === 'exam' ? (!selectedSemester || student.semester === selectedSemester) : true
-    const matchesStatus = !selectedStatus || student.status === selectedStatus
+    const matchesDepartment = selectedDepartment === 'all' || student.department === selectedDepartment
+    const matchesSemester = clearanceType === 'exam' ? (selectedSemester === 'all' || student.semester === selectedSemester) : true
+    const matchesStatus = selectedStatus === 'all' || student.status === selectedStatus
     const matchesSearch = !searchQuery || 
       student.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.studentId.toLowerCase().includes(searchQuery.toLowerCase())
