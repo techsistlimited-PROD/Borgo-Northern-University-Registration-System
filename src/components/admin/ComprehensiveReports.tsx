@@ -148,10 +148,31 @@ function StudentReports() {
         )
       }
 
-      // Filter by course type
+      // Filter by course type (for registered students)
       if (filters.courseCode && filters.courseCode !== 'all') {
         filteredData = filteredData.filter((item: any) =>
           item.courseType?.toLowerCase() === filters.courseCode
+        )
+      }
+
+      // Filter by CGPA threshold (for earned credit & CGPA report)
+      if (filters.cgpaThreshold) {
+        filteredData = filteredData.filter((item: any) =>
+          item.cgpa >= filters.cgpaThreshold
+        )
+      }
+
+      // Filter by clearance status (for completed students)
+      if (filters.individual !== undefined) {
+        filteredData = filteredData.filter((item: any) =>
+          filters.individual ? item.clearanceStatus === 'Pending' : item.clearanceStatus === 'Approved'
+        )
+      }
+
+      // Filter by lead time (for pending approval)
+      if (filters.teacherId && filters.teacherId !== 'all') {
+        filteredData = filteredData.filter((item: any) =>
+          filters.teacherId === 'safe' ? item.leadTime <= 3 : item.leadTime > 3
         )
       }
 
