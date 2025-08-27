@@ -453,17 +453,25 @@ export const OfferCourses = () => {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteSection(section.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      {!section.offered ? (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleOfferSection(section.id)}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          Offer Section
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleWithdrawOffer(section.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          Withdraw Offer
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
