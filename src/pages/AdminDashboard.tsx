@@ -48,7 +48,8 @@ import {
   UserPlus,
   CalendarPlus,
   BookPlus,
-  Home
+  Home,
+  Award
 } from 'lucide-react'
 
 const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: { 
