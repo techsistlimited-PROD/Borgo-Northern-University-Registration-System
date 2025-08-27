@@ -572,7 +572,7 @@ export const OfferCourses = () => {
             <CardDescription>Assign or update teachers for existing sections</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Section</Label>
                 <Select value={selectedSection} onValueChange={setSelectedSection}>
@@ -601,20 +601,6 @@ export const OfferCourses = () => {
                         {teacher.id} - {teacher.name}
                       </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Schedule</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select schedule" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="st-1000">Sun, Tue 10:00-11:30</SelectItem>
-                    <SelectItem value="mw-1400">Mon, Wed 14:00-15:30</SelectItem>
-                    <SelectItem value="tr-0800">Thu, Fri 08:00-09:30</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
