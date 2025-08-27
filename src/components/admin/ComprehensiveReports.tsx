@@ -753,7 +753,7 @@ function TeacherReports() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockReportData.data.map((row: any, index: number) => (
+                {reportData?.data?.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>{value}</TableCell>
