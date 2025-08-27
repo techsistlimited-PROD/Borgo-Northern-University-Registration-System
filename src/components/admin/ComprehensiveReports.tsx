@@ -354,7 +354,10 @@ function StudentReports() {
                 {/* Department Filter - available for all reports */}
                 <div>
                   <Label htmlFor="dept-filter">Department</Label>
-                  <Select value={filters.program || 'all'} onValueChange={(value) => setFilters({...filters, program: value === 'all' ? undefined : value})}>
+                  <Select value={filters.program || 'all'} onValueChange={(value) => {
+                    setFilters({...filters, program: value === 'all' ? undefined : value})
+                    setTimeout(applyFilters, 100)
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select department" />
                     </SelectTrigger>
@@ -374,7 +377,10 @@ function StudentReports() {
                     id="id-search"
                     placeholder="Enter student ID..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value)
+                      setTimeout(applyFilters, 300)
+                    }}
                   />
                 </div>
 
@@ -382,7 +388,10 @@ function StudentReports() {
                 {selectedReportType === 'registered-list' && (
                   <div>
                     <Label htmlFor="course-type">Course Type</Label>
-                    <Select value={filters.courseCode || 'all'} onValueChange={(value) => setFilters({...filters, courseCode: value === 'all' ? undefined : value})}>
+                    <Select value={filters.courseCode || 'all'} onValueChange={(value) => {
+                      setFilters({...filters, courseCode: value === 'all' ? undefined : value})
+                      setTimeout(applyFilters, 100)
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -398,7 +407,10 @@ function StudentReports() {
                 {selectedReportType === 'earned-credit-cgpa' && (
                   <div>
                     <Label htmlFor="cgpa-filter">Minimum CGPA</Label>
-                    <Select value={filters.cgpaThreshold?.toString() || 'all'} onValueChange={(value) => setFilters({...filters, cgpaThreshold: value === 'all' ? undefined : parseFloat(value)})}>
+                    <Select value={filters.cgpaThreshold?.toString() || 'all'} onValueChange={(value) => {
+                      setFilters({...filters, cgpaThreshold: value === 'all' ? undefined : parseFloat(value)})
+                      setTimeout(applyFilters, 100)
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select CGPA" />
                       </SelectTrigger>
@@ -415,7 +427,10 @@ function StudentReports() {
                 {selectedReportType === 'completed-list' && (
                   <div>
                     <Label htmlFor="clearance-status">Clearance Status</Label>
-                    <Select value={filters.individual ? 'pending' : filters.individual === false ? 'approved' : 'all'} onValueChange={(value) => setFilters({...filters, individual: value === 'pending' ? true : value === 'approved' ? false : undefined})}>
+                    <Select value={filters.individual ? 'pending' : filters.individual === false ? 'approved' : 'all'} onValueChange={(value) => {
+                      setFilters({...filters, individual: value === 'pending' ? true : value === 'approved' ? false : undefined})
+                      setTimeout(applyFilters, 100)
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -431,7 +446,10 @@ function StudentReports() {
                 {selectedReportType === 'pending-approval' && (
                   <div>
                     <Label htmlFor="lead-time">Lead Time</Label>
-                    <Select value={filters.teacherId || 'all'} onValueChange={(value) => setFilters({...filters, teacherId: value === 'all' ? undefined : value})}>
+                    <Select value={filters.teacherId || 'all'} onValueChange={(value) => {
+                      setFilters({...filters, teacherId: value === 'all' ? undefined : value})
+                      setTimeout(applyFilters, 100)
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select range" />
                       </SelectTrigger>
@@ -444,11 +462,6 @@ function StudentReports() {
                   </div>
                 )}
 
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Button onClick={handleGenerateReport} variant="outline">
-                  Apply Filters
-                </Button>
               </div>
             </CardContent>
           </Card>
