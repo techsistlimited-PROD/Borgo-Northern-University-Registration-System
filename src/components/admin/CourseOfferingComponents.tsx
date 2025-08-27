@@ -432,10 +432,12 @@ export const OfferCourses = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h4 className="text-lg font-semibold">Section {section.id}</h4>
-                        <Badge variant={section.status === 'Full' ? 'destructive' : 'default'}>
+                        <Badge variant={section.enrolled >= section.maxCapacity ? 'destructive' : 'default'}>
                           {section.enrolled}/{section.maxCapacity} students
                         </Badge>
-                        <Badge variant="outline">{section.status}</Badge>
+                        <Badge variant={section.offered ? 'default' : 'secondary'}>
+                          {section.offerStatus}
+                        </Badge>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
