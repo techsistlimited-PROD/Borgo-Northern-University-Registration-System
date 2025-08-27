@@ -442,6 +442,8 @@ function StudentReports() {
 function AttendanceReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
   const [selectedReportType, setSelectedReportType] = useState('all')
+  const [showDetailedView, setShowDetailedView] = useState(false)
+  const [reportData, setReportData] = useState<any>(null)
 
   const attendanceReportTypes = [
     {
@@ -470,8 +472,99 @@ function AttendanceReports() {
       return
     }
 
-    const reportType = attendanceReportTypes.find(r => r.id === selectedReportType)
-    alert(`Generating ${reportType?.name} report...\nFilters applied: ${JSON.stringify(filters, null, 2)}`)
+    const mockData = generateAttendanceReportData(selectedReportType)
+    setReportData(mockData)
+    setShowDetailedView(true)
+  }
+
+  const generateAttendanceReportData = (reportType: string) => {
+    switch (reportType) {
+      case 'class-attendance':
+        return {
+          title: 'Class Attendance Report',
+          data: [
+            { course: 'CSE401', courseName: 'Software Engineering', registered: 45, present: 42, absent: 3, percentage: '93.3%' },
+            { course: 'CSE403', courseName: 'Database Systems', registered: 40, present: 38, absent: 2, percentage: '95.0%' },
+            { course: 'BBA401', courseName: 'Strategic Management', registered: 35, present: 33, absent: 2, percentage: '94.3%' }
+          ],
+          columns: ['Course Code', 'Course Name', 'Registered', 'Present', 'Absent', 'Percentage']
+        }
+      case 'exam-attendance-missing':
+        return {
+          title: 'Students Absent in Mid Exam',
+          data: [
+            { id: '2021-1-60-005', name: 'Rahman Ali', course: 'CSE401', reason: 'Illness', status: 'Excused' },
+            { id: '2021-1-60-010', name: 'Fatima Khatun', course: 'CSE403', reason: 'Family Emergency', status: 'Pending' },
+            { id: '2021-2-50-008', name: 'Karim Hassan', course: 'BBA401', reason: 'Not Provided', status: 'Unexcused' }
+          ],
+          columns: ['Student ID', 'Student Name', 'Course', 'Reason', 'Status']
+        }
+      case 'exam-attendance-final':
+        return {
+          title: 'Final Exam Attendance List',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', course: 'CSE401', attended: 'Y', seat: 'A-15', hall: 'Hall-1' },
+            { id: '2021-1-60-002', name: 'Fatima Khan', course: 'CSE401', attended: 'Y', seat: 'A-16', hall: 'Hall-1' },
+            { id: '2021-1-60-003', name: 'Mohammad Ali', course: 'CSE401', attended: 'N', seat: 'A-17', hall: 'Hall-1' }
+          ],
+          columns: ['Student ID', 'Student Name', 'Course', 'Attended', 'Seat No', 'Exam Hall']
+        }
+      default:
+        return { title: reportType, data: [], columns: [] }
+    }
+  }
+
+  if (showDetailedView && reportData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <p className="text-gray-600">Attendance report for {filters.semester || 'selected semester'}</p>
+          </div>
+          <div className="flex space-x-2">
+            <Button onClick={() => setShowDetailedView(false)} variant="outline">
+              Back to Reports
+            </Button>
+            <Button onClick={() => alert('Exporting attendance report...')}>
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {reportData.columns.map((column: string, index: number) => (
+                    <TableHead key={index}>{column}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reportData.data.map((row: any, index: number) => (
+                  <TableRow key={index}>
+                    {Object.values(row).map((value: any, cellIndex: number) => (
+                      <TableCell key={cellIndex}>
+                        {cellIndex === reportData.columns.length - 1 && reportData.title.includes('Attendance Report') ? (
+                          <Badge className={parseFloat(value) >= 90 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                            {value}
+                          </Badge>
+                        ) : (
+                          value
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
