@@ -29,9 +29,6 @@ import {
   FileSpreadsheet,
   FileType,
   File,
-  Eye,
-  Filter,
-  Search,
   CheckCircle,
   AlertCircle
 } from 'lucide-react'
