@@ -389,8 +389,8 @@ function StudentReports() {
                   />
                 </div>
 
-                {/* Semester Filter - only for certain reports, NOT for unregistered or dropout */}
-                {selectedReportType !== 'unregistered-previous' && selectedReportType !== 'dropout-list' && (
+                {/* Semester Filter - NOT shown for unregistered or dropout reports */}
+                {!(selectedReportType === 'unregistered-previous' || selectedReportType === 'dropout-list') && (
                   <div>
                     <Label htmlFor="semester-filter">Semester</Label>
                     <Select value={filters.semester || 'all'} onValueChange={(value) => {
