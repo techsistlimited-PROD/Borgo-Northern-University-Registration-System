@@ -180,11 +180,9 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
   }
 
   const handleAction = (action: 'approve' | 'hold' | 'reject') => {
-    setActionType(action)
     // In real implementation, this would update the database
     alert(`Student clearance ${action}ed for ${selectedStudent?.studentName}`)
     setShowDetailModal(false)
-    setActionType(null)
   }
 
   const handleDownloadClearance = () => {
