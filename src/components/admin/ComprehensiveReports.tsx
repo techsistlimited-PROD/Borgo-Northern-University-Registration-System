@@ -192,10 +192,12 @@ function StudentReports() {
             { id: '2020-3-55-044', name: 'Tanvir Hasan', dept: 'Textile', totalCredits: 78 },
             { id: '2021-1-60-088', name: 'Marium Khan', dept: 'CSE', totalCredits: 95 },
             { id: '2020-4-45-021', name: 'Sabbir Ahmed', dept: 'B. Pharm', totalCredits: 110 },
-            { id: '2021-3-40-009', name: 'Ayesha Rahman', dept: 'EEE', totalCredits: 72 }
+            { id: '2021-3-40-009', name: 'Ayesha Rahman', dept: 'EEE', totalCredits: 72 },
+            { id: '2020-2-50-055', name: 'Habib Rahman', dept: 'BBA', totalCredits: 67 },
+            { id: '2021-3-55-012', name: 'Nasir Uddin', dept: 'Textile', totalCredits: 84 }
           ],
           columns: ['Student ID', 'Name', 'Department', 'Total Credits Completed'],
-          totalCount: 6
+          totalCount: 8
         }
       case 'dropout-list':
         return {
@@ -206,10 +208,12 @@ function StudentReports() {
             { id: '2018-3-55-033', name: 'Imran Hossain', dept: 'Textile', lastSemester: 'Spring 2022', creditsCompleted: 45 },
             { id: '2019-4-45-018', name: 'Nasir Uddin', dept: 'B. Pharm', lastSemester: 'Fall 2023', creditsCompleted: 78 },
             { id: '2020-3-40-012', name: 'Rashida Begum', dept: 'EEE', lastSemester: 'Summer 2022', creditsCompleted: 56 },
-            { id: '2019-1-60-055', name: 'Habib Rahman', dept: 'CSE', lastSemester: 'Spring 2023', creditsCompleted: 91 }
+            { id: '2019-1-60-055', name: 'Habib Rahman', dept: 'CSE', lastSemester: 'Spring 2023', creditsCompleted: 91 },
+            { id: '2018-2-50-088', name: 'Khalil Ahmed', dept: 'BBA', lastSemester: 'Fall 2022', creditsCompleted: 34 },
+            { id: '2019-3-55-021', name: 'Ruma Ahmed', dept: 'Textile', lastSemester: 'Summer 2023', creditsCompleted: 52 }
           ],
           columns: ['Student ID', 'Name', 'Department', 'Last Semester Completed', 'Credits Completed'],
-          totalCount: 6
+          totalCount: 8
         }
       case 'completed-list':
         return {
@@ -220,10 +224,12 @@ function StudentReports() {
             { id: '2020-3-55-008', name: 'Farhan Ahmed', dept: 'Textile', clearanceStatus: 'Approved' },
             { id: '2020-4-45-003', name: 'Rehana Khatun', dept: 'B. Pharm', clearanceStatus: 'Pending' },
             { id: '2020-3-40-005', name: 'Shafiq Islam', dept: 'EEE', clearanceStatus: 'Approved' },
-            { id: '2020-1-60-088', name: 'Taslima Begum', dept: 'CSE', clearanceStatus: 'Pending' }
+            { id: '2020-1-60-088', name: 'Taslima Begum', dept: 'CSE', clearanceStatus: 'Pending' },
+            { id: '2020-2-50-077', name: 'Kamal Hasan', dept: 'BBA', clearanceStatus: 'Approved' },
+            { id: '2020-4-45-055', name: 'Sultana Razia', dept: 'B. Pharm', clearanceStatus: 'Pending' }
           ],
           columns: ['Student ID', 'Name', 'Department', 'Final Clearance Status'],
-          totalCount: 6
+          totalCount: 8
         }
       case 'earned-credit-cgpa':
         return {
