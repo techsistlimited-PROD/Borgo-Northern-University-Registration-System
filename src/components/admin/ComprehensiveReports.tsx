@@ -60,12 +60,17 @@ const mockReportData = {
 }
 
 function StudentReports() {
-  const [filters, setFilters] = useState<ReportFilter>({})
+  const [filters, setFilters] = useState<ReportFilter>({
+    semester: 'Fall 2024',
+    program: 'all',
+    individual: false
+  })
   const [selectedReportType, setSelectedReportType] = useState('all')
   const [showDetailedView, setShowDetailedView] = useState(false)
   const [reportData, setReportData] = useState<any>(null)
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const studentReportTypes = [
     { 
