@@ -7,25 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Users, 
-  Search, 
-  UserPlus, 
-  Download, 
-  Upload,
+import {
+  Users,
+  Search,
+  UserPlus,
+  Download,
   CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Filter,
   RotateCcw,
   UserCheck,
   FileText,
-  Calendar,
-  BookOpen,
   GraduationCap,
-  Phone,
-  Mail,
-  MapPin,
   UserX
 } from 'lucide-react'
 
