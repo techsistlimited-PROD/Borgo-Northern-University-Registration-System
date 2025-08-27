@@ -124,17 +124,17 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
               </button>
               
               {item.subItems && (activeTab === item.id || item.subItems.some(sub => sub.id === activeTab)) && (
-                <div className="ml-6 mb-2">
+                <div className="ml-4 mb-3 space-y-1 relative z-10">
                   {item.subItems.map((subItem) => {
                     const SubIcon = subItem.icon
                     return (
                       <button
                         key={subItem.id}
                         onClick={() => setActiveTab(subItem.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg mb-1 flex items-center space-x-2 transition-colors text-sm ${
+                        className={`w-full text-left px-3 py-2 rounded-lg flex items-center space-x-2 transition-colors text-sm border-l-2 ml-2 ${
                           activeTab === subItem.id
-                            ? 'bg-accent-purple text-white' 
-                            : 'text-gray-600 hover:bg-lavender-bg'
+                            ? 'bg-accent-purple text-white border-accent-purple'
+                            : 'text-gray-600 hover:bg-lavender-bg border-gray-200 hover:border-accent-purple'
                         }`}
                       >
                         <SubIcon className="w-4 h-4" />
