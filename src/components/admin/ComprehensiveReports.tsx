@@ -130,61 +130,63 @@ function StudentReports() {
     }
 
     // Generate mock data for other reports
-    let mockData = generateMockReportData(selectedReportType)
-
-    // Apply filters
-    if (mockData.data) {
-      let filteredData = mockData.data
-
-      // Filter by department
-      if (filters.program && filters.program !== 'all') {
-        filteredData = filteredData.filter((item: any) => item.dept === filters.program)
-      }
-
-      // Filter by search query (student ID)
-      if (searchQuery.trim()) {
-        filteredData = filteredData.filter((item: any) =>
-          item.id.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      }
-
-      // Filter by course type (for registered students)
-      if (filters.courseCode && filters.courseCode !== 'all') {
-        filteredData = filteredData.filter((item: any) =>
-          item.courseType?.toLowerCase() === filters.courseCode
-        )
-      }
-
-      // Filter by CGPA threshold (for earned credit & CGPA report)
-      if (filters.cgpaThreshold) {
-        filteredData = filteredData.filter((item: any) =>
-          item.cgpa >= filters.cgpaThreshold
-        )
-      }
-
-      // Filter by clearance status (for completed students)
-      if (filters.individual !== undefined) {
-        filteredData = filteredData.filter((item: any) =>
-          filters.individual ? item.clearanceStatus === 'Pending' : item.clearanceStatus === 'Approved'
-        )
-      }
-
-      // Filter by lead time (for pending approval)
-      if (filters.teacherId && filters.teacherId !== 'all') {
-        filteredData = filteredData.filter((item: any) =>
-          filters.teacherId === 'safe' ? item.leadTime <= 3 : item.leadTime > 3
-        )
-      }
-
-      mockData = {
-        ...mockData,
-        data: filteredData,
-        totalCount: filteredData.length
-      }
-    }
-
+    const mockData = generateMockReportData(selectedReportType)
     setReportData(mockData)
     setShowDetailedView(true)
+  }
+
+  const applyFilters = () => {
+    if (!reportData || !reportData.data) return
+
+    let filteredData = [...reportData.data]
+
+    // Filter by department
+    if (filters.program && filters.program !== 'all') {
+      filteredData = filteredData.filter((item: any) => item.dept === filters.program)
+    }
+
+    // Filter by search query (student ID)
+    if (searchQuery.trim()) {
+      filteredData = filteredData.filter((item: any) =>
+        item.id.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Filter by course type (for registered students)
+    if (filters.courseCode && filters.courseCode !== 'all') {
+      filteredData = filteredData.filter((item: any) =>
+        item.courseType?.toLowerCase() === filters.courseCode
+      )
+    }
+
+    // Filter by CGPA threshold (for earned credit & CGPA report)
+    if (filters.cgpaThreshold) {
+      filteredData = filteredData.filter((item: any) =>
+        item.cgpa >= filters.cgpaThreshold
+      )
+    }
+
+    // Filter by clearance status (for completed students)
+    if (filters.individual !== undefined) {
+      filteredData = filteredData.filter((item: any) =>
+        filters.individual ? item.clearanceStatus === 'Pending' : item.clearanceStatus === 'Approved'
+      )
+    }
+
+    // Filter by lead time (for pending approval)
+    if (filters.teacherId && filters.teacherId !== 'all') {
+      filteredData = filteredData.filter((item: any) =>
+        filters.teacherId === 'safe' ? item.leadTime <= 3 : item.leadTime > 3
+      )
+    }
+
+    const updatedData = {
+      ...reportData,
+      data: filteredData,
+      totalCount: filteredData.length
+    }
+
+    setReportData(updatedData)
   }
 
   const generateMockReportData = (reportType: string) => {
