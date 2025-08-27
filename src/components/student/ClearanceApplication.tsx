@@ -224,6 +224,20 @@ export const ClearanceApplication = ({ activeTab = 'exam-clearance' }: Clearance
                   </div>
                 </div>
 
+                <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <FileText className="w-5 h-5 text-orange-600 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-orange-800 mb-2">📋 Important Notice:</h4>
+                      <p className="text-sm text-orange-700">
+                        After your exam clearance is approved, please collect your <strong>admit card</strong> from the
+                        <strong> Academic Affairs Division office</strong> before the exam date. The admit card is mandatory
+                        for appearing in examinations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Upcoming Exam Dates */}
                 <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
                   <h4 className="font-semibold text-purple-800 mb-2">Upcoming Exam Dates - {currentSemesterInfo.semester}</h4>
