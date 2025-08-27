@@ -313,6 +313,14 @@ function StudentReports() {
                                 <Badge className={row[key] === 'Retake' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
                                   {row[key]}
                                 </Badge>
+                              ) : key === 'leadTime' ? (
+                                <Badge className={row[key] > 3 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                                  {row[key]} day{row[key] !== 1 ? 's' : ''}
+                                </Badge>
+                              ) : key === 'cgpa' ? (
+                                <Badge className={row[key] >= 3.5 ? 'bg-green-100 text-green-800' : row[key] >= 3.0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}>
+                                  {row[key]}
+                                </Badge>
                               ) : (
                                 row[key]
                               )}
