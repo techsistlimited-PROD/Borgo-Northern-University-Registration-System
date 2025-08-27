@@ -322,6 +322,114 @@ function StudentReports() {
             </div>
           </div>
 
+          {/* Report-specific Filters */}
+          <Card className="bg-gray-50">
+            <CardContent className="p-4">
+              <h4 className="font-semibold text-deep-plum mb-3">Filters</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                {/* Department Filter - available for all reports */}
+                <div>
+                  <Label htmlFor="dept-filter">Department</Label>
+                  <Select value={filters.program || 'all'} onValueChange={(value) => setFilters({...filters, program: value === 'all' ? undefined : value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Departments</SelectItem>
+                      {mockReportData.programs.map(program => (
+                        <SelectItem key={program} value={program}>{program}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Search by ID - available for all reports */}
+                <div>
+                  <Label htmlFor="id-search">Search by Student ID</Label>
+                  <Input
+                    id="id-search"
+                    placeholder="Enter student ID..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                {/* Conditional filters based on report type */}
+                {selectedReportType === 'registered-list' && (
+                  <div>
+                    <Label htmlFor="course-type">Course Type</Label>
+                    <Select value={filters.courseCode || 'all'} onValueChange={(value) => setFilters({...filters, courseCode: value === 'all' ? undefined : value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="regular">Regular</SelectItem>
+                        <SelectItem value="retake">Retake</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {selectedReportType === 'earned-credit-cgpa' && (
+                  <div>
+                    <Label htmlFor="cgpa-filter">Minimum CGPA</Label>
+                    <Select value={filters.cgpaThreshold?.toString() || 'all'} onValueChange={(value) => setFilters({...filters, cgpaThreshold: value === 'all' ? undefined : parseFloat(value)})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select CGPA" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All CGPAs</SelectItem>
+                        <SelectItem value="3.5">3.5 and above</SelectItem>
+                        <SelectItem value="3.0">3.0 and above</SelectItem>
+                        <SelectItem value="2.5">2.5 and above</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {selectedReportType === 'completed-list' && (
+                  <div>
+                    <Label htmlFor="clearance-status">Clearance Status</Label>
+                    <Select value={filters.individual ? 'pending' : filters.individual === false ? 'approved' : 'all'} onValueChange={(value) => setFilters({...filters, individual: value === 'pending' ? true : value === 'approved' ? false : undefined})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {selectedReportType === 'pending-approval' && (
+                  <div>
+                    <Label htmlFor="lead-time">Lead Time</Label>
+                    <Select value={filters.teacherId || 'all'} onValueChange={(value) => setFilters({...filters, teacherId: value === 'all' ? undefined : value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Times</SelectItem>
+                        <SelectItem value="safe">Safe (3 days or less)</SelectItem>
+                        <SelectItem value="overdue">Overdue (more than 3 days)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+              </div>
+              <div className="mt-4 flex justify-end">
+                <Button onClick={handleGenerateReport} variant="outline">
+                  Apply Filters
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {reportData?.totalCount && (
             <Card className="mb-4">
               <CardContent className="p-4">
