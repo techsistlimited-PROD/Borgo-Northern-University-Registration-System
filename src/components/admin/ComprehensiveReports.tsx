@@ -154,8 +154,6 @@ function StudentReports() {
       return
     }
 
-    const reportType = studentReportTypes.find(r => r.id === selectedReportType)
-
     // For admit card, show detailed view
     if (selectedReportType === 'admit-card') {
       setShowDetailedView(true)
