@@ -538,7 +538,7 @@ function SchedulesList({
 }
 
 export default function SemesterScheduleManagement() {
-  const [schedules, setSchedules] = useState<SemesterSchedule[]>(mockSchedules)
+  const schedules = mockSchedules
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingSchedule, setEditingSchedule] = useState<SemesterSchedule | undefined>()
   const [filterYear, setFilterYear] = useState('')
