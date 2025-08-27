@@ -24,11 +24,7 @@ import {
   Edit,
   Trash2,
   Save,
-  Upload,
-  Download,
   Users,
-  Clock,
-  BookOpen,
   AlertCircle,
   Search
 } from 'lucide-react'
