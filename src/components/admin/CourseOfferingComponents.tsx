@@ -673,9 +673,9 @@ export const SectionManagement = () => {
   ]
 
   const filteredSections = sections.filter(section => {
-    const matchesProgram = !filterProgram || section.program === filterProgram
-    const matchesCourse = !filterCourse || section.course.includes(filterCourse)
-    const matchesTeacher = !filterTeacher || section.teacherId === filterTeacher
+    const matchesProgram = filterProgram === 'all' || section.program === filterProgram
+    const matchesCourse = filterCourse === 'all' || section.course.includes(filterCourse)
+    const matchesTeacher = filterTeacher === 'all' || section.teacherId === filterTeacher
     const matchesSearch = !searchTerm ||
       section.sectionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       section.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -801,9 +801,9 @@ export const SectionManagement = () => {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      setFilterProgram('')
-                      setFilterCourse('')
-                      setFilterTeacher('')
+                      setFilterProgram('all')
+                      setFilterCourse('all')
+                      setFilterTeacher('all')
                       setSearchTerm('')
                     }}
                   >
