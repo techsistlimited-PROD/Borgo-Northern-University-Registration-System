@@ -64,7 +64,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
     { id: 'semester-schedule', label: 'Create Semester Schedule', icon: CalendarPlus },
     {
       id: 'course-offering',
-      label: 'Course Offering Menu',
+      label: 'Course Offering',
       icon: BookOpen,
       subItems: [
         { id: 'courses', label: 'Courses', icon: BookPlus },
@@ -147,14 +147,13 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
       </nav>
       
       <div className="absolute bottom-4 left-4 right-4">
-        <Button 
+        <button
           onClick={onLogout}
-          variant="outline" 
-          className="w-full flex items-center space-x-2"
+          className="w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-red-600 hover:bg-red-50 transition-colors border border-red-200"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-5 h-5" />
           <span>Logout</span>
-        </Button>
+        </button>
       </div>
     </div>
   )
