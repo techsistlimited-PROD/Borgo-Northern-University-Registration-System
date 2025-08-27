@@ -436,8 +436,8 @@ function IndividualAssignment() {
 function BulkAssignment() {
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set())
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
-  const [filterProgram, setFilterProgram] = useState('')
-  const [filterSemester, setFilterSemester] = useState('')
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterSemester, setFilterSemester] = useState('all')
   const [bulkReason, setBulkReason] = useState('')
 
   const filteredStudents = studentsData.filter(student => {
@@ -503,7 +503,7 @@ function BulkAssignment() {
                   <SelectValue placeholder="All Programs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Programs</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
                   <SelectItem value="CSE">CSE</SelectItem>
                   <SelectItem value="BBA">BBA</SelectItem>
                   <SelectItem value="EEE">EEE</SelectItem>
@@ -518,7 +518,7 @@ function BulkAssignment() {
                   <SelectValue placeholder="All Semesters" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Semesters</SelectItem>
+                  <SelectItem value="all">All Semesters</SelectItem>
                   <SelectItem value="Fall 2024">Fall 2024</SelectItem>
                   <SelectItem value="Spring 2024">Spring 2024</SelectItem>
                   <SelectItem value="Summer 2024">Summer 2024</SelectItem>
