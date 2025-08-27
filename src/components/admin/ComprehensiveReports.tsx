@@ -670,6 +670,8 @@ function AttendanceReports() {
 function TeacherReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
   const [selectedReportType, setSelectedReportType] = useState('all')
+  const [showDetailedView, setShowDetailedView] = useState(false)
+  const [reportData, setReportData] = useState<any>(null)
 
   const teacherReportTypes = [
     {
@@ -692,8 +694,81 @@ function TeacherReports() {
       return
     }
 
-    const reportType = teacherReportTypes.find(r => r.id === selectedReportType)
-    alert(`Generating ${reportType?.name} report...\nFilters applied: ${JSON.stringify(filters, null, 2)}`)
+    const mockData = generateTeacherReportData(selectedReportType)
+    setReportData(mockData)
+    setShowDetailedView(true)
+  }
+
+  const generateTeacherReportData = (reportType: string) => {
+    switch (reportType) {
+      case 'advising-list':
+        return {
+          title: 'Teachers Student Advising List',
+          data: [
+            { teacherId: 'T001', teacherName: 'Dr. Rahman Ahmed', department: 'CSE', advisees: 22, activeStudents: 20, graduatedStudents: 2 },
+            { teacherId: 'T002', teacherName: 'Prof. Sarah Khan', department: 'CSE', advisees: 18, activeStudents: 16, graduatedStudents: 2 },
+            { teacherId: 'T004', teacherName: 'Dr. Fatima Rahman', department: 'BBA', advisees: 15, activeStudents: 15, graduatedStudents: 0 }
+          ],
+          columns: ['Teacher ID', 'Teacher Name', 'Department', 'Total Advisees', 'Active Students', 'Graduated Students']
+        }
+      case 'course-load':
+        return {
+          title: 'Teachers Course Load Distribution',
+          data: [
+            { teacherId: 'T001', teacherName: 'Dr. Rahman Ahmed', semester: 'Fall 2024', courses: 3, sections: 4, totalStudents: 165, credits: 12 },
+            { teacherId: 'T002', teacherName: 'Prof. Sarah Khan', semester: 'Fall 2024', courses: 2, sections: 3, totalStudents: 125, credits: 9 },
+            { teacherId: 'T003', teacherName: 'Dr. Mohammad Ali', semester: 'Fall 2024', courses: 3, sections: 2, totalStudents: 85, credits: 9 }
+          ],
+          columns: ['Teacher ID', 'Teacher Name', 'Semester', 'Courses', 'Sections', 'Total Students', 'Credit Hours']
+        }
+      default:
+        return { title: reportType, data: [], columns: [] }
+    }
+  }
+
+  if (showDetailedView && reportData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <p className="text-gray-600">Teacher report for {filters.semester || 'all semesters'}</p>
+          </div>
+          <div className="flex space-x-2">
+            <Button onClick={() => setShowDetailedView(false)} variant="outline">
+              Back to Reports
+            </Button>
+            <Button onClick={() => alert('Exporting teacher report...')}>
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {reportData.columns.map((column: string, index: number) => (
+                    <TableHead key={index}>{column}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reportData.data.map((row: any, index: number) => (
+                  <TableRow key={index}>
+                    {Object.values(row).map((value: any, cellIndex: number) => (
+                      <TableCell key={cellIndex}>{value}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
