@@ -354,7 +354,7 @@ function StudentReports() {
           <Card className="bg-gray-50">
             <CardContent className="p-4">
               <h4 className="font-semibold text-deep-plum mb-3">Filters</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className={`grid grid-cols-1 ${selectedReportType === 'unregistered-previous' || selectedReportType === 'dropout-list' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
 
                 {/* Department Filter - available for all reports */}
                 <div>
@@ -390,7 +390,7 @@ function StudentReports() {
                 </div>
 
                 {/* Semester Filter - NOT shown for unregistered or dropout reports */}
-                {!(selectedReportType === 'unregistered-previous' || selectedReportType === 'dropout-list') && (
+                {selectedReportType !== 'unregistered-previous' && selectedReportType !== 'dropout-list' && (
                   <div>
                     <Label htmlFor="semester-filter">Semester</Label>
                     <Select value={filters.semester || 'all'} onValueChange={(value) => {
