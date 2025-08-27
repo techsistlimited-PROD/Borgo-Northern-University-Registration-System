@@ -50,12 +50,20 @@ const Sidebar = ({ activeTab, setActiveTab }: {
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
     { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
     {
+      id: 'clearance',
+      label: 'Clearance Applications',
+      icon: FileText,
+      subItems: [
+        { id: 'exam-clearance', label: 'Clearance for Exams' },
+        { id: 'final-clearance', label: 'Final Clearance for Certificates' }
+      ]
+    },
+    {
       id: 'exam-results',
-      label: 'Exam and Results',
+      label: 'Results',
       icon: Award,
       subItems: [
-        { id: 'clearance-assessment', label: 'Clearance for Assessment' },
-        { id: 'results', label: 'Results' }
+        { id: 'results', label: 'Academic Results' }
       ]
     },
     {
