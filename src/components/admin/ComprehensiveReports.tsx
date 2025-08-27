@@ -64,6 +64,8 @@ function StudentReports() {
   const [selectedReportType, setSelectedReportType] = useState('all')
   const [showDetailedView, setShowDetailedView] = useState(false)
   const [reportData, setReportData] = useState<any>(null)
+  const [showStudentDetail, setShowStudentDetail] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<any>(null)
 
   const studentReportTypes = [
     { 
@@ -204,6 +206,21 @@ function StudentReports() {
 
     const reportType = studentReportTypes.find(r => r.id === selectedReportType)
     alert(`Exporting ${reportType?.name} as ${format.toUpperCase()}...`)
+  }
+
+  const handleViewStudent = (student: any) => {
+    const studentDetail = {
+      ...student,
+      courses: [
+        { courseId: 'CSE401', courseName: 'Software Engineering', type: student.courseType, credit: 3 },
+        { courseId: 'CSE403', courseName: 'Database Management System', type: student.courseType, credit: 3 },
+        { courseId: 'CSE405', courseName: 'Computer Networks', type: 'Regular', credit: 3 },
+        { courseId: 'MAT301', courseName: 'Statistics and Probability', type: 'Regular', credit: 3 },
+        { courseId: 'ENG301', courseName: 'Technical Writing', type: 'Regular', credit: 2 }
+      ]
+    }
+    setSelectedStudent(studentDetail)
+    setShowStudentDetail(true)
   }
 
   if (showDetailedView) {
