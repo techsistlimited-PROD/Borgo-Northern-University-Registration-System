@@ -541,11 +541,11 @@ function AttendanceReports() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockReportData.data.map((row: any, index: number) => (
+                {reportData?.data?.map((row: any, index: number) => (
                   <TableRow key={index}>
                     {Object.values(row).map((value: any, cellIndex: number) => (
                       <TableCell key={cellIndex}>
-                        {cellIndex === mockReportData.columns.length - 1 && mockReportData.title.includes('Attendance Report') ? (
+                        {cellIndex === (reportData?.columns?.length || 0) - 1 && reportData?.title?.includes('Attendance Report') ? (
                           <Badge className={parseFloat(value) >= 90 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
                             {value}
                           </Badge>
