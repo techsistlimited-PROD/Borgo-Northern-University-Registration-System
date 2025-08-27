@@ -196,19 +196,19 @@ export const Syllabuses = () => {
       </Card>
       
       {/* Syllabus Display */}
-      {selectedProgram && syllabusData[selectedProgram as keyof typeof syllabusData] && (
+      {selectedProgram && syllabusState[selectedProgram as keyof typeof syllabusState] && (
         <Card>
           <CardHeader>
             <CardTitle>
-              {selectedProgram} Syllabus - {syllabusData[selectedProgram as keyof typeof syllabusData].type}
+              {selectedProgram} Syllabus - {syllabusState[selectedProgram as keyof typeof syllabusState].type}
             </CardTitle>
             <CardDescription>
-              {syllabusData[selectedProgram as keyof typeof syllabusData].semesters} semesters total
+              {syllabusState[selectedProgram as keyof typeof syllabusState].semesters} semesters total
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {syllabusData[selectedProgram as keyof typeof syllabusData].courses.map((semesterData, index) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {syllabusState[selectedProgram as keyof typeof syllabusState].courses.map((semesterData, index) => (
                 <Card key={index}>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg">Semester {semesterData.semester}</CardTitle>
@@ -217,12 +217,22 @@ export const Syllabuses = () => {
                     <div className="space-y-2">
                       {semesterData.courses.map((course, courseIndex) => (
                         <div key={courseIndex} className="flex justify-between items-center p-2 bg-lavender-bg rounded">
-                          <span className="text-sm">{course}</span>
+                          <span className="text-sm flex-1 mr-2">{course}</span>
                           <div className="flex space-x-1">
-                            <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleEditCourse(selectedProgram, semesterData.semester, courseIndex, course)}
+                            >
                               <Edit className="w-3 h-3" />
                             </Button>
-                            <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                              onClick={() => handleDeleteCourse(selectedProgram, semesterData.semester, courseIndex)}
+                            >
                               <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
