@@ -666,101 +666,324 @@ const StudentInformation = () => {
 }
 
 
-const Courses = () => (
-  <div className="space-y-6">
-    <div className="flex justify-between items-center">
-      <h1 className="text-3xl font-bold text-deep-plum">Course Management</h1>
-      <Button className="nu-button-primary flex items-center space-x-2">
-        <Plus className="w-4 h-4" />
-        <span>Add New Course</span>
-      </Button>
-    </div>
-    
-    <Card>
-      <CardHeader>
-        <CardTitle>Course Filters</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid md:grid-cols-4 gap-4">
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Course Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="undergraduate">Undergraduate</SelectItem>
-              <SelectItem value="postgraduate">Postgraduate</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Program" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="cse">CSE</SelectItem>
-              <SelectItem value="bba">BBA</SelectItem>
-              <SelectItem value="eee">EEE</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Input placeholder="Search by course code" />
-          <Input placeholder="Search by course name" />
-        </div>
-      </CardContent>
-    </Card>
-    
-    <Card>
-      <CardHeader>
-        <CardTitle>Course List</CardTitle>
-        <CardDescription>Manage all university courses</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Course Code</TableHead>
-              <TableHead>Course Title</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Program</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Credits</TableHead>
-              <TableHead>TER Required</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[
-              { code: 'CSE101', title: 'Introduction to Programming', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
-              { code: 'CSE102', title: 'Programming Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
-              { code: 'BBA101', title: 'Principles of Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
-              { code: 'EEE101', title: 'Circuit Analysis', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
-            ].map((course, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{course.code}</TableCell>
-                <TableCell>{course.title}</TableCell>
-                <TableCell>{course.dept}</TableCell>
-                <TableCell>{course.program}</TableCell>
-                <TableCell>{course.type}</TableCell>
-                <TableCell>{course.credits}</TableCell>
-                <TableCell>{course.ter}</TableCell>
-                <TableCell>
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline">
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+const Courses = () => {
+  const [courses, setCourses] = useState([
+    { id: 1, code: 'CSE101', title: 'Introduction to Programming', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 2, code: 'CSE102', title: 'Programming Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 3, code: 'BBA101', title: 'Principles of Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 4, code: 'EEE101', title: 'Circuit Analysis', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+  ])
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [editingCourse, setEditingCourse] = useState<any>(null)
+  const [newCourse, setNewCourse] = useState({
+    code: '',
+    title: '',
+    dept: '',
+    program: '',
+    type: 'Theory',
+    credits: 3,
+    ter: 'Yes'
+  })
+
+  const handleAddCourse = () => {
+    if (!newCourse.code || !newCourse.title || !newCourse.dept || !newCourse.program) {
+      alert('Please fill all required fields')
+      return
+    }
+
+    const courseToAdd = {
+      id: courses.length + 1,
+      ...newCourse
+    }
+
+    setCourses([...courses, courseToAdd])
+    setNewCourse({
+      code: '',
+      title: '',
+      dept: '',
+      program: '',
+      type: 'Theory',
+      credits: 3,
+      ter: 'Yes'
+    })
+    setShowAddModal(false)
+    alert('Course added successfully!')
+  }
+
+  const handleEditCourse = (course: any) => {
+    setEditingCourse(course)
+    setNewCourse(course)
+    setShowAddModal(true)
+  }
+
+  const handleUpdateCourse = () => {
+    if (!newCourse.code || !newCourse.title || !newCourse.dept || !newCourse.program) {
+      alert('Please fill all required fields')
+      return
+    }
+
+    setCourses(courses.map(course =>
+      course.id === editingCourse.id ? { ...newCourse, id: editingCourse.id } : course
+    ))
+    setEditingCourse(null)
+    setNewCourse({
+      code: '',
+      title: '',
+      dept: '',
+      program: '',
+      type: 'Theory',
+      credits: 3,
+      ter: 'Yes'
+    })
+    setShowAddModal(false)
+    alert('Course updated successfully!')
+  }
+
+  const handleDeleteCourse = (courseId: number) => {
+    if (confirm('Are you sure you want to delete this course?')) {
+      setCourses(courses.filter(course => course.id !== courseId))
+      alert('Course deleted successfully!')
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-deep-plum">Course Management</h1>
+        <Button
+          className="nu-button-primary flex items-center space-x-2"
+          onClick={() => setShowAddModal(true)}
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add New Course</span>
+        </Button>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Course Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-4 gap-4">
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Course Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="undergraduate">Undergraduate</SelectItem>
+                <SelectItem value="postgraduate">Postgraduate</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Program" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cse">CSE</SelectItem>
+                <SelectItem value="bba">BBA</SelectItem>
+                <SelectItem value="eee">EEE</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Input placeholder="Search by course code" />
+            <Input placeholder="Search by course name" />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Course List ({courses.length})</CardTitle>
+          <CardDescription>Manage all university courses</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Course Code</TableHead>
+                <TableHead>Course Title</TableHead>
+                <TableHead>Department</TableHead>
+                <TableHead>Program</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Credits</TableHead>
+                <TableHead>TER Required</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  </div>
-)
+            </TableHeader>
+            <TableBody>
+              {courses.map((course) => (
+                <TableRow key={course.id}>
+                  <TableCell className="font-medium">{course.code}</TableCell>
+                  <TableCell>{course.title}</TableCell>
+                  <TableCell>{course.dept}</TableCell>
+                  <TableCell>{course.program}</TableCell>
+                  <TableCell>{course.type}</TableCell>
+                  <TableCell>{course.credits}</TableCell>
+                  <TableCell>{course.ter}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEditCourse(course)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeleteCourse(course.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Add/Edit Course Modal */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {editingCourse ? 'Edit Course' : 'Add New Course'}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <div className="space-y-2">
+              <Label>Course Code *</Label>
+              <Input
+                placeholder="e.g., CSE401"
+                value={newCourse.code}
+                onChange={(e) => setNewCourse({...newCourse, code: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Course Title *</Label>
+              <Input
+                placeholder="e.g., Software Engineering"
+                value={newCourse.title}
+                onChange={(e) => setNewCourse({...newCourse, title: e.target.value})}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Department *</Label>
+              <Select value={newCourse.dept} onValueChange={(value) => setNewCourse({...newCourse, dept: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CSE">Computer Science & Engineering</SelectItem>
+                  <SelectItem value="EEE">Electrical & Electronic Engineering</SelectItem>
+                  <SelectItem value="Business">Business Administration</SelectItem>
+                  <SelectItem value="English">English Language & Literature</SelectItem>
+                  <SelectItem value="Law">Law</SelectItem>
+                  <SelectItem value="Pharmacy">Pharmacy</SelectItem>
+                  <SelectItem value="Textile">Textile Engineering</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Program *</Label>
+              <Select value={newCourse.program} onValueChange={(value) => setNewCourse({...newCourse, program: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select program" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CSE">CSE</SelectItem>
+                  <SelectItem value="EEE">EEE</SelectItem>
+                  <SelectItem value="BBA">BBA</SelectItem>
+                  <SelectItem value="MBA">MBA</SelectItem>
+                  <SelectItem value="LLB">LLB</SelectItem>
+                  <SelectItem value="LLM">LLM</SelectItem>
+                  <SelectItem value="B.Pharm">B.Pharm</SelectItem>
+                  <SelectItem value="Textile">Textile Engineering</SelectItem>
+                  <SelectItem value="English">English</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Course Type</Label>
+              <Select value={newCourse.type} onValueChange={(value) => setNewCourse({...newCourse, type: value})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Theory">Theory</SelectItem>
+                  <SelectItem value="Lab">Lab</SelectItem>
+                  <SelectItem value="Practical">Practical</SelectItem>
+                  <SelectItem value="Project">Project</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Credits</Label>
+              <Select value={newCourse.credits.toString()} onValueChange={(value) => setNewCourse({...newCourse, credits: parseInt(value)})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="2">2</SelectItem>
+                  <SelectItem value="3">3</SelectItem>
+                  <SelectItem value="4">4</SelectItem>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="6">6</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <Label>TER Required</Label>
+              <Select value={newCourse.ter} onValueChange={(value) => setNewCourse({...newCourse, ter: value})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 mt-6">
+            <Button variant="outline" onClick={() => {
+              setShowAddModal(false)
+              setEditingCourse(null)
+              setNewCourse({
+                code: '',
+                title: '',
+                dept: '',
+                program: '',
+                type: 'Theory',
+                credits: 3,
+                ter: 'Yes'
+              })
+            }}>
+              Cancel
+            </Button>
+            <Button onClick={editingCourse ? handleUpdateCourse : handleAddCourse}>
+              {editingCourse ? 'Update Course' : 'Add Course'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
