@@ -178,10 +178,11 @@ function StudentReports() {
             { id: '2020-1-60-088', name: 'Sarah Ahmed', dept: 'EEE', courseType: 'Retake', totalCredits: 21 },
             { id: '2022-3-55-012', name: 'Karim Rahman', dept: 'Textile', courseType: 'Regular', totalCredits: 16 },
             { id: '2021-1-60-105', name: 'Nadia Sultana', dept: 'CSE', courseType: 'Retake', totalCredits: 14 },
-            { id: '2021-4-45-020', name: 'Rashid Khan', dept: 'B. Pharm', courseType: 'Regular', totalCredits: 20 }
+            { id: '2021-4-45-020', name: 'Rashid Khan', dept: 'B. Pharm', courseType: 'Regular', totalCredits: 20 },
+            { id: '2021-3-40-077', name: 'Salma Rahman', dept: 'EEE', courseType: 'Regular', totalCredits: 19 }
           ],
           columns: ['Student ID', 'Name', 'Department', 'Course Type', 'Total Credits', 'View'],
-          totalCount: 7
+          totalCount: 8
         }
       case 'unregistered-previous':
         return {
