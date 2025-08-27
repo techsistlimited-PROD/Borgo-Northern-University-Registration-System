@@ -567,6 +567,12 @@ export default function AdminDashboard() {
         return <StudentSectionChange />
       case 'advisor-assignment':
         return <AdvisorAssignmentManagement />
+      case 'ter-reports':
+        return <TERReports />
+      case 'exam-clearance':
+        return <StudentClearance clearanceType="exam" />
+      case 'final-clearance':
+        return <StudentClearance clearanceType="final" />
       case 'reports':
         return <ComprehensiveReports />
       default:
