@@ -154,9 +154,9 @@ interface StudentClearanceProps {
 }
 
 export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
-  const [selectedDepartment, setSelectedDepartment] = useState('')
-  const [selectedSemester, setSelectedSemester] = useState('')
-  const [selectedStatus, setSelectedStatus] = useState('')
+  const [selectedDepartment, setSelectedDepartment] = useState('all')
+  const [selectedSemester, setSelectedSemester] = useState('all')
+  const [selectedStatus, setSelectedStatus] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState<any>(null)
@@ -304,7 +304,7 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
                   <SelectValue placeholder="All departments" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Departments</SelectItem>
+                  <SelectItem value="all">All Departments</SelectItem>
                   {departments.map(dept => (
                     <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                   ))}
@@ -320,7 +320,7 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
                     <SelectValue placeholder="All semesters" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Semesters</SelectItem>
+                    <SelectItem value="all">All Semesters</SelectItem>
                     {semesters.map(semester => (
                       <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                     ))}
@@ -336,7 +336,7 @@ export const StudentClearance = ({ clearanceType }: StudentClearanceProps) => {
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="approved">Approved</SelectItem>
                   <SelectItem value="rejected">Rejected</SelectItem>
