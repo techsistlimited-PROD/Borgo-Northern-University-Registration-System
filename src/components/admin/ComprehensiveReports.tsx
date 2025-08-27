@@ -262,7 +262,7 @@ function StudentReports() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockReportData.data.map((row: any, index: number) => (
+                    {reportData?.data?.map((row: any, index: number) => (
                       <TableRow key={index}>
                         {Object.values(row).map((value: any, cellIndex: number) => (
                           <TableCell key={cellIndex}>{value}</TableCell>
@@ -516,7 +516,7 @@ function AttendanceReports() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
+            <h2 className="text-2xl font-bold text-deep-plum">{reportData?.title}</h2>
             <p className="text-gray-600">Attendance report for {filters.semester || 'selected semester'}</p>
           </div>
           <div className="flex space-x-2">
