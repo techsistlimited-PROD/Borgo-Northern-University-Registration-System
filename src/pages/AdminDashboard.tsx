@@ -57,10 +57,9 @@ import {
   Award
 } from 'lucide-react'
 
-const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: { 
-  activeTab: string, 
-  setActiveTab: (tab: string) => void,
-  onLogout: () => void 
+const AdminSidebar = ({ activeTab, setActiveTab }: {
+  activeTab: string,
+  setActiveTab: (tab: string) => void
 }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
@@ -94,7 +93,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
   ]
 
   return (
-    <div className="w-64 bg-white h-screen shadow-lg border-r">
+    <div className="w-64 bg-white h-screen shadow-lg border-r flex flex-col">
       <div className="p-6 border-b">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-deep-plum rounded-lg flex items-center justify-center">
@@ -106,8 +105,8 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
           </div>
         </div>
       </div>
-      
-      <nav className="p-4">
+
+      <nav className="flex-1 overflow-y-auto p-4">
         {menuItems.map((item) => {
           const Icon = item.icon
           return (
@@ -149,16 +148,6 @@ const AdminSidebar = ({ activeTab, setActiveTab, onLogout }: {
           )
         })}
       </nav>
-      
-      <div className="absolute bottom-4 left-4 right-4">
-        <button
-          onClick={onLogout}
-          className="text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-red-600 hover:bg-red-50 transition-colors border border-red-200"
-        >
-          <LogOut className="w-5 h-5" />
-          <span>Logout</span>
-        </button>
-      </div>
     </div>
   )
 }
