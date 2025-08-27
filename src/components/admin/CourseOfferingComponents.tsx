@@ -30,8 +30,8 @@ import {
 } from 'lucide-react'
 
 export const Syllabuses = () => {
-  const [selectedType, setSelectedType] = useState('')
-  const [selectedProgram, setSelectedProgram] = useState('')
+  const [selectedType, setSelectedType] = useState('all')
+  const [selectedProgram, setSelectedProgram] = useState('all')
   
   const programs = [
     'BBA (Bachelor of Business Administration)',
@@ -586,9 +586,9 @@ export const OfferCourses = () => {
 
 export const SectionManagement = () => {
   const [activeView, setActiveView] = useState('view') // 'view', 'create', 'edit'
-  const [filterProgram, setFilterProgram] = useState('')
-  const [filterCourse, setFilterCourse] = useState('')
-  const [filterTeacher, setFilterTeacher] = useState('')
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterCourse, setFilterCourse] = useState('all')
+  const [filterTeacher, setFilterTeacher] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
   const sections = [
@@ -741,7 +741,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Programs" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Programs</SelectItem>
+                      <SelectItem value="all">All Programs</SelectItem>
                       <SelectItem value="CSE">CSE</SelectItem>
                       <SelectItem value="BBA">BBA</SelectItem>
                       <SelectItem value="EEE">EEE</SelectItem>
@@ -756,7 +756,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Courses" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Courses</SelectItem>
+                      <SelectItem value="all">All Courses</SelectItem>
                       {courses.map((course) => (
                         <SelectItem key={course.code} value={course.code}>
                           {course.code} - {course.title}
@@ -773,7 +773,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Teachers" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Teachers</SelectItem>
+                      <SelectItem value="all">All Teachers</SelectItem>
                       {teachers.map((teacher) => (
                         <SelectItem key={teacher.id} value={teacher.id}>
                           {teacher.name}
