@@ -32,6 +32,77 @@ import {
 export const Syllabuses = () => {
   const [selectedType, setSelectedType] = useState('all')
   const [selectedProgram, setSelectedProgram] = useState('all')
+  const [syllabusState, setSyllabusState] = useState(syllabusData)
+
+  const handleAddCourse = (program: string, semester: number) => {
+    const courseCode = prompt('Enter course code (e.g., CSE305):')
+    const courseName = prompt('Enter course name (e.g., Computer Networks):')
+
+    if (courseCode && courseName) {
+      const newCourse = `${courseCode} - ${courseName}`
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? { ...sem, courses: [...sem.courses, newCourse] }
+              : sem
+          )
+        }
+      }))
+      alert(`Course "${newCourse}" added to ${program} Semester ${semester}`)
+    }
+  }
+
+  const handleEditCourse = (program: string, semester: number, courseIndex: number, currentCourse: string) => {
+    const [currentCode, ...currentNameParts] = currentCourse.split(' - ')
+    const currentName = currentNameParts.join(' - ')
+
+    const newCode = prompt('Enter course code:', currentCode)
+    const newName = prompt('Enter course name:', currentName)
+
+    if (newCode && newName) {
+      const updatedCourse = `${newCode} - ${newName}`
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? {
+                  ...sem,
+                  courses: sem.courses.map((course, index) =>
+                    index === courseIndex ? updatedCourse : course
+                  )
+                }
+              : sem
+          )
+        }
+      }))
+      alert(`Course updated to "${updatedCourse}"`)
+    }
+  }
+
+  const handleDeleteCourse = (program: string, semester: number, courseIndex: number) => {
+    if (confirm('Are you sure you want to delete this course?')) {
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? {
+                  ...sem,
+                  courses: sem.courses.filter((_, index) => index !== courseIndex)
+                }
+              : sem
+          )
+        }
+      }))
+      alert('Course deleted successfully')
+    }
+  }
   
   const programs = [
     'BBA (Bachelor of Business Administration)',
