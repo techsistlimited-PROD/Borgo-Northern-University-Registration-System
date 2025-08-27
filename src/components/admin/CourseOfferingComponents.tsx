@@ -324,9 +324,17 @@ export const OfferCourses = () => {
     alert(`New section created for ${selectedCourse} with capacity ${sectionCapacity}`)
   }
 
-  const handleDeleteSection = (sectionId: string) => {
-    if (confirm(`Are you sure you want to delete Section ${sectionId}?`)) {
-      alert(`Section ${sectionId} deleted successfully`)
+  const handleOfferSection = (sectionId: string) => {
+    if (confirm(`Are you sure you want to offer Section ${sectionId}?`)) {
+      alert(`Section ${sectionId} has been offered successfully!`)
+      // In real implementation, update the section status in the database
+    }
+  }
+
+  const handleWithdrawOffer = (sectionId: string) => {
+    if (confirm(`Are you sure you want to withdraw the offer for Section ${sectionId}?`)) {
+      alert(`Offer for Section ${sectionId} has been withdrawn.`)
+      // In real implementation, update the section status in the database
     }
   }
 
