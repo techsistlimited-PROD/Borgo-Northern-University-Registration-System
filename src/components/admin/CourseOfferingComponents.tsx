@@ -729,11 +729,15 @@ export const OfferCourses = () => {
 }
 
 export const SectionManagement = () => {
-  const [activeView, setActiveView] = useState('view') // 'view', 'create', 'edit'
+  const [activeView, setActiveView] = useState('view') // 'view', 'edit'
   const [filterProgram, setFilterProgram] = useState('all')
   const [filterCourse, setFilterCourse] = useState('all')
   const [filterTeacher, setFilterTeacher] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [editingSection, setEditingSection] = useState<any>(null)
+  const [viewingSection, setViewingSection] = useState<any>(null)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   const sections = [
     {
@@ -834,15 +838,21 @@ export const SectionManagement = () => {
     }
   }
 
-  const handleChangeTeacher = (sectionId: number) => {
-    const newTeacherId = prompt('Enter new teacher ID:')
-    if (newTeacherId) {
-      const teacher = teachers.find(t => t.id === newTeacherId)
-      if (teacher) {
-        alert(`Teacher changed to ${teacher.name} for section ${sectionId}`)
-      } else {
-        alert('Teacher not found!')
-      }
+  const handleViewSection = (section: any) => {
+    setViewingSection(section)
+    setShowViewModal(true)
+  }
+
+  const handleEditSection = (section: any) => {
+    setEditingSection(section)
+    setShowEditModal(true)
+  }
+
+  const handleUpdateSection = () => {
+    if (editingSection) {
+      alert(`Section ${editingSection.sectionName} updated successfully!`)
+      setShowEditModal(false)
+      setEditingSection(null)
     }
   }
 
@@ -850,21 +860,8 @@ export const SectionManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-deep-plum">Section Management</h1>
-        <div className="flex space-x-2">
-          <Button
-            variant={activeView === 'view' ? 'default' : 'outline'}
-            onClick={() => setActiveView('view')}
-          >
-            View Sections
-          </Button>
-          <Button
-            variant={activeView === 'create' ? 'default' : 'outline'}
-            onClick={() => setActiveView('create')}
-            className="flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Section</span>
-          </Button>
+        <div className="text-sm text-gray-600">
+          <p>Manage course sections and their details</p>
         </div>
       </div>
 
@@ -1026,14 +1023,15 @@ export const SectionManagement = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleChangeTeacher(section.id)}
-                            title="Change Teacher"
+                            onClick={() => handleViewSection(section)}
+                            title="View Section Details"
                           >
                             <Users className="w-4 h-4" />
                           </Button>
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handleEditSection(section)}
                             title="Edit Section"
                           >
                             <Edit className="w-4 h-4" />
