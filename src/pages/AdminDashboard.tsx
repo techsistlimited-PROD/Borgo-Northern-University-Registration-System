@@ -977,11 +977,21 @@ const Courses = () => {
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
+  const [showProfile, setShowProfile] = useState(false)
+  const [showEditProfile, setShowEditProfile] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const { user, logout } = useAuth()
 
-  const handleLogout = () => {
-    logout()
-    window.location.href = '/'
+  const handleViewProfile = () => {
+    setShowProfile(true)
+  }
+
+  const handleEditProfile = () => {
+    setShowEditProfile(true)
+  }
+
+  const handleChangePassword = () => {
+    setShowChangePassword(true)
   }
 
   const renderContent = () => {
@@ -1021,10 +1031,70 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex h-screen bg-lavender-bg">
-      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
-      <main className="flex-1 overflow-auto p-6">
-        {renderContent()}
-      </main>
+      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      <div className="flex-1 flex flex-col">
+        {/* Top Header with Profile Dropdown */}
+        <header className="bg-white border-b px-6 py-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-semibold text-deep-plum">
+              {activeTab === 'dashboard' && 'Dashboard'}
+              {activeTab === 'students' && 'Student Information'}
+              {activeTab === 'semester-schedule' && 'Create Semester Schedule'}
+              {(activeTab === 'course-offering' || activeTab === 'courses' || activeTab === 'syllabuses' || activeTab === 'offer-courses' || activeTab === 'section-management') && 'Course Offering'}
+              {activeTab === 'class-routine' && 'Central Class Routine & Room Management'}
+              {activeTab === 'section-change' && 'Change Students\' Section'}
+              {activeTab === 'advisor-assignment' && 'Student Advisor Assignment'}
+              {activeTab === 'ter-reports' && 'TER Reports'}
+              {(activeTab === 'student-clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Student Clearance'}
+              {activeTab === 'reports' && 'Comprehensive Reports'}
+            </h1>
+            <p className="text-sm text-gray-600">Welcome to Northern University Admin Portal</p>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <div className="text-right mr-4">
+              <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+              <p className="text-xs text-gray-600">Admin ID: {user?.id}</p>
+            </div>
+            <AdminProfileDropdown
+              onViewProfile={handleViewProfile}
+              onEditProfile={handleEditProfile}
+              onChangePassword={handleChangePassword}
+            />
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-auto p-6">
+          {renderContent()}
+        </main>
+      </div>
+
+      {/* Profile Modals */}
+      {showProfile && (
+        <AdminProfile
+          onClose={() => setShowProfile(false)}
+          onEdit={() => {
+            setShowProfile(false)
+            setShowEditProfile(true)
+          }}
+        />
+      )}
+
+      {showEditProfile && (
+        <EditAdminProfile
+          onClose={() => setShowEditProfile(false)}
+          onSave={() => setShowEditProfile(false)}
+        />
+      )}
+
+      {showChangePassword && (
+        <ChangeAdminPassword
+          onClose={() => setShowChangePassword(false)}
+          onSave={() => setShowChangePassword(false)}
+        />
+      )}
     </div>
   )
 }
