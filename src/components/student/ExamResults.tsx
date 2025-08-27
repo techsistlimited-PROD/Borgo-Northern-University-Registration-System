@@ -88,11 +88,7 @@ const semesterWiseTranscript = [
   }
 ]
 
-interface ExamResultsProps {
-  activeTab?: string
-}
-
-export const ExamResults = ({ activeTab = 'results' }: ExamResultsProps) => {
+export const ExamResults = () => {
   const [selectedResultSemester, setSelectedResultSemester] = useState('')
 
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
@@ -103,12 +99,12 @@ export const ExamResults = ({ activeTab = 'results' }: ExamResultsProps) => {
     if (selectedResultSemester === 'Fall 2024') {
       return {
         semester: 'Fall 2024',
-        semesterGPA: 3.375,
+        cgpa: 3.375,
         courses: [
-          { serial: 1, courseCode: 'CSE 1101', courseTitle: 'Introduction to Computers', creditHour: 2.0, letterGrade: 'A', gradePoint: 3.75, tgp: 7.5, isFinal: 'Yes' },
-          { serial: 2, courseCode: 'ENG 1100', courseTitle: 'English Language-I : Sentence and their Elements', creditHour: 0.0, letterGrade: 'B', gradePoint: 3.0, tgp: 0.0, isFinal: 'Yes' },
-          { serial: 3, courseCode: 'GED 1202', courseTitle: 'Emergence of Bangladesh', creditHour: 3.0, letterGrade: 'B+', gradePoint: 3.25, tgp: 9.75, isFinal: 'Yes' },
-          { serial: 4, courseCode: 'ENG 1203', courseTitle: 'English Language-III : Reading and Writing', creditHour: 3.0, letterGrade: 'B+', gradePoint: 3.25, tgp: 9.75, isFinal: 'Yes' }
+          { courseCode: 'CSE 1101', courseName: 'Introduction to Computers', credit: 2.0, grade: 'A', gp: 3.75, tgp: 7.5, isFinal: 'Yes' },
+          { courseCode: 'ENG 1100', courseName: 'English Language-I : Sentence and their Elements', credit: 0.0, grade: 'B', gp: 3.0, tgp: 0.0, isFinal: 'Yes' },
+          { courseCode: 'GED 1202', courseName: 'Emergence of Bangladesh', credit: 3.0, grade: 'B+', gp: 3.25, tgp: 9.75, isFinal: 'Yes' },
+          { courseCode: 'ENG 1203', courseName: 'English Language-III : Reading and Writing', credit: 3.0, grade: 'B+', gp: 3.25, tgp: 9.75, isFinal: 'Yes' }
         ],
         totalCredit: 8.0,
         totalTGP: 27.0
@@ -297,7 +293,7 @@ export const ExamResults = ({ activeTab = 'results' }: ExamResultsProps) => {
                           Semester: {semesterResult.semester}
                         </span>
                         <span className="font-bold text-purple-800">
-                          Semester GPA: {semesterResult.semesterGPA || semesterResult.cgpa}
+                          Semester GPA: {semesterResult.cgpa}
                         </span>
                       </div>
                     </div>
@@ -318,18 +314,18 @@ export const ExamResults = ({ activeTab = 'results' }: ExamResultsProps) => {
                       <TableBody>
                         {semesterResult.courses.map((course, index) => (
                           <TableRow key={index}>
-                            <TableCell>{course.serial || index + 1}</TableCell>
+                            <TableCell>{index + 1}</TableCell>
                             <TableCell className="font-medium">{course.courseCode}</TableCell>
-                            <TableCell>{course.courseTitle || course.courseName}</TableCell>
-                            <TableCell>{course.creditHour || course.credit}</TableCell>
+                            <TableCell>{course.courseName}</TableCell>
+                            <TableCell>{course.credit}</TableCell>
                             <TableCell>
                               <Badge className={
-                                (course.letterGrade || course.grade).startsWith('A') ? 'bg-green-100 text-green-800' :
-                                (course.letterGrade || course.grade).startsWith('B') ? 'bg-blue-100 text-blue-800' :
-                                (course.letterGrade || course.grade).startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
+                                course.grade.startsWith('A') ? 'bg-green-100 text-green-800' :
+                                course.grade.startsWith('B') ? 'bg-blue-100 text-blue-800' :
+                                course.grade.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-red-100 text-red-800'
                               }>
-                                {course.letterGrade || course.grade}
+                                {course.grade}
                               </Badge>
                             </TableCell>
                             <TableCell>{course.gradePoint || course.gp}</TableCell>
