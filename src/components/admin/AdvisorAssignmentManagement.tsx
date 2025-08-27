@@ -441,8 +441,8 @@ function BulkAssignment() {
   const [bulkReason, setBulkReason] = useState('')
 
   const filteredStudents = studentsData.filter(student => {
-    return (!filterProgram || student.program === filterProgram) &&
-           (!filterSemester || student.semester === filterSemester) &&
+    return (filterProgram === 'all' || student.program === filterProgram) &&
+           (filterSemester === 'all' || student.semester === filterSemester) &&
            student.status === 'active' &&
            !student.currentAdvisor // Only unassigned students
   })
