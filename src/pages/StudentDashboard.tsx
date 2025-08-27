@@ -12,6 +12,7 @@ import { ClassRoutine } from '@/components/student/ClassRoutine'
 import { PaymentInformation } from '@/components/student/PaymentInformation'
 import { TERForm } from '@/components/student/TERForm'
 import { ExamResults } from '@/components/student/ExamResults'
+import { ClearanceApplication } from '@/components/student/ClearanceApplication'
 import {
   Home,
   Users,
