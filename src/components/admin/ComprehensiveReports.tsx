@@ -247,6 +247,18 @@ function StudentReports() {
             </div>
           </div>
 
+          {reportData?.totalCount && (
+            <Card className="mb-4">
+              <CardContent className="p-4">
+                <div className="text-lg font-semibold text-deep-plum">
+                  Total {reportData.title.includes('Dropout') ? 'Dropout Students' :
+                         reportData.title.includes('Unregistered') ? 'Unregistered Students' :
+                         reportData.title.includes('Completed') ? 'Completed Students' : 'Students'}: {reportData.totalCount}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardContent className="p-0">
               {reportData?.data?.length > 0 ? (
@@ -261,9 +273,41 @@ function StudentReports() {
                   <TableBody>
                     {reportData?.data?.map((row: any, index: number) => (
                       <TableRow key={index}>
-                        {Object.values(row).map((value: any, cellIndex: number) => (
-                          <TableCell key={cellIndex}>{value}</TableCell>
-                        ))}
+                        {Object.keys(row).map((key, cellIndex) => {
+                          if (key === 'totalCredits' || key === 'creditsCompleted') return null;
+                          return (
+                            <TableCell key={cellIndex}>
+                              {key === 'clearanceStatus' ? (
+                                <Badge className={row[key] === 'Approved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                                  {row[key]}
+                                </Badge>
+                              ) : key === 'courseType' ? (
+                                <Badge className={row[key] === 'Retake' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
+                                  {row[key]}
+                                </Badge>
+                              ) : (
+                                row[key]
+                              )}
+                            </TableCell>
+                          )
+                        })}
+                        {row.totalCredits && (
+                          <TableCell>{row.totalCredits}</TableCell>
+                        )}
+                        {row.creditsCompleted && (
+                          <TableCell>{row.creditsCompleted}</TableCell>
+                        )}
+                        {selectedReportType === 'registered-list' && (
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewStudent(row)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>
@@ -277,6 +321,93 @@ function StudentReports() {
               )}
             </CardContent>
           </Card>
+
+          {/* Student Detail Modal */}
+          {showStudentDetail && selectedStudent && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-deep-plum">Student Details</h3>
+                    <p className="text-gray-600">{selectedStudent.name} ({selectedStudent.id})</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowStudentDetail(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Personal Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <p><strong>Student ID:</strong> {selectedStudent.id}</p>
+                        <p><strong>Name:</strong> {selectedStudent.name}</p>
+                        <p><strong>Department:</strong> {selectedStudent.dept}</p>
+                        <p><strong>Course Type:</strong>
+                          <Badge className={selectedStudent.courseType === 'Retake' ? 'bg-red-100 text-red-800 ml-2' : 'bg-blue-100 text-blue-800 ml-2'}>
+                            {selectedStudent.courseType}
+                          </Badge>
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Academic Summary</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <p><strong>Total Credits:</strong> {selectedStudent.totalCredits}</p>
+                        <p><strong>Courses Registered:</strong> {selectedStudent.courses?.length || 0}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Registered Courses</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Course ID</TableHead>
+                          <TableHead>Course Name</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Credit</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedStudent.courses?.map((course: any, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell>{course.courseId}</TableCell>
+                            <TableCell>{course.courseName}</TableCell>
+                            <TableCell>
+                              <Badge className={course.type === 'Retake' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
+                                {course.type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{course.credit}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    <div className="mt-4 text-right">
+                      <strong>Total Credits: {selectedStudent.courses?.reduce((sum: number, course: any) => sum + course.credit, 0) || 0}</strong>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
 
           {/* Student Detail Modal */}
           {showStudentDetail && selectedStudent && (
