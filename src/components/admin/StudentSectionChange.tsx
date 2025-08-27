@@ -370,9 +370,9 @@ function BulkSectionChange() {
   const [bulkReason, setBulkReason] = useState('')
 
   const filteredStudents = studentsData.filter(student => {
-    return (!filterSemester || student.semester === filterSemester) &&
-           (!filterProgram || student.program === filterProgram) &&
-           (!filterCourse || student.courseCode === filterCourse)
+    return (filterSemester === 'all' || student.semester === filterSemester) &&
+           (filterProgram === 'all' || student.program === filterProgram) &&
+           (filterCourse === 'all' || student.courseCode === filterCourse)
   })
 
   const handleSelectAll = (checked: boolean) => {
