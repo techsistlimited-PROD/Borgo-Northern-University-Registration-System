@@ -633,7 +633,8 @@ export const OfferCourses = () => {
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>Student ID</Label>
-                      <Input placeholder="Enter student ID" />
+                      <Input placeholder="e.g., 2021-1-60-001" />
+                      <p className="text-xs text-gray-500">Example: 2021-1-60-001</p>
                     </div>
 
                     <div className="space-y-2">
