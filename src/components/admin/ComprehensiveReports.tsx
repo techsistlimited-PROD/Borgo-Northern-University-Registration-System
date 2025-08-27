@@ -6,12 +6,9 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   FileText,
   Download,
-  Filter,
-  Calendar,
   Users,
   GraduationCap,
   BookOpen,
@@ -19,9 +16,7 @@ import {
   TrendingUp,
   Award,
   Clock,
-  Search,
   Settings,
-  Eye,
   FileSpreadsheet,
   FileType,
   File
