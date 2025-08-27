@@ -227,10 +227,15 @@ export default function StudentDashboard() {
       case 'ter-form':
         return <TERForm />
 
+      // Clearance cases
+      case 'clearance':
+      case 'exam-clearance':
+        return <ClearanceApplication activeTab="exam-clearance" />
+      case 'final-clearance':
+        return <ClearanceApplication activeTab="final-clearance" />
+
       // Exam Results cases
       case 'exam-results':
-      case 'clearance-assessment':
-        return <ExamResults activeTab="clearance" />
       case 'results':
         return <ExamResults activeTab="results" />
 
