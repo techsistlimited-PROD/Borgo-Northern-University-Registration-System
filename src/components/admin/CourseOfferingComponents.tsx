@@ -1220,6 +1220,191 @@ export const SectionManagement = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* View Section Modal */}
+      <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Section Details - {viewingSection?.course} Section {viewingSection?.sectionName}
+            </DialogTitle>
+          </DialogHeader>
+
+          {viewingSection && (
+            <div className="space-y-4 mt-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Year</Label>
+                  <p className="text-lg">{viewingSection.year}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Program</Label>
+                  <p className="text-lg">{viewingSection.program}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Course</Label>
+                  <p className="text-lg">{viewingSection.course}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Section</Label>
+                  <p className="text-lg">{viewingSection.sectionName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Capacity</Label>
+                  <p className="text-lg">{viewingSection.enrolled}/{viewingSection.capacity}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Teacher</Label>
+                  <p className="text-lg">{viewingSection.teacher}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Schedule</Label>
+                  <p className="text-lg">{viewingSection.days}</p>
+                  <p className="text-sm text-gray-600">{viewingSection.timeSlot}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Room</Label>
+                  <p className="text-lg">{viewingSection.room}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Section Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              Edit Section - {editingSection?.course} Section {editingSection?.sectionName}
+            </DialogTitle>
+          </DialogHeader>
+
+          {editingSection && (
+            <div className="space-y-6 mt-4">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Year</Label>
+                  <Select value={editingSection.year} onValueChange={(value) => setEditingSection({...editingSection, year: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Program</Label>
+                  <Select value={editingSection.program} onValueChange={(value) => setEditingSection({...editingSection, program: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CSE">CSE</SelectItem>
+                      <SelectItem value="BBA">BBA</SelectItem>
+                      <SelectItem value="EEE">EEE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Section Name</Label>
+                  <Input
+                    value={editingSection.sectionName}
+                    onChange={(e) => setEditingSection({...editingSection, sectionName: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Capacity</Label>
+                  <Input
+                    type="number"
+                    value={editingSection.capacity}
+                    onChange={(e) => setEditingSection({...editingSection, capacity: parseInt(e.target.value)})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Teacher</Label>
+                  <Select value={editingSection.teacherId} onValueChange={(value) => {
+                    const teacher = teachers.find(t => t.id === value)
+                    setEditingSection({...editingSection, teacherId: value, teacher: teacher?.name || ''})
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id}>
+                          {teacher.id} - {teacher.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Schedule Days</Label>
+                  <Select value={editingSection.days} onValueChange={(value) => setEditingSection({...editingSection, days: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Sunday & Tuesday">Sunday & Tuesday</SelectItem>
+                      <SelectItem value="Monday & Wednesday">Monday & Wednesday</SelectItem>
+                      <SelectItem value="Thursday & Friday">Thursday & Friday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Time Slot</Label>
+                  <Select value={editingSection.timeSlot} onValueChange={(value) => setEditingSection({...editingSection, timeSlot: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="08:00 - 09:30 AM">08:00 - 09:30 AM</SelectItem>
+                      <SelectItem value="10:00 - 11:30 AM">10:00 - 11:30 AM</SelectItem>
+                      <SelectItem value="02:00 - 03:30 PM">02:00 - 03:30 PM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Room</Label>
+                  <Select value={editingSection.room} onValueChange={(value) => setEditingSection({...editingSection, room: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Room 201">Room 201</SelectItem>
+                      <SelectItem value="Room 301">Room 301</SelectItem>
+                      <SelectItem value="Room 401">Room 401</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => {
+                  setShowEditModal(false)
+                  setEditingSection(null)
+                }}>Cancel</Button>
+                <Button onClick={handleUpdateSection}>Update Section</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
