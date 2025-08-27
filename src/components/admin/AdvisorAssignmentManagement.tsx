@@ -229,40 +229,6 @@ const studentsData: Student[] = [
   }
 ]
 
-// Mock assignment history
-const assignmentHistory: AdvisorAssignment[] = [
-  {
-    id: '1',
-    studentId: '2021-1-60-001',
-    studentName: 'Ahmed Rahman',
-    teacherId: 'T001',
-    teacherName: 'Dr. Rahman Ahmed',
-    assignmentDate: '2021-03-15',
-    assignedBy: 'Admin User',
-    isActive: true
-  },
-  {
-    id: '2',
-    studentId: '2022-1-60-002',
-    studentName: 'Fatima Khan',
-    teacherId: 'T002',
-    teacherName: 'Prof. Sarah Khan',
-    assignmentDate: '2022-03-15',
-    assignedBy: 'Admin User',
-    isActive: true
-  },
-  {
-    id: '3',
-    studentId: '2021-1-60-006',
-    studentName: 'Previous Student',
-    teacherId: 'T001',
-    teacherName: 'Dr. Rahman Ahmed',
-    assignmentDate: '2021-03-15',
-    assignedBy: 'Admin User',
-    isActive: false,
-    reassignmentReason: 'Student graduated'
-  }
-]
 
 function IndividualAssignment() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
