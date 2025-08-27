@@ -270,7 +270,8 @@ export default function StudentDashboard() {
               {(activeTab === 'semester-registration' || activeTab === 'last-registration' || activeTab === 'new-registration' || activeTab === 'all-registration') && 'Semester Registration'}
               {activeTab === 'class-routine' && 'Class Routine'}
               {activeTab === 'ter-form' && 'TER Fill Up'}
-              {(activeTab === 'exam-results' || activeTab === 'clearance-assessment' || activeTab === 'results') && 'Exam and Results'}
+              {(activeTab === 'clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Clearance Applications'}
+              {(activeTab === 'exam-results' || activeTab === 'results') && 'Academic Results'}
               {(activeTab === 'payment-info' || activeTab === 'payable-list' || activeTab === 'payment-history' || activeTab === 'financial-summary' || activeTab === 'detailed-report') && 'Payment Information'}
             </h1>
             <p className="text-sm text-gray-600">Welcome to Northern University Student Portal</p>
