@@ -234,10 +234,12 @@ function StudentReports() {
             { id: '2021-2-50-015', name: 'Mohammad Ali', dept: 'BBA', totalCredit: 78, cgpa: 3.21 },
             { id: '2020-3-55-088', name: 'Sarah Ahmed', dept: 'Textile', totalCredit: 120, cgpa: 3.89 },
             { id: '2022-4-45-012', name: 'Karim Rahman', dept: 'B. Pharm', totalCredit: 67, cgpa: 3.56 },
-            { id: '2021-3-40-105', name: 'Nadia Sultana', dept: 'EEE', totalCredit: 95, cgpa: 3.12 }
+            { id: '2021-3-40-105', name: 'Nadia Sultana', dept: 'EEE', totalCredit: 95, cgpa: 3.12 },
+            { id: '2020-1-60-088', name: 'Rafiq Ahmed', dept: 'CSE', totalCredit: 115, cgpa: 3.65 },
+            { id: '2021-2-50-033', name: 'Salma Khatun', dept: 'BBA', totalCredit: 92, cgpa: 2.98 }
           ],
           columns: ['Student ID', 'Name', 'Department', 'Total Credit', 'CGPA'],
-          totalCount: 6
+          totalCount: 8
         }
       case 'pending-approval':
         return {
@@ -248,10 +250,12 @@ function StudentReports() {
             { id: '2021-2-50-015', name: 'Mohammad Ali', advisorName: 'Dr. Mohammad Ali', submissionDate: '2024-01-15', leadTime: 6 },
             { id: '2020-3-55-088', name: 'Sarah Ahmed', advisorName: 'Dr. Rahman Ahmed', submissionDate: '2024-01-17', leadTime: 4 },
             { id: '2022-4-45-012', name: 'Karim Rahman', advisorName: 'Prof. Nusrat Jahan', submissionDate: '2024-01-18', leadTime: 3 },
-            { id: '2021-3-40-105', name: 'Nadia Sultana', advisorName: 'Dr. Khalil Ahmed', submissionDate: '2024-01-14', leadTime: 7 }
+            { id: '2021-3-40-105', name: 'Nadia Sultana', advisorName: 'Dr. Khalil Ahmed', submissionDate: '2024-01-14', leadTime: 7 },
+            { id: '2020-1-60-077', name: 'Imran Hossain', advisorName: 'Dr. Rahman Ahmed', submissionDate: '2024-01-16', leadTime: 5 },
+            { id: '2021-4-45-025', name: 'Rashida Begum', advisorName: 'Prof. Sarah Khan', submissionDate: '2024-01-20', leadTime: 1 }
           ],
           columns: ['Student ID', 'Name', 'Advisor Name', 'Submission Date', 'Lead Time'],
-          totalCount: 6
+          totalCount: 8
         }
       default:
         return {
