@@ -75,32 +75,8 @@ function StudentReports() {
     {
       id: 'registered-list',
       name: 'Registered Students List',
-      description: 'List of registered students with multiple filter options',
-      filters: ['semester', 'program', 'individual']
-    },
-    {
-      id: 'registered-with-courses',
-      name: 'Registered Students with Taken Courses',
-      description: 'Students list including their registered courses',
-      filters: ['semester', 'program']
-    },
-    {
-      id: 'registered-with-credits',
-      name: 'Registered Students with Taken Credits',
-      description: 'Students list with credit information',
-      filters: ['semester', 'program']
-    },
-    {
-      id: 'registered-number',
-      name: 'Registered Students Number',
-      description: 'Count of registered students by category',
-      filters: ['semester', 'program']
-    },
-    {
-      id: 'registered-retake',
-      name: 'Registered Students with Retake',
-      description: 'Students who are retaking courses',
-      filters: ['semester', 'program']
+      description: 'List of registered students with department, search by ID, course type filters',
+      filters: ['semester', 'department', 'search', 'courseType']
     },
     {
       id: 'unregistered-previous',
@@ -111,25 +87,13 @@ function StudentReports() {
     {
       id: 'dropout-list',
       name: 'Dropout Students List',
-      description: 'List of students who have dropped out',
-      filters: ['semester', 'program']
-    },
-    {
-      id: 'dropout-number',
-      name: 'Dropout Students Number',
-      description: 'Count of dropout students',
+      description: 'List of students who have dropped out with last semester and credits completed',
       filters: ['semester', 'program']
     },
     {
       id: 'completed-list',
       name: 'Completed Students List',
-      description: 'Students who have completed their degree',
-      filters: ['semester', 'program']
-    },
-    {
-      id: 'completed-with-address',
-      name: 'Completed Students with Address',
-      description: 'Completed students including address information',
+      description: 'Students ready for graduation with clearance status',
       filters: ['semester', 'program']
     },
     {
