@@ -980,7 +980,7 @@ function AcademicReports() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-deep-plum">{mockReportData.title}</h2>
+            <h2 className="text-2xl font-bold text-deep-plum">{reportData?.title}</h2>
             <p className="text-gray-600">Academic report for {filters.semester || 'selected criteria'}</p>
           </div>
           <div className="flex space-x-2">
