@@ -29,8 +29,6 @@ import {
   FileSpreadsheet,
   FileType,
   File,
-  CheckCircle,
-  AlertCircle
 } from 'lucide-react'
 
 interface ReportFilter {
