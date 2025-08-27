@@ -877,6 +877,8 @@ function TeacherReports() {
 function AcademicReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
   const [selectedReportType, setSelectedReportType] = useState('all')
+  const [showDetailedView, setShowDetailedView] = useState(false)
+  const [reportData, setReportData] = useState<any>(null)
 
   const academicReportTypes = [
     {
@@ -917,8 +919,120 @@ function AcademicReports() {
       return
     }
 
-    const reportType = academicReportTypes.find(r => r.id === selectedReportType)
-    alert(`Generating ${reportType?.name} report...\nFilters applied: ${JSON.stringify(filters, null, 2)}`)
+    const mockData = generateAcademicReportData(selectedReportType)
+    setReportData(mockData)
+    setShowDetailedView(true)
+  }
+
+  const generateAcademicReportData = (reportType: string) => {
+    switch (reportType) {
+      case 'student-results':
+        return {
+          title: 'Student Results Report',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', program: 'CSE', cgpa: 3.85, completedCredits: 120, status: 'Active' },
+            { id: '2021-1-60-002', name: 'Fatima Khan', program: 'CSE', cgpa: 3.92, completedCredits: 115, status: 'Active' },
+            { id: '2021-2-50-015', name: 'Mohammad Ali', program: 'BBA', cgpa: 3.67, completedCredits: 95, status: 'Active' }
+          ],
+          columns: ['Student ID', 'Student Name', 'Program', 'CGPA', 'Completed Credits', 'Status']
+        }
+      case 'performance-report':
+        return {
+          title: 'Student Performance Report',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', semester: 'Fall 2024', sgpa: 3.75, cgpa: 3.85, rank: 15, totalStudents: 120 },
+            { id: '2021-1-60-002', name: 'Fatima Khan', semester: 'Fall 2024', sgpa: 3.90, cgpa: 3.92, rank: 8, totalStudents: 120 }
+          ],
+          columns: ['Student ID', 'Student Name', 'Semester', 'SGPA', 'CGPA', 'Rank', 'Total Students']
+        }
+      case 'ter-reports':
+        return {
+          title: 'TER Reports Status',
+          data: [
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', semester: 'Fall 2024', submitted: 'Yes', submissionDate: '2024-11-10', status: 'Approved' },
+            { id: '2021-1-60-002', name: 'Fatima Khan', semester: 'Fall 2024', submitted: 'No', submissionDate: null, status: 'Pending' },
+            { id: '2021-2-50-015', name: 'Mohammad Ali', semester: 'Fall 2024', submitted: 'Yes', submissionDate: '2024-11-12', status: 'Under Review' }
+          ],
+          columns: ['Student ID', 'Student Name', 'Semester', 'Submitted', 'Submission Date', 'Status']
+        }
+      case 'completed-incomplete':
+        return {
+          title: 'Completed/Incomplete Student List',
+          data: [
+            { id: '2018-1-60-001', name: 'Ali Rahman', program: 'CSE', status: 'Completed', completionDate: '2024-01-15', cgpa: 3.85 },
+            { id: '2019-1-60-010', name: 'Sara Ahmed', program: 'CSE', status: 'Incomplete', expectedCompletion: '2024-12-31', cgpa: 3.45 }
+          ],
+          columns: ['Student ID', 'Student Name', 'Program', 'Status', 'Date', 'CGPA']
+        }
+      case 'mark-sheet':
+        return {
+          title: 'Mark Sheet Hard Copy Report',
+          data: [
+            { course: 'CSE401', courseName: 'Software Engineering', enrolled: 45, appeared: 42, passed: 38, failureRate: '11.1%' },
+            { course: 'CSE403', courseName: 'Database Systems', enrolled: 40, appeared: 39, passed: 36, failureRate: '10.0%' }
+          ],
+          columns: ['Course Code', 'Course Name', 'Enrolled', 'Appeared', 'Passed', 'Failure Rate']
+        }
+      default:
+        return { title: reportType, data: [], columns: [] }
+    }
+  }
+
+  if (showDetailedView && reportData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-deep-plum">{reportData.title}</h2>
+            <p className="text-gray-600">Academic report for {filters.semester || 'selected criteria'}</p>
+          </div>
+          <div className="flex space-x-2">
+            <Button onClick={() => setShowDetailedView(false)} variant="outline">
+              Back to Reports
+            </Button>
+            <Button onClick={() => alert('Exporting academic report...')}>
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {reportData.columns.map((column: string, index: number) => (
+                    <TableHead key={index}>{column}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reportData.data.map((row: any, index: number) => (
+                  <TableRow key={index}>
+                    {Object.values(row).map((value: any, cellIndex: number) => (
+                      <TableCell key={cellIndex}>
+                        {reportData.title.includes('TER') && cellIndex === 2 ? (
+                          <Badge className={value === 'Yes' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                            {value}
+                          </Badge>
+                        ) : cellIndex === 3 && reportData.title.includes('CGPA') ? (
+                          <Badge className={parseFloat(value) >= 3.5 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                            {value}
+                          </Badge>
+                        ) : (
+                          value
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
