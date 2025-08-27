@@ -134,38 +134,58 @@ function StudentReports() {
         return {
           title: 'Registered Students List',
           data: [
-            { id: '2021-1-60-001', name: 'Ahmed Hassan', program: 'CSE', semester: 'Fall 2024', status: 'Active', credits: 18 },
-            { id: '2021-1-60-002', name: 'Fatima Khan', program: 'CSE', semester: 'Fall 2024', status: 'Active', credits: 15 },
-            { id: '2021-2-50-015', name: 'Mohammad Ali', program: 'BBA', semester: 'Fall 2024', status: 'Active', credits: 12 }
+            { id: '2021-1-60-001', name: 'Ahmed Hassan', dept: 'CSE', courseType: 'Regular', totalCredits: 18 },
+            { id: '2021-1-60-002', name: 'Fatima Khan', dept: 'CSE', courseType: 'Retake', totalCredits: 15 },
+            { id: '2021-2-50-015', name: 'Mohammad Ali', dept: 'BBA', courseType: 'Regular', totalCredits: 12 },
+            { id: '2020-1-60-088', name: 'Sarah Ahmed', dept: 'EEE', courseType: 'Retake', totalCredits: 21 },
+            { id: '2022-3-55-012', name: 'Karim Rahman', dept: 'Textile', courseType: 'Regular', totalCredits: 16 },
+            { id: '2021-1-60-105', name: 'Nadia Sultana', dept: 'CSE', courseType: 'Retake', totalCredits: 14 },
+            { id: '2021-4-45-020', name: 'Rashid Khan', dept: 'B. Pharm', courseType: 'Regular', totalCredits: 20 }
           ],
-          columns: ['Student ID', 'Name', 'Program', 'Semester', 'Status', 'Credits']
+          columns: ['Student ID', 'Name', 'Department', 'Course Type', 'Total Credits', 'View'],
+          totalCount: 7
         }
-      case 'registered-with-courses':
+      case 'unregistered-previous':
         return {
-          title: 'Registered Students with Taken Courses',
+          title: 'Unregistered in Previous Semester',
           data: [
-            { id: '2021-1-60-001', name: 'Ahmed Hassan', courses: 'CSE401, CSE403, CSE405', totalCredits: 12 },
-            { id: '2021-1-60-002', name: 'Fatima Khan', courses: 'CSE401, CSE403, BBA301', totalCredits: 9 }
+            { id: '2020-1-60-033', name: 'Omar Faruk', dept: 'CSE', totalCredits: 89 },
+            { id: '2021-2-50-077', name: 'Ruma Begum', dept: 'BBA', totalCredits: 102 },
+            { id: '2020-3-55-044', name: 'Tanvir Hasan', dept: 'Textile', totalCredits: 78 },
+            { id: '2021-1-60-088', name: 'Marium Khan', dept: 'CSE', totalCredits: 95 },
+            { id: '2020-4-45-021', name: 'Sabbir Ahmed', dept: 'B. Pharm', totalCredits: 110 },
+            { id: '2021-3-40-009', name: 'Ayesha Rahman', dept: 'EEE', totalCredits: 72 }
           ],
-          columns: ['Student ID', 'Name', 'Registered Courses', 'Total Credits']
+          columns: ['Student ID', 'Name', 'Department', 'Total Credits Completed'],
+          totalCount: 6
         }
       case 'dropout-list':
         return {
           title: 'Dropout Students List',
           data: [
-            { id: '2020-1-60-010', name: 'John Smith', program: 'CSE', lastSemester: 'Spring 2023', reason: 'Academic Performance' },
-            { id: '2020-2-50-025', name: 'Sara Wilson', program: 'BBA', lastSemester: 'Fall 2023', reason: 'Personal Reasons' }
+            { id: '2019-1-60-010', name: 'Rafiq Ahmed', dept: 'CSE', lastSemester: 'Fall 2022', creditsCompleted: 67 },
+            { id: '2020-2-50-025', name: 'Salma Khatun', dept: 'BBA', lastSemester: 'Summer 2023', creditsCompleted: 89 },
+            { id: '2018-3-55-033', name: 'Imran Hossain', dept: 'Textile', lastSemester: 'Spring 2022', creditsCompleted: 45 },
+            { id: '2019-4-45-018', name: 'Nasir Uddin', dept: 'B. Pharm', lastSemester: 'Fall 2023', creditsCompleted: 78 },
+            { id: '2020-3-40-012', name: 'Rashida Begum', dept: 'EEE', lastSemester: 'Summer 2022', creditsCompleted: 56 },
+            { id: '2019-1-60-055', name: 'Habib Rahman', dept: 'CSE', lastSemester: 'Spring 2023', creditsCompleted: 91 }
           ],
-          columns: ['Student ID', 'Name', 'Program', 'Last Semester', 'Reason']
+          columns: ['Student ID', 'Name', 'Department', 'Last Semester Completed', 'Credits Completed'],
+          totalCount: 6
         }
       case 'completed-list':
         return {
-          title: 'Completed Students List',
+          title: 'Completed Students List (Ready for Graduation)',
           data: [
-            { id: '2018-1-60-001', name: 'Ali Rahman', program: 'CSE', cgpa: 3.85, completionDate: '2024-01-15' },
-            { id: '2018-2-50-010', name: 'Nusrat Jahan', program: 'BBA', cgpa: 3.92, completionDate: '2024-01-15' }
+            { id: '2020-1-60-001', name: 'Ali Rahman', dept: 'CSE', clearanceStatus: 'Approved' },
+            { id: '2020-2-50-010', name: 'Nusrat Jahan', dept: 'BBA', clearanceStatus: 'Pending' },
+            { id: '2020-3-55-008', name: 'Farhan Ahmed', dept: 'Textile', clearanceStatus: 'Approved' },
+            { id: '2020-4-45-003', name: 'Rehana Khatun', dept: 'B. Pharm', clearanceStatus: 'Pending' },
+            { id: '2020-3-40-005', name: 'Shafiq Islam', dept: 'EEE', clearanceStatus: 'Approved' },
+            { id: '2020-1-60-088', name: 'Taslima Begum', dept: 'CSE', clearanceStatus: 'Pending' }
           ],
-          columns: ['Student ID', 'Name', 'Program', 'CGPA', 'Completion Date']
+          columns: ['Student ID', 'Name', 'Department', 'Final Clearance Status'],
+          totalCount: 6
         }
       default:
         return {
