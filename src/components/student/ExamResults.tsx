@@ -328,7 +328,7 @@ export const ExamResults = () => {
                                 {course.grade}
                               </Badge>
                             </TableCell>
-                            <TableCell>{course.gradePoint || course.gp}</TableCell>
+                            <TableCell>{course.gp}</TableCell>
                             <TableCell>{course.tgp}</TableCell>
                             <TableCell>
                               <CheckCircle className="w-4 h-4 text-green-600" />
