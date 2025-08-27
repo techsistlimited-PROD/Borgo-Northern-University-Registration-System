@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
+import {
   Plus,
   Edit,
   Trash2,
@@ -29,7 +29,8 @@ import {
   Users,
   Clock,
   BookOpen,
-  AlertCircle
+  AlertCircle,
+  Search
 } from 'lucide-react'
 
 export const Syllabuses = () => {
