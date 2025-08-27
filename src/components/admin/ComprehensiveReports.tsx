@@ -389,6 +389,27 @@ function StudentReports() {
                   />
                 </div>
 
+                {/* Semester Filter - only for certain reports, NOT for unregistered or dropout */}
+                {selectedReportType !== 'unregistered-previous' && selectedReportType !== 'dropout-list' && (
+                  <div>
+                    <Label htmlFor="semester-filter">Semester</Label>
+                    <Select value={filters.semester || 'all'} onValueChange={(value) => {
+                      setFilters({...filters, semester: value === 'all' ? undefined : value})
+                      setTimeout(applyFilters, 100)
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select semester" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Semesters</SelectItem>
+                        {mockReportData.semesters.map(semester => (
+                          <SelectItem key={semester} value={semester}>{semester}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 {/* Conditional filters based on report type */}
                 {selectedReportType === 'registered-list' && (
                   <div>
