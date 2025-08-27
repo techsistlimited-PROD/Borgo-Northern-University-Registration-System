@@ -25,7 +25,6 @@ import {
   Clock,
   AlertCircle,
   User,
-  Calendar
 } from 'lucide-react'
 
 // Mock student data for admit cards
