@@ -578,69 +578,9 @@ function StudentReports() {
       <Card>
         <CardHeader>
           <CardTitle>Student Reports</CardTitle>
-          <CardDescription>Select report type and configure filters</CardDescription>
+          <CardDescription>Generate detailed reports for student data analysis</CardDescription>
         </CardHeader>
         <CardContent>
-
-          {/* Filters Section */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <h4 className="font-semibold text-deep-plum mb-3">Filters</h4>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="semester">Semester</Label>
-                <Select value={filters.semester} onValueChange={(value) => setFilters({...filters, semester: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select semester" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockReportData.semesters.map(semester => (
-                      <SelectItem key={semester} value={semester}>{semester}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="program">Department</Label>
-                <Select value={filters.program} onValueChange={(value) => setFilters({...filters, program: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Departments</SelectItem>
-                    {mockReportData.programs.map(program => (
-                      <SelectItem key={program} value={program}>{program}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="search">Search by ID</Label>
-                <Input
-                  id="search"
-                  placeholder="Enter student ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="courseType">Course Type</Label>
-                <Select value={filters.courseCode || 'all'} onValueChange={(value) => setFilters({...filters, courseCode: value === 'all' ? undefined : value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="regular">Regular</SelectItem>
-                    <SelectItem value="retake">Retake</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Report Type</Label>
