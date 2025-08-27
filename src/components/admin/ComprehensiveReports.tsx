@@ -52,7 +52,7 @@ const reportData = {
 
 function StudentReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
-  const [selectedReportType, setSelectedReportType] = useState('')
+  const [selectedReportType, setSelectedReportType] = useState('all')
 
   const studentReportTypes = [
     { 
@@ -308,7 +308,7 @@ function StudentReports() {
 
 function AttendanceReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
-  const [selectedReportType, setSelectedReportType] = useState('')
+  const [selectedReportType, setSelectedReportType] = useState('all')
 
   const attendanceReportTypes = [
     {
@@ -443,7 +443,7 @@ function AttendanceReports() {
 
 function TeacherReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
-  const [selectedReportType, setSelectedReportType] = useState('')
+  const [selectedReportType, setSelectedReportType] = useState('all')
 
   const teacherReportTypes = [
     {
@@ -514,7 +514,7 @@ function TeacherReports() {
                         <SelectValue placeholder="Select teacher" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Teachers</SelectItem>
+                        <SelectItem value="all">All Teachers</SelectItem>
                         {reportData.teachers.map(teacher => (
                           <SelectItem key={teacher.id} value={teacher.id}>
                             {teacher.id} - {teacher.name}
@@ -531,7 +531,7 @@ function TeacherReports() {
                         <SelectValue placeholder="Select semester" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Semesters</SelectItem>
+                        <SelectItem value="all">All Semesters</SelectItem>
                         {reportData.semesters.map(semester => (
                           <SelectItem key={semester} value={semester}>{semester}</SelectItem>
                         ))}
@@ -546,7 +546,7 @@ function TeacherReports() {
                         <SelectValue placeholder="Select program" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Programs</SelectItem>
+                        <SelectItem value="all">All Programs</SelectItem>
                         {reportData.programs.map(program => (
                           <SelectItem key={program} value={program}>{program}</SelectItem>
                         ))}
@@ -575,7 +575,7 @@ function TeacherReports() {
 
 function AcademicReports() {
   const [filters, setFilters] = useState<ReportFilter>({})
-  const [selectedReportType, setSelectedReportType] = useState('')
+  const [selectedReportType, setSelectedReportType] = useState('all')
 
   const academicReportTypes = [
     {
