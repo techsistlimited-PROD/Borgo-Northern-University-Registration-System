@@ -826,11 +826,21 @@ export default function ContinuousAssessment() {
             <p className="text-gray-600 mt-1">Add a new continuous assessment item</p>
           </div>
         </div>
-        <CreateAssessment 
+        <CreateAssessment
           onClose={() => setShowCreateForm(false)}
           onSave={handleCreateAssessment}
         />
       </div>
+    )
+  }
+
+  if (editingAssessment) {
+    return (
+      <MarkEntryForm
+        assessment={editingAssessment}
+        onClose={() => setEditingAssessment(null)}
+        onSave={handleSaveMarks}
+      />
     )
   }
 
