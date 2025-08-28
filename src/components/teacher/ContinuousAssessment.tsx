@@ -151,6 +151,323 @@ const mockAssessments: AssessmentItem[] = [
   }
 ]
 
+function MarkEntryForm({ assessment, onClose, onSave }: {
+  assessment: AssessmentItem;
+  onClose: () => void;
+  onSave: (scores: Record<string, AssessmentScoreEntry>) => void;
+}) {
+  const [scores, setScores] = useState<Record<string, AssessmentScoreEntry>>({})
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const sectionKey = `${assessment.courseCode}-${assessment.section}`
+  const students = studentsData[sectionKey] || []
+
+  React.useEffect(() => {
+    // Initialize scores for all students
+    const initialScores: Record<string, AssessmentScoreEntry> = {}
+    students.forEach(student => {
+      initialScores[student.id] = {
+        studentId: student.studentId,
+        score: 0,
+        isFinalized: false
+      }
+    })
+    setScores(initialScores)
+    setIsLoading(false)
+  }, [students])
+
+  const handleScoreChange = (studentId: string, newScore: number) => {
+    if (newScore < 0 || newScore > assessment.totalMarks) return
+
+    setScores(prev => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        score: newScore
+      }
+    }))
+  }
+
+  const handleSaveScores = async () => {
+    // Validate all scores are entered
+    const hasEmptyScores = Object.values(scores).some(entry =>
+      entry.score === undefined || entry.score === null
+    )
+
+    if (hasEmptyScores) {
+      alert('Please enter scores for all students before saving')
+      return
+    }
+
+    setIsSaving(true)
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      // Mark all scores as finalized
+      const finalizedScores = { ...scores }
+      Object.keys(finalizedScores).forEach(key => {
+        finalizedScores[key] = {
+          ...finalizedScores[key],
+          publishDate: new Date().toISOString().split('T')[0],
+          isFinalized: true
+        }
+      })
+
+      onSave(finalizedScores)
+      alert(`${assessment.title} marks saved and published successfully!`)
+      onClose()
+    } catch (error) {
+      alert('Error saving marks. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const getScoreGrade = (score: number) => {
+    const percentage = (score / assessment.totalMarks) * 100
+    if (percentage >= 90) return { grade: 'A+', color: 'text-green-600', bgColor: 'bg-green-100' }
+    if (percentage >= 85) return { grade: 'A', color: 'text-green-600', bgColor: 'bg-green-100' }
+    if (percentage >= 80) return { grade: 'A-', color: 'text-blue-600', bgColor: 'bg-blue-100' }
+    if (percentage >= 75) return { grade: 'B+', color: 'text-blue-600', bgColor: 'bg-blue-100' }
+    if (percentage >= 70) return { grade: 'B', color: 'text-yellow-600', bgColor: 'bg-yellow-100' }
+    if (percentage >= 65) return { grade: 'B-', color: 'text-yellow-600', bgColor: 'bg-yellow-100' }
+    if (percentage >= 60) return { grade: 'C+', color: 'text-orange-600', bgColor: 'bg-orange-100' }
+    if (percentage >= 55) return { grade: 'C', color: 'text-orange-600', bgColor: 'bg-orange-100' }
+    if (percentage >= 50) return { grade: 'D', color: 'text-red-600', bgColor: 'bg-red-100' }
+    return { grade: 'F', color: 'text-red-600', bgColor: 'bg-red-100' }
+  }
+
+  const getStats = () => {
+    const scoreValues = Object.values(scores).map(s => s.score).filter(s => s !== undefined)
+    if (scoreValues.length === 0) return { average: 0, highest: 0, lowest: 0, passCount: 0 }
+
+    const average = scoreValues.reduce((sum, score) => sum + score, 0) / scoreValues.length
+    const highest = Math.max(...scoreValues)
+    const lowest = Math.min(...scoreValues)
+    const passCount = scoreValues.filter(score => (score / assessment.totalMarks) * 100 >= 50).length
+
+    return {
+      average: Math.round(average * 100) / 100,
+      highest,
+      lowest,
+      passCount,
+      total: scoreValues.length
+    }
+  }
+
+  const stats = getStats()
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'class-test': return <FileText className="w-5 h-5" />
+      case 'quiz': return <ClipboardList className="w-5 h-5" />
+      case 'presentation': return <Presentation className="w-5 h-5" />
+      case 'assignment': return <BookOpen className="w-5 h-5" />
+      default: return <FileText className="w-5 h-5" />
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-20">
+          <RefreshCw className="w-8 h-8 animate-spin text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700">Loading students...</h3>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-deep-plum">Mark Entry: {assessment.title}</h1>
+          <p className="text-gray-600 mt-1">Enter marks for {assessment.type} (out of {assessment.totalMarks})</p>
+        </div>
+        <Button onClick={onClose} variant="outline">
+          Back to Assessments
+        </Button>
+      </div>
+
+      {/* Assessment Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            {getTypeIcon(assessment.type)}
+            <span>Assessment Details</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-deep-plum">
+                  {assessment.courseCode} - Section {assessment.section}
+                </h3>
+                <p className="text-sm text-gray-600">{assessment.title}</p>
+                <p className="text-sm text-gray-600">{assessment.description}</p>
+                {assessment.dueDate && (
+                  <p className="text-sm text-gray-600">
+                    Due Date: {new Date(assessment.dueDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+              <Badge variant="outline">
+                <Award className="w-4 h-4 mr-1" />
+                Max: {assessment.totalMarks} Marks
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Statistics */}
+      {Object.keys(scores).length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-deep-plum">{stats.total}</p>
+                <p className="text-sm text-gray-600">Total Students</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">{stats.average}</p>
+                <p className="text-sm text-gray-600">Average Score</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{stats.highest}</p>
+                <p className="text-sm text-gray-600">Highest Score</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-orange-600">{stats.lowest}</p>
+                <p className="text-sm text-gray-600">Lowest Score</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-purple-600">{stats.passCount}</p>
+                <p className="text-sm text-gray-600">Passing (≥50%)</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Marks Entry Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center space-x-2">
+                <Award className="w-5 h-5" />
+                <span>Marks Entry</span>
+              </CardTitle>
+              <CardDescription>
+                Enter marks for each student (0-{assessment.totalMarks} marks)
+              </CardDescription>
+            </div>
+
+            <Button
+              onClick={handleSaveScores}
+              disabled={isSaving}
+              className="flex items-center space-x-2"
+            >
+              {isSaving ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save & Publish</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student ID</th>
+                  <th className="border border-gray-200 px-4 py-3 text-left font-medium">Student Name</th>
+                  <th className="border border-gray-200 px-4 py-3 text-center font-medium">Marks ({assessment.totalMarks})</th>
+                  <th className="border border-gray-200 px-4 py-3 text-center font-medium">Percentage</th>
+                  <th className="border border-gray-200 px-4 py-3 text-center font-medium">Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => {
+                  const scoreData = scores[student.id]
+                  if (!scoreData) return null
+
+                  const percentage = Math.round((scoreData.score / assessment.totalMarks) * 100)
+                  const gradeInfo = getScoreGrade(scoreData.score)
+
+                  return (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="border border-gray-200 px-4 py-3 font-mono">
+                        {student.studentId}
+                      </td>
+                      <td className="border border-gray-200 px-4 py-3 font-medium">
+                        {student.name}
+                      </td>
+                      <td className="border border-gray-200 px-4 py-3 text-center">
+                        <Input
+                          type="number"
+                          min="0"
+                          max={assessment.totalMarks}
+                          value={scoreData.score}
+                          onChange={(e) => handleScoreChange(student.id, parseInt(e.target.value) || 0)}
+                          className="w-20 text-center"
+                        />
+                      </td>
+                      <td className="border border-gray-200 px-4 py-3 text-center">
+                        <Badge variant={percentage >= 75 ? 'default' : percentage >= 60 ? 'secondary' : percentage >= 50 ? 'outline' : 'destructive'}>
+                          {percentage}%
+                        </Badge>
+                      </td>
+                      <td className="border border-gray-200 px-4 py-3 text-center">
+                        <Badge className={`${gradeInfo.bgColor} ${gradeInfo.color} border-0`}>
+                          {gradeInfo.grade}
+                        </Badge>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 function CreateAssessment({ onClose, onSave }: { onClose: () => void; onSave: (assessment: Partial<AssessmentItem>) => void }) {
   const [formData, setFormData] = useState<Partial<AssessmentItem>>({
     type: 'class-test',
