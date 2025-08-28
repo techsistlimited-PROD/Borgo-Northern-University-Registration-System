@@ -40,6 +40,20 @@ interface AssessmentItem {
   totalStudents?: number
 }
 
+interface Student {
+  id: string
+  studentId: string
+  name: string
+  email: string
+}
+
+interface AssessmentScoreEntry {
+  studentId: string
+  score: number
+  publishDate?: string
+  isFinalized: boolean
+}
+
 interface Section {
   id: string
   courseCode: string
