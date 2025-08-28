@@ -1084,24 +1084,8 @@ function AttendanceReports() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Course Code</Label>
-                    <Select value={filters.courseCode || ''} onValueChange={(value) => setFilters({...filters, courseCode: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select course" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {mockReportData.courses.map(course => (
-                          <SelectItem key={course.code} value={course.code}>
-                            {course.code} - {course.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label>Program</Label>
-                    <Select value={filters.program || ''} onValueChange={(value) => setFilters({...filters, program: value})}>
+                    <Select value={filters.program || ''} onValueChange={(value) => setFilters({...filters, program: value, courseCode: ''})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select program" />
                       </SelectTrigger>
@@ -1109,6 +1093,29 @@ function AttendanceReports() {
                         {mockReportData.programs.map(program => (
                           <SelectItem key={program} value={program}>{program}</SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Course Code</Label>
+                    <Select
+                      value={filters.courseCode || ''}
+                      onValueChange={(value) => setFilters({...filters, courseCode: value})}
+                      disabled={!filters.program}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={filters.program ? "Select course" : "Select program first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {mockReportData.courses
+                          .filter(course => !filters.program || course.code.startsWith(filters.program))
+                          .map(course => (
+                            <SelectItem key={course.code} value={course.code}>
+                              {course.code} - {course.name}
+                            </SelectItem>
+                          ))
+                        }
                       </SelectContent>
                     </Select>
                   </div>
@@ -1753,22 +1760,11 @@ export default function ComprehensiveReports() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Academic Reports</p>
-                <p className="text-2xl font-bold text-orange-600">5</p>
-              </div>
-              <Award className="w-8 h-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Report Categories */}
       <Tabs defaultValue="students" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="students" className="flex items-center space-x-2">
             <Users className="w-4 h-4" />
             <span>Student Reports</span>
@@ -1780,14 +1776,6 @@ export default function ComprehensiveReports() {
           <TabsTrigger value="teachers" className="flex items-center space-x-2">
             <GraduationCap className="w-4 h-4" />
             <span>Teachers</span>
-          </TabsTrigger>
-          <TabsTrigger value="academic" className="flex items-center space-x-2">
-            <Award className="w-4 h-4" />
-            <span>Academic</span>
-          </TabsTrigger>
-          <TabsTrigger value="quick" className="flex items-center space-x-2">
-            <BarChart3 className="w-4 h-4" />
-            <span>Quick Reports</span>
           </TabsTrigger>
         </TabsList>
 
@@ -1801,14 +1789,6 @@ export default function ComprehensiveReports() {
 
         <TabsContent value="teachers">
           <TeacherReports />
-        </TabsContent>
-
-        <TabsContent value="academic">
-          <AcademicReports />
-        </TabsContent>
-
-        <TabsContent value="quick">
-          <QuickReports />
         </TabsContent>
       </Tabs>
     </div>
