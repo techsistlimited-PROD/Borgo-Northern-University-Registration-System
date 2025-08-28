@@ -160,7 +160,7 @@ function StudentReports() {
     // Filter by course type (for registered students)
     if (filters.courseCode && filters.courseCode !== 'all') {
       filteredData = filteredData.filter((item: any) =>
-        item.courseType?.toLowerCase() === filters.courseCode
+        item.courseType?.toLowerCase() === filters.courseCode.toLowerCase()
       )
     }
 
