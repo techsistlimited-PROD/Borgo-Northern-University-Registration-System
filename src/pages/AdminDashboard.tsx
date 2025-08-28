@@ -30,6 +30,7 @@ import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManag
 import StudentSectionChange from '@/components/admin/StudentSectionChange'
 import AdvisorAssignmentManagement from '@/components/admin/AdvisorAssignmentManagement'
 import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
+import ResultsGrades from '@/components/admin/ResultsGrades'
 import { TERReports } from '@/components/admin/TERReports'
 import { StudentClearance } from '@/components/admin/StudentClearance'
 import {
@@ -89,6 +90,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
         { id: 'final-clearance', label: 'Final Clearance for Certificates', icon: Award },
       ]
     },
+    { id: 'results-grades', label: 'Results & Grades', icon: Award },
     { id: 'reports', label: 'Comprehensive Reports', icon: BarChart3 },
   ]
 
@@ -1022,6 +1024,8 @@ export default function AdminDashboard() {
         return <StudentClearance clearanceType="exam" />
       case 'final-clearance':
         return <StudentClearance clearanceType="final" />
+      case 'results-grades':
+        return <ResultsGrades />
       case 'reports':
         return <ComprehensiveReports />
       default:
@@ -1047,6 +1051,7 @@ export default function AdminDashboard() {
               {activeTab === 'advisor-assignment' && 'Student Advisor Assignment'}
               {activeTab === 'ter-reports' && 'TER Reports'}
               {(activeTab === 'student-clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Student Clearance'}
+              {activeTab === 'results-grades' && 'Results & Grades'}
               {activeTab === 'reports' && 'Comprehensive Reports'}
             </h1>
             <p className="text-sm text-gray-600">Welcome to Northern University Admin Portal</p>
