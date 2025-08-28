@@ -757,6 +757,7 @@ export default function ContinuousAssessment() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedType, setSelectedType] = useState<string>('all')
   const [selectedSection, setSelectedSection] = useState<string>('all')
+  const [editingAssessment, setEditingAssessment] = useState<AssessmentItem | null>(null)
 
   const handleCreateAssessment = (newAssessment: Partial<AssessmentItem>) => {
     const assessment: AssessmentItem = {
