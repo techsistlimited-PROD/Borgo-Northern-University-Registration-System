@@ -3,7 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { 
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -18,52 +20,133 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
+import {
   Plus,
   Edit,
   Trash2,
   Save,
-  Upload,
-  Download,
   Users,
-  Clock,
-  BookOpen,
-  AlertCircle
+  AlertCircle,
+  Search
 } from 'lucide-react'
 
 export const Syllabuses = () => {
-  const [selectedType, setSelectedType] = useState('')
-  const [selectedProgram, setSelectedProgram] = useState('')
-  
-  const programs = [
-    'BBA (Bachelor of Business Administration)',
-    'CSE (Computer Science & Engineering)', 
-    'EEE (Electrical and Electronic Engineering)',
-    'MBA (Master of Business Administration)',
-    'MBM (Master of Business Management)'
-  ]
-
   const syllabusData = {
     'CSE': {
       semesters: 12, // Tri-semester
       type: 'Tri-semester',
       courses: [
         { semester: 1, courses: ['CSE101 - Programming Fundamentals', 'MAT101 - Calculus I', 'PHY101 - Physics I', 'ENG101 - English I', 'CSE102 - Programming Lab'] },
-        { semester: 2, courses: ['CSE201 - Data Structures', 'MAT201 - Calculus II', 'PHY201 - Physics II', 'ENG201 - English II', 'CSE202 - Data Structures Lab', 'CSE203 - Digital Logic'] },
+        { semester: 2, courses: ['CSE201 - Data Structures', 'MAT201 - Calculus II', 'PHY201 - Physics II', 'ENG201 - English II', 'CSE202 - Data Structures Lab'] },
         { semester: 3, courses: ['CSE301 - Algorithms', 'MAT301 - Linear Algebra', 'CSE302 - Database Systems', 'CSE303 - Computer Organization', 'CSE304 - Database Lab'] },
-        // Continue for all 12 semesters...
+        { semester: 4, courses: ['CSE401 - Software Engineering', 'CSE402 - Computer Networks', 'CSE403 - Operating Systems', 'EEE201 - Digital Logic Design'] },
+        { semester: 5, courses: ['CSE501 - Artificial Intelligence', 'CSE502 - Machine Learning', 'CSE503 - Web Technologies', 'CSE504 - Mobile App Development'] },
+        { semester: 6, courses: ['CSE601 - Computer Graphics', 'CSE602 - Cyber Security', 'CSE603 - Cloud Computing', 'CSE604 - Data Mining'] },
+        { semester: 7, courses: ['CSE701 - Distributed Systems', 'CSE702 - Blockchain Technology', 'CSE703 - IoT Systems', 'CSE704 - Big Data Analytics'] },
+        { semester: 8, courses: ['CSE801 - Advanced Algorithms', 'CSE802 - Computer Vision', 'CSE803 - Natural Language Processing', 'CSE804 - Robotics'] },
+        { semester: 9, courses: ['CSE901 - Project Work I', 'CSE902 - Research Methodology', 'CSE903 - Ethics in Computing', 'CSE904 - Entrepreneurship'] },
+        { semester: 10, courses: ['CSE1001 - Project Work II', 'CSE1002 - Industry Internship', 'CSE1003 - Advanced Topics in AI', 'CSE1004 - Thesis Writing'] },
+        { semester: 11, courses: ['CSE1101 - Capstone Project I', 'CSE1102 - Seminar & Presentation', 'CSE1103 - Advanced Database Systems', 'CSE1104 - Software Architecture'] },
+        { semester: 12, courses: ['CSE1201 - Capstone Project II', 'CSE1202 - Professional Practice', 'CSE1203 - Advanced Web Technologies', 'CSE1204 - Final Thesis Defense'] }
       ]
     },
     'BBA': {
       semesters: 8, // Bi-semester
-      type: 'Bi-semester', 
+      type: 'Bi-semester',
       courses: [
         { semester: 1, courses: ['BBA101 - Principles of Management', 'ECO101 - Microeconomics', 'ACC101 - Financial Accounting', 'ENG101 - Business English', 'MAT101 - Business Mathematics'] },
         { semester: 2, courses: ['BBA201 - Organizational Behavior', 'ECO201 - Macroeconomics', 'ACC201 - Management Accounting', 'MKT201 - Principles of Marketing', 'FIN201 - Corporate Finance'] },
-        // Continue for all 8 semesters...
+        { semester: 3, courses: ['BBA301 - Strategic Management', 'BBA302 - Human Resource Management', 'BBA303 - Operations Management', 'BBA304 - Business Research Methods'] },
+        { semester: 4, courses: ['BBA401 - International Business', 'BBA402 - E-Commerce', 'BBA403 - Supply Chain Management', 'BBA404 - Business Ethics'] },
+        { semester: 5, courses: ['BBA501 - Leadership & Change Management', 'BBA502 - Digital Marketing', 'BBA503 - Investment Analysis', 'BBA504 - Project Management'] },
+        { semester: 6, courses: ['BBA601 - Business Analytics', 'BBA602 - Entrepreneurship', 'BBA603 - Risk Management', 'BBA604 - Corporate Governance'] },
+        { semester: 7, courses: ['BBA701 - Internship Program', 'BBA702 - Business Simulation', 'BBA703 - Advanced Strategic Management', 'BBA704 - Capstone Project I'] },
+        { semester: 8, courses: ['BBA801 - Final Project Defense', 'BBA802 - Professional Development', 'BBA803 - Global Business Environment', 'BBA804 - Business Consulting'] }
       ]
     }
   }
+
+  const [selectedType, setSelectedType] = useState('all')
+  const [selectedProgram, setSelectedProgram] = useState('all')
+  const [syllabusState, setSyllabusState] = useState(syllabusData)
+
+  const handleAddCourse = (program: string, semester: number) => {
+    const courseCode = prompt('Enter course code (e.g., CSE305):')
+    const courseName = prompt('Enter course name (e.g., Computer Networks):')
+
+    if (courseCode && courseName) {
+      const newCourse = `${courseCode} - ${courseName}`
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? { ...sem, courses: [...sem.courses, newCourse] }
+              : sem
+          )
+        }
+      }))
+      alert(`Course "${newCourse}" added to ${program} Semester ${semester}`)
+    }
+  }
+
+  const handleEditCourse = (program: string, semester: number, courseIndex: number, currentCourse: string) => {
+    const [currentCode, ...currentNameParts] = currentCourse.split(' - ')
+    const currentName = currentNameParts.join(' - ')
+
+    const newCode = prompt('Enter course code:', currentCode)
+    const newName = prompt('Enter course name:', currentName)
+
+    if (newCode && newName) {
+      const updatedCourse = `${newCode} - ${newName}`
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? {
+                  ...sem,
+                  courses: sem.courses.map((course, index) =>
+                    index === courseIndex ? updatedCourse : course
+                  )
+                }
+              : sem
+          )
+        }
+      }))
+      alert(`Course updated to "${updatedCourse}"`)
+    }
+  }
+
+  const handleDeleteCourse = (program: string, semester: number, courseIndex: number) => {
+    if (confirm('Are you sure you want to delete this course?')) {
+      setSyllabusState(prev => ({
+        ...prev,
+        [program]: {
+          ...prev[program as keyof typeof prev],
+          courses: prev[program as keyof typeof prev].courses.map(sem =>
+            sem.semester === semester
+              ? {
+                  ...sem,
+                  courses: sem.courses.filter((_, index) => index !== courseIndex)
+                }
+              : sem
+          )
+        }
+      }))
+      alert('Course deleted successfully')
+    }
+  }
+  
+  const programs = [
+    'BBA (Bachelor of Business Administration)',
+    'CSE (Computer Science & Engineering)',
+    'EEE (Electrical and Electronic Engineering)',
+    'MBA (Master of Business Administration)',
+    'MBM (Master of Business Management)'
+  ]
 
   return (
     <div className="space-y-6">
@@ -114,19 +197,19 @@ export const Syllabuses = () => {
       </Card>
       
       {/* Syllabus Display */}
-      {selectedProgram && syllabusData[selectedProgram as keyof typeof syllabusData] && (
+      {selectedProgram && syllabusState[selectedProgram as keyof typeof syllabusState] && (
         <Card>
           <CardHeader>
             <CardTitle>
-              {selectedProgram} Syllabus - {syllabusData[selectedProgram as keyof typeof syllabusData].type}
+              {selectedProgram} Syllabus - {syllabusState[selectedProgram as keyof typeof syllabusState].type}
             </CardTitle>
             <CardDescription>
-              {syllabusData[selectedProgram as keyof typeof syllabusData].semesters} semesters total
+              {syllabusState[selectedProgram as keyof typeof syllabusState].semesters} semesters total
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {syllabusData[selectedProgram as keyof typeof syllabusData].courses.map((semesterData, index) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {syllabusState[selectedProgram as keyof typeof syllabusState].courses.map((semesterData, index) => (
                 <Card key={index}>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg">Semester {semesterData.semester}</CardTitle>
@@ -135,18 +218,33 @@ export const Syllabuses = () => {
                     <div className="space-y-2">
                       {semesterData.courses.map((course, courseIndex) => (
                         <div key={courseIndex} className="flex justify-between items-center p-2 bg-lavender-bg rounded">
-                          <span className="text-sm">{course}</span>
+                          <span className="text-sm flex-1 mr-2">{course}</span>
                           <div className="flex space-x-1">
-                            <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 w-6 p-0"
+                              onClick={() => handleEditCourse(selectedProgram, semesterData.semester, courseIndex, course)}
+                            >
                               <Edit className="w-3 h-3" />
                             </Button>
-                            <Button size="sm" variant="outline" className="h-6 w-6 p-0">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 w-6 p-0 text-red-600 hover:text-red-700"
+                              onClick={() => handleDeleteCourse(selectedProgram, semesterData.semester, courseIndex)}
+                            >
                               <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
                         </div>
                       ))}
-                      <Button size="sm" variant="outline" className="w-full mt-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full mt-2"
+                        onClick={() => handleAddCourse(selectedProgram, semesterData.semester)}
+                      >
                         <Plus className="w-3 h-3 mr-1" />
                         Add Course
                       </Button>
@@ -179,9 +277,9 @@ export const OfferCourses = () => {
   ]
 
   const sections = [
-    { id: 'A', capacity: 45, enrolled: 45, maxCapacity: 50, status: 'Full', teacher: 'Dr. Rahman Ahmed', teacherId: 'T001', schedule: 'Sun, Tue 10:00-11:30', room: 'Room 301' },
-    { id: 'B', capacity: 50, enrolled: 48, maxCapacity: 50, status: 'Available', teacher: 'Prof. Sarah Khan', teacherId: 'T002', schedule: 'Mon, Wed 14:00-15:30', room: 'Room 302' },
-    { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '' },
+    { id: 'A', capacity: 45, enrolled: 50, maxCapacity: 50, status: 'Full', teacher: 'Dr. Rahman Ahmed', teacherId: 'T001', schedule: 'Sun, Tue 10:00-11:30', room: 'Room 301', offered: true, offerStatus: 'Offered' },
+    { id: 'B', capacity: 50, enrolled: 48, maxCapacity: 50, status: 'Available', teacher: 'Prof. Sarah Khan', teacherId: 'T002', schedule: 'Mon, Wed 14:00-15:30', room: 'Room 302', offered: true, offerStatus: 'Offered' },
+    { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '', offered: false, offerStatus: 'Pending' },
   ]
 
   const teachers = [
@@ -227,9 +325,17 @@ export const OfferCourses = () => {
     alert(`New section created for ${selectedCourse} with capacity ${sectionCapacity}`)
   }
 
-  const handleDeleteSection = (sectionId: string) => {
-    if (confirm(`Are you sure you want to delete Section ${sectionId}?`)) {
-      alert(`Section ${sectionId} deleted successfully`)
+  const handleOfferSection = (sectionId: string) => {
+    if (confirm(`Are you sure you want to offer Section ${sectionId}?`)) {
+      alert(`Section ${sectionId} has been offered successfully!`)
+      // In real implementation, update the section status in the database
+    }
+  }
+
+  const handleWithdrawOffer = (sectionId: string) => {
+    if (confirm(`Are you sure you want to withdraw the offer for Section ${sectionId}?`)) {
+      alert(`Offer for Section ${sectionId} has been withdrawn.`)
+      // In real implementation, update the section status in the database
     }
   }
 
@@ -335,10 +441,12 @@ export const OfferCourses = () => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h4 className="text-lg font-semibold">Section {section.id}</h4>
-                        <Badge variant={section.status === 'Full' ? 'destructive' : 'default'}>
+                        <Badge variant={section.enrolled >= section.maxCapacity ? 'destructive' : 'default'}>
                           {section.enrolled}/{section.maxCapacity} students
                         </Badge>
-                        <Badge variant="outline">{section.status}</Badge>
+                        <Badge variant={section.offered ? 'default' : 'secondary'}>
+                          {section.offerStatus}
+                        </Badge>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -354,17 +462,25 @@ export const OfferCourses = () => {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteSection(section.id)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      {!section.offered ? (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleOfferSection(section.id)}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          Offer Section
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleWithdrawOffer(section.id)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          Withdraw Offer
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -373,7 +489,7 @@ export const OfferCourses = () => {
               {/* Create New Section */}
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                 <h4 className="text-lg font-semibold mb-3">Create New Section</h4>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label>Section Capacity</Label>
                     <Input
@@ -383,22 +499,60 @@ export const OfferCourses = () => {
                       onChange={(e) => setSectionCapacity(e.target.value)}
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <Label>Teacher Employee ID</Label>
+                    <Label>Unoccupied Teacher</Label>
                     <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select teacher" />
                       </SelectTrigger>
                       <SelectContent>
-                        {teachers.map((teacher) => (
+                        {teachers.filter(teacher => !sections.some(section => section.teacherId === teacher.id)).map((teacher) => (
                           <SelectItem key={teacher.id} value={teacher.id}>
-                            {teacher.id} - {teacher.name}
+                            {teacher.name} ({teacher.id})
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex items-end">
+
+                  <div className="space-y-2">
+                    <Label>Select Weekdays</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose days" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sun-tue">Sunday & Tuesday</SelectItem>
+                        <SelectItem value="mon-wed">Monday & Wednesday</SelectItem>
+                        <SelectItem value="tue-thu">Tuesday & Thursday</SelectItem>
+                        <SelectItem value="wed-fri">Wednesday & Friday</SelectItem>
+                        <SelectItem value="thu-sat">Thursday & Saturday</SelectItem>
+                        <SelectItem value="sat-sun">Saturday & Sunday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Room & Time Slot</Label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Available slots" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="room301-0800">Room 301 - 08:00-09:30</SelectItem>
+                        <SelectItem value="room302-1000">Room 302 - 10:00-11:30</SelectItem>
+                        <SelectItem value="room303-1200">Room 303 - 12:00-13:30</SelectItem>
+                        <SelectItem value="room401-1400">Room 401 - 14:00-15:30</SelectItem>
+                        <SelectItem value="room402-1600">Room 402 - 16:00-17:30</SelectItem>
+                        <SelectItem value="room501-0930">Room 501 - 09:30-11:00</SelectItem>
+                        <SelectItem value="room502-1130">Room 502 - 11:30-13:00</SelectItem>
+                        <SelectItem value="room503-1530">Room 503 - 15:30-17:00</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-end md:col-span-2 lg:col-span-4">
                     <Button onClick={handleCreateSection} className="w-full">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Section
@@ -419,7 +573,7 @@ export const OfferCourses = () => {
             <CardDescription>Assign or update teachers for existing sections</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label>Section</Label>
                 <Select value={selectedSection} onValueChange={setSelectedSection}>
@@ -452,20 +606,6 @@ export const OfferCourses = () => {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label>Schedule</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select schedule" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="st-1000">Sun, Tue 10:00-11:30</SelectItem>
-                    <SelectItem value="mw-1400">Mon, Wed 14:00-15:30</SelectItem>
-                    <SelectItem value="tr-0800">Thu, Fri 08:00-09:30</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <div className="flex items-end">
                 <Button onClick={handleAssignTeacher} className="w-full">
                   Assign Teacher
@@ -494,7 +634,8 @@ export const OfferCourses = () => {
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>Student ID</Label>
-                      <Input placeholder="Enter student ID" />
+                      <Input placeholder="e.g., 2021-1-60-001" />
+                      <p className="text-xs text-gray-500">Example: 2021-1-60-001</p>
                     </div>
 
                     <div className="space-y-2">
@@ -529,19 +670,21 @@ export const OfferCourses = () => {
                     <div className="space-y-2">
                       <Label>From Student ID</Label>
                       <Input
-                        placeholder="Starting ID"
+                        placeholder="e.g., 2021-1-60-001"
                         value={bulkStudentRange.from}
                         onChange={(e) => setBulkStudentRange(prev => ({ ...prev, from: e.target.value }))}
                       />
+                      <p className="text-xs text-gray-500">Start: 2021-1-60-001</p>
                     </div>
 
                     <div className="space-y-2">
                       <Label>To Student ID</Label>
                       <Input
-                        placeholder="Ending ID"
+                        placeholder="e.g., 2021-1-60-050"
                         value={bulkStudentRange.to}
                         onChange={(e) => setBulkStudentRange(prev => ({ ...prev, to: e.target.value }))}
                       />
+                      <p className="text-xs text-gray-500">End: 2021-1-60-050</p>
                     </div>
 
                     <div className="space-y-2">
@@ -587,11 +730,15 @@ export const OfferCourses = () => {
 }
 
 export const SectionManagement = () => {
-  const [activeView, setActiveView] = useState('view') // 'view', 'create', 'edit'
-  const [filterProgram, setFilterProgram] = useState('')
-  const [filterCourse, setFilterCourse] = useState('')
-  const [filterTeacher, setFilterTeacher] = useState('')
+  const [activeView, setActiveView] = useState('view') // 'view', 'edit'
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterCourse, setFilterCourse] = useState('all')
+  const [filterTeacher, setFilterTeacher] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [editingSection, setEditingSection] = useState<any>(null)
+  const [viewingSection, setViewingSection] = useState<any>(null)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   const sections = [
     {
@@ -675,9 +822,9 @@ export const SectionManagement = () => {
   ]
 
   const filteredSections = sections.filter(section => {
-    const matchesProgram = !filterProgram || section.program === filterProgram
-    const matchesCourse = !filterCourse || section.course.includes(filterCourse)
-    const matchesTeacher = !filterTeacher || section.teacherId === filterTeacher
+    const matchesProgram = filterProgram === 'all' || section.program === filterProgram
+    const matchesCourse = filterCourse === 'all' || section.course.includes(filterCourse)
+    const matchesTeacher = filterTeacher === 'all' || section.teacherId === filterTeacher
     const matchesSearch = !searchTerm ||
       section.sectionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       section.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -688,19 +835,25 @@ export const SectionManagement = () => {
 
   const handleDeleteSection = (sectionId: number) => {
     if (confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
-      alert(`Section deleted successfully!`)
+      alert(`Section ${sectionId} deleted successfully!`)
     }
   }
 
-  const handleChangeTeacher = (sectionId: number) => {
-    const newTeacherId = prompt('Enter new teacher ID:')
-    if (newTeacherId) {
-      const teacher = teachers.find(t => t.id === newTeacherId)
-      if (teacher) {
-        alert(`Teacher changed to ${teacher.name} for section ${sectionId}`)
-      } else {
-        alert('Teacher not found!')
-      }
+  const handleViewSection = (section: any) => {
+    setViewingSection(section)
+    setShowViewModal(true)
+  }
+
+  const handleEditSection = (section: any) => {
+    setEditingSection(section)
+    setShowEditModal(true)
+  }
+
+  const handleUpdateSection = () => {
+    if (editingSection) {
+      alert(`Section ${editingSection.sectionName} updated successfully!`)
+      setShowEditModal(false)
+      setEditingSection(null)
     }
   }
 
@@ -708,21 +861,8 @@ export const SectionManagement = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-deep-plum">Section Management</h1>
-        <div className="flex space-x-2">
-          <Button
-            variant={activeView === 'view' ? 'default' : 'outline'}
-            onClick={() => setActiveView('view')}
-          >
-            View Sections
-          </Button>
-          <Button
-            variant={activeView === 'create' ? 'default' : 'outline'}
-            onClick={() => setActiveView('create')}
-            className="flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Section</span>
-          </Button>
+        <div className="text-sm text-gray-600">
+          <p>Manage course sections and their details</p>
         </div>
       </div>
 
@@ -743,7 +883,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Programs" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Programs</SelectItem>
+                      <SelectItem value="all">All Programs</SelectItem>
                       <SelectItem value="CSE">CSE</SelectItem>
                       <SelectItem value="BBA">BBA</SelectItem>
                       <SelectItem value="EEE">EEE</SelectItem>
@@ -758,7 +898,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Courses" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Courses</SelectItem>
+                      <SelectItem value="all">All Courses</SelectItem>
                       {courses.map((course) => (
                         <SelectItem key={course.code} value={course.code}>
                           {course.code} - {course.title}
@@ -775,7 +915,7 @@ export const SectionManagement = () => {
                       <SelectValue placeholder="All Teachers" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Teachers</SelectItem>
+                      <SelectItem value="all">All Teachers</SelectItem>
                       {teachers.map((teacher) => (
                         <SelectItem key={teacher.id} value={teacher.id}>
                           {teacher.name}
@@ -803,9 +943,9 @@ export const SectionManagement = () => {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      setFilterProgram('')
-                      setFilterCourse('')
-                      setFilterTeacher('')
+                      setFilterProgram('all')
+                      setFilterCourse('all')
+                      setFilterTeacher('all')
                       setSearchTerm('')
                     }}
                   >
@@ -884,14 +1024,15 @@ export const SectionManagement = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => handleChangeTeacher(section.id)}
-                            title="Change Teacher"
+                            onClick={() => handleViewSection(section)}
+                            title="View Section Details"
                           >
                             <Users className="w-4 h-4" />
                           </Button>
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handleEditSection(section)}
                             title="Edit Section"
                           >
                             <Edit className="w-4 h-4" />
@@ -1080,6 +1221,191 @@ export const SectionManagement = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* View Section Modal */}
+      <Dialog open={showViewModal} onOpenChange={setShowViewModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Section Details - {viewingSection?.course} Section {viewingSection?.sectionName}
+            </DialogTitle>
+          </DialogHeader>
+
+          {viewingSection && (
+            <div className="space-y-4 mt-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Year</Label>
+                  <p className="text-lg">{viewingSection.year}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Program</Label>
+                  <p className="text-lg">{viewingSection.program}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Course</Label>
+                  <p className="text-lg">{viewingSection.course}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Section</Label>
+                  <p className="text-lg">{viewingSection.sectionName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Capacity</Label>
+                  <p className="text-lg">{viewingSection.enrolled}/{viewingSection.capacity}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Teacher</Label>
+                  <p className="text-lg">{viewingSection.teacher}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Schedule</Label>
+                  <p className="text-lg">{viewingSection.days}</p>
+                  <p className="text-sm text-gray-600">{viewingSection.timeSlot}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-gray-500">Room</Label>
+                  <p className="text-lg">{viewingSection.room}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Section Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              Edit Section - {editingSection?.course} Section {editingSection?.sectionName}
+            </DialogTitle>
+          </DialogHeader>
+
+          {editingSection && (
+            <div className="space-y-6 mt-4">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Year</Label>
+                  <Select value={editingSection.year} onValueChange={(value) => setEditingSection({...editingSection, year: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Program</Label>
+                  <Select value={editingSection.program} onValueChange={(value) => setEditingSection({...editingSection, program: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CSE">CSE</SelectItem>
+                      <SelectItem value="BBA">BBA</SelectItem>
+                      <SelectItem value="EEE">EEE</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Section Name</Label>
+                  <Input
+                    value={editingSection.sectionName}
+                    onChange={(e) => setEditingSection({...editingSection, sectionName: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Capacity</Label>
+                  <Input
+                    type="number"
+                    value={editingSection.capacity}
+                    onChange={(e) => setEditingSection({...editingSection, capacity: parseInt(e.target.value)})}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Teacher</Label>
+                  <Select value={editingSection.teacherId} onValueChange={(value) => {
+                    const teacher = teachers.find(t => t.id === value)
+                    setEditingSection({...editingSection, teacherId: value, teacher: teacher?.name || ''})
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id}>
+                          {teacher.id} - {teacher.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Schedule Days</Label>
+                  <Select value={editingSection.days} onValueChange={(value) => setEditingSection({...editingSection, days: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Sunday & Tuesday">Sunday & Tuesday</SelectItem>
+                      <SelectItem value="Monday & Wednesday">Monday & Wednesday</SelectItem>
+                      <SelectItem value="Thursday & Friday">Thursday & Friday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Time Slot</Label>
+                  <Select value={editingSection.timeSlot} onValueChange={(value) => setEditingSection({...editingSection, timeSlot: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="08:00 - 09:30 AM">08:00 - 09:30 AM</SelectItem>
+                      <SelectItem value="10:00 - 11:30 AM">10:00 - 11:30 AM</SelectItem>
+                      <SelectItem value="02:00 - 03:30 PM">02:00 - 03:30 PM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Room</Label>
+                  <Select value={editingSection.room} onValueChange={(value) => setEditingSection({...editingSection, room: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Room 201">Room 201</SelectItem>
+                      <SelectItem value="Room 301">Room 301</SelectItem>
+                      <SelectItem value="Room 401">Room 401</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => {
+                  setShowEditModal(false)
+                  setEditingSection(null)
+                }}>Cancel</Button>
+                <Button onClick={handleUpdateSection}>Update Section</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

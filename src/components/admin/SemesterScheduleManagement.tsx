@@ -5,20 +5,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Calendar, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Save, 
+import {
+  Calendar,
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
   Download,
-  Upload,
-  Clock,
   CheckCircle,
   AlertCircle,
-  Settings,
-  BookOpen
+  Settings
 } from 'lucide-react'
 
 interface SemesterSchedule {
@@ -442,7 +438,7 @@ function SchedulesList({
 
   const handleDelete = (scheduleId: string) => {
     if (confirm('Are you sure you want to delete this schedule?')) {
-      alert('Schedule deleted successfully!')
+      alert(`Schedule ${scheduleId} deleted successfully!`)
     }
   }
 
@@ -542,15 +538,15 @@ function SchedulesList({
 }
 
 export default function SemesterScheduleManagement() {
-  const [schedules, setSchedules] = useState<SemesterSchedule[]>(mockSchedules)
+  const schedules = mockSchedules
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingSchedule, setEditingSchedule] = useState<SemesterSchedule | undefined>()
-  const [filterYear, setFilterYear] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
+  const [filterYear, setFilterYear] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
 
   const filteredSchedules = schedules.filter(schedule => {
-    const matchesYear = !filterYear || schedule.academicYear.includes(filterYear)
-    const matchesStatus = !filterStatus || schedule.status === filterStatus
+    const matchesYear = filterYear === 'all' || schedule.academicYear.includes(filterYear)
+    const matchesStatus = filterStatus === 'all' || schedule.status === filterStatus
     return matchesYear && matchesStatus
   })
 
@@ -670,7 +666,7 @@ export default function SemesterScheduleManagement() {
                   <SelectValue placeholder="All Years" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Years</SelectItem>
+                  <SelectItem value="all">All Years</SelectItem>
                   {uniqueYears.map(year => (
                     <SelectItem key={year} value={year}>{year}</SelectItem>
                   ))}
@@ -685,7 +681,7 @@ export default function SemesterScheduleManagement() {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
