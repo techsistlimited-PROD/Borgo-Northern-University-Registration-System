@@ -778,8 +778,20 @@ export default function ContinuousAssessment() {
   }
 
   const handleEditAssessment = (assessment: AssessmentItem) => {
-    // TODO: Implement edit functionality
-    alert(`Edit functionality for ${assessment.title} coming soon!`)
+    setEditingAssessment(assessment)
+  }
+
+  const handleSaveMarks = (scores: Record<string, AssessmentScoreEntry>) => {
+    if (!editingAssessment) return
+
+    // Update assessment status to completed
+    setAssessments(prev => prev.map(a =>
+      a.id === editingAssessment.id
+        ? { ...a, status: 'completed' as const, studentsSubmitted: Object.keys(scores).length }
+        : a
+    ))
+
+    setEditingAssessment(null)
   }
 
   const handleDeleteAssessment = (id: string) => {
