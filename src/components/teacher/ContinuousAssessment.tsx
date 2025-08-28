@@ -70,6 +70,29 @@ const sections: Section[] = [
   { id: '4', courseCode: 'CSE401', courseName: 'Database Management Systems', sectionName: 'C', totalStudents: 39 }
 ]
 
+// Mock student data
+const studentsData: Record<string, Student[]> = {
+  'CSE401-A': [
+    { id: '1', studentId: '2021-1-60-001', name: 'Ahmed Rahman', email: 'ahmed.rahman@student.nu.edu.bd' },
+    { id: '2', studentId: '2021-1-60-002', name: 'Fatima Khan', email: 'fatima.khan@student.nu.edu.bd' },
+    { id: '3', studentId: '2021-1-60-003', name: 'Mohammad Ali', email: 'mohammad.ali@student.nu.edu.bd' },
+    { id: '4', studentId: '2021-1-60-004', name: 'Ayesha Ahmed', email: 'ayesha.ahmed@student.nu.edu.bd' },
+    { id: '5', studentId: '2021-1-60-005', name: 'Rashid Hasan', email: 'rashid.hasan@student.nu.edu.bd' }
+  ],
+  'CSE401-B': [
+    { id: '6', studentId: '2021-1-60-006', name: 'Nabila Sultana', email: 'nabila.sultana@student.nu.edu.bd' },
+    { id: '7', studentId: '2021-1-60-007', name: 'Karim Uddin', email: 'karim.uddin@student.nu.edu.bd' },
+    { id: '8', studentId: '2021-1-60-008', name: 'Lamia Haque', email: 'lamia.haque@student.nu.edu.bd' },
+    { id: '9', studentId: '2021-1-60-009', name: 'Shamsul Islam', email: 'shamsul.islam@student.nu.edu.bd' }
+  ],
+  'CSE303-A': [
+    { id: '10', studentId: '2021-1-60-010', name: 'Sarah Ahmed', email: 'sarah.ahmed@student.nu.edu.bd' },
+    { id: '11', studentId: '2021-1-60-011', name: 'Rafiq Rahman', email: 'rafiq.rahman@student.nu.edu.bd' },
+    { id: '12', studentId: '2021-1-60-012', name: 'Nusrat Jahan', email: 'nusrat.jahan@student.nu.edu.bd' },
+    { id: '13', studentId: '2021-1-60-013', name: 'Habib Khan', email: 'habib.khan@student.nu.edu.bd' }
+  ]
+}
+
 const mockAssessments: AssessmentItem[] = [
   {
     id: '1',
