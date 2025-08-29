@@ -268,6 +268,12 @@ export const OfferCourses = () => {
   const [sectionCapacity, setSectionCapacity] = useState('')
   const [bulkStudentRange, setBulkStudentRange] = useState({ from: '', to: '' })
 
+  // Filter states
+  const [filterProgramType, setFilterProgramType] = useState('all')
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterSemester, setFilterSemester] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
+
   const allCourses = [
     // CSE Courses
     { code: 'CSE101', title: 'Programming Fundamentals', capacity: '320/350', credits: 3, program: 'CSE', semester: 1, type: 'undergraduate' },
