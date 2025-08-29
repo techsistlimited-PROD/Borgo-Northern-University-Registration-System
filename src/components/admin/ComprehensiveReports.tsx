@@ -1377,17 +1377,6 @@ export default function ComprehensiveReports() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Attendance Reports</p>
-                <p className="text-2xl font-bold text-green-600">3</p>
-              </div>
-              <Clock className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardContent className="p-6">
