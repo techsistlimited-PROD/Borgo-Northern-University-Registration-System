@@ -735,8 +735,8 @@ export default function ResultsGrades() {
           <SentReports />
         </TabsContent>
 
-        <TabsContent value="cgpa-calculation">
-          <CGPACalculation />
+        <TabsContent value="gpa-calculation">
+          <GPACalculation />
         </TabsContent>
       </Tabs>
     </div>
