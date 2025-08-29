@@ -510,7 +510,7 @@ function GPACalculation() {
             <CardContent className="p-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-orange-600">{stats.lowest}</p>
-                <p className="text-sm text-gray-600">Lowest CGPA</p>
+                <p className="text-sm text-gray-600">Lowest GPA</p>
               </div>
             </CardContent>
           </Card>
