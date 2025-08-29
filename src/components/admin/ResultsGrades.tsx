@@ -436,7 +436,7 @@ function GPACalculation() {
 
             <div className="flex items-end">
               <Button 
-                onClick={handleCalculateCGPA} 
+                onClick={handleCalculateGPA} 
                 disabled={!selectedSection || isCalculating}
                 className="w-full flex items-center space-x-2"
               >
