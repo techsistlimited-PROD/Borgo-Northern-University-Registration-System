@@ -140,26 +140,71 @@ interface ExamAttendanceRecord {
 }
 
 const examAttendanceRecords: ExamAttendanceRecord[] = [
-  // CSE midterm/final
+  // CSE401 Section A - Midterm (10 students)
   { id: '1', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
   { id: '2', studentId: '2021-1-60-002', studentName: 'Fatima Khan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'absent' },
   { id: '3', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
-  { id: '4', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
-  { id: '5', studentId: '2021-1-60-002', studentName: 'Fatima Khan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
-  
-  // BBA midterm/final
-  { id: '6', studentId: '2021-2-50-001', studentName: 'Ruma Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
-  { id: '7', studentId: '2021-2-50-002', studentName: 'Karim Hassan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'absent' },
-  { id: '8', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
-  { id: '9', studentId: '2021-2-50-001', studentName: 'Ruma Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
-  { id: '10', studentId: '2021-2-50-002', studentName: 'Karim Hassan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
-  
-  // EEE midterm/final
-  { id: '11', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
-  { id: '12', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'absent' },
-  { id: '13', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
-  { id: '14', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
-  { id: '15', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' }
+  { id: '4', studentId: '2021-1-60-004', studentName: 'Sarah Ahmed', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '5', studentId: '2021-1-60-005', studentName: 'Karim Hassan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '6', studentId: '2021-1-60-006', studentName: 'Nadia Sultan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'absent' },
+  { id: '7', studentId: '2021-1-60-007', studentName: 'Rashid Hasan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '8', studentId: '2021-1-60-008', studentName: 'Ayesha Ahmed', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '9', studentId: '2021-1-60-009', studentName: 'Omar Khan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+  { id: '10', studentId: '2021-1-60-010', studentName: 'Salma Rahman', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'midterm', examDate: '2024-02-15', status: 'present' },
+
+  // CSE401 Section A - Final (10 students)
+  { id: '11', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '12', studentId: '2021-1-60-002', studentName: 'Fatima Khan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '13', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'absent' },
+  { id: '14', studentId: '2021-1-60-004', studentName: 'Sarah Ahmed', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '15', studentId: '2021-1-60-005', studentName: 'Karim Hassan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '16', studentId: '2021-1-60-006', studentName: 'Nadia Sultan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '17', studentId: '2021-1-60-007', studentName: 'Rashid Hasan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '18', studentId: '2021-1-60-008', studentName: 'Ayesha Ahmed', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '19', studentId: '2021-1-60-009', studentName: 'Omar Khan', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+  { id: '20', studentId: '2021-1-60-010', studentName: 'Salma Rahman', courseCode: 'CSE401', section: 'A', program: 'CSE', examType: 'final', examDate: '2024-03-20', status: 'present' },
+
+  // BBA401 Section A - Midterm (9 students)
+  { id: '21', studentId: '2021-2-50-001', studentName: 'Ruma Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '22', studentId: '2021-2-50-002', studentName: 'Karim Hassan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'absent' },
+  { id: '23', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '24', studentId: '2021-2-50-004', studentName: 'Nasir Islam', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '25', studentId: '2021-2-50-005', studentName: 'Fatima Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '26', studentId: '2021-2-50-006', studentName: 'Rahman Ali', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'absent' },
+  { id: '27', studentId: '2021-2-50-007', studentName: 'Marium Khan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '28', studentId: '2021-2-50-008', studentName: 'Habib Rahman', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+  { id: '29', studentId: '2021-2-50-009', studentName: 'Taslima Khatun', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'midterm', examDate: '2024-02-16', status: 'present' },
+
+  // BBA401 Section A - Final (9 students)
+  { id: '30', studentId: '2021-2-50-001', studentName: 'Ruma Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '31', studentId: '2021-2-50-002', studentName: 'Karim Hassan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '32', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '33', studentId: '2021-2-50-004', studentName: 'Nasir Islam', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '34', studentId: '2021-2-50-005', studentName: 'Fatima Begum', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '35', studentId: '2021-2-50-006', studentName: 'Rahman Ali', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '36', studentId: '2021-2-50-007', studentName: 'Marium Khan', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+  { id: '37', studentId: '2021-2-50-008', studentName: 'Habib Rahman', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'absent' },
+  { id: '38', studentId: '2021-2-50-009', studentName: 'Taslima Khatun', courseCode: 'BBA401', section: 'A', program: 'BBA', examType: 'final', examDate: '2024-03-21', status: 'present' },
+
+  // EEE301 Section A - Midterm (8 students)
+  { id: '39', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+  { id: '40', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'absent' },
+  { id: '41', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+  { id: '42', studentId: '2021-3-40-004', studentName: 'Sultana Razia', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+  { id: '43', studentId: '2021-3-40-005', studentName: 'Khalil Ahmed', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+  { id: '44', studentId: '2021-3-40-006', studentName: 'Nusrat Jahan', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+  { id: '45', studentId: '2021-3-40-007', studentName: 'Imran Hossain', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'absent' },
+  { id: '46', studentId: '2021-3-40-008', studentName: 'Rashida Begum', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'midterm', examDate: '2024-02-17', status: 'present' },
+
+  // EEE301 Section A - Final (8 students)
+  { id: '47', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '48', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '49', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '50', studentId: '2021-3-40-004', studentName: 'Sultana Razia', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '51', studentId: '2021-3-40-005', studentName: 'Khalil Ahmed', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '52', studentId: '2021-3-40-006', studentName: 'Nusrat Jahan', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '53', studentId: '2021-3-40-007', studentName: 'Imran Hossain', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'present' },
+  { id: '54', studentId: '2021-3-40-008', studentName: 'Rashida Begum', courseCode: 'EEE301', section: 'A', program: 'EEE', examType: 'final', examDate: '2024-03-22', status: 'absent' }
 ]
 
 const programs = ['CSE', 'BBA', 'EEE', 'Textile Engineering', 'B. Pharm']
