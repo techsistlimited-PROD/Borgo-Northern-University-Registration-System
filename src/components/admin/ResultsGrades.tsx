@@ -386,7 +386,7 @@ function GPACalculation() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-deep-plum">CGPA Calculation & Publishing</h2>
+          <h2 className="text-2xl font-bold text-deep-plum">GPA Calculation & Publishing</h2>
           <p className="text-gray-600">Calculate and publish final results section-wise</p>
         </div>
         {studentResults.length > 0 && (
