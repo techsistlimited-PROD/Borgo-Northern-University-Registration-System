@@ -201,6 +201,10 @@ const mockStudentResults: Record<string, StudentResult[]> = {
 }
 
 function SentReports() {
+  const [selectedSection, setSelectedSection] = useState<SectionResult | null>(null)
+  const [selectedStudent, setSelectedStudent] = useState<any>(null)
+  const [showStudentDetail, setShowStudentDetail] = useState(false)
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
@@ -225,6 +229,260 @@ function SentReports() {
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
+  }
+
+  const handleViewSection = (section: SectionResult) => {
+    setSelectedSection(section)
+  }
+
+  const handleViewStudent = (student: any) => {
+    // Create detailed student data with academic history
+    const studentDetail = {
+      ...student,
+      program: 'Computer Science & Engineering',
+      campus: 'Main Campus',
+      admission: 'Spring 2021',
+      status: 'Active',
+      cumulativeGPA: 3.75,
+      completedCredits: 96,
+      remainingCredits: 48,
+      progress: 67,
+      semesters: [
+        {
+          semester: 'Fall 2024',
+          semesterGPA: 3.54,
+          cumulativeGPA: 3.75,
+          credits: 11,
+          courses: [
+            { code: 'CSE401', name: 'Database Management Systems', credits: 3, grade: 'A-', points: 11.1, instructor: 'Dr. Abdul Rahman' },
+            { code: 'CSE403', name: 'Software Engineering', credits: 3, grade: 'B+', points: 9.9, instructor: 'Dr. Sarah Khan' },
+            { code: 'CSE405', name: 'Computer Networks', credits: 3, grade: 'A', points: 12, instructor: 'Dr. Rahman Ali' },
+            { code: 'ENG102', name: 'Technical Writing', credits: 2, grade: 'B', points: 6, instructor: 'Prof. Lisa Johnson' }
+          ]
+        },
+        {
+          semester: 'Summer 2024',
+          semesterGPA: 3.67,
+          cumulativeGPA: 3.72,
+          credits: 9,
+          courses: [
+            { code: 'CSE301', name: 'Data Structures', credits: 3, grade: 'A', points: 12, instructor: 'Dr. Computer Expert' },
+            { code: 'CSE303', name: 'Algorithms', credits: 3, grade: 'A-', points: 11.1, instructor: 'Dr. Math Wizard' },
+            { code: 'MATH201', name: 'Statistics', credits: 3, grade: 'B+', points: 9.9, instructor: 'Prof. Stats Master' }
+          ]
+        },
+        {
+          semester: 'Spring 2024',
+          semesterGPA: 3.5,
+          cumulativeGPA: 3.68,
+          credits: 12,
+          courses: [
+            { code: 'CSE201', name: 'Programming', credits: 3, grade: 'A', points: 12, instructor: 'Dr. Code Master' },
+            { code: 'CSE203', name: 'Object Oriented Programming', credits: 3, grade: 'A-', points: 11.1, instructor: 'Dr. OOP Expert' },
+            { code: 'MATH101', name: 'Calculus I', credits: 3, grade: 'B+', points: 9.9, instructor: 'Prof. Calculus Pro' },
+            { code: 'PHY101', name: 'Physics I', credits: 3, grade: 'B', points: 9, instructor: 'Dr. Physics Guru' }
+          ]
+        }
+      ]
+    }
+    setSelectedStudent(studentDetail)
+    setShowStudentDetail(true)
+  }
+
+  // Mock student data for selected section
+  const getSectionStudents = (sectionId: string) => {
+    const studentData = mockStudentResults[sectionId] || []
+    return studentData.map(student => ({
+      ...student,
+      cgpa: 3.75 // Adding cumulative GPA (different from individual course GPA)
+    }))
+  }
+
+  if (showStudentDetail && selectedStudent) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <Button onClick={() => setShowStudentDetail(false)} variant="outline">
+              Back to Student List
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-deep-plum">Academic History</CardTitle>
+            <CardDescription className="text-lg">
+              {selectedStudent.name} ({selectedStudent.studentId})
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        {/* Student Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Student Overview</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Program</p>
+                  <p className="text-sm">{selectedStudent.program}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Campus</p>
+                  <p className="text-sm">{selectedStudent.campus}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Admission</p>
+                  <p className="text-sm">{selectedStudent.admission}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <Badge className="bg-green-100 text-green-800">{selectedStudent.status}</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-deep-plum">{selectedStudent.cumulativeGPA}</p>
+                  <p className="text-sm text-gray-600">Cumulative GPA</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-green-600">{selectedStudent.completedCredits}</p>
+                  <p className="text-sm text-gray-600">Completed Credits</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-blue-600">{selectedStudent.remainingCredits}</p>
+                  <p className="text-sm text-gray-600">Remaining Credits</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-purple-600">{selectedStudent.progress}%</p>
+                  <p className="text-sm text-gray-600">Progress</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Semester-wise Academic Record */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Semester-wise Academic Record</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {selectedStudent.semesters?.map((sem: any, index: number) => (
+              <div key={index} className="border-l-4 border-deep-plum pl-4">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-deep-plum">{sem.semester}</h3>
+                  <div className="flex space-x-4 text-sm text-gray-600">
+                    <span>Semester GPA: {sem.semesterGPA}</span>
+                    <span>Cumulative GPA: {sem.cumulativeGPA}</span>
+                    <span>Credits: {sem.credits}</span>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse border border-gray-200">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="border border-gray-200 px-3 py-2 text-left text-sm font-medium">Course Code</th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-sm font-medium">Course Name</th>
+                        <th className="border border-gray-200 px-3 py-2 text-center text-sm font-medium">Credits</th>
+                        <th className="border border-gray-200 px-3 py-2 text-center text-sm font-medium">Grade</th>
+                        <th className="border border-gray-200 px-3 py-2 text-center text-sm font-medium">Points</th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-sm font-medium">Instructor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sem.courses.map((course: any, courseIndex: number) => (
+                        <tr key={courseIndex} className="hover:bg-gray-50">
+                          <td className="border border-gray-200 px-3 py-2 font-mono text-sm">{course.code}</td>
+                          <td className="border border-gray-200 px-3 py-2 text-sm">{course.name}</td>
+                          <td className="border border-gray-200 px-3 py-2 text-center text-sm">{course.credits}</td>
+                          <td className="border border-gray-200 px-3 py-2 text-center">
+                            <Badge className="text-xs">{course.grade}</Badge>
+                          </td>
+                          <td className="border border-gray-200 px-3 py-2 text-center text-sm">{course.points}</td>
+                          <td className="border border-gray-200 px-3 py-2 text-sm">{course.instructor}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (selectedSection) {
+    const sectionStudents = getSectionStudents(selectedSection.sectionId)
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <Button onClick={() => setSelectedSection(null)} variant="outline">
+              Back to Sections
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl text-deep-plum">
+              {selectedSection.courseCode} - Section {selectedSection.section}
+            </CardTitle>
+            <CardDescription>
+              {selectedSection.courseName} • {selectedSection.semester}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student ID</TableHead>
+                    <TableHead>Student Name</TableHead>
+                    <TableHead>Grade</TableHead>
+                    <TableHead>Course GPA</TableHead>
+                    <TableHead>Cumulative GPA</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sectionStudents.map((student) => (
+                    <TableRow key={student.studentId}>
+                      <TableCell className="font-mono">{student.studentId}</TableCell>
+                      <TableCell className="font-medium">{student.name}</TableCell>
+                      <TableCell>
+                        <Badge>{student.grade}</Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">{student.gpa}</TableCell>
+                      <TableCell className="font-medium">{student.cgpa}</TableCell>
+                      <TableCell>
+                        <Button size="sm" variant="outline" onClick={() => handleViewStudent(student)}>
+                          <Eye className="w-4 h-4 mr-1" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -279,7 +537,7 @@ function SentReports() {
                     <TableCell>{getResultsStatusBadge(section.resultsStatus)}</TableCell>
                     <TableCell>{new Date(section.lastUpdated).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleViewSection(section)}>
                         <Eye className="w-4 h-4 mr-1" />
                         View
                       </Button>
