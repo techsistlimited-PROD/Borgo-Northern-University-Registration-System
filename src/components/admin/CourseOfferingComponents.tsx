@@ -154,11 +154,11 @@ export const Syllabuses = () => {
   }
   
   const programs = [
-    'BBA (Bachelor of Business Administration)',
     'CSE (Computer Science & Engineering)',
+    'BBA (Bachelor of Business Administration)',
     'EEE (Electrical and Electronic Engineering)',
     'MBA (Master of Business Administration)',
-    'MBM (Master of Business Management)'
+    'Common (Common Foundation Courses)'
   ]
 
   return (
