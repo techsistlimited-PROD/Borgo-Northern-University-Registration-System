@@ -149,29 +149,29 @@ const mockStudentResults: Record<string, StudentResult[]> = {
       cumulativeMarks: 25,
       finalMarks: 34,
       totalMarks: 82,
-      cgpa: 3.45,
+      gpa: 3.45,
       grade: 'A-',
       status: 'draft'
     },
     {
-      studentId: '2021-1-60-002', 
+      studentId: '2021-1-60-002',
       name: 'Fatima Khan',
       midtermMarks: 27,
       cumulativeMarks: 25,
       finalMarks: 24,
       totalMarks: 76,
-      cgpa: 3.20,
+      gpa: 3.20,
       grade: 'B+',
       status: 'draft'
     },
     {
       studentId: '2021-1-60-003',
-      name: 'Mohammad Ali', 
+      name: 'Mohammad Ali',
       midtermMarks: 19,
       cumulativeMarks: 22,
       finalMarks: 29,
       totalMarks: 70,
-      cgpa: 2.95,
+      gpa: 2.95,
       grade: 'B',
       status: 'draft'
     },
@@ -182,7 +182,7 @@ const mockStudentResults: Record<string, StudentResult[]> = {
       cumulativeMarks: 28,
       finalMarks: 31,
       totalMarks: 74,
-      cgpa: 3.15,
+      gpa: 3.15,
       grade: 'B+',
       status: 'draft'
     },
@@ -193,7 +193,7 @@ const mockStudentResults: Record<string, StudentResult[]> = {
       cumulativeMarks: 20,
       finalMarks: 39,
       totalMarks: 69,
-      cgpa: 2.85,
+      gpa: 2.85,
       grade: 'B-',
       status: 'draft'
     }
