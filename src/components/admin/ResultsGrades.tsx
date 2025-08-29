@@ -492,7 +492,7 @@ function GPACalculation() {
             <CardContent className="p-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-green-600">{stats.average}</p>
-                <p className="text-sm text-gray-600">Average CGPA</p>
+                <p className="text-sm text-gray-600">Average GPA</p>
               </div>
             </CardContent>
           </Card>
