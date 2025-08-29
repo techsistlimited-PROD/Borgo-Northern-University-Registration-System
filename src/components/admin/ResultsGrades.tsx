@@ -295,7 +295,7 @@ function SentReports() {
   )
 }
 
-function CGPACalculation() {
+function GPACalculation() {
   const [selectedSection, setSelectedSection] = useState<string>('')
   const [publishDate, setPublishDate] = useState<string>(new Date().toISOString().split('T')[0])
   const [studentResults, setStudentResults] = useState<StudentResult[]>([])
