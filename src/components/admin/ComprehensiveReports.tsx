@@ -1394,14 +1394,10 @@ export default function ComprehensiveReports() {
 
       {/* Report Categories */}
       <Tabs defaultValue="students" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="students" className="flex items-center space-x-2">
             <Users className="w-4 h-4" />
             <span>Student Reports</span>
-          </TabsTrigger>
-          <TabsTrigger value="attendance" className="flex items-center space-x-2">
-            <Clock className="w-4 h-4" />
-            <span>Attendance</span>
           </TabsTrigger>
           <TabsTrigger value="teachers" className="flex items-center space-x-2">
             <GraduationCap className="w-4 h-4" />
@@ -1411,10 +1407,6 @@ export default function ComprehensiveReports() {
 
         <TabsContent value="students">
           <StudentReports />
-        </TabsContent>
-
-        <TabsContent value="attendance">
-          <AttendanceReports />
         </TabsContent>
 
         <TabsContent value="teachers">
