@@ -186,12 +186,13 @@ export const Syllabuses = () => {
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="undergraduate">Undergraduate</SelectItem>
                   <SelectItem value="postgraduate">Postgraduate</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label>Program</Label>
               <Select value={selectedProgram} onValueChange={setSelectedProgram}>
@@ -199,6 +200,7 @@ export const Syllabuses = () => {
                   <SelectValue placeholder="Select program" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Programs</SelectItem>
                   {programs.map((program) => (
                     <SelectItem key={program} value={program.split(' ')[0]}>{program}</SelectItem>
                   ))}
