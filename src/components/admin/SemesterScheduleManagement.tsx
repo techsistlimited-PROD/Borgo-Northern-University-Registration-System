@@ -657,6 +657,15 @@ function SchedulesList({
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => onView(schedule)}
+                  className="flex items-center space-x-2"
+                >
+                  <Info className="w-4 h-4" />
+                  <span>View</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => handleExport(schedule)}
                   className="flex items-center space-x-2"
                 >
