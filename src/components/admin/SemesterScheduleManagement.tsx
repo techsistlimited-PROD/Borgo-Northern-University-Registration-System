@@ -1218,7 +1218,7 @@ export default function SemesterScheduleManagement() {
         </CardHeader>
         <CardContent>
           {filteredSchedules.length > 0 ? (
-            <SchedulesList schedules={filteredSchedules} onEdit={handleEdit} />
+            <SchedulesList schedules={filteredSchedules} onEdit={handleEdit} onView={handleView} />
           ) : (
             <div className="text-center py-12">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
