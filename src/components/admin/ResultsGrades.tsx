@@ -364,17 +364,17 @@ function GPACalculation() {
 
   const getStats = () => {
     if (studentResults.length === 0) return { average: 0, highest: 0, lowest: 0, passCount: 0 }
-    
-    const cgpas = studentResults.map(s => s.cgpa)
-    const average = cgpas.reduce((sum, cgpa) => sum + cgpa, 0) / cgpas.length
-    const highest = Math.max(...cgpas)
-    const lowest = Math.min(...cgpas)
-    const passCount = cgpas.filter(cgpa => cgpa >= 2.0).length
-    
-    return { 
-      average: Math.round(average * 100) / 100, 
-      highest, 
-      lowest, 
+
+    const gpas = studentResults.map(s => s.gpa)
+    const average = gpas.reduce((sum, gpa) => sum + gpa, 0) / gpas.length
+    const highest = Math.max(...gpas)
+    const lowest = Math.min(...gpas)
+    const passCount = gpas.filter(gpa => gpa >= 2.0).length
+
+    return {
+      average: Math.round(average * 100) / 100,
+      highest,
+      lowest,
       passCount,
       total: studentResults.length
     }
