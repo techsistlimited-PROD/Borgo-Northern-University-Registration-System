@@ -448,7 +448,7 @@ function GPACalculation() {
                 ) : (
                   <>
                     <Calculator className="w-4 h-4" />
-                    <span>Calculate CGPA</span>
+                    <span>Calculate GPA</span>
                   </>
                 )}
               </Button>
