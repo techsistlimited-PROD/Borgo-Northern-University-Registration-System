@@ -1019,6 +1019,7 @@ export default function SemesterScheduleManagement() {
   const schedules = mockSchedules
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingSchedule, setEditingSchedule] = useState<SemesterSchedule | undefined>()
+  const [viewingSchedule, setViewingSchedule] = useState<SemesterSchedule | undefined>()
   const [filterYear, setFilterYear] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
   const [filterType, setFilterType] = useState('all')
