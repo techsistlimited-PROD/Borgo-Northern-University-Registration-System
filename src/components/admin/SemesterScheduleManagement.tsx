@@ -1054,6 +1054,16 @@ export default function SemesterScheduleManagement() {
 
   const uniqueYears = [...new Set(schedules.map(s => s.academicYear))].sort()
 
+  if (viewingSchedule) {
+    return (
+      <ViewScheduleDetails
+        schedule={viewingSchedule}
+        onClose={handleCloseView}
+        onEdit={handleEdit}
+      />
+    )
+  }
+
   if (showCreateForm) {
     return (
       <div className="space-y-6">
@@ -1067,7 +1077,7 @@ export default function SemesterScheduleManagement() {
             </p>
           </div>
         </div>
-        
+
         <CreateScheduleForm onClose={handleCloseForm} editingSchedule={editingSchedule} />
       </div>
     )
