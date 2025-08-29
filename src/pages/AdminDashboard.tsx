@@ -662,10 +662,125 @@ const StudentInformation = () => {
 
 const Courses = () => {
   const [courses, setCourses] = useState([
+    // CSE Courses
     { id: 1, code: 'CSE101', title: 'Introduction to Programming', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
     { id: 2, code: 'CSE102', title: 'Programming Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
-    { id: 3, code: 'BBA101', title: 'Principles of Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
-    { id: 4, code: 'EEE101', title: 'Circuit Analysis', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 3, code: 'CSE201', title: 'Data Structures', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 4, code: 'CSE202', title: 'Data Structures Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 5, code: 'CSE301', title: 'Algorithms', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 6, code: 'CSE302', title: 'Database Systems', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 7, code: 'CSE303', title: 'Computer Organization', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 8, code: 'CSE304', title: 'Database Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 9, code: 'CSE401', title: 'Software Engineering', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 10, code: 'CSE402', title: 'Computer Networks', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 11, code: 'CSE403', title: 'Operating Systems', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 12, code: 'CSE404', title: 'Software Engineering Lab', dept: 'CSE', program: 'CSE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 13, code: 'CSE501', title: 'Artificial Intelligence', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 14, code: 'CSE502', title: 'Machine Learning', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 15, code: 'CSE503', title: 'Web Technologies', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 16, code: 'CSE504', title: 'Mobile App Development', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 17, code: 'CSE601', title: 'Computer Graphics', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 18, code: 'CSE602', title: 'Cyber Security', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 19, code: 'CSE603', title: 'Cloud Computing', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 20, code: 'CSE604', title: 'Data Mining', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 21, code: 'CSE701', title: 'Distributed Systems', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 22, code: 'CSE702', title: 'Blockchain Technology', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 23, code: 'CSE703', title: 'IoT Systems', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 24, code: 'CSE704', title: 'Big Data Analytics', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 25, code: 'CSE801', title: 'Advanced Algorithms', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 26, code: 'CSE802', title: 'Computer Vision', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 27, code: 'CSE803', title: 'Natural Language Processing', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 28, code: 'CSE804', title: 'Robotics', dept: 'CSE', program: 'CSE', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // BBA Courses
+    { id: 29, code: 'BBA101', title: 'Principles of Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 30, code: 'BBA102', title: 'Business English', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 31, code: 'BBA201', title: 'Organizational Behavior', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 32, code: 'BBA202', title: 'Principles of Marketing', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 33, code: 'BBA301', title: 'Strategic Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 34, code: 'BBA302', title: 'Human Resource Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 35, code: 'BBA303', title: 'Operations Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 36, code: 'BBA401', title: 'International Business', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 37, code: 'BBA402', title: 'E-Commerce', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 38, code: 'BBA403', title: 'Supply Chain Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 39, code: 'BBA501', title: 'Leadership & Change Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 40, code: 'BBA502', title: 'Digital Marketing', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 41, code: 'BBA503', title: 'Investment Analysis', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 42, code: 'BBA601', title: 'Business Analytics', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 43, code: 'BBA602', title: 'Entrepreneurship', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 44, code: 'BBA603', title: 'Risk Management', dept: 'Business', program: 'BBA', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // EEE Courses
+    { id: 45, code: 'EEE101', title: 'Electrical Circuits I', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 46, code: 'EEE102', title: 'Electrical Circuits Lab I', dept: 'EEE', program: 'EEE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 47, code: 'EEE201', title: 'Circuit Analysis', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 48, code: 'EEE202', title: 'Digital Logic Design', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 49, code: 'EEE203', title: 'Circuit Analysis Lab', dept: 'EEE', program: 'EEE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 50, code: 'EEE301', title: 'Electronics I', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 51, code: 'EEE302', title: 'Signals and Systems', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 52, code: 'EEE303', title: 'Electronics Lab I', dept: 'EEE', program: 'EEE', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 53, code: 'EEE401', title: 'Power Systems', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 54, code: 'EEE402', title: 'Control Systems', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 55, code: 'EEE403', title: 'Microprocessors', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 56, code: 'EEE501', title: 'Communications Engineering', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 57, code: 'EEE502', title: 'Embedded Systems', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 58, code: 'EEE503', title: 'Renewable Energy Systems', dept: 'EEE', program: 'EEE', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // MBA Courses (Postgraduate)
+    { id: 59, code: 'MBA701', title: 'Advanced Strategic Management', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 60, code: 'MBA702', title: 'Leadership and Ethics', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 61, code: 'MBA703', title: 'Financial Management', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 62, code: 'MBA801', title: 'Operations Research', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 63, code: 'MBA802', title: 'International Marketing', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 64, code: 'MBA803', title: 'Corporate Finance', dept: 'Business', program: 'MBA', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // Common Foundation Courses
+    { id: 65, code: 'MAT101', title: 'Calculus I', dept: 'Mathematics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 66, code: 'MAT201', title: 'Calculus II', dept: 'Mathematics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 67, code: 'MAT301', title: 'Linear Algebra', dept: 'Mathematics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 68, code: 'MAT401', title: 'Differential Equations', dept: 'Mathematics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 69, code: 'PHY101', title: 'Physics I', dept: 'Physics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 70, code: 'PHY102', title: 'Physics Lab I', dept: 'Physics', program: 'Common', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 71, code: 'PHY201', title: 'Physics II', dept: 'Physics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 72, code: 'PHY202', title: 'Physics Lab II', dept: 'Physics', program: 'Common', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 73, code: 'ENG101', title: 'English I', dept: 'English', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 74, code: 'ENG201', title: 'English II', dept: 'English', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 75, code: 'ENG301', title: 'Technical Writing', dept: 'English', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 76, code: 'ECO101', title: 'Microeconomics', dept: 'Economics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 77, code: 'ECO201', title: 'Macroeconomics', dept: 'Economics', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 78, code: 'ACC101', title: 'Financial Accounting', dept: 'Accounting', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 79, code: 'ACC201', title: 'Management Accounting', dept: 'Accounting', program: 'Common', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // Law Courses
+    { id: 80, code: 'LAW101', title: 'Introduction to Law', dept: 'Law', program: 'LLB', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 81, code: 'LAW201', title: 'Constitutional Law', dept: 'Law', program: 'LLB', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 82, code: 'LAW301', title: 'Criminal Law', dept: 'Law', program: 'LLB', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 83, code: 'LAW401', title: 'Civil Law', dept: 'Law', program: 'LLB', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 84, code: 'LAW501', title: 'Corporate Law', dept: 'Law', program: 'LLB', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // Pharmacy Courses
+    { id: 85, code: 'PHM101', title: 'Pharmaceutical Chemistry I', dept: 'Pharmacy', program: 'B.Pharm', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 86, code: 'PHM102', title: 'Pharmaceutical Chemistry Lab I', dept: 'Pharmacy', program: 'B.Pharm', type: 'Lab', credits: 1, ter: 'No' },
+    { id: 87, code: 'PHM201', title: 'Pharmacology', dept: 'Pharmacy', program: 'B.Pharm', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 88, code: 'PHM301', title: 'Clinical Pharmacy', dept: 'Pharmacy', program: 'B.Pharm', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 89, code: 'PHM401', title: 'Hospital Pharmacy', dept: 'Pharmacy', program: 'B.Pharm', type: 'Practical', credits: 2, ter: 'Yes' },
+
+    // Textile Engineering Courses
+    { id: 90, code: 'TEX101', title: 'Textile Fibers', dept: 'Textile', program: 'Textile', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 91, code: 'TEX201', title: 'Yarn Manufacturing', dept: 'Textile', program: 'Textile', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 92, code: 'TEX301', title: 'Fabric Manufacturing', dept: 'Textile', program: 'Textile', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 93, code: 'TEX401', title: 'Textile Dyeing & Finishing', dept: 'Textile', program: 'Textile', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // English Literature Courses
+    { id: 94, code: 'ELL101', title: 'Introduction to Literature', dept: 'English', program: 'English', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 95, code: 'ELL201', title: 'Modern Poetry', dept: 'English', program: 'English', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 96, code: 'ELL301', title: 'Contemporary Fiction', dept: 'English', program: 'English', type: 'Theory', credits: 3, ter: 'Yes' },
+    { id: 97, code: 'ELL401', title: 'Literary Criticism', dept: 'English', program: 'English', type: 'Theory', credits: 3, ter: 'Yes' },
+
+    // Project/Thesis Courses
+    { id: 98, code: 'PRJ401', title: 'Project Work I', dept: 'Common', program: 'Common', type: 'Project', credits: 3, ter: 'Yes' },
+    { id: 99, code: 'PRJ402', title: 'Project Work II', dept: 'Common', program: 'Common', type: 'Project', credits: 3, ter: 'Yes' },
+    { id: 100, code: 'THE501', title: 'Thesis/Dissertation', dept: 'Common', program: 'Common', type: 'Project', credits: 6, ter: 'Yes' },
   ])
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCourse, setEditingCourse] = useState<any>(null)
