@@ -154,6 +154,270 @@ const formatBDTDateTime = (isoString: string) => {
 const getCurrentUser = () => ({ id: 'ADM001', name: 'John Admin' })
 const getCurrentSessionId = () => `SES_${Date.now()}`
 
+function ViewScheduleDetails({
+  schedule,
+  onClose,
+  onEdit
+}: {
+  schedule: SemesterSchedule;
+  onClose: () => void;
+  onEdit: (schedule: SemesterSchedule) => void;
+}) {
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-deep-plum">View Semester Schedule</h1>
+          <p className="text-gray-600 mt-1">Detailed view of {schedule.academicYear} academic schedule</p>
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            onClick={() => onEdit(schedule)}
+            className="flex items-center space-x-2"
+          >
+            <Edit2 className="w-4 h-4" />
+            <span>Edit Schedule</span>
+          </Button>
+          <Button variant="outline" onClick={onClose}>
+            Back to List
+          </Button>
+        </div>
+      </div>
+
+      {/* Basic Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Calendar className="w-5 h-5" />
+            <span>Basic Information</span>
+            <Badge variant="default">{schedule.status}</Badge>
+            <Badge variant="outline">{schedule.semesterType}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Academic Year</Label>
+              <p className="text-lg font-semibold">{schedule.academicYear}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Semester Type</Label>
+              <p className="text-lg font-semibold">{schedule.semesterType}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Registration Period */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Clock className="w-5 h-5" />
+            <span>Registration Period</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Registration Start</Label>
+              <p className="text-lg">{formatBDTDateTime(schedule.registrationStartDate)}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Registration End</Label>
+              <p className="text-lg">{formatBDTDateTime(schedule.registrationEndDate)}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Class Period */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Class Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Class Start Date</Label>
+              <p className="text-lg">{new Date(schedule.classStartDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Class End Date</Label>
+              <p className="text-lg">{new Date(schedule.classEndDate).toLocaleDateString('en-BD')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Installments */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Payment Installment Dates</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">First Installment Last Date</Label>
+              <p className="text-lg">{new Date(schedule.firstInstallmentLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Second Installment Last Date</Label>
+              <p className="text-lg">{new Date(schedule.secondInstallmentLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            {schedule.thirdInstallmentLastDate && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <Label className="text-sm font-medium text-gray-600">Third Installment Last Date</Label>
+                <p className="text-lg">{new Date(schedule.thirdInstallmentLastDate).toLocaleDateString('en-BD')}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mid Term Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Mid Term Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Mid Term Start Date</Label>
+              <p className="text-lg">{new Date(schedule.midTermStartDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Mid Term Last Date</Label>
+              <p className="text-lg">{new Date(schedule.midTermLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* First Exam Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>First Exam Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">First Exam Start Date</Label>
+              <p className="text-lg">{new Date(schedule.firstExamStartDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">First Exam Last Date</Label>
+              <p className="text-lg">{new Date(schedule.firstExamLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* TER Fill Up Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>TER Fill Up Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">TER Fill Up Start Date</Label>
+              <p className="text-lg">{new Date(schedule.terFillUpStartDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">TER Fill Up Last Date</Label>
+              <p className="text-lg">{new Date(schedule.terFillUpLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Add/Drop Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Add/Drop Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Add/Drop Start Date</Label>
+              <p className="text-lg">{new Date(schedule.addDropStartDate).toLocaleDateString('en-BD')}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <Label className="text-sm font-medium text-gray-600">Add/Drop Last Date</Label>
+              <p className="text-lg">{new Date(schedule.addDropLastDate).toLocaleDateString('en-BD')}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Semester Drop Date */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Semester Drop</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <Label className="text-sm font-medium text-gray-600">Semester Drop Last Date</Label>
+            <p className="text-lg">{new Date(schedule.semesterDropLastDate).toLocaleDateString('en-BD')}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Info className="w-5 h-5" />
+            <span>System Audit Information</span>
+          </CardTitle>
+          <CardDescription>
+            Automatically collected system data in Bangladesh Time (BDT)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <Label className="text-sm font-medium text-blue-700">Date Created</Label>
+                <p className="text-lg font-semibold text-blue-900">{formatBDTDateTime(schedule.systemAudit.dateCreated)}</p>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <Label className="text-sm font-medium text-blue-700">Created By</Label>
+                <p className="text-lg font-semibold text-blue-900">{schedule.systemAudit.createdBy}</p>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <Label className="text-sm font-medium text-blue-700">Created By Session</Label>
+                <p className="text-sm font-mono text-blue-800">{schedule.systemAudit.createdBySession}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <Label className="text-sm font-medium text-green-700">Last Updated</Label>
+                <p className="text-lg font-semibold text-green-900">{formatBDTDateTime(schedule.systemAudit.lastUpdated)}</p>
+              </div>
+
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <Label className="text-sm font-medium text-green-700">Last Updated By</Label>
+                <p className="text-lg font-semibold text-green-900">{schedule.systemAudit.lastUpdatedBy}</p>
+              </div>
+
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <Label className="text-sm font-medium text-green-700">Last Updated By Session</Label>
+                <p className="text-sm font-mono text-green-800">{schedule.systemAudit.lastUpdatedBySession}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 function CreateScheduleForm({ 
   onClose, 
   editingSchedule 
