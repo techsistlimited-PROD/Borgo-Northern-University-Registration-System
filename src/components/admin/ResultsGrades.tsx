@@ -304,25 +304,25 @@ function GPACalculation() {
 
   const selectedSectionData = sections.find(section => section.id === selectedSection)
 
-  const handleCalculateCGPA = async () => {
+  const handleCalculateGPA = async () => {
     if (!selectedSection) {
       alert('Please select a section first')
       return
     }
 
     setIsCalculating(true)
-    
+
     try {
       // Simulate calculation delay
       await new Promise(resolve => setTimeout(resolve, 2000))
-      
+
       // Load mock data for the selected section
       const sectionData = mockStudentResults[selectedSection] || []
       setStudentResults(sectionData)
-      
-      alert('CGPA calculated successfully for all students!')
+
+      alert('GPA calculated successfully for all students!')
     } catch (error) {
-      alert('Error calculating CGPA. Please try again.')
+      alert('Error calculating GPA. Please try again.')
     } finally {
       setIsCalculating(false)
     }
