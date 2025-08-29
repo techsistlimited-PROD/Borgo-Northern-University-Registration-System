@@ -725,9 +725,9 @@ export default function ResultsGrades() {
             <Send className="w-4 h-4" />
             <span>Sent Reports</span>
           </TabsTrigger>
-          <TabsTrigger value="cgpa-calculation" className="flex items-center space-x-2">
+          <TabsTrigger value="gpa-calculation" className="flex items-center space-x-2">
             <Calculator className="w-4 h-4" />
-            <span>CGPA Calculation</span>
+            <span>GPA Calculation</span>
           </TabsTrigger>
         </TabsList>
 
