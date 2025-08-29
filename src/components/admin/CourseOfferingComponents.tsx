@@ -1069,9 +1069,66 @@ export const SectionManagement = () => {
   ]
 
   const courses = [
+    // CSE Courses
+    { code: 'CSE101', title: 'Programming Fundamentals', program: 'CSE' },
+    { code: 'CSE201', title: 'Data Structures', program: 'CSE' },
+    { code: 'CSE301', title: 'Algorithms', program: 'CSE' },
+    { code: 'CSE302', title: 'Database Systems', program: 'CSE' },
     { code: 'CSE401', title: 'Software Engineering', program: 'CSE' },
-    { code: 'BBA401', title: 'Strategic Management', program: 'BBA' },
+    { code: 'CSE402', title: 'Computer Networks', program: 'CSE' },
+    { code: 'CSE403', title: 'Operating Systems', program: 'CSE' },
+    { code: 'CSE501', title: 'Artificial Intelligence', program: 'CSE' },
+    { code: 'CSE502', title: 'Machine Learning', program: 'CSE' },
+    { code: 'CSE503', title: 'Web Technologies', program: 'CSE' },
+    { code: 'CSE601', title: 'Computer Graphics', program: 'CSE' },
+    { code: 'CSE602', title: 'Cyber Security', program: 'CSE' },
+    { code: 'CSE701', title: 'Distributed Systems', program: 'CSE' },
+    { code: 'CSE801', title: 'Advanced Algorithms', program: 'CSE' },
+
+    // BBA Courses
+    { code: 'BBA101', title: 'Principles of Management', program: 'BBA' },
+    { code: 'BBA201', title: 'Organizational Behavior', program: 'BBA' },
+    { code: 'BBA301', title: 'Strategic Management', program: 'BBA' },
+    { code: 'BBA302', title: 'Human Resource Management', program: 'BBA' },
+    { code: 'BBA401', title: 'International Business', program: 'BBA' },
+    { code: 'BBA402', title: 'E-Commerce', program: 'BBA' },
+    { code: 'BBA501', title: 'Leadership & Change Management', program: 'BBA' },
+    { code: 'BBA502', title: 'Digital Marketing', program: 'BBA' },
+    { code: 'BBA601', title: 'Business Analytics', program: 'BBA' },
+    { code: 'BBA602', title: 'Entrepreneurship', program: 'BBA' },
+
+    // EEE Courses
+    { code: 'EEE101', title: 'Electrical Circuits I', program: 'EEE' },
     { code: 'EEE201', title: 'Circuit Analysis', program: 'EEE' },
+    { code: 'EEE202', title: 'Digital Logic Design', program: 'EEE' },
+    { code: 'EEE301', title: 'Electronics I', program: 'EEE' },
+    { code: 'EEE302', title: 'Signals and Systems', program: 'EEE' },
+    { code: 'EEE401', title: 'Power Systems', program: 'EEE' },
+    { code: 'EEE402', title: 'Control Systems', program: 'EEE' },
+    { code: 'EEE403', title: 'Microprocessors', program: 'EEE' },
+    { code: 'EEE501', title: 'Communications Engineering', program: 'EEE' },
+    { code: 'EEE502', title: 'Embedded Systems', program: 'EEE' },
+
+    // MBA Courses
+    { code: 'MBA701', title: 'Advanced Strategic Management', program: 'MBA' },
+    { code: 'MBA702', title: 'Leadership and Ethics', program: 'MBA' },
+    { code: 'MBA703', title: 'Financial Management', program: 'MBA' },
+    { code: 'MBA801', title: 'Operations Research', program: 'MBA' },
+    { code: 'MBA802', title: 'International Marketing', program: 'MBA' },
+    { code: 'MBA803', title: 'Corporate Finance', program: 'MBA' },
+
+    // Common Courses
+    { code: 'MAT101', title: 'Calculus I', program: 'Common' },
+    { code: 'MAT201', title: 'Calculus II', program: 'Common' },
+    { code: 'MAT301', title: 'Linear Algebra', program: 'Common' },
+    { code: 'PHY101', title: 'Physics I', program: 'Common' },
+    { code: 'PHY201', title: 'Physics II', program: 'Common' },
+    { code: 'ENG101', title: 'English I', program: 'Common' },
+    { code: 'ENG201', title: 'English II', program: 'Common' },
+    { code: 'ECO101', title: 'Microeconomics', program: 'Common' },
+    { code: 'ECO201', title: 'Macroeconomics', program: 'Common' },
+    { code: 'ACC101', title: 'Financial Accounting', program: 'Common' },
+    { code: 'ACC201', title: 'Management Accounting', program: 'Common' },
   ]
 
   const filteredSections = sections.filter(section => {
