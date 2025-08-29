@@ -571,7 +571,7 @@ function GPACalculation() {
                     <th className="border border-gray-200 px-4 py-3 text-center font-medium">Cumulative (30)</th>
                     <th className="border border-gray-200 px-4 py-3 text-center font-medium">Final (40)</th>
                     <th className="border border-gray-200 px-4 py-3 text-center font-medium">Total (100)</th>
-                    <th className="border border-gray-200 px-4 py-3 text-center font-medium">CGPA</th>
+                    <th className="border border-gray-200 px-4 py-3 text-center font-medium">GPA</th>
                     <th className="border border-gray-200 px-4 py-3 text-center font-medium">Grade</th>
                     <th className="border border-gray-200 px-4 py-3 text-center font-medium">Status</th>
                   </tr>
