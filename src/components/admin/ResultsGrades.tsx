@@ -659,7 +659,7 @@ export default function ResultsGrades() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-deep-plum">Results & Grades Management</h1>
-          <p className="text-gray-600 mt-1">View teacher submissions, calculate CGPA, and publish final results</p>
+          <p className="text-gray-600 mt-1">View teacher submissions, calculate GPA, and publish final results</p>
         </div>
         <Badge className="bg-purple-100 text-purple-800">
           <Award className="w-4 h-4 mr-1" />
