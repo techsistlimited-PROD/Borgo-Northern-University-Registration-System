@@ -268,12 +268,103 @@ export const OfferCourses = () => {
   const [sectionCapacity, setSectionCapacity] = useState('')
   const [bulkStudentRange, setBulkStudentRange] = useState({ from: '', to: '' })
 
-  const courses = [
-    { code: 'CSE401', title: 'Software Engineering', capacity: '310/350', credits: 3 },
-    { code: 'CSE403', title: 'Database Systems', capacity: '180/200', credits: 3 },
-    { code: 'BBA401', title: 'Strategic Management', capacity: '95/120', credits: 3 },
-    { code: 'CSE301', title: 'Data Structures', capacity: '240/280', credits: 3 },
-    { code: 'EEE201', title: 'Circuit Analysis', capacity: '150/180', credits: 3 },
+  const allCourses = [
+    // CSE Courses
+    { code: 'CSE101', title: 'Programming Fundamentals', capacity: '320/350', credits: 3, program: 'CSE', semester: 1, type: 'undergraduate' },
+    { code: 'CSE102', title: 'Programming Lab', capacity: '300/320', credits: 1, program: 'CSE', semester: 1, type: 'undergraduate' },
+    { code: 'CSE201', title: 'Data Structures', capacity: '280/300', credits: 3, program: 'CSE', semester: 2, type: 'undergraduate' },
+    { code: 'CSE202', title: 'Data Structures Lab', capacity: '270/280', credits: 1, program: 'CSE', semester: 2, type: 'undergraduate' },
+    { code: 'CSE301', title: 'Algorithms', capacity: '240/280', credits: 3, program: 'CSE', semester: 3, type: 'undergraduate' },
+    { code: 'CSE302', title: 'Database Systems', capacity: '220/250', credits: 3, program: 'CSE', semester: 3, type: 'undergraduate' },
+    { code: 'CSE303', title: 'Computer Organization', capacity: '200/230', credits: 3, program: 'CSE', semester: 3, type: 'undergraduate' },
+    { code: 'CSE304', title: 'Database Lab', capacity: '210/240', credits: 1, program: 'CSE', semester: 3, type: 'undergraduate' },
+    { code: 'CSE401', title: 'Software Engineering', capacity: '310/350', credits: 3, program: 'CSE', semester: 4, type: 'undergraduate' },
+    { code: 'CSE402', title: 'Computer Networks', capacity: '290/320', credits: 3, program: 'CSE', semester: 4, type: 'undergraduate' },
+    { code: 'CSE403', title: 'Operating Systems', capacity: '260/300', credits: 3, program: 'CSE', semester: 4, type: 'undergraduate' },
+    { code: 'CSE404', title: 'Software Engineering Lab', capacity: '280/300', credits: 1, program: 'CSE', semester: 4, type: 'undergraduate' },
+    { code: 'CSE501', title: 'Artificial Intelligence', capacity: '180/200', credits: 3, program: 'CSE', semester: 5, type: 'undergraduate' },
+    { code: 'CSE502', title: 'Machine Learning', capacity: '160/180', credits: 3, program: 'CSE', semester: 5, type: 'undergraduate' },
+    { code: 'CSE503', title: 'Web Technologies', capacity: '200/220', credits: 3, program: 'CSE', semester: 5, type: 'undergraduate' },
+    { code: 'CSE504', title: 'Mobile App Development', capacity: '150/170', credits: 3, program: 'CSE', semester: 5, type: 'undergraduate' },
+    { code: 'CSE601', title: 'Computer Graphics', capacity: '120/140', credits: 3, program: 'CSE', semester: 6, type: 'undergraduate' },
+    { code: 'CSE602', title: 'Cyber Security', capacity: '140/160', credits: 3, program: 'CSE', semester: 6, type: 'undergraduate' },
+    { code: 'CSE603', title: 'Cloud Computing', capacity: '110/130', credits: 3, program: 'CSE', semester: 6, type: 'undergraduate' },
+    { code: 'CSE604', title: 'Data Mining', capacity: '100/120', credits: 3, program: 'CSE', semester: 6, type: 'undergraduate' },
+    { code: 'CSE701', title: 'Distributed Systems', capacity: '90/110', credits: 3, program: 'CSE', semester: 7, type: 'undergraduate' },
+    { code: 'CSE702', title: 'Blockchain Technology', capacity: '80/100', credits: 3, program: 'CSE', semester: 7, type: 'undergraduate' },
+    { code: 'CSE703', title: 'IoT Systems', capacity: '85/105', credits: 3, program: 'CSE', semester: 7, type: 'undergraduate' },
+    { code: 'CSE704', title: 'Big Data Analytics', capacity: '95/115', credits: 3, program: 'CSE', semester: 7, type: 'undergraduate' },
+    { code: 'CSE801', title: 'Advanced Algorithms', capacity: '70/90', credits: 3, program: 'CSE', semester: 8, type: 'undergraduate' },
+    { code: 'CSE802', title: 'Computer Vision', capacity: '65/85', credits: 3, program: 'CSE', semester: 8, type: 'undergraduate' },
+    { code: 'CSE803', title: 'Natural Language Processing', capacity: '60/80', credits: 3, program: 'CSE', semester: 8, type: 'undergraduate' },
+    { code: 'CSE804', title: 'Robotics', capacity: '55/75', credits: 3, program: 'CSE', semester: 8, type: 'undergraduate' },
+
+    // BBA Courses
+    { code: 'BBA101', title: 'Principles of Management', capacity: '180/200', credits: 3, program: 'BBA', semester: 1, type: 'undergraduate' },
+    { code: 'BBA102', title: 'Business English', capacity: '190/210', credits: 3, program: 'BBA', semester: 1, type: 'undergraduate' },
+    { code: 'BBA201', title: 'Organizational Behavior', capacity: '170/190', credits: 3, program: 'BBA', semester: 2, type: 'undergraduate' },
+    { code: 'BBA202', title: 'Principles of Marketing', capacity: '160/180', credits: 3, program: 'BBA', semester: 2, type: 'undergraduate' },
+    { code: 'BBA301', title: 'Strategic Management', capacity: '140/160', credits: 3, program: 'BBA', semester: 3, type: 'undergraduate' },
+    { code: 'BBA302', title: 'Human Resource Management', capacity: '150/170', credits: 3, program: 'BBA', semester: 3, type: 'undergraduate' },
+    { code: 'BBA303', title: 'Operations Management', capacity: '135/155', credits: 3, program: 'BBA', semester: 3, type: 'undergraduate' },
+    { code: 'BBA401', title: 'International Business', capacity: '120/140', credits: 3, program: 'BBA', semester: 4, type: 'undergraduate' },
+    { code: 'BBA402', title: 'E-Commerce', capacity: '110/130', credits: 3, program: 'BBA', semester: 4, type: 'undergraduate' },
+    { code: 'BBA403', title: 'Supply Chain Management', capacity: '105/125', credits: 3, program: 'BBA', semester: 4, type: 'undergraduate' },
+    { code: 'BBA501', title: 'Leadership & Change Management', capacity: '100/120', credits: 3, program: 'BBA', semester: 5, type: 'undergraduate' },
+    { code: 'BBA502', title: 'Digital Marketing', capacity: '95/115', credits: 3, program: 'BBA', semester: 5, type: 'undergraduate' },
+    { code: 'BBA503', title: 'Investment Analysis', capacity: '90/110', credits: 3, program: 'BBA', semester: 5, type: 'undergraduate' },
+    { code: 'BBA601', title: 'Business Analytics', capacity: '85/105', credits: 3, program: 'BBA', semester: 6, type: 'undergraduate' },
+    { code: 'BBA602', title: 'Entrepreneurship', capacity: '80/100', credits: 3, program: 'BBA', semester: 6, type: 'undergraduate' },
+    { code: 'BBA603', title: 'Risk Management', capacity: '75/95', credits: 3, program: 'BBA', semester: 6, type: 'undergraduate' },
+
+    // EEE Courses
+    { code: 'EEE101', title: 'Electrical Circuits I', capacity: '200/220', credits: 3, program: 'EEE', semester: 1, type: 'undergraduate' },
+    { code: 'EEE102', title: 'Electrical Circuits Lab I', capacity: '190/210', credits: 1, program: 'EEE', semester: 1, type: 'undergraduate' },
+    { code: 'EEE201', title: 'Circuit Analysis', capacity: '180/200', credits: 3, program: 'EEE', semester: 2, type: 'undergraduate' },
+    { code: 'EEE202', title: 'Digital Logic Design', capacity: '170/190', credits: 3, program: 'EEE', semester: 2, type: 'undergraduate' },
+    { code: 'EEE203', title: 'Circuit Analysis Lab', capacity: '165/185', credits: 1, program: 'EEE', semester: 2, type: 'undergraduate' },
+    { code: 'EEE301', title: 'Electronics I', capacity: '160/180', credits: 3, program: 'EEE', semester: 3, type: 'undergraduate' },
+    { code: 'EEE302', title: 'Signals and Systems', capacity: '150/170', credits: 3, program: 'EEE', semester: 3, type: 'undergraduate' },
+    { code: 'EEE303', title: 'Electronics Lab I', capacity: '145/165', credits: 1, program: 'EEE', semester: 3, type: 'undergraduate' },
+    { code: 'EEE401', title: 'Power Systems', capacity: '140/160', credits: 3, program: 'EEE', semester: 4, type: 'undergraduate' },
+    { code: 'EEE402', title: 'Control Systems', capacity: '135/155', credits: 3, program: 'EEE', semester: 4, type: 'undergraduate' },
+    { code: 'EEE403', title: 'Microprocessors', capacity: '130/150', credits: 3, program: 'EEE', semester: 4, type: 'undergraduate' },
+    { code: 'EEE501', title: 'Communications Engineering', capacity: '120/140', credits: 3, program: 'EEE', semester: 5, type: 'undergraduate' },
+    { code: 'EEE502', title: 'Embedded Systems', capacity: '115/135', credits: 3, program: 'EEE', semester: 5, type: 'undergraduate' },
+    { code: 'EEE503', title: 'Renewable Energy Systems', capacity: '110/130', credits: 3, program: 'EEE', semester: 5, type: 'undergraduate' },
+
+    // MBA Courses (Postgraduate)
+    { code: 'MBA701', title: 'Advanced Strategic Management', capacity: '60/80', credits: 3, program: 'MBA', semester: 1, type: 'postgraduate' },
+    { code: 'MBA702', title: 'Leadership and Ethics', capacity: '55/75', credits: 3, program: 'MBA', semester: 1, type: 'postgraduate' },
+    { code: 'MBA703', title: 'Financial Management', capacity: '65/85', credits: 3, program: 'MBA', semester: 1, type: 'postgraduate' },
+    { code: 'MBA801', title: 'Operations Research', capacity: '50/70', credits: 3, program: 'MBA', semester: 2, type: 'postgraduate' },
+    { code: 'MBA802', title: 'International Marketing', capacity: '45/65', credits: 3, program: 'MBA', semester: 2, type: 'postgraduate' },
+    { code: 'MBA803', title: 'Corporate Finance', capacity: '55/75', credits: 3, program: 'MBA', semester: 2, type: 'postgraduate' },
+
+    // Mathematics Courses
+    { code: 'MAT101', title: 'Calculus I', capacity: '300/350', credits: 3, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'MAT201', title: 'Calculus II', capacity: '280/320', credits: 3, program: 'Common', semester: 2, type: 'undergraduate' },
+    { code: 'MAT301', title: 'Linear Algebra', capacity: '250/280', credits: 3, program: 'Common', semester: 3, type: 'undergraduate' },
+    { code: 'MAT401', title: 'Differential Equations', capacity: '200/230', credits: 3, program: 'Common', semester: 4, type: 'undergraduate' },
+
+    // Physics Courses
+    { code: 'PHY101', title: 'Physics I', capacity: '280/320', credits: 3, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'PHY102', title: 'Physics Lab I', capacity: '270/310', credits: 1, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'PHY201', title: 'Physics II', capacity: '260/300', credits: 3, program: 'Common', semester: 2, type: 'undergraduate' },
+    { code: 'PHY202', title: 'Physics Lab II', capacity: '250/290', credits: 1, program: 'Common', semester: 2, type: 'undergraduate' },
+
+    // English Courses
+    { code: 'ENG101', title: 'English I', capacity: '350/400', credits: 3, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'ENG201', title: 'English II', capacity: '330/380', credits: 3, program: 'Common', semester: 2, type: 'undergraduate' },
+    { code: 'ENG301', title: 'Technical Writing', capacity: '200/250', credits: 3, program: 'Common', semester: 3, type: 'undergraduate' },
+
+    // Economics Courses
+    { code: 'ECO101', title: 'Microeconomics', capacity: '200/240', credits: 3, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'ECO201', title: 'Macroeconomics', capacity: '190/230', credits: 3, program: 'Common', semester: 2, type: 'undergraduate' },
+
+    // Accounting Courses
+    { code: 'ACC101', title: 'Financial Accounting', capacity: '180/220', credits: 3, program: 'Common', semester: 1, type: 'undergraduate' },
+    { code: 'ACC201', title: 'Management Accounting', capacity: '170/210', credits: 3, program: 'Common', semester: 2, type: 'undergraduate' },
   ]
 
   const sections = [
