@@ -1033,12 +1033,23 @@ export default function SemesterScheduleManagement() {
 
   const handleEdit = (schedule: SemesterSchedule) => {
     setEditingSchedule(schedule)
+    setViewingSchedule(undefined)
     setShowCreateForm(true)
+  }
+
+  const handleView = (schedule: SemesterSchedule) => {
+    setViewingSchedule(schedule)
+    setShowCreateForm(false)
+    setEditingSchedule(undefined)
   }
 
   const handleCloseForm = () => {
     setShowCreateForm(false)
     setEditingSchedule(undefined)
+  }
+
+  const handleCloseView = () => {
+    setViewingSchedule(undefined)
   }
 
   const uniqueYears = [...new Set(schedules.map(s => s.academicYear))].sort()
