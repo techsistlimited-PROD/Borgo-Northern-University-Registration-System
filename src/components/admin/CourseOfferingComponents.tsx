@@ -212,7 +212,7 @@ export const Syllabuses = () => {
       </Card>
       
       {/* Syllabus Display */}
-      {selectedProgram && syllabusState[selectedProgram as keyof typeof syllabusState] && (
+      {selectedProgram && selectedProgram !== 'all' && syllabusState[selectedProgram as keyof typeof syllabusState] && (
         <Card>
           <CardHeader>
             <CardTitle>
@@ -270,6 +270,50 @@ export const Syllabuses = () => {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Show All Programs Overview when 'all' is selected */}
+      {selectedProgram === 'all' && (
+        <div className="space-y-6">
+          {Object.entries(syllabusState).map(([programKey, programData]) => (
+            <Card key={programKey}>
+              <CardHeader>
+                <CardTitle>
+                  {programKey} Program - {programData.type}
+                </CardTitle>
+                <CardDescription>
+                  {programData.semesters} semesters total • {programData.courses.reduce((total, sem) => total + sem.courses.length, 0)} courses
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {programData.courses.map((semesterData, index) => (
+                    <Card key={index} className="bg-gray-50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base">Semester {semesterData.semester}</CardTitle>
+                        <Badge variant="outline">{semesterData.courses.length} courses</Badge>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-1">
+                          {semesterData.courses.slice(0, 3).map((course, courseIndex) => (
+                            <div key={courseIndex} className="text-xs text-gray-600 p-1 bg-white rounded">
+                              {course}
+                            </div>
+                          ))}
+                          {semesterData.courses.length > 3 && (
+                            <div className="text-xs text-gray-500 italic">
+                              +{semesterData.courses.length - 3} more courses...
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   )
