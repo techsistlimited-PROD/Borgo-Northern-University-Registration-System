@@ -47,7 +47,7 @@ interface StudentResult {
   cumulativeMarks: number
   finalMarks: number
   totalMarks: number
-  cgpa: number
+  gpa: number
   grade: string
   status: 'draft' | 'published'
 }
