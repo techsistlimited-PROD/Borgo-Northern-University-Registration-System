@@ -537,7 +537,7 @@ function GPACalculation() {
                   <span>Final Results - Section {selectedSectionData?.sectionName}</span>
                 </CardTitle>
                 <CardDescription>
-                  Review calculated CGPA and publish results for the entire section
+                  Review calculated GPA and publish results for the entire section
                 </CardDescription>
               </div>
               
