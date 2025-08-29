@@ -474,21 +474,22 @@ export const OfferCourses = () => {
         </div>
       </div>
 
-      {/* Course Selection */}
+      {/* Course Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Course & Section Configuration</CardTitle>
-          <CardDescription>Select course and manage sections with teacher assignments</CardDescription>
+          <CardTitle>Course Filters & Search</CardTitle>
+          <CardDescription>Filter courses by program type, program, semester and search by keywords</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <div className="space-y-2">
               <Label>Program Type</Label>
-              <Select>
+              <Select value={filterProgramType} onValueChange={setFilterProgramType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="undergraduate">Undergraduate</SelectItem>
                   <SelectItem value="postgraduate">Postgraduate</SelectItem>
                 </SelectContent>
@@ -497,28 +498,92 @@ export const OfferCourses = () => {
 
             <div className="space-y-2">
               <Label>Program</Label>
-              <Select>
+              <Select value={filterProgram} onValueChange={setFilterProgram}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select program" />
+                  <SelectValue placeholder="All Programs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cse">CSE</SelectItem>
-                  <SelectItem value="bba">BBA</SelectItem>
-                  <SelectItem value="eee">EEE</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
+                  <SelectItem value="CSE">CSE</SelectItem>
+                  <SelectItem value="BBA">BBA</SelectItem>
+                  <SelectItem value="EEE">EEE</SelectItem>
+                  <SelectItem value="MBA">MBA</SelectItem>
+                  <SelectItem value="Common">Common Courses</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label>Course</Label>
-              <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+              <Label>Semester</Label>
+              <Select value={filterSemester} onValueChange={setFilterSemester}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select course" />
+                  <SelectValue placeholder="All Semesters" />
                 </SelectTrigger>
                 <SelectContent>
-                  {courses.map((course) => (
+                  <SelectItem value="all">All Semesters</SelectItem>
+                  <SelectItem value="1">1st Semester</SelectItem>
+                  <SelectItem value="2">2nd Semester</SelectItem>
+                  <SelectItem value="3">3rd Semester</SelectItem>
+                  <SelectItem value="4">4th Semester</SelectItem>
+                  <SelectItem value="5">5th Semester</SelectItem>
+                  <SelectItem value="6">6th Semester</SelectItem>
+                  <SelectItem value="7">7th Semester</SelectItem>
+                  <SelectItem value="8">8th Semester</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Search Courses</Label>
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Search by code, title..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-end">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setFilterProgramType('all')
+                  setFilterProgram('all')
+                  setFilterSemester('all')
+                  setSearchTerm('')
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Course Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Course Selection & Section Configuration</CardTitle>
+          <CardDescription>
+            Found {filteredCourses.length} courses. Select a course to manage sections and teacher assignments.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label>Available Courses ({filteredCourses.length})</Label>
+              <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select course from filtered results" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredCourses.map((course) => (
                     <SelectItem key={course.code} value={course.code}>
-                      {course.code} - {course.title} ({course.credits} credits)
+                      {course.code} - {course.title} ({course.credits} credits) - {course.program} Semester {course.semester}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -532,9 +597,23 @@ export const OfferCourses = () => {
                 <Users className="w-5 h-5 text-blue-600" />
                 <span className="font-semibold">Course Information</span>
               </div>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <p>Total capacity: {courses.find(c => c.code === selectedCourse)?.capacity} students</p>
-                <p>Credits: {courses.find(c => c.code === selectedCourse)?.credits}</p>
+              <div className="grid md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <p className="font-medium">Total Capacity:</p>
+                  <p>{filteredCourses.find(c => c.code === selectedCourse)?.capacity} students</p>
+                </div>
+                <div>
+                  <p className="font-medium">Credits:</p>
+                  <p>{filteredCourses.find(c => c.code === selectedCourse)?.credits}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Program:</p>
+                  <p>{filteredCourses.find(c => c.code === selectedCourse)?.program}</p>
+                </div>
+                <div>
+                  <p className="font-medium">Semester:</p>
+                  <p>{filteredCourses.find(c => c.code === selectedCourse)?.semester}</p>
+                </div>
               </div>
             </div>
           )}
