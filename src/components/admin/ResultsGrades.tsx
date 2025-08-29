@@ -330,7 +330,7 @@ function GPACalculation() {
 
   const handlePublishResults = async () => {
     if (studentResults.length === 0) {
-      alert('Please calculate CGPA first')
+      alert('Please calculate GPA first')
       return
     }
 
