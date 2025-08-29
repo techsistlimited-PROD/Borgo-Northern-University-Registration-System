@@ -91,6 +91,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
       ]
     },
     { id: 'results-grades', label: 'Results & Grades', icon: Award },
+    { id: 'attendance-reports', label: 'Attendance Reports', icon: Clock },
     { id: 'reports', label: 'Comprehensive Reports', icon: BarChart3 },
   ]
 
