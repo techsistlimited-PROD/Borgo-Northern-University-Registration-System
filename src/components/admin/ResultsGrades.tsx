@@ -598,7 +598,7 @@ function GPACalculation() {
                         {student.totalMarks}
                       </td>
                       <td className="border border-gray-200 px-4 py-3 text-center font-bold">
-                        {student.cgpa}
+                        {student.gpa}
                       </td>
                       <td className="border border-gray-200 px-4 py-3 text-center">
                         <Badge className={`${getGradeColor(student.grade)} border-0`}>
