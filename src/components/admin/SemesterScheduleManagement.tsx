@@ -599,12 +599,14 @@ function CreateScheduleForm({
   )
 }
 
-function SchedulesList({ 
-  schedules, 
-  onEdit 
-}: { 
+function SchedulesList({
+  schedules,
+  onEdit,
+  onView
+}: {
   schedules: SemesterSchedule[];
   onEdit: (schedule: SemesterSchedule) => void;
+  onView: (schedule: SemesterSchedule) => void;
 }) {
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
