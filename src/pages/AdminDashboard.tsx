@@ -1028,6 +1028,8 @@ export default function AdminDashboard() {
         return <StudentClearance clearanceType="final" />
       case 'results-grades':
         return <ResultsGrades />
+      case 'attendance-reports':
+        return <AttendanceReports />
       case 'reports':
         return <ComprehensiveReports />
       default:
