@@ -642,8 +642,8 @@ function GPACalculation() {
           <CardContent className="py-20">
             <div className="text-center">
               <Calculator className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Select Section to Calculate CGPA</h3>
-              <p className="text-gray-500">Choose a section from the dropdown above to begin CGPA calculation and result publishing</p>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">Select Section to Calculate GPA</h3>
+              <p className="text-gray-500">Choose a section from the dropdown above to begin GPA calculation and result publishing</p>
             </div>
           </CardContent>
         </Card>
