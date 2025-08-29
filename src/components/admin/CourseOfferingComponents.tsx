@@ -379,12 +379,30 @@ export const OfferCourses = () => {
     { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '', offered: false, offerStatus: 'Pending' },
   ]
 
+  // Filter courses based on selected filters and search term
+  const filteredCourses = allCourses.filter(course => {
+    const matchesProgramType = filterProgramType === 'all' || course.type === filterProgramType
+    const matchesProgram = filterProgram === 'all' || course.program === filterProgram
+    const matchesSemester = filterSemester === 'all' || course.semester.toString() === filterSemester
+    const matchesSearch = !searchTerm ||
+      course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.program.toLowerCase().includes(searchTerm.toLowerCase())
+
+    return matchesProgramType && matchesProgram && matchesSemester && matchesSearch
+  })
+
   const teachers = [
     { id: 'T001', name: 'Dr. Rahman Ahmed', department: 'CSE', email: 'rahman.ahmed@nu.edu.bd' },
     { id: 'T002', name: 'Prof. Sarah Khan', department: 'CSE', email: 'sarah.khan@nu.edu.bd' },
     { id: 'T003', name: 'Dr. Mohammad Ali', department: 'CSE', email: 'mohammad.ali@nu.edu.bd' },
     { id: 'T004', name: 'Dr. Fatima Rahman', department: 'BBA', email: 'fatima.rahman@nu.edu.bd' },
     { id: 'T005', name: 'Prof. Ahmed Hassan', department: 'EEE', email: 'ahmed.hassan@nu.edu.bd' },
+    { id: 'T006', name: 'Dr. Nasir Uddin', department: 'EEE', email: 'nasir.uddin@nu.edu.bd' },
+    { id: 'T007', name: 'Prof. Ayesha Begum', department: 'BBA', email: 'ayesha.begum@nu.edu.bd' },
+    { id: 'T008', name: 'Dr. Karim Hassan', department: 'CSE', email: 'karim.hassan@nu.edu.bd' },
+    { id: 'T009', name: 'Prof. Rashida Khatun', department: 'MBA', email: 'rashida.khatun@nu.edu.bd' },
+    { id: 'T010', name: 'Dr. Mahmud Ali', department: 'EEE', email: 'mahmud.ali@nu.edu.bd' },
   ]
 
   const handleAssignTeacher = () => {
