@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import {
   Calendar,
   Plus,
@@ -14,128 +15,145 @@ import {
   Download,
   CheckCircle,
   AlertCircle,
-  Settings
+  Settings,
+  Clock,
+  User,
+  Info
 } from 'lucide-react'
+
+interface SystemAudit {
+  dateCreated: string // ISO string with BDT time
+  createdBy: string // "ID Name" format
+  lastUpdated: string // ISO string with BDT time  
+  lastUpdatedBy: string // "ID Name" format
+  createdBySession: string // Session ID
+  lastUpdatedBySession: string // Session ID
+}
 
 interface SemesterSchedule {
   id: string
   academicYear: string
-  systemType: 'bi-semester' | 'tri-semester'
-  semesters: SemesterDetail[]
-  createdDate: string
-  status: 'draft' | 'active' | 'completed'
-  createdBy: string
-}
-
-interface SemesterDetail {
-  id: string
-  name: string
-  type: 'spring' | 'summer' | 'fall'
-  startDate: string
-  endDate: string
-  registrationStartDate: string
-  registrationEndDate: string
+  semesterType: 'Tri-Semester' | 'Bi-Semester'
+  
+  // Registration dates with time
+  registrationStartDate: string // DateTime
+  registrationEndDate: string // DateTime
+  
+  // Class dates (date only)
   classStartDate: string
   classEndDate: string
-  midtermStartDate: string
-  midtermEndDate: string
-  finalExamStartDate: string
-  finalExamEndDate: string
-  resultPublishDate: string
-  status: 'upcoming' | 'registration' | 'ongoing' | 'exam' | 'completed'
+  
+  // Payment dates (date only)
+  firstInstallmentLastDate: string
+  secondInstallmentLastDate: string
+  thirdInstallmentLastDate: string
+  
+  // Mid Term dates (date only)
+  midTermStartDate: string
+  midTermLastDate: string
+  
+  // First Exam dates (date only)
+  firstExamStartDate: string
+  firstExamLastDate: string
+  
+  // TER fill up dates (date only)
+  terFillUpStartDate: string
+  terFillUpLastDate: string
+  
+  // Add/Drop dates (date only)
+  addDropStartDate: string
+  addDropLastDate: string
+  
+  // Semester Drop date (date only)
+  semesterDropLastDate: string
+  
+  status: 'draft' | 'active' | 'completed'
+  
+  // System audit information
+  systemAudit: SystemAudit
 }
 
-// Mock data for semester schedules
+// Mock data with system audit information
 const mockSchedules: SemesterSchedule[] = [
   {
     id: '1',
     academicYear: '2024',
-    systemType: 'tri-semester',
-    createdDate: '2023-12-01',
+    semesterType: 'Tri-Semester',
+    registrationStartDate: '2024-01-01T00:01:00+06:00',
+    registrationEndDate: '2024-01-10T23:59:00+06:00',
+    classStartDate: '2024-01-15',
+    classEndDate: '2024-04-15',
+    firstInstallmentLastDate: '2024-01-20',
+    secondInstallmentLastDate: '2024-02-20',
+    thirdInstallmentLastDate: '2024-03-20',
+    midTermStartDate: '2024-03-01',
+    midTermLastDate: '2024-03-10',
+    firstExamStartDate: '2024-04-20',
+    firstExamLastDate: '2024-04-28',
+    terFillUpStartDate: '2024-04-01',
+    terFillUpLastDate: '2024-04-15',
+    addDropStartDate: '2024-01-15',
+    addDropLastDate: '2024-01-25',
+    semesterDropLastDate: '2024-02-15',
     status: 'active',
-    createdBy: 'Admin',
-    semesters: [
-      {
-        id: '1',
-        name: 'Spring 2024',
-        type: 'spring',
-        startDate: '2024-01-15',
-        endDate: '2024-04-30',
-        registrationStartDate: '2024-01-01',
-        registrationEndDate: '2024-01-10',
-        classStartDate: '2024-01-15',
-        classEndDate: '2024-04-15',
-        midtermStartDate: '2024-03-01',
-        midtermEndDate: '2024-03-10',
-        finalExamStartDate: '2024-04-20',
-        finalExamEndDate: '2024-04-28',
-        resultPublishDate: '2024-05-05',
-        status: 'completed'
-      },
-      {
-        id: '2',
-        name: 'Summer 2024',
-        type: 'summer',
-        startDate: '2024-05-15',
-        endDate: '2024-08-30',
-        registrationStartDate: '2024-05-01',
-        registrationEndDate: '2024-05-10',
-        classStartDate: '2024-05-15',
-        classEndDate: '2024-08-15',
-        midtermStartDate: '2024-07-01',
-        midtermEndDate: '2024-07-10',
-        finalExamStartDate: '2024-08-20',
-        finalExamEndDate: '2024-08-28',
-        resultPublishDate: '2024-09-05',
-        status: 'completed'
-      },
-      {
-        id: '3',
-        name: 'Fall 2024',
-        type: 'fall',
-        startDate: '2024-09-15',
-        endDate: '2024-12-30',
-        registrationStartDate: '2024-09-01',
-        registrationEndDate: '2024-09-10',
-        classStartDate: '2024-09-15',
-        classEndDate: '2024-12-15',
-        midtermStartDate: '2024-11-01',
-        midtermEndDate: '2024-11-10',
-        finalExamStartDate: '2024-12-20',
-        finalExamEndDate: '2024-12-28',
-        resultPublishDate: '2025-01-05',
-        status: 'ongoing'
-      }
-    ]
+    systemAudit: {
+      dateCreated: '2023-12-01T10:30:00+06:00',
+      createdBy: 'ADM001 John Admin',
+      lastUpdated: '2024-01-05T14:20:00+06:00',
+      lastUpdatedBy: 'ADM002 Sarah Manager',
+      createdBySession: 'SES_2023120110301234',
+      lastUpdatedBySession: 'SES_2024010514205678'
+    }
   },
   {
     id: '2',
     academicYear: '2025',
-    systemType: 'tri-semester',
-    createdDate: '2024-10-01',
+    semesterType: 'Bi-Semester',
+    registrationStartDate: '2025-01-01T00:01:00+06:00',
+    registrationEndDate: '2025-01-10T23:59:00+06:00',
+    classStartDate: '2025-01-15',
+    classEndDate: '2025-05-15',
+    firstInstallmentLastDate: '2025-01-20',
+    secondInstallmentLastDate: '2025-03-20',
+    thirdInstallmentLastDate: '',
+    midTermStartDate: '2025-03-15',
+    midTermLastDate: '2025-03-25',
+    firstExamStartDate: '2025-05-20',
+    firstExamLastDate: '2025-05-28',
+    terFillUpStartDate: '2025-05-01',
+    terFillUpLastDate: '2025-05-15',
+    addDropStartDate: '2025-01-15',
+    addDropLastDate: '2025-01-25',
+    semesterDropLastDate: '2025-03-01',
     status: 'draft',
-    createdBy: 'Admin',
-    semesters: [
-      {
-        id: '4',
-        name: 'Spring 2025',
-        type: 'spring',
-        startDate: '2025-01-15',
-        endDate: '2025-04-30',
-        registrationStartDate: '2025-01-01',
-        registrationEndDate: '2025-01-10',
-        classStartDate: '2025-01-15',
-        classEndDate: '2025-04-15',
-        midtermStartDate: '2025-03-01',
-        midtermEndDate: '2025-03-10',
-        finalExamStartDate: '2025-04-20',
-        finalExamEndDate: '2025-04-28',
-        resultPublishDate: '2025-05-05',
-        status: 'upcoming'
-      }
-    ]
+    systemAudit: {
+      dateCreated: '2024-10-15T09:15:00+06:00',
+      createdBy: 'ADM001 John Admin',
+      lastUpdated: '2024-11-20T16:45:00+06:00',
+      lastUpdatedBy: 'ADM001 John Admin',
+      createdBySession: 'SES_2024101509151234',
+      lastUpdatedBySession: 'SES_2024112016455678'
+    }
   }
 ]
+
+// Helper function to format BDT datetime
+const formatBDTDateTime = (isoString: string) => {
+  const date = new Date(isoString)
+  return date.toLocaleString('en-BD', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }) + ' BDT'
+}
+
+// Helper function to get current user (mock)
+const getCurrentUser = () => ({ id: 'ADM001', name: 'John Admin' })
+const getCurrentSessionId = () => `SES_${Date.now()}`
 
 function CreateScheduleForm({ 
   onClose, 
@@ -144,67 +162,70 @@ function CreateScheduleForm({
   onClose: () => void;
   editingSchedule?: SemesterSchedule;
 }) {
-  const [academicYear, setAcademicYear] = useState(editingSchedule?.academicYear || '')
-  const [systemType, setSystemType] = useState<'bi-semester' | 'tri-semester'>(
-    editingSchedule?.systemType || 'tri-semester'
-  )
-  const [semesters, setSemesters] = useState<SemesterDetail[]>(
-    editingSchedule?.semesters || []
-  )
+  const [formData, setFormData] = useState<Partial<SemesterSchedule>>({
+    academicYear: editingSchedule?.academicYear || '',
+    semesterType: editingSchedule?.semesterType || 'Tri-Semester',
+    registrationStartDate: editingSchedule?.registrationStartDate || '',
+    registrationEndDate: editingSchedule?.registrationEndDate || '',
+    classStartDate: editingSchedule?.classStartDate || '',
+    classEndDate: editingSchedule?.classEndDate || '',
+    firstInstallmentLastDate: editingSchedule?.firstInstallmentLastDate || '',
+    secondInstallmentLastDate: editingSchedule?.secondInstallmentLastDate || '',
+    thirdInstallmentLastDate: editingSchedule?.thirdInstallmentLastDate || '',
+    midTermStartDate: editingSchedule?.midTermStartDate || '',
+    midTermLastDate: editingSchedule?.midTermLastDate || '',
+    firstExamStartDate: editingSchedule?.firstExamStartDate || '',
+    firstExamLastDate: editingSchedule?.firstExamLastDate || '',
+    terFillUpStartDate: editingSchedule?.terFillUpStartDate || '',
+    terFillUpLastDate: editingSchedule?.terFillUpLastDate || '',
+    addDropStartDate: editingSchedule?.addDropStartDate || '',
+    addDropLastDate: editingSchedule?.addDropLastDate || '',
+    semesterDropLastDate: editingSchedule?.semesterDropLastDate || '',
+    status: editingSchedule?.status || 'draft'
+  })
 
-  const handleAddSemester = () => {
-    const semesterTypes = systemType === 'bi-semester' 
-      ? ['spring', 'fall'] 
-      : ['spring', 'summer', 'fall']
-    
-    const nextType = semesterTypes[semesters.length % semesterTypes.length] as 'spring' | 'summer' | 'fall'
-    
-    const newSemester: SemesterDetail = {
-      id: Date.now().toString(),
-      name: `${nextType.charAt(0).toUpperCase() + nextType.slice(1)} ${academicYear}`,
-      type: nextType,
-      startDate: '',
-      endDate: '',
-      registrationStartDate: '',
-      registrationEndDate: '',
-      classStartDate: '',
-      classEndDate: '',
-      midtermStartDate: '',
-      midtermEndDate: '',
-      finalExamStartDate: '',
-      finalExamEndDate: '',
-      resultPublishDate: '',
-      status: 'upcoming'
-    }
-    
-    setSemesters([...semesters, newSemester])
-  }
-
-  const handleUpdateSemester = (index: number, field: string, value: string) => {
-    const updatedSemesters = [...semesters]
-    updatedSemesters[index] = { ...updatedSemesters[index], [field]: value }
-    setSemesters(updatedSemesters)
-  }
-
-  const handleRemoveSemester = (index: number) => {
-    setSemesters(semesters.filter((_, i) => i !== index))
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
   const handleSave = () => {
-    // Mock save functionality
-    alert('Semester schedule saved successfully!')
-    onClose()
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'upcoming': return 'bg-blue-100 text-blue-800'
-      case 'registration': return 'bg-yellow-100 text-yellow-800'
-      case 'ongoing': return 'bg-green-100 text-green-800'
-      case 'exam': return 'bg-purple-100 text-purple-800'
-      case 'completed': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+    const currentUser = getCurrentUser()
+    const currentTime = new Date().toISOString()
+    const sessionId = getCurrentSessionId()
+    
+    if (editingSchedule) {
+      // Update existing schedule
+      const updatedSchedule: SemesterSchedule = {
+        ...editingSchedule,
+        ...formData,
+        systemAudit: {
+          ...editingSchedule.systemAudit,
+          lastUpdated: currentTime,
+          lastUpdatedBy: `${currentUser.id} ${currentUser.name}`,
+          lastUpdatedBySession: sessionId
+        }
+      } as SemesterSchedule
+      
+      alert('Semester schedule updated successfully!')
+    } else {
+      // Create new schedule
+      const newSchedule: SemesterSchedule = {
+        ...formData,
+        id: Date.now().toString(),
+        systemAudit: {
+          dateCreated: currentTime,
+          createdBy: `${currentUser.id} ${currentUser.name}`,
+          lastUpdated: currentTime,
+          lastUpdatedBy: `${currentUser.id} ${currentUser.name}`,
+          createdBySession: sessionId,
+          lastUpdatedBySession: sessionId
+        }
+      } as SemesterSchedule
+      
+      alert('Semester schedule created successfully!')
     }
+    
+    onClose()
   }
 
   return (
@@ -216,7 +237,7 @@ function CreateScheduleForm({
             {editingSchedule ? 'Edit Semester Schedule' : 'Create New Semester Schedule'}
           </CardTitle>
           <CardDescription>
-            Set up semester timeline for the academic year
+            Configure semester timeline and important dates
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -226,185 +247,344 @@ function CreateScheduleForm({
               <Input
                 id="academicYear"
                 placeholder="e.g., 2025"
-                value={academicYear}
-                onChange={(e) => setAcademicYear(e.target.value)}
+                value={formData.academicYear}
+                onChange={(e) => handleInputChange('academicYear', e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="systemType">System Type</Label>
-              <Select value={systemType} onValueChange={(value: 'bi-semester' | 'tri-semester') => setSystemType(value)}>
+              <Label htmlFor="semesterType">Semester Type</Label>
+              <Select 
+                value={formData.semesterType} 
+                onValueChange={(value) => handleInputChange('semesterType', value)}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="bi-semester">Bi-Semester (Spring & Fall)</SelectItem>
-                  <SelectItem value="tri-semester">Tri-Semester (Spring, Summer & Fall)</SelectItem>
+                  <SelectItem value="Tri-Semester">Tri-Semester</SelectItem>
+                  <SelectItem value="Bi-Semester">Bi-Semester</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-          
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Semester Details</h3>
-            <Button onClick={handleAddSemester} disabled={!academicYear} className="flex items-center space-x-2">
-              <Plus className="w-4 h-4" />
-              <span>Add Semester</span>
-            </Button>
+        </CardContent>
+      </Card>
+
+      {/* Registration Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Clock className="w-5 h-5" />
+            <span>Registration Period</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="registrationStartDate">Registration Start Date & Time</Label>
+              <Input
+                id="registrationStartDate"
+                type="datetime-local"
+                value={formData.registrationStartDate?.slice(0, 16)}
+                onChange={(e) => handleInputChange('registrationStartDate', e.target.value + ':00+06:00')}
+              />
+              <p className="text-xs text-gray-500">e.g., 13/04/25 12:01 AM</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="registrationEndDate">Registration End Date & Time</Label>
+              <Input
+                id="registrationEndDate"
+                type="datetime-local"
+                value={formData.registrationEndDate?.slice(0, 16)}
+                onChange={(e) => handleInputChange('registrationEndDate', e.target.value + ':00+06:00')}
+              />
+              <p className="text-xs text-gray-500">e.g., 13/04/25 12:01 AM</p>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Semester Configuration */}
-      {semesters.map((semester, index) => (
-        <Card key={semester.id}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5" />
-                <span>{semester.name}</span>
-                <Badge className={getStatusColor(semester.status)}>
-                  {semester.status}
-                </Badge>
-              </CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleRemoveSemester(index)}
-                className="text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+      {/* Class Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Class Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="classStartDate">Class Start Date</Label>
+              <Input
+                id="classStartDate"
+                type="date"
+                value={formData.classStartDate}
+                onChange={(e) => handleInputChange('classStartDate', e.target.value)}
+              />
             </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="classEndDate">Class End Date</Label>
+              <Input
+                id="classEndDate"
+                type="date"
+                value={formData.classEndDate}
+                onChange={(e) => handleInputChange('classEndDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Installment Payment Dates</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstInstallmentLastDate">First Installment Last Date</Label>
+              <Input
+                id="firstInstallmentLastDate"
+                type="date"
+                value={formData.firstInstallmentLastDate}
+                onChange={(e) => handleInputChange('firstInstallmentLastDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="secondInstallmentLastDate">Second Installment Last Date</Label>
+              <Input
+                id="secondInstallmentLastDate"
+                type="date"
+                value={formData.secondInstallmentLastDate}
+                onChange={(e) => handleInputChange('secondInstallmentLastDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="thirdInstallmentLastDate">Third Installment Last Date</Label>
+              <Input
+                id="thirdInstallmentLastDate"
+                type="date"
+                value={formData.thirdInstallmentLastDate}
+                onChange={(e) => handleInputChange('thirdInstallmentLastDate', e.target.value)}
+              />
+              <p className="text-xs text-gray-500">Leave empty for Bi-Semester</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mid Term Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Mid Term Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="midTermStartDate">Mid Term Start Date</Label>
+              <Input
+                id="midTermStartDate"
+                type="date"
+                value={formData.midTermStartDate}
+                onChange={(e) => handleInputChange('midTermStartDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="midTermLastDate">Mid Term Last Date</Label>
+              <Input
+                id="midTermLastDate"
+                type="date"
+                value={formData.midTermLastDate}
+                onChange={(e) => handleInputChange('midTermLastDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* First Exam Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>First Exam Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstExamStartDate">First Exam Start Date</Label>
+              <Input
+                id="firstExamStartDate"
+                type="date"
+                value={formData.firstExamStartDate}
+                onChange={(e) => handleInputChange('firstExamStartDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="firstExamLastDate">First Exam Last Date</Label>
+              <Input
+                id="firstExamLastDate"
+                type="date"
+                value={formData.firstExamLastDate}
+                onChange={(e) => handleInputChange('firstExamLastDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* TER Fill Up Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>TER Fill Up Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="terFillUpStartDate">TER Fill Up Start Date</Label>
+              <Input
+                id="terFillUpStartDate"
+                type="date"
+                value={formData.terFillUpStartDate}
+                onChange={(e) => handleInputChange('terFillUpStartDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="terFillUpLastDate">TER Fill Up Last Date</Label>
+              <Input
+                id="terFillUpLastDate"
+                type="date"
+                value={formData.terFillUpLastDate}
+                onChange={(e) => handleInputChange('terFillUpLastDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Add/Drop Dates */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Add/Drop Period</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="addDropStartDate">Add/Drop Start Date</Label>
+              <Input
+                id="addDropStartDate"
+                type="date"
+                value={formData.addDropStartDate}
+                onChange={(e) => handleInputChange('addDropStartDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="addDropLastDate">Add/Drop Last Date</Label>
+              <Input
+                id="addDropLastDate"
+                type="date"
+                value={formData.addDropLastDate}
+                onChange={(e) => handleInputChange('addDropLastDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Semester Drop Date */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Semester Drop</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="semesterDropLastDate">Semester Drop Last Date</Label>
+              <Input
+                id="semesterDropLastDate"
+                type="date"
+                value={formData.semesterDropLastDate}
+                onChange={(e) => handleInputChange('semesterDropLastDate', e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="status">Schedule Status</Label>
+              <Select 
+                value={formData.status} 
+                onValueChange={(value) => handleInputChange('status', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* System Information (for editing) */}
+      {editingSchedule && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Info className="w-5 h-5" />
+              <span>System Information</span>
+            </CardTitle>
+            <CardDescription>
+              Automatically collected system data
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>Semester Start Date</Label>
-                <Input
-                  type="date"
-                  value={semester.startDate}
-                  onChange={(e) => handleUpdateSemester(index, 'startDate', e.target.value)}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Date Created</Label>
+                  <p className="text-sm">{formatBDTDateTime(editingSchedule.systemAudit.dateCreated)}</p>
+                </div>
+                
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Created By</Label>
+                  <p className="text-sm">{editingSchedule.systemAudit.createdBy}</p>
+                </div>
+                
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Created By Session</Label>
+                  <p className="text-sm font-mono text-xs">{editingSchedule.systemAudit.createdBySession}</p>
+                </div>
               </div>
               
-              <div className="space-y-2">
-                <Label>Semester End Date</Label>
-                <Input
-                  type="date"
-                  value={semester.endDate}
-                  onChange={(e) => handleUpdateSemester(index, 'endDate', e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <Select 
-                  value={semester.status} 
-                  onValueChange={(value) => handleUpdateSemester(index, 'status', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="upcoming">Upcoming</SelectItem>
-                    <SelectItem value="registration">Registration</SelectItem>
-                    <SelectItem value="ongoing">Ongoing</SelectItem>
-                    <SelectItem value="exam">Exam Period</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <h4 className="font-medium text-sm text-gray-700 mb-3">Important Dates</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-xs">Registration Start</Label>
-                  <Input
-                    type="date"
-                    value={semester.registrationStartDate}
-                    onChange={(e) => handleUpdateSemester(index, 'registrationStartDate', e.target.value)}
-                  />
+              <div className="space-y-3">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Last Updated</Label>
+                  <p className="text-sm">{formatBDTDateTime(editingSchedule.systemAudit.lastUpdated)}</p>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label className="text-xs">Registration End</Label>
-                  <Input
-                    type="date"
-                    value={semester.registrationEndDate}
-                    onChange={(e) => handleUpdateSemester(index, 'registrationEndDate', e.target.value)}
-                  />
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Last Updated By</Label>
+                  <p className="text-sm">{editingSchedule.systemAudit.lastUpdatedBy}</p>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label className="text-xs">Classes Start</Label>
-                  <Input
-                    type="date"
-                    value={semester.classStartDate}
-                    onChange={(e) => handleUpdateSemester(index, 'classStartDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs">Classes End</Label>
-                  <Input
-                    type="date"
-                    value={semester.classEndDate}
-                    onChange={(e) => handleUpdateSemester(index, 'classEndDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs">Midterm Start</Label>
-                  <Input
-                    type="date"
-                    value={semester.midtermStartDate}
-                    onChange={(e) => handleUpdateSemester(index, 'midtermStartDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs">Midterm End</Label>
-                  <Input
-                    type="date"
-                    value={semester.midtermEndDate}
-                    onChange={(e) => handleUpdateSemester(index, 'midtermEndDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs">Final Exam Start</Label>
-                  <Input
-                    type="date"
-                    value={semester.finalExamStartDate}
-                    onChange={(e) => handleUpdateSemester(index, 'finalExamStartDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs">Final Exam End</Label>
-                  <Input
-                    type="date"
-                    value={semester.finalExamEndDate}
-                    onChange={(e) => handleUpdateSemester(index, 'finalExamEndDate', e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2 md:col-span-2">
-                  <Label className="text-xs">Result Publish Date</Label>
-                  <Input
-                    type="date"
-                    value={semester.resultPublishDate}
-                    onChange={(e) => handleUpdateSemester(index, 'resultPublishDate', e.target.value)}
-                  />
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <Label className="text-sm font-medium text-gray-600">Last Updated By Session</Label>
+                  <p className="text-sm font-mono text-xs">{editingSchedule.systemAudit.lastUpdatedBySession}</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
-      ))}
+      )}
 
       {/* Action Buttons */}
       <div className="flex justify-end space-x-4">
@@ -437,7 +617,7 @@ function SchedulesList({
   }
 
   const handleDelete = (scheduleId: string) => {
-    if (confirm('Are you sure you want to delete this schedule?')) {
+    if (confirm('Are you sure you want to delete this schedule? This action cannot be undone.')) {
       alert(`Schedule ${scheduleId} deleted successfully!`)
     }
   }
@@ -460,11 +640,16 @@ function SchedulesList({
                     {schedule.status}
                   </Badge>
                   <Badge variant="outline">
-                    {schedule.systemType}
+                    {schedule.semesterType}
                   </Badge>
                 </CardTitle>
-                <CardDescription>
-                  Created on {new Date(schedule.createdDate).toLocaleDateString()} by {schedule.createdBy}
+                <CardDescription className="mt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div>Created: {formatBDTDateTime(schedule.systemAudit.dateCreated)}</div>
+                    <div>Created by: {schedule.systemAudit.createdBy}</div>
+                    <div>Last Updated: {formatBDTDateTime(schedule.systemAudit.lastUpdated)}</div>
+                    <div>Updated by: {schedule.systemAudit.lastUpdatedBy}</div>
+                  </div>
                 </CardDescription>
               </div>
               <div className="flex space-x-2">
@@ -498,37 +683,56 @@ function SchedulesList({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {schedule.semesters.map(semester => (
-                <div key={semester.id} className="border rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{semester.name}</h4>
-                    <Badge className={`text-xs ${
-                      semester.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                      semester.status === 'registration' ? 'bg-yellow-100 text-yellow-800' :
-                      semester.status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                      semester.status === 'exam' ? 'bg-purple-100 text-purple-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {semester.status}
-                    </Badge>
-                  </div>
-                  <div className="text-xs text-gray-600 space-y-1">
-                    <div className="flex justify-between">
-                      <span>Duration:</span>
-                      <span>{new Date(semester.startDate).toLocaleDateString()} - {new Date(semester.endDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Registration:</span>
-                      <span>{new Date(semester.registrationStartDate).toLocaleDateString()} - {new Date(semester.registrationEndDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Classes:</span>
-                      <span>{new Date(semester.classStartDate).toLocaleDateString()} - {new Date(semester.classEndDate).toLocaleDateString()}</span>
-                    </div>
+            <div className="space-y-4">
+              {/* Key Dates Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm text-gray-700">Registration Period</h4>
+                  <div className="text-xs text-gray-600">
+                    <div>Start: {formatBDTDateTime(schedule.registrationStartDate)}</div>
+                    <div>End: {formatBDTDateTime(schedule.registrationEndDate)}</div>
                   </div>
                 </div>
-              ))}
+                
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm text-gray-700">Class Period</h4>
+                  <div className="text-xs text-gray-600">
+                    <div>Start: {new Date(schedule.classStartDate).toLocaleDateString()}</div>
+                    <div>End: {new Date(schedule.classEndDate).toLocaleDateString()}</div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm text-gray-700">Payment Deadlines</h4>
+                  <div className="text-xs text-gray-600">
+                    <div>1st: {new Date(schedule.firstInstallmentLastDate).toLocaleDateString()}</div>
+                    <div>2nd: {new Date(schedule.secondInstallmentLastDate).toLocaleDateString()}</div>
+                    {schedule.thirdInstallmentLastDate && (
+                      <div>3rd: {new Date(schedule.thirdInstallmentLastDate).toLocaleDateString()}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              {/* System Information */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-sm text-gray-700 mb-3 flex items-center space-x-2">
+                  <User className="w-4 h-4" />
+                  <span>System Audit Trail</span>
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-gray-600">
+                  <div>
+                    <span className="font-medium">Created Session:</span>
+                    <div className="font-mono">{schedule.systemAudit.createdBySession}</div>
+                  </div>
+                  <div>
+                    <span className="font-medium">Updated Session:</span>
+                    <div className="font-mono">{schedule.systemAudit.lastUpdatedBySession}</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -543,11 +747,13 @@ export default function SemesterScheduleManagement() {
   const [editingSchedule, setEditingSchedule] = useState<SemesterSchedule | undefined>()
   const [filterYear, setFilterYear] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
+  const [filterType, setFilterType] = useState('all')
 
   const filteredSchedules = schedules.filter(schedule => {
     const matchesYear = filterYear === 'all' || schedule.academicYear.includes(filterYear)
     const matchesStatus = filterStatus === 'all' || schedule.status === filterStatus
-    return matchesYear && matchesStatus
+    const matchesType = filterType === 'all' || schedule.semesterType === filterType
+    return matchesYear && matchesStatus && matchesType
   })
 
   const handleEdit = (schedule: SemesterSchedule) => {
@@ -571,7 +777,7 @@ export default function SemesterScheduleManagement() {
               {editingSchedule ? 'Edit' : 'Create'} Semester Schedule
             </h1>
             <p className="text-gray-600 mt-1">
-              {editingSchedule ? 'Modify existing' : 'Set up new'} academic semester timeline
+              {editingSchedule ? 'Modify existing' : 'Set up new'} academic semester timeline with all required dates
             </p>
           </div>
         </div>
@@ -587,7 +793,7 @@ export default function SemesterScheduleManagement() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-deep-plum">Semester Schedule Management</h1>
-          <p className="text-gray-600 mt-1">Create and manage academic semester schedules</p>
+          <p className="text-gray-600 mt-1">Create and manage comprehensive academic semester schedules</p>
         </div>
         <Button 
           onClick={() => setShowCreateForm(true)}
@@ -646,7 +852,7 @@ export default function SemesterScheduleManagement() {
               <div>
                 <p className="text-sm font-medium text-gray-600">Tri-Semester</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {schedules.filter(s => s.systemType === 'tri-semester').length}
+                  {schedules.filter(s => s.semesterType === 'Tri-Semester').length}
                 </p>
               </div>
               <Settings className="w-8 h-8 text-purple-600" />
@@ -688,6 +894,20 @@ export default function SemesterScheduleManagement() {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="filterType">Semester Type</Label>
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Tri-Semester">Tri-Semester</SelectItem>
+                  <SelectItem value="Bi-Semester">Bi-Semester</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -697,7 +917,7 @@ export default function SemesterScheduleManagement() {
         <CardHeader>
           <CardTitle>Academic Schedules</CardTitle>
           <CardDescription>
-            {filteredSchedules.length} schedule(s) found
+            {filteredSchedules.length} schedule(s) found with complete audit trail
           </CardDescription>
         </CardHeader>
         <CardContent>
