@@ -713,7 +713,7 @@ function SchedulesList({
                 </div>
               </div>
               
-              <Separator />
+              <div className="border-t border-gray-200 my-4" />
               
               {/* System Information */}
               <div className="bg-gray-50 p-4 rounded-lg">
