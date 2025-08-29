@@ -57,38 +57,73 @@ interface StudentWiseRecord {
   program: string
 }
 
-// Mock attendance data with multiple programs
+// Mock attendance data with multiple programs (8-10 students per section)
 const attendanceRecords: AttendanceRecord[] = [
-  // CSE students
+  // CSE401 Section A students (10 students) - Date: 2024-01-15
   { id: '1', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
   { id: '2', studentId: '2021-1-60-002', studentName: 'Fatima Khan', date: '2024-01-15', status: 'absent', courseCode: 'CSE401', section: 'A', program: 'CSE' },
   { id: '3', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
-  { id: '4', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', date: '2024-01-17', status: 'late', courseCode: 'CSE401', section: 'A', program: 'CSE' },
-  { id: '5', studentId: '2021-1-60-002', studentName: 'Fatima Khan', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
-  
-  // BBA students
-  { id: '6', studentId: '2021-2-50-001', studentName: 'Ruma Begum', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
-  { id: '7', studentId: '2021-2-50-002', studentName: 'Karim Hassan', date: '2024-01-15', status: 'absent', courseCode: 'BBA401', section: 'A', program: 'BBA' },
-  { id: '8', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
-  { id: '9', studentId: '2021-2-50-001', studentName: 'Ruma Begum', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
-  { id: '10', studentId: '2021-2-50-002', studentName: 'Karim Hassan', date: '2024-01-17', status: 'late', courseCode: 'BBA401', section: 'A', program: 'BBA' },
-  
-  // EEE students
-  { id: '11', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
-  { id: '12', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
-  { id: '13', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', date: '2024-01-15', status: 'absent', courseCode: 'EEE301', section: 'A', program: 'EEE' },
-  { id: '14', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
-  { id: '15', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', date: '2024-01-17', status: 'late', courseCode: 'EEE301', section: 'A', program: 'EEE' },
-  
-  // Textile students
-  { id: '16', studentId: '2021-3-55-001', studentName: 'Habib Rahman', date: '2024-01-15', status: 'present', courseCode: 'TEX201', section: 'A', program: 'Textile Engineering' },
-  { id: '17', studentId: '2021-3-55-002', studentName: 'Nadia Islam', date: '2024-01-15', status: 'absent', courseCode: 'TEX201', section: 'A', program: 'Textile Engineering' },
-  { id: '18', studentId: '2021-3-55-003', studentName: 'Omar Faruk', date: '2024-01-15', status: 'present', courseCode: 'TEX201', section: 'A', program: 'Textile Engineering' },
-  
-  // B. Pharm students
-  { id: '19', studentId: '2021-4-45-001', studentName: 'Taslima Khatun', date: '2024-01-15', status: 'present', courseCode: 'PHR301', section: 'A', program: 'B. Pharm' },
-  { id: '20', studentId: '2021-4-45-002', studentName: 'Rashid Ahmed', date: '2024-01-15', status: 'late', courseCode: 'PHR301', section: 'A', program: 'B. Pharm' },
-  { id: '21', studentId: '2021-4-45-003', studentName: 'Sultana Razia', date: '2024-01-15', status: 'present', courseCode: 'PHR301', section: 'A', program: 'B. Pharm' }
+  { id: '4', studentId: '2021-1-60-004', studentName: 'Sarah Ahmed', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '5', studentId: '2021-1-60-005', studentName: 'Karim Hassan', date: '2024-01-15', status: 'late', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '6', studentId: '2021-1-60-006', studentName: 'Nadia Sultan', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '7', studentId: '2021-1-60-007', studentName: 'Rashid Hasan', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '8', studentId: '2021-1-60-008', studentName: 'Ayesha Ahmed', date: '2024-01-15', status: 'absent', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '9', studentId: '2021-1-60-009', studentName: 'Omar Khan', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '10', studentId: '2021-1-60-010', studentName: 'Salma Rahman', date: '2024-01-15', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+
+  // CSE401 Section A students - Date: 2024-01-17 (same 10 students)
+  { id: '11', studentId: '2021-1-60-001', studentName: 'Ahmed Rahman', date: '2024-01-17', status: 'late', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '12', studentId: '2021-1-60-002', studentName: 'Fatima Khan', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '13', studentId: '2021-1-60-003', studentName: 'Mohammad Ali', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '14', studentId: '2021-1-60-004', studentName: 'Sarah Ahmed', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '15', studentId: '2021-1-60-005', studentName: 'Karim Hassan', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '16', studentId: '2021-1-60-006', studentName: 'Nadia Sultan', date: '2024-01-17', status: 'absent', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '17', studentId: '2021-1-60-007', studentName: 'Rashid Hasan', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '18', studentId: '2021-1-60-008', studentName: 'Ayesha Ahmed', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '19', studentId: '2021-1-60-009', studentName: 'Omar Khan', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+  { id: '20', studentId: '2021-1-60-010', studentName: 'Salma Rahman', date: '2024-01-17', status: 'present', courseCode: 'CSE401', section: 'A', program: 'CSE' },
+
+  // BBA401 Section A students (9 students) - Date: 2024-01-15
+  { id: '21', studentId: '2021-2-50-001', studentName: 'Ruma Begum', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '22', studentId: '2021-2-50-002', studentName: 'Karim Hassan', date: '2024-01-15', status: 'absent', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '23', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '24', studentId: '2021-2-50-004', studentName: 'Nasir Islam', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '25', studentId: '2021-2-50-005', studentName: 'Fatima Begum', date: '2024-01-15', status: 'late', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '26', studentId: '2021-2-50-006', studentName: 'Rahman Ali', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '27', studentId: '2021-2-50-007', studentName: 'Marium Khan', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '28', studentId: '2021-2-50-008', studentName: 'Habib Rahman', date: '2024-01-15', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '29', studentId: '2021-2-50-009', studentName: 'Taslima Khatun', date: '2024-01-15', status: 'absent', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+
+  // BBA401 Section A students - Date: 2024-01-17 (same 9 students)
+  { id: '30', studentId: '2021-2-50-001', studentName: 'Ruma Begum', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '31', studentId: '2021-2-50-002', studentName: 'Karim Hassan', date: '2024-01-17', status: 'late', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '32', studentId: '2021-2-50-003', studentName: 'Salma Ahmed', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '33', studentId: '2021-2-50-004', studentName: 'Nasir Islam', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '34', studentId: '2021-2-50-005', studentName: 'Fatima Begum', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '35', studentId: '2021-2-50-006', studentName: 'Rahman Ali', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '36', studentId: '2021-2-50-007', studentName: 'Marium Khan', date: '2024-01-17', status: 'absent', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '37', studentId: '2021-2-50-008', studentName: 'Habib Rahman', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+  { id: '38', studentId: '2021-2-50-009', studentName: 'Taslima Khatun', date: '2024-01-17', status: 'present', courseCode: 'BBA401', section: 'A', program: 'BBA' },
+
+  // EEE301 Section A students (8 students) - Date: 2024-01-15
+  { id: '39', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '40', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '41', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', date: '2024-01-15', status: 'absent', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '42', studentId: '2021-3-40-004', studentName: 'Sultana Razia', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '43', studentId: '2021-3-40-005', studentName: 'Khalil Ahmed', date: '2024-01-15', status: 'late', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '44', studentId: '2021-3-40-006', studentName: 'Nusrat Jahan', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '45', studentId: '2021-3-40-007', studentName: 'Imran Hossain', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '46', studentId: '2021-3-40-008', studentName: 'Rashida Begum', date: '2024-01-15', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+
+  // EEE301 Section A students - Date: 2024-01-17 (same 8 students)
+  { id: '47', studentId: '2021-3-40-001', studentName: 'Nasir Uddin', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '48', studentId: '2021-3-40-002', studentName: 'Ayesha Sultana', date: '2024-01-17', status: 'late', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '49', studentId: '2021-3-40-003', studentName: 'Rafiq Khan', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '50', studentId: '2021-3-40-004', studentName: 'Sultana Razia', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '51', studentId: '2021-3-40-005', studentName: 'Khalil Ahmed', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '52', studentId: '2021-3-40-006', studentName: 'Nusrat Jahan', date: '2024-01-17', status: 'absent', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '53', studentId: '2021-3-40-007', studentName: 'Imran Hossain', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' },
+  { id: '54', studentId: '2021-3-40-008', studentName: 'Rashida Begum', date: '2024-01-17', status: 'present', courseCode: 'EEE301', section: 'A', program: 'EEE' }
 ]
 
 // Mock exam attendance data
