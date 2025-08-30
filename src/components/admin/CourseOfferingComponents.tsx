@@ -970,7 +970,7 @@ export const OfferCourses = () => {
 }
 
 export const SectionManagement = () => {
-  const [activeView, setActiveView] = useState('view') // 'view', 'edit'
+  const [activeView, setActiveView] = useState('view') // 'view', 'create', 'edit'
   const [filterProgram, setFilterProgram] = useState('all')
   const [filterCourse, setFilterCourse] = useState('all')
   const [filterTeacher, setFilterTeacher] = useState('all')
@@ -979,6 +979,20 @@ export const SectionManagement = () => {
   const [viewingSection, setViewingSection] = useState<any>(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [newSection, setNewSection] = useState({
+    year: '',
+    program: '',
+    semester: '',
+    course: '',
+    sectionName: '',
+    capacity: '',
+    teacher: '',
+    teacherId: '',
+    days: '',
+    timeSlot: '',
+    room: '',
+    status: 'Active'
+  })
 
   const sections = [
     // CSE Sections
