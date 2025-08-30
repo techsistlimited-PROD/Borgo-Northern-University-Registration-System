@@ -225,6 +225,8 @@ export default function StudentDashboard() {
       case 'all-registration':
         return <SemesterRegistration activeTab="all" studentHolds={studentHolds} />
 
+      case 'add-drop-courses':
+        return <AddDropCourses />
       case 'class-routine':
         return <ClassRoutine />
       case 'ter-form':
