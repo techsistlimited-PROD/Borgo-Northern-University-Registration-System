@@ -759,17 +759,17 @@ export const OfferCourses = () => {
         </Card>
       )}
 
-      {/* Teacher Assignment */}
+      {/* Course to Section Assignment */}
       {selectedCourse && (
         <Card>
           <CardHeader>
-            <CardTitle>Teacher Assignment</CardTitle>
-            <CardDescription>Assign or update teachers for existing sections</CardDescription>
+            <CardTitle>Assign Course to Section</CardTitle>
+            <CardDescription>Offer the selected course to an existing section and assign a teacher</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-4 gap-4">
               <div className="space-y-2">
-                <Label>Section</Label>
+                <Label>Target Section</Label>
                 <Select value={selectedSection} onValueChange={setSelectedSection}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select section" />
@@ -777,7 +777,7 @@ export const OfferCourses = () => {
                   <SelectContent>
                     {sections.map((section) => (
                       <SelectItem key={section.id} value={section.id}>
-                        Section {section.id}
+                        Section {section.id} ({section.enrolled}/{section.maxCapacity} students)
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -785,7 +785,7 @@ export const OfferCourses = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Teacher</Label>
+                <Label>Assign Teacher</Label>
                 <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select teacher" />
@@ -801,7 +801,13 @@ export const OfferCourses = () => {
               </div>
 
               <div className="flex items-end">
-                <Button onClick={handleAssignTeacher} className="w-full">
+                <Button onClick={handleOfferCourseToSection} className="w-full">
+                  Offer Course
+                </Button>
+              </div>
+
+              <div className="flex items-end">
+                <Button onClick={handleAssignTeacher} variant="outline" className="w-full">
                   Assign Teacher
                 </Button>
               </div>
