@@ -82,6 +82,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
     },
     { id: 'class-routine', label: 'Central Class Routine & Room Management', icon: Building },
     { id: 'section-change', label: 'Change Students\' Section', icon: Users },
+    { id: 'add-drop-management', label: 'Add/Drop Applications', icon: RefreshCw },
     { id: 'advisor-assignment', label: 'Student Advisor Assignment', icon: UserPlus },
     { id: 'ter-reports', label: 'TER Reports', icon: FileText },
     {
