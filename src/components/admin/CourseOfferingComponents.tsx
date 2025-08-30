@@ -478,12 +478,12 @@ export const OfferCourses = () => {
     alert(`${studentCount} students assigned to ${selectedCourse} Section ${selectedSection}`)
   }
 
-  const handleCreateSection = () => {
-    if (!selectedCourse || !sectionCapacity) {
-      alert('Please select course and set capacity')
+  const handleOfferCourseToSection = () => {
+    if (!selectedCourse || !selectedSection) {
+      alert('Please select both course and section')
       return
     }
-    alert(`New section created for ${selectedCourse} with capacity ${sectionCapacity}`)
+    alert(`Course ${selectedCourse} has been offered to Section ${selectedSection}`)
   }
 
   const handleOfferSection = (sectionId: string) => {
