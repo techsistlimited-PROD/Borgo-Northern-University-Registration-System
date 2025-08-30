@@ -1122,7 +1122,7 @@ export default function ACADDashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <AdminDashboardOverview user={user} />
+        return <ACADDashboardOverview user={user} />
       case 'students':
         return <StudentInformation />
       case 'semester-schedule':
@@ -1158,13 +1158,13 @@ export default function ACADDashboard() {
       case 'reports':
         return <ComprehensiveReports />
       default:
-        return <AdminDashboardOverview user={user} />
+        return <ACADDashboardOverview user={user} />
     }
   }
 
   return (
     <div className="flex h-screen bg-lavender-bg">
-      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <ACADSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="flex-1 flex flex-col">
         {/* Top Header with Profile Dropdown */}
@@ -1185,15 +1185,15 @@ export default function ACADDashboard() {
               {activeTab === 'results-grades' && 'Results & Grades'}
               {activeTab === 'reports' && 'Comprehensive Reports'}
             </h1>
-            <p className="text-sm text-gray-600">Welcome to Northern University Admin Portal</p>
+            <p className="text-sm text-gray-600">Welcome to Northern University ACAD Portal</p>
           </div>
 
           <div className="flex items-center space-x-4">
             <div className="text-right mr-4">
               <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-              <p className="text-xs text-gray-600">Admin ID: {user?.id}</p>
+              <p className="text-xs text-gray-600">ACAD ID: {user?.id}</p>
             </div>
-            <AdminProfileDropdown
+            <ACADProfileDropdown
               onViewProfile={handleViewProfile}
               onEditProfile={handleEditProfile}
               onChangePassword={handleChangePassword}
@@ -1209,7 +1209,7 @@ export default function ACADDashboard() {
 
       {/* Profile Modals */}
       {showProfile && (
-        <AdminProfile
+        <ACADProfile
           onClose={() => setShowProfile(false)}
           onEdit={() => {
             setShowProfile(false)
@@ -1219,14 +1219,14 @@ export default function ACADDashboard() {
       )}
 
       {showEditProfile && (
-        <EditAdminProfile
+        <EditACADProfile
           onClose={() => setShowEditProfile(false)}
           onSave={() => setShowEditProfile(false)}
         />
       )}
 
       {showChangePassword && (
-        <ChangeAdminPassword
+        <ChangeACADPassword
           onClose={() => setShowChangePassword(false)}
           onSave={() => setShowChangePassword(false)}
         />
