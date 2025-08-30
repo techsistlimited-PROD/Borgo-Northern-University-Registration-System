@@ -1833,11 +1833,11 @@ export const SectionManagement = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center space-x-2">
-                          <span className={section.enrolled === section.capacity ? 'text-red-600 font-medium' : 'text-green-600'}>
-                            {section.enrolled}/{section.capacity}
+                          <span className={(sectionStudentsSM[section.sectionName]?.length || section.enrolled) === section.capacity ? 'text-red-600 font-medium' : 'text-green-600'}>
+                            {sectionStudentsSM[section.sectionName]?.length || section.enrolled}/{section.capacity}
                           </span>
-                          <Badge variant={section.status === 'Full' ? 'destructive' : 'default'}>
-                            {section.status}
+                          <Badge variant={(sectionStudentsSM[section.sectionName]?.length || section.enrolled) === section.capacity ? 'destructive' : 'default'}>
+                            {(sectionStudentsSM[section.sectionName]?.length || section.enrolled) === section.capacity ? 'Full' : 'Available'}
                           </Badge>
                         </div>
                       </TableCell>
