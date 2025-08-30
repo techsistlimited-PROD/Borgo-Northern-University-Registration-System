@@ -202,7 +202,7 @@ export const AddDropManagement = () => {
           ...app,
           status: pendingAction === 'approve' ? 'Approved' : 'Rejected',
           processedAt: new Date().toLocaleString(),
-          processedBy: 'Current Admin',
+          processedBy: 'Current ACAD',
           ...(pendingAction === 'reject' && { rejectionReason: actionReason })
         }
       }
