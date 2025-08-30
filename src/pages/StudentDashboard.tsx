@@ -49,6 +49,7 @@ const Sidebar = ({ activeTab, setActiveTab }: {
         { id: 'all-registration', label: 'All Registration' }
       ]
     },
+    { id: 'add-drop-courses', label: 'Add/Drop Courses', icon: RefreshCw },
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
     { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
     {
