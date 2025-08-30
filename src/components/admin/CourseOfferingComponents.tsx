@@ -554,6 +554,116 @@ export const OfferCourses = () => {
     }
   }
 
+  const handleOpenStudentModal = (sectionId: string) => {
+    setCurrentSectionForStudents(sectionId)
+    setShowStudentModal(true)
+    setNewStudentId('')
+    setBulkStudentFrom('')
+    setBulkStudentTo('')
+  }
+
+  const handleAddSingleStudent = () => {
+    if (!newStudentId || !currentSectionForStudents) {
+      alert('Please enter a student ID')
+      return
+    }
+
+    const section = getUpdatedSections().find(s => s.id === currentSectionForStudents)
+    if (!section) return
+
+    const currentStudents = sectionStudents[currentSectionForStudents] || []
+
+    if (currentStudents.includes(newStudentId)) {
+      alert('Student is already assigned to this section')
+      return
+    }
+
+    if (currentStudents.length >= section.maxCapacity) {
+      alert(`Section capacity exceeded! Maximum capacity: ${section.maxCapacity}`)
+      return
+    }
+
+    setSectionStudents(prev => ({
+      ...prev,
+      [currentSectionForStudents]: [...currentStudents, newStudentId]
+    }))
+
+    setNewStudentId('')
+    alert(`Student ${newStudentId} added to Section ${currentSectionForStudents}`)
+  }
+
+  const handleAddBulkStudents = () => {
+    if (!bulkStudentFrom || !bulkStudentTo || !currentSectionForStudents) {
+      alert('Please fill all bulk assignment fields')
+      return
+    }
+
+    const section = getUpdatedSections().find(s => s.id === currentSectionForStudents)
+    if (!section) return
+
+    const currentStudents = sectionStudents[currentSectionForStudents] || []
+
+    // Extract base pattern and numbers from student IDs
+    const fromMatch = bulkStudentFrom.match(/^(.+-)(\\d+)$/)
+    const toMatch = bulkStudentTo.match(/^(.+-)(\\d+)$/)
+
+    if (!fromMatch || !toMatch) {
+      alert('Please use proper student ID format (e.g., 2024-1-60-001)')
+      return
+    }
+
+    const [, fromBase, fromNum] = fromMatch
+    const [, toBase, toNum] = toMatch
+
+    if (fromBase !== toBase) {
+      alert('Student ID patterns must match (same prefix)')
+      return
+    }
+
+    const fromNumber = parseInt(fromNum)
+    const toNumber = parseInt(toNum)
+
+    if (fromNumber > toNumber) {
+      alert('"From" student ID number must be less than or equal to "To" student ID number')
+      return
+    }
+
+    const studentsToAdd = []
+    for (let i = fromNumber; i <= toNumber; i++) {
+      const studentId = `${fromBase}${i.toString().padStart(3, '0')}`
+      if (!currentStudents.includes(studentId)) {
+        studentsToAdd.push(studentId)
+      }
+    }
+
+    if (currentStudents.length + studentsToAdd.length > section.maxCapacity) {
+      const availableSpots = section.maxCapacity - currentStudents.length
+      alert(`Section capacity exceeded! Available spots: ${availableSpots}, trying to add: ${studentsToAdd.length}`)
+      return
+    }
+
+    setSectionStudents(prev => ({
+      ...prev,
+      [currentSectionForStudents]: [...currentStudents, ...studentsToAdd]
+    }))
+
+    setBulkStudentFrom('')
+    setBulkStudentTo('')
+    alert(`${studentsToAdd.length} students added to Section ${currentSectionForStudents}`)
+  }
+
+  const handleRemoveStudent = (studentId: string) => {
+    if (!currentSectionForStudents) return
+
+    if (confirm(`Are you sure you want to remove student ${studentId} from Section ${currentSectionForStudents}?`)) {
+      setSectionStudents(prev => ({
+        ...prev,
+        [currentSectionForStudents]: (prev[currentSectionForStudents] || []).filter(id => id !== studentId)
+      }))
+      alert(`Student ${studentId} removed from Section ${currentSectionForStudents}`)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
