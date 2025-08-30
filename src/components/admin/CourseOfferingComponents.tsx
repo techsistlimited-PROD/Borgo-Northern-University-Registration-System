@@ -470,6 +470,15 @@ export const OfferCourses = () => {
     { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '', offered: false, offerStatus: 'Pending' },
   ]
 
+  // Update section enrolled count based on actual student assignments
+  const getUpdatedSections = () => {
+    return sections.map(section => ({
+      ...section,
+      enrolled: sectionStudents[section.id]?.length || 0,
+      status: (sectionStudents[section.id]?.length || 0) >= section.maxCapacity ? 'Full' : 'Available'
+    }))
+  }
+
   // Filter courses based on selected filters and search term
   const filteredCourses = allCourses.filter(course => {
     const matchesProgramType = filterProgramType === 'all' || course.type === filterProgramType
