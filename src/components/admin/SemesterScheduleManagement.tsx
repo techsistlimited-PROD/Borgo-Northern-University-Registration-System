@@ -908,14 +908,15 @@ function SchedulesList({
                     {schedule.semesterType}
                   </Badge>
                 </CardTitle>
-                <CardDescription className="mt-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                    <div>Created: {formatBDTDateTime(schedule.systemAudit.dateCreated)}</div>
-                    <div>Created by: {schedule.systemAudit.createdBy}</div>
-                    <div>Last Updated: {formatBDTDateTime(schedule.systemAudit.lastUpdated)}</div>
-                    <div>Updated by: {schedule.systemAudit.lastUpdatedBy}</div>
-                  </div>
+                <CardDescription>
+                  Academic schedule with system audit trail
                 </CardDescription>
+                <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                  <div>Created: {formatBDTDateTime(schedule.systemAudit.dateCreated)}</div>
+                  <div>Created by: {schedule.systemAudit.createdBy}</div>
+                  <div>Last Updated: {formatBDTDateTime(schedule.systemAudit.lastUpdated)}</div>
+                  <div>Updated by: {schedule.systemAudit.lastUpdatedBy}</div>
+                </div>
               </div>
               <div className="flex space-x-2">
                 <Button
