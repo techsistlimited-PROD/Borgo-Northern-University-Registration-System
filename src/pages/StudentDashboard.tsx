@@ -8,6 +8,7 @@ import { StudentDashboardOverview } from '@/components/student/StudentDashboardO
 import { WaiverInfo } from '@/components/student/WaiverInfo'
 import { SemesterSchedule } from '@/components/student/SemesterSchedule'
 import { SemesterRegistration } from '@/components/student/SemesterRegistration'
+import { AddDropCourses } from '@/components/student/AddDropCourses'
 import { ClassRoutine } from '@/components/student/ClassRoutine'
 import { PaymentInformation } from '@/components/student/PaymentInformation'
 import { TERForm } from '@/components/student/TERForm'
