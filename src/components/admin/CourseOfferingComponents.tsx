@@ -27,7 +27,8 @@ import {
   Save,
   Users,
   AlertCircle,
-  Search
+  Search,
+  Info
 } from 'lucide-react'
 
 export const Syllabuses = () => {
