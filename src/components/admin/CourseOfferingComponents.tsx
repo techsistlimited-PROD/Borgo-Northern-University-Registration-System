@@ -845,7 +845,7 @@ export const OfferCourses = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {sections.map((section) => (
+              {getUpdatedSections().map((section) => (
                 <div key={section.id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -872,6 +872,15 @@ export const OfferCourses = () => {
                     </div>
 
                     <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleOpenStudentModal(section.id)}
+                        className="flex items-center space-x-1"
+                      >
+                        <Users className="w-4 h-4" />
+                        <span>Assign/Remove Students</span>
+                      </Button>
                       {!section.offered ? (
                         <Button
                           variant="default"
