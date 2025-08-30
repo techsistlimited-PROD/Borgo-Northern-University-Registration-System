@@ -17,17 +17,17 @@ import {
   Shield
 } from 'lucide-react'
 
-interface AdminProfileDropdownProps {
+interface ACADProfileDropdownProps {
   onViewProfile: () => void
   onEditProfile: () => void
   onChangePassword: () => void
 }
 
-export const AdminProfileDropdown = ({ 
-  onViewProfile, 
-  onEditProfile, 
-  onChangePassword 
-}: AdminProfileDropdownProps) => {
+export const ACADProfileDropdown = ({
+  onViewProfile,
+  onEditProfile,
+  onChangePassword
+}: ACADProfileDropdownProps) => {
   const { user, logout } = useAuth()
 
   const handleLogout = () => {
@@ -51,7 +51,7 @@ export const AdminProfileDropdown = ({
           <Avatar className="h-10 w-10 border-2 border-deep-plum">
             <AvatarImage src="/placeholder-avatar.jpg" alt={user?.name} />
             <AvatarFallback className="bg-gradient-to-br from-deep-plum to-accent-purple text-white font-semibold">
-              {user?.name ? getInitials(user.name) : 'AD'}
+              {user?.name ? getInitials(user.name) : 'AC'}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -65,7 +65,7 @@ export const AdminProfileDropdown = ({
             </p>
             <p className="text-xs leading-none text-muted-foreground flex items-center">
               <Shield className="w-3 h-3 mr-1" />
-              System Administrator
+              Academic Affairs
             </p>
           </div>
         </DropdownMenuLabel>
