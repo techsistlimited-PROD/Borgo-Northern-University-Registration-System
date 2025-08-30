@@ -28,7 +28,8 @@ import {
   Users,
   AlertCircle,
   Search,
-  Info
+  Info,
+  Eye
 } from 'lucide-react'
 
 export const Syllabuses = () => {
