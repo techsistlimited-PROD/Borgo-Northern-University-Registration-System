@@ -32,7 +32,8 @@ import {
   Download,
   Eye,
   Check,
-  Ban
+  Ban,
+  Calendar
 } from 'lucide-react'
 
 export const AddDropManagement = () => {
@@ -49,6 +50,12 @@ export const AddDropManagement = () => {
   const [selectedApplication, setSelectedApplication] = useState<any>(null)
   const [pendingAction, setPendingAction] = useState<'approve' | 'reject' | null>(null)
   const [actionReason, setActionReason] = useState('')
+
+  // Deadline for add/drop course applications
+  const addDropDeadline = new Date('2024-02-15T23:59:59')
+  const currentDate = new Date()
+  const isDeadlinePassed = currentDate > addDropDeadline
+  const daysUntilDeadline = Math.ceil((addDropDeadline.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24))
 
   // Sample add/drop applications data
   const [applications, setApplications] = useState([
@@ -251,6 +258,7 @@ export const AddDropManagement = () => {
             th { background-color: #f5f5f5; font-weight: bold; }
             .header { text-align: center; margin-bottom: 20px; }
             .summary { margin-bottom: 20px; padding: 10px; background-color: #f9f9f9; }
+            .deadline { margin-bottom: 20px; padding: 10px; background-color: ${isDeadlinePassed ? '#fee' : '#eff'}; border: 1px solid ${isDeadlinePassed ? '#fcc' : '#cfc'}; }
           </style>
         </head>
         <body>
@@ -260,6 +268,14 @@ export const AddDropManagement = () => {
             <p>Generated on: ${new Date().toLocaleString()}</p>
           </div>
           
+          <div class="summary">
+            <h3>Summary</h3>
+            <div class="deadline">
+            <h3>Application Deadline Information</h3>
+            <p><strong>Deadline:</strong> ${addDropDeadline.toLocaleString()}</p>
+            <p><strong>Status:</strong> ${isDeadlinePassed ? 'CLOSED - Deadline has passed' : `OPEN - ${daysUntilDeadline} days remaining`}</p>
+          </div>
+
           <div class="summary">
             <h3>Summary</h3>
             <p><strong>Total Applications:</strong> ${filteredApplications.length}</p>
@@ -322,6 +338,17 @@ export const AddDropManagement = () => {
     setSearchTerm('')
   }
 
+  const formatDeadlineDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -334,6 +361,60 @@ export const AddDropManagement = () => {
           <span>Print Report</span>
         </Button>
       </div>
+
+      {/* Deadline Information */}
+      <Card className={`border-l-4 ${
+        isDeadlinePassed
+          ? 'border-l-red-500 bg-red-50'
+          : daysUntilDeadline <= 3
+          ? 'border-l-yellow-500 bg-yellow-50'
+          : 'border-l-blue-500 bg-blue-50'
+      }`}>
+        <CardContent className="p-4">
+          <div className="flex items-start space-x-3">
+            <Calendar className={`w-6 h-6 mt-1 ${
+              isDeadlinePassed
+                ? 'text-red-600'
+                : daysUntilDeadline <= 3
+                ? 'text-yellow-600'
+                : 'text-blue-600'
+            }`} />
+            <div>
+              <h3 className={`font-semibold ${
+                isDeadlinePassed
+                  ? 'text-red-800'
+                  : daysUntilDeadline <= 3
+                  ? 'text-yellow-800'
+                  : 'text-blue-800'
+              }`}>
+                Add/Drop Course Application Deadline
+              </h3>
+              <p className={`text-sm ${
+                isDeadlinePassed
+                  ? 'text-red-700'
+                  : daysUntilDeadline <= 3
+                  ? 'text-yellow-700'
+                  : 'text-blue-700'
+              }`}>
+                <strong>Deadline:</strong> {formatDeadlineDate(addDropDeadline)}
+              </p>
+              {isDeadlinePassed ? (
+                <p className="text-sm text-red-700 mt-1 font-medium">
+                  🔒 Applications are now closed. No new add/drop course applications can be submitted.
+                </p>
+              ) : (
+                <p className="text-sm text-blue-700 mt-1">
+                  {daysUntilDeadline > 0 ? (
+                    <>📅 Applications close in <strong>{daysUntilDeadline} day{daysUntilDeadline !== 1 ? 's' : ''}</strong></>
+                  ) : (
+                    <><Clock className="w-4 h-4 inline mr-1" />Last day for applications!</>
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Summary Cards */}
       <div className="grid md:grid-cols-4 gap-4">
@@ -576,7 +657,7 @@ export const AddDropManagement = () => {
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
-                      {(app.status === 'Pending' || app.status === 'Under Review') && (
+                      {(app.status === 'Pending' || app.status === 'Under Review') && !isDeadlinePassed && (
                         <>
                           <Button
                             size="sm"
