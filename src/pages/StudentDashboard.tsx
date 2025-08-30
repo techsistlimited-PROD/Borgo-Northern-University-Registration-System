@@ -273,6 +273,7 @@ export default function StudentDashboard() {
               {activeTab === 'waiver-info' && 'Waiver Information'}
               {activeTab === 'semester-schedule' && 'Semester Schedule'}
               {(activeTab === 'semester-registration' || activeTab === 'last-registration' || activeTab === 'new-registration' || activeTab === 'all-registration') && 'Semester Registration'}
+              {activeTab === 'add-drop-courses' && 'Add/Drop Courses'}
               {activeTab === 'class-routine' && 'Class Routine'}
               {activeTab === 'ter-form' && 'TER Fill Up'}
               {(activeTab === 'clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Clearance Applications'}
