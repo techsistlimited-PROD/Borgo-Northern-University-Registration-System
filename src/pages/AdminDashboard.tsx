@@ -1136,6 +1136,8 @@ export default function AdminDashboard() {
         return <ClassRoutineManagement />
       case 'section-change':
         return <StudentSectionChange />
+      case 'add-drop-management':
+        return <AddDropManagement />
       case 'advisor-assignment':
         return <AdvisorAssignmentManagement />
       case 'ter-reports':
