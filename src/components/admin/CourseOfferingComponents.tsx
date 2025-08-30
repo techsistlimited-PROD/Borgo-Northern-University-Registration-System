@@ -467,7 +467,7 @@ export const OfferCourses = () => {
   const sections = [
     { id: 'A', capacity: 45, enrolled: 50, maxCapacity: 50, status: 'Full', teacher: 'Dr. Rahman Ahmed', teacherId: 'T001', schedule: 'Sun, Tue 10:00-11:30', room: 'Room 301', offered: true, offerStatus: 'Offered' },
     { id: 'B', capacity: 50, enrolled: 48, maxCapacity: 50, status: 'Available', teacher: 'Prof. Sarah Khan', teacherId: 'T002', schedule: 'Mon, Wed 14:00-15:30', room: 'Room 302', offered: true, offerStatus: 'Offered' },
-    { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: '', teacherId: '', schedule: '', room: '', offered: false, offerStatus: 'Pending' },
+    { id: 'C', capacity: 50, enrolled: 30, maxCapacity: 50, status: 'Available', teacher: 'Dr. Mohammad Ali', teacherId: 'T003', schedule: 'Thu, Fri 14:00-15:30', room: 'Room 303', offered: true, offerStatus: 'Offered' },
   ]
 
   // Update section enrolled count based on actual student assignments
