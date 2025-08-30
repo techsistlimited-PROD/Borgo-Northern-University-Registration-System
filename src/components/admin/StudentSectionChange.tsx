@@ -143,7 +143,7 @@ const changeRequests: SectionChangeRequest[] = [
     reason: 'Medical reasons - need morning classes',
     requestDate: '2024-01-14',
     status: 'approved',
-    processedBy: 'Admin User',
+    processedBy: 'ACAD User',
     processedDate: '2024-01-14',
     notes: 'Approved due to medical documentation'
   },
@@ -158,7 +158,7 @@ const changeRequests: SectionChangeRequest[] = [
     reason: 'Better instructor preference',
     requestDate: '2024-01-13',
     status: 'rejected',
-    processedBy: 'Admin User',
+    processedBy: 'ACAD User',
     processedDate: '2024-01-13',
     notes: 'Section A is full, no capacity available'
   }
