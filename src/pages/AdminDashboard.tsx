@@ -22,8 +22,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { AdminProfileDropdown } from '@/components/admin/AdminProfileDropdown'
-import { AdminProfile, EditAdminProfile, ChangeAdminPassword } from '@/components/admin/AdminProfile'
+import { ACADProfileDropdown } from '@/components/admin/ACADProfileDropdown'
+import { ACADProfile, EditACADProfile, ChangeACADPassword } from '@/components/admin/ACADProfile'
 import { Syllabuses, OfferCourses, SectionManagement } from '@/components/admin/CourseOfferingComponents'
 import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
 import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
@@ -63,7 +63,7 @@ import {
   UserX
 } from 'lucide-react'
 
-const AdminSidebar = ({ activeTab, setActiveTab }: {
+const ACADSidebar = ({ activeTab, setActiveTab }: {
   activeTab: string,
   setActiveTab: (tab: string) => void
 }) => {
@@ -110,7 +110,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
             <span className="text-white font-bold">NU</span>
           </div>
           <div>
-            <h2 className="font-bold text-deep-plum">Admin Portal</h2>
+            <h2 className="font-bold text-deep-plum">ACAD Portal</h2>
             <p className="text-xs text-gray-500">Northern University</p>
           </div>
         </div>
@@ -162,13 +162,13 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
   )
 }
 
-const AdminDashboardOverview = ({ user }: { user: any }) => (
+const ACADDashboardOverview = ({ user }: { user: any }) => (
   <div className="space-y-6">
     <div className="flex justify-between items-center">
-      <h1 className="text-3xl font-bold text-deep-plum">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold text-deep-plum">ACAD Dashboard</h1>
       <div className="text-right">
         <p className="text-sm text-gray-600">Welcome, {user.name}</p>
-        <p className="text-sm text-gray-600">System Administrator</p>
+        <p className="text-sm text-gray-600">Academic Affairs</p>
       </div>
     </div>
     
@@ -1100,7 +1100,7 @@ const Courses = () => {
   )
 }
 
-export default function AdminDashboard() {
+export default function ACADDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [showProfile, setShowProfile] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
