@@ -72,19 +72,19 @@ export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
             <CardContent className="pt-6">
               <div className="flex items-center space-x-6">
                 <Avatar className="h-32 w-32 border-4 border-deep-plum">
-                  <AvatarImage src={adminData.profileImage} alt={adminData.fullName} />
+                  <AvatarImage src={acadData.profileImage} alt={acadData.fullName} />
                   <AvatarFallback className="bg-gradient-to-br from-deep-plum to-accent-purple text-white text-2xl font-bold">
-                    {getInitials(adminData.fullName)}
+                    {getInitials(acadData.fullName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-deep-plum">{adminData.fullName}</h3>
-                  <p className="text-lg text-gray-600">ID: {adminData.adminId}</p>
+                  <h3 className="text-2xl font-bold text-deep-plum">{acadData.fullName}</h3>
+                  <p className="text-lg text-gray-600">ID: {acadData.adminId}</p>
                   <p className="text-gray-600 flex items-center">
                     <Shield className="w-4 h-4 mr-2" />
-                    {adminData.designation}
+                    {acadData.designation}
                   </p>
-                  <p className="text-gray-600">{adminData.department}</p>
+                  <p className="text-gray-600">{acadData.department}</p>
                   <div className="flex items-center mt-2">
                     <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                       Active
@@ -105,63 +105,63 @@ export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Admin ID:</span>
-                    <span className="col-span-2">{adminData.adminId}</span>
+                    <span className="col-span-2">{acadData.adminId}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Full Name:</span>
-                    <span className="col-span-2">{adminData.fullName}</span>
+                    <span className="col-span-2">{acadData.fullName}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Designation:</span>
-                    <span className="col-span-2">{adminData.designation}</span>
+                    <span className="col-span-2">{acadData.designation}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Department:</span>
-                    <span className="col-span-2">{adminData.department}</span>
+                    <span className="col-span-2">{acadData.department}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Date of Birth:</span>
-                    <span className="col-span-2">{adminData.dateOfBirth}</span>
+                    <span className="col-span-2">{acadData.dateOfBirth}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Gender:</span>
-                    <span className="col-span-2">{adminData.gender}</span>
+                    <span className="col-span-2">{acadData.gender}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Religion:</span>
-                    <span className="col-span-2">{adminData.religion}</span>
+                    <span className="col-span-2">{acadData.religion}</span>
                   </div>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Contact No:</span>
-                    <span className="col-span-2">{adminData.contactNo}</span>
+                    <span className="col-span-2">{acadData.contactNo}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Email:</span>
                     <span className="col-span-2">
-                      {adminData.email}
-                      {adminData.emailVerified && (
+                      {acadData.email}
+                      {acadData.emailVerified && (
                         <CheckCircle className="inline w-4 h-4 ml-2 text-green-600" />
                       )}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Campus:</span>
-                    <span className="col-span-2">{adminData.campus}</span>
+                    <span className="col-span-2">{acadData.campus}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Join Date:</span>
-                    <span className="col-span-2">{adminData.joinDate}</span>
+                    <span className="col-span-2">{acadData.joinDate}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Last Login:</span>
-                    <span className="col-span-2">{adminData.lastLogin}</span>
+                    <span className="col-span-2">{acadData.lastLogin}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">National ID:</span>
-                    <span className="col-span-2">{adminData.nationalId}</span>
+                    <span className="col-span-2">{acadData.nationalId}</span>
                   </div>
                 </div>
               </div>
@@ -177,12 +177,12 @@ export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-deep-plum mb-3">Present Address</h4>
-                  <p className="text-gray-700">{adminData.presentAddress}</p>
+                  <p className="text-gray-700">{acadData.presentAddress}</p>
                 </div>
                 
                 <div>
                   <h4 className="font-semibold text-deep-plum mb-3">Permanent Address</h4>
-                  <p className="text-gray-700">{adminData.permanentAddress}</p>
+                  <p className="text-gray-700">{acadData.permanentAddress}</p>
                 </div>
               </div>
             </CardContent>
@@ -245,7 +245,7 @@ export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onS
             <CardContent>
               <div className="flex items-center space-x-6">
                 <Avatar className="h-24 w-24 border-4 border-deep-plum">
-                  <AvatarImage src={adminData.profileImage} alt={adminData.fullName} />
+                  <AvatarImage src={acadData.profileImage} alt={acadData.fullName} />
                   <AvatarFallback className="bg-gradient-to-br from-deep-plum to-accent-purple text-white text-xl font-bold">
                     MR
                   </AvatarFallback>
@@ -270,11 +270,11 @@ export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onS
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="contact">Contact Number</Label>
-                  <Input id="contact" defaultValue={adminData.contactNo} />
+                  <Input id="contact" defaultValue={acadData.contactNo} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" defaultValue={adminData.email} />
+                  <Input id="email" defaultValue={acadData.email} />
                 </div>
               </div>
             </CardContent>
@@ -288,11 +288,11 @@ export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onS
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="presentAddress">Present Address</Label>
-                  <Input id="presentAddress" defaultValue={adminData.presentAddress} />
+                  <Input id="presentAddress" defaultValue={acadData.presentAddress} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="permanentAddress">Permanent Address</Label>
-                  <Input id="permanentAddress" defaultValue={adminData.permanentAddress} />
+                  <Input id="permanentAddress" defaultValue={acadData.permanentAddress} />
                 </div>
               </div>
             </CardContent>
