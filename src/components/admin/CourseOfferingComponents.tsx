@@ -1412,9 +1412,25 @@ export const SectionManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-deep-plum">Section Management</h1>
-        <div className="text-sm text-gray-600">
-          <p>Manage course sections and their details</p>
+        <div>
+          <h1 className="text-3xl font-bold text-deep-plum">Section Management</h1>
+          <p className="text-gray-600 mt-1">Create and manage course sections</p>
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            variant={activeView === 'view' ? 'default' : 'outline'}
+            onClick={() => setActiveView('view')}
+          >
+            View All Sections
+          </Button>
+          <Button
+            variant={activeView === 'create' ? 'default' : 'outline'}
+            onClick={() => setActiveView('create')}
+            className="flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create New Section</span>
+          </Button>
         </div>
       </div>
 
