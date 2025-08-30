@@ -35,6 +35,7 @@ import ResultsGrades from '@/components/admin/ResultsGrades'
 import { TERReports } from '@/components/admin/TERReports'
 import { StudentClearance } from '@/components/admin/StudentClearance'
 import { AddDropManagement } from '@/components/admin/AddDropManagement'
+import { SemesterDropManagement } from '@/components/admin/SemesterDropManagement'
 import {
   Users,
   Calendar,
@@ -58,7 +59,8 @@ import {
   BookPlus,
   Home,
   Award,
-  RefreshCw
+  RefreshCw,
+  UserX
 } from 'lucide-react'
 
 const AdminSidebar = ({ activeTab, setActiveTab }: {
@@ -83,6 +85,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }: {
     { id: 'class-routine', label: 'Central Class Routine & Room Management', icon: Building },
     { id: 'section-change', label: 'Change Students\' Section', icon: Users },
     { id: 'add-drop-management', label: 'Add/Drop Applications', icon: RefreshCw },
+    { id: 'semester-drop-management', label: 'Semester Drop Applications', icon: UserX },
     { id: 'advisor-assignment', label: 'Student Advisor Assignment', icon: UserPlus },
     { id: 'ter-reports', label: 'TER Reports', icon: FileText },
     {
@@ -1138,6 +1141,8 @@ export default function AdminDashboard() {
         return <StudentSectionChange />
       case 'add-drop-management':
         return <AddDropManagement />
+      case 'semester-drop-management':
+        return <SemesterDropManagement />
       case 'advisor-assignment':
         return <AdvisorAssignmentManagement />
       case 'ter-reports':
@@ -1173,6 +1178,7 @@ export default function AdminDashboard() {
               {activeTab === 'class-routine' && 'Central Class Routine & Room Management'}
               {activeTab === 'section-change' && 'Change Students\' Section'}
               {activeTab === 'add-drop-management' && 'Add/Drop Applications Management'}
+              {activeTab === 'semester-drop-management' && 'Semester Drop Applications Management'}
               {activeTab === 'advisor-assignment' && 'Student Advisor Assignment'}
               {activeTab === 'ter-reports' && 'TER Reports'}
               {(activeTab === 'student-clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Student Clearance'}
