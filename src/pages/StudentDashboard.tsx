@@ -9,6 +9,7 @@ import { WaiverInfo } from '@/components/student/WaiverInfo'
 import { SemesterSchedule } from '@/components/student/SemesterSchedule'
 import { SemesterRegistration } from '@/components/student/SemesterRegistration'
 import { AddDropCourses } from '@/components/student/AddDropCourses'
+import { SemesterDropApplication } from '@/components/student/SemesterDropApplication'
 import { ClassRoutine } from '@/components/student/ClassRoutine'
 import { PaymentInformation } from '@/components/student/PaymentInformation'
 import { TERForm } from '@/components/student/TERForm'
@@ -28,7 +29,8 @@ import {
   Clock,
   FileText,
   Award,
-  RefreshCw
+  RefreshCw,
+  UserX
 } from 'lucide-react'
 
 const Sidebar = ({ activeTab, setActiveTab }: { 
@@ -50,6 +52,7 @@ const Sidebar = ({ activeTab, setActiveTab }: {
       ]
     },
     { id: 'add-drop-courses', label: 'Add/Drop Courses', icon: RefreshCw },
+    { id: 'semester-drop', label: 'Semester Drop', icon: UserX },
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
     { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
     {
@@ -227,6 +230,8 @@ export default function StudentDashboard() {
 
       case 'add-drop-courses':
         return <AddDropCourses />
+      case 'semester-drop':
+        return <SemesterDropApplication />
       case 'class-routine':
         return <ClassRoutine />
       case 'ter-form':
@@ -274,6 +279,7 @@ export default function StudentDashboard() {
               {activeTab === 'semester-schedule' && 'Semester Schedule'}
               {(activeTab === 'semester-registration' || activeTab === 'last-registration' || activeTab === 'new-registration' || activeTab === 'all-registration') && 'Semester Registration'}
               {activeTab === 'add-drop-courses' && 'Add/Drop Courses'}
+              {activeTab === 'semester-drop' && 'Semester Drop Application'}
               {activeTab === 'class-routine' && 'Class Routine'}
               {activeTab === 'ter-form' && 'TER Fill Up'}
               {(activeTab === 'clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Clearance Applications'}
