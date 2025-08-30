@@ -1526,6 +1526,118 @@ export const SectionManagement = () => {
     }
   }
 
+  const handleOpenSectionStudentModal = (section: any) => {
+    setCurrentSectionForStudentMgmt(section)
+    setShowSectionStudentModal(true)
+    setNewStudentIdSM('')
+    setBulkStudentFromSM('')
+    setBulkStudentToSM('')
+  }
+
+  const handleAddSingleStudentSM = () => {
+    if (!newStudentIdSM || !currentSectionForStudentMgmt) {
+      alert('Please enter a student ID')
+      return
+    }
+
+    const currentStudents = sectionStudentsSM[currentSectionForStudentMgmt.sectionName] || []
+
+    if (currentStudents.includes(newStudentIdSM)) {
+      alert('Student is already assigned to this section')
+      return
+    }
+
+    if (currentStudents.length >= currentSectionForStudentMgmt.capacity) {
+      alert(`Section capacity exceeded! Maximum capacity: ${currentSectionForStudentMgmt.capacity}`)
+      return
+    }
+
+    setSectionStudentsSM(prev => ({
+      ...prev,
+      [currentSectionForStudentMgmt.sectionName]: [...currentStudents, newStudentIdSM]
+    }))
+
+    setNewStudentIdSM('')
+    alert(`Student ${newStudentIdSM} added to Section ${currentSectionForStudentMgmt.sectionName}`)
+  }
+
+  const handleAddBulkStudentsSM = () => {
+    if (!bulkStudentFromSM || !bulkStudentToSM || !currentSectionForStudentMgmt) {
+      alert('Please fill all bulk assignment fields')
+      return
+    }
+
+    const currentStudents = sectionStudentsSM[currentSectionForStudentMgmt.sectionName] || []
+
+    // Extract base pattern and numbers from student IDs
+    const fromMatch = bulkStudentFromSM.match(/^(.+-)(\\d+)$/)
+    const toMatch = bulkStudentToSM.match(/^(.+-)(\\d+)$/)
+
+    if (!fromMatch || !toMatch) {
+      alert('Please use proper student ID format (e.g., 2024-1-60-001)')
+      return
+    }
+
+    const [, fromBase, fromNum] = fromMatch
+    const [, toBase, toNum] = toMatch
+
+    if (fromBase !== toBase) {
+      alert('Student ID patterns must match (same prefix)')
+      return
+    }
+
+    const fromNumber = parseInt(fromNum)
+    const toNumber = parseInt(toNum)
+
+    if (fromNumber > toNumber) {
+      alert('"From" student ID number must be less than or equal to "To" student ID number')
+      return
+    }
+
+    const studentsToAdd = []
+    for (let i = fromNumber; i <= toNumber; i++) {
+      const studentId = `${fromBase}${i.toString().padStart(3, '0')}`
+      if (!currentStudents.includes(studentId)) {
+        studentsToAdd.push(studentId)
+      }
+    }
+
+    if (currentStudents.length + studentsToAdd.length > currentSectionForStudentMgmt.capacity) {
+      const availableSpots = currentSectionForStudentMgmt.capacity - currentStudents.length
+      alert(`Section capacity exceeded! Available spots: ${availableSpots}, trying to add: ${studentsToAdd.length}`)
+      return
+    }
+
+    setSectionStudentsSM(prev => ({
+      ...prev,
+      [currentSectionForStudentMgmt.sectionName]: [...currentStudents, ...studentsToAdd]
+    }))
+
+    setBulkStudentFromSM('')
+    setBulkStudentToSM('')
+    alert(`${studentsToAdd.length} students added to Section ${currentSectionForStudentMgmt.sectionName}`)
+  }
+
+  const handleRemoveStudentSM = (studentId: string) => {
+    if (!currentSectionForStudentMgmt) return
+
+    if (confirm(`Are you sure you want to remove student ${studentId} from Section ${currentSectionForStudentMgmt.sectionName}?`)) {
+      setSectionStudentsSM(prev => ({
+        ...prev,
+        [currentSectionForStudentMgmt.sectionName]: (prev[currentSectionForStudentMgmt.sectionName] || []).filter(id => id !== studentId)
+      }))
+      alert(`Student ${studentId} removed from Section ${currentSectionForStudentMgmt.sectionName}`)
+    }
+  }
+
+  // Get updated sections with current enrollment
+  const getUpdatedSectionsForSM = () => {
+    return sections.map(section => ({
+      ...section,
+      enrolled: sectionStudentsSM[section.sectionName]?.length || section.enrolled
+    }))
+  }
+
   const handleViewSection = (section: any) => {
     setViewingSection(section)
     setShowViewModal(true)
