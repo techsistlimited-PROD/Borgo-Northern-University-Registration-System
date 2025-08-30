@@ -1385,6 +1385,30 @@ export const SectionManagement = () => {
     }
   }
 
+  const handleCreateSection = () => {
+    if (!newSection.year || !newSection.program || !newSection.semester || !newSection.sectionName || !newSection.capacity) {
+      alert('Please fill all required fields')
+      return
+    }
+
+    alert(`New section ${newSection.sectionName} created successfully for ${newSection.program}!`)
+    setNewSection({
+      year: '',
+      program: '',
+      semester: '',
+      course: '',
+      sectionName: '',
+      capacity: '',
+      teacher: '',
+      teacherId: '',
+      days: '',
+      timeSlot: '',
+      room: '',
+      status: 'Active'
+    })
+    setActiveView('view')
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
