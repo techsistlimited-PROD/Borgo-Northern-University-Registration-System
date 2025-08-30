@@ -14,21 +14,21 @@ import {
   Shield
 } from 'lucide-react'
 
-interface AdminProfileProps {
+interface ACADProfileProps {
   onClose: () => void
   onEdit: () => void
 }
 
-// Mock admin data
-const adminData = {
-  adminId: 'ADM001',
+// Mock ACAD data
+const acadData = {
+  acadId: 'ACAD001',
   fullName: 'Dr. Mohammad Rahman',
-  designation: 'System Administrator',
-  department: 'Administration',
+  designation: 'Academic Affairs Officer',
+  department: 'Academic Affairs',
   dateOfBirth: '15/01/1975',
   gender: 'Male',
   contactNo: '01712345678',
-  email: 'admin@nu.edu.bd',
+  email: 'acad@nu.edu.bd',
   emailVerified: true,
   campus: 'Main Campus',
   joinDate: '01/01/2010',
@@ -40,7 +40,7 @@ const adminData = {
   profileImage: '/placeholder-avatar.jpg'
 }
 
-export const AdminProfile = ({ onClose, onEdit }: AdminProfileProps) => {
+export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -54,7 +54,7 @@ export const AdminProfile = ({ onClose, onEdit }: AdminProfileProps) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-deep-plum">Administrator Profile</h2>
+          <h2 className="text-2xl font-bold text-deep-plum">ACAD Profile</h2>
           <div className="flex space-x-2">
             <Button onClick={onEdit} className="nu-button-primary">
               <Edit className="w-4 h-4 mr-2" />
