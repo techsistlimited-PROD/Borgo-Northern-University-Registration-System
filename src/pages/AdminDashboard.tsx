@@ -57,7 +57,8 @@ import {
   CalendarPlus,
   BookPlus,
   Home,
-  Award
+  Award,
+  RefreshCw
 } from 'lucide-react'
 
 const AdminSidebar = ({ activeTab, setActiveTab }: {
