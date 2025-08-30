@@ -97,7 +97,7 @@ const mockSchedules: SemesterSchedule[] = [
     status: 'active',
     systemAudit: {
       dateCreated: '2023-12-01T10:30:00+06:00',
-      createdBy: 'ADM001 John Admin',
+      createdBy: 'ACAD001 John ACAD',
       lastUpdated: '2024-01-05T14:20:00+06:00',
       lastUpdatedBy: 'ADM002 Sarah Manager',
       createdBySession: 'SES_2023120110301234',
@@ -127,9 +127,9 @@ const mockSchedules: SemesterSchedule[] = [
     status: 'draft',
     systemAudit: {
       dateCreated: '2024-10-15T09:15:00+06:00',
-      createdBy: 'ADM001 John Admin',
+      createdBy: 'ACAD001 John ACAD',
       lastUpdated: '2024-11-20T16:45:00+06:00',
-      lastUpdatedBy: 'ADM001 John Admin',
+      lastUpdatedBy: 'ACAD001 John ACAD',
       createdBySession: 'SES_2024101509151234',
       lastUpdatedBySession: 'SES_2024112016455678'
     }
@@ -151,7 +151,7 @@ const formatBDTDateTime = (isoString: string) => {
 }
 
 // Helper function to get current user (mock)
-const getCurrentUser = () => ({ id: 'ADM001', name: 'John Admin' })
+const getCurrentUser = () => ({ id: 'ACAD001', name: 'John Admin' })
 const getCurrentSessionId = () => `SES_${Date.now()}`
 
 function ViewScheduleDetails({
