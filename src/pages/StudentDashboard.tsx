@@ -27,7 +27,8 @@ import {
   CreditCard,
   Clock,
   FileText,
-  Award
+  Award,
+  RefreshCw
 } from 'lucide-react'
 
 const Sidebar = ({ activeTab, setActiveTab }: { 
