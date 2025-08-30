@@ -104,8 +104,8 @@ export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-2">
-                    <span className="font-medium text-gray-700">Admin ID:</span>
-                    <span className="col-span-2">{acadData.adminId}</span>
+                    <span className="font-medium text-gray-700">ACAD ID:</span>
+                    <span className="col-span-2">{acadData.acadId}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <span className="font-medium text-gray-700">Full Name:</span>
@@ -193,7 +193,7 @@ export const ACADProfile = ({ onClose, onEdit }: ACADProfileProps) => {
   )
 }
 
-export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onSave: () => void }) => {
+export const EditACADProfile = ({ onClose, onSave }: { onClose: () => void, onSave: () => void }) => {
   const [profileUpdated, setProfileUpdated] = useState(false)
 
   const handleSubmit = () => {
@@ -230,7 +230,7 @@ export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onS
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-deep-plum">Edit Administrator Profile</h2>
+          <h2 className="text-2xl font-bold text-deep-plum">Edit ACAD Profile</h2>
           <Button onClick={onClose} variant="outline">
             <X className="w-4 h-4" />
           </Button>
@@ -313,7 +313,7 @@ export const EditAdminProfile = ({ onClose, onSave }: { onClose: () => void, onS
   )
 }
 
-export const ChangeAdminPassword = ({ onClose, onSave }: { onClose: () => void, onSave: () => void }) => {
+export const ChangeACADPassword = ({ onClose, onSave }: { onClose: () => void, onSave: () => void }) => {
   const [passwordChanged, setPasswordChanged] = useState(false)
 
   const handleSubmit = () => {
