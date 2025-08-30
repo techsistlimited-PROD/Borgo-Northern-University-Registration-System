@@ -2,10 +2,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from '@/contexts/RegistrationAuthContext'
 import Index from '@/pages/Index'
 import StudentLogin from '@/pages/StudentLogin'
-import AdminLogin from '@/pages/AdminLogin'
+import ACADLogin from '@/pages/AdminLogin'
 import TeacherLogin from '@/pages/TeacherLogin'
 import StudentDashboard from '@/pages/StudentDashboard'
-import AdminDashboard from '@/pages/AdminDashboard'
+import ACADDashboard from '@/pages/AdminDashboard'
 import TeacherDashboard from '@/pages/TeacherDashboard'
 
 // Protected Route Component
@@ -30,7 +30,7 @@ function AppRoutes() {
       {/* Public Routes */}
       <Route path="/" element={<Index />} />
       <Route path="/student-login" element={<StudentLogin />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/acad-login" element={<ACADLogin />} />
       <Route path="/teacher-login" element={<TeacherLogin />} />
       
       {/* Protected Routes */}
@@ -43,10 +43,10 @@ function AppRoutes() {
         } 
       />
       <Route
-        path="/admin/dashboard"
+        path="/acad/dashboard"
         element={
-          <ProtectedRoute allowedRole="admin">
-            <AdminDashboard />
+          <ProtectedRoute allowedRole="acad">
+            <ACADDashboard />
           </ProtectedRoute>
         }
       />
