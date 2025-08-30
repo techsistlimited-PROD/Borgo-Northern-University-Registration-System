@@ -921,7 +921,7 @@ export default function ResultsGrades() {
         </div>
         <Badge className="bg-purple-100 text-purple-800">
           <Award className="w-4 h-4 mr-1" />
-          Admin Control Panel
+          ACAD Control Panel
         </Badge>
       </div>
 
