@@ -1637,155 +1637,180 @@ export const SectionManagement = () => {
         <Card>
           <CardHeader>
             <CardTitle>Create New Section</CardTitle>
-            <CardDescription>Add a new course section with teacher assignment</CardDescription>
+            <CardDescription>Set up section details first, then assign courses and teachers from Course Offering menu</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6">
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Year</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2024">2024</SelectItem>
-                      <SelectItem value="2025">2025</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="space-y-6">
+              {/* Basic Section Information */}
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h3 className="font-medium text-blue-800 mb-3">Step 1: Basic Section Setup</h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Academic Year *</Label>
+                    <Select value={newSection.year} onValueChange={(value) => setNewSection({...newSection, year: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2024">2024</SelectItem>
+                        <SelectItem value="2025">2025</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label>Program</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select program" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cse">CSE</SelectItem>
-                      <SelectItem value="bba">BBA</SelectItem>
-                      <SelectItem value="eee">EEE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                  <div className="space-y-2">
+                    <Label>Program *</Label>
+                    <Select value={newSection.program} onValueChange={(value) => setNewSection({...newSection, program: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select program" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CSE">CSE</SelectItem>
+                        <SelectItem value="BBA">BBA</SelectItem>
+                        <SelectItem value="EEE">EEE</SelectItem>
+                        <SelectItem value="MBA">MBA</SelectItem>
+                        <SelectItem value="Common">Common</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="space-y-2">
-                  <Label>Semester</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select semester" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1st Semester</SelectItem>
-                      <SelectItem value="2">2nd Semester</SelectItem>
-                      <SelectItem value="3">3rd Semester</SelectItem>
-                      <SelectItem value="4">4th Semester</SelectItem>
-                      <SelectItem value="5">5th Semester</SelectItem>
-                      <SelectItem value="6">6th Semester</SelectItem>
-                      <SelectItem value="7">7th Semester</SelectItem>
-                      <SelectItem value="8">8th Semester</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-4 gap-4">
-                <div className="space-y-2">
-                  <Label>Course</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courses.map((course) => (
-                        <SelectItem key={course.code} value={course.code}>
-                          {course.code} - {course.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Section Name</Label>
-                  <Input placeholder="e.g., A, B, C" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Capacity</Label>
-                  <Input type="number" placeholder="Maximum students" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Teacher</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Assign teacher" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {teachers.map((teacher) => (
-                        <SelectItem key={teacher.id} value={teacher.id}>
-                          {teacher.id} - {teacher.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Label>Semester *</Label>
+                    <Select value={newSection.semester} onValueChange={(value) => setNewSection({...newSection, semester: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select semester" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1st">1st Semester</SelectItem>
+                        <SelectItem value="2nd">2nd Semester</SelectItem>
+                        <SelectItem value="3rd">3rd Semester</SelectItem>
+                        <SelectItem value="4th">4th Semester</SelectItem>
+                        <SelectItem value="5th">5th Semester</SelectItem>
+                        <SelectItem value="6th">6th Semester</SelectItem>
+                        <SelectItem value="7th">7th Semester</SelectItem>
+                        <SelectItem value="8th">8th Semester</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Schedule Days</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select days" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sun-tue">Sunday & Tuesday</SelectItem>
-                      <SelectItem value="mon-wed">Monday & Wednesday</SelectItem>
-                      <SelectItem value="thu-fri">Thursday & Friday</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Section Details */}
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                <h3 className="font-medium text-green-800 mb-3">Step 2: Section Configuration</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Section Name *</Label>
+                    <Input
+                      placeholder="e.g., A, B, C, D"
+                      value={newSection.sectionName}
+                      onChange={(e) => setNewSection({...newSection, sectionName: e.target.value})}
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label>Time Slot</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0800-0930">08:00 - 09:30 AM</SelectItem>
-                      <SelectItem value="1000-1130">10:00 - 11:30 AM</SelectItem>
-                      <SelectItem value="1400-1530">02:00 - 03:30 PM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Room</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select room" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="room201">Room 201</SelectItem>
-                      <SelectItem value="room301">Room 301</SelectItem>
-                      <SelectItem value="room401">Room 401</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Label>Section Capacity *</Label>
+                    <Input
+                      type="number"
+                      placeholder="Maximum students (e.g., 50)"
+                      value={newSection.capacity}
+                      onChange={(e) => setNewSection({...newSection, capacity: e.target.value})}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="flex space-x-4">
-                <Button type="submit" className="nu-button-primary">
-                  Create Section
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setActiveView('view')}>
+              {/* Schedule Setup */}
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <h3 className="font-medium text-purple-800 mb-3">Step 3: Schedule & Room Assignment</h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Class Days</Label>
+                    <Select value={newSection.days} onValueChange={(value) => setNewSection({...newSection, days: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select days" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Sunday & Tuesday">Sunday & Tuesday</SelectItem>
+                        <SelectItem value="Monday & Wednesday">Monday & Wednesday</SelectItem>
+                        <SelectItem value="Tuesday & Thursday">Tuesday & Thursday</SelectItem>
+                        <SelectItem value="Wednesday & Friday">Wednesday & Friday</SelectItem>
+                        <SelectItem value="Thursday & Saturday">Thursday & Saturday</SelectItem>
+                        <SelectItem value="Saturday & Sunday">Saturday & Sunday</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Time Slot</Label>
+                    <Select value={newSection.timeSlot} onValueChange={(value) => setNewSection({...newSection, timeSlot: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="08:00 - 09:30 AM">08:00 - 09:30 AM</SelectItem>
+                        <SelectItem value="10:00 - 11:30 AM">10:00 - 11:30 AM</SelectItem>
+                        <SelectItem value="12:00 - 01:30 PM">12:00 - 01:30 PM</SelectItem>
+                        <SelectItem value="02:00 - 03:30 PM">02:00 - 03:30 PM</SelectItem>
+                        <SelectItem value="04:00 - 05:30 PM">04:00 - 05:30 PM</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Room Assignment</Label>
+                    <Select value={newSection.room} onValueChange={(value) => setNewSection({...newSection, room: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select room" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Room 101">Room 101</SelectItem>
+                        <SelectItem value="Room 102">Room 102</SelectItem>
+                        <SelectItem value="Room 103">Room 103</SelectItem>
+                        <SelectItem value="Room 201">Room 201</SelectItem>
+                        <SelectItem value="Room 202">Room 202</SelectItem>
+                        <SelectItem value="Room 203">Room 203</SelectItem>
+                        <SelectItem value="Room 301">Room 301</SelectItem>
+                        <SelectItem value="Room 302">Room 302</SelectItem>
+                        <SelectItem value="Room 303">Room 303</SelectItem>
+                        <SelectItem value="Room 401">Room 401</SelectItem>
+                        <SelectItem value="Room 402">Room 402</SelectItem>
+                        <SelectItem value="Room 403">Room 403</SelectItem>
+                        <SelectItem value="Room 501">Room 501</SelectItem>
+                        <SelectItem value="Room 502">Room 502</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Information Box */}
+              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <div className="flex items-start space-x-2">
+                  <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-yellow-800">Next Steps</p>
+                    <p className="text-sm text-yellow-700">
+                      After creating this section, go to <strong>Course Offering → Offer Courses</strong> to:
+                      <br />• Assign specific courses to this section
+                      <br />• Assign teachers to courses
+                      <br />• Manage student enrollments
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-4">
+                <Button variant="outline" onClick={() => setActiveView('view')}>
                   Cancel
                 </Button>
+                <Button onClick={handleCreateSection} className="flex items-center space-x-2">
+                  <Plus className="w-4 h-4" />
+                  <span>Create Section</span>
+                </Button>
               </div>
-            </form>
+            </div>
           </CardContent>
         </Card>
       )}
