@@ -1095,6 +1095,7 @@ export const SectionManagement = () => {
   const [newSection, setNewSection] = useState({
     year: '',
     program: '',
+    session: '',
     semester: '',
     course: '',
     sectionName: '',
@@ -1499,7 +1500,7 @@ export const SectionManagement = () => {
   }
 
   const handleCreateSection = () => {
-    if (!newSection.year || !newSection.program || !newSection.semester || !newSection.sectionName || !newSection.capacity) {
+    if (!newSection.year || !newSection.program || !newSection.session || !newSection.semester || !newSection.sectionName || !newSection.capacity) {
       alert('Please fill all required fields')
       return
     }
@@ -1508,6 +1509,7 @@ export const SectionManagement = () => {
     setNewSection({
       year: '',
       program: '',
+      session: '',
       semester: '',
       course: '',
       sectionName: '',
@@ -1757,7 +1759,7 @@ export const SectionManagement = () => {
               {/* Basic Section Information */}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="font-medium text-blue-800 mb-3">Step 1: Basic Section Setup</h3>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div className="space-y-2">
                     <Label>Academic Year *</Label>
                     <Select value={newSection.year} onValueChange={(value) => setNewSection({...newSection, year: value})}>
@@ -1773,16 +1775,51 @@ export const SectionManagement = () => {
 
                   <div className="space-y-2">
                     <Label>Program *</Label>
-                    <Select value={newSection.program} onValueChange={(value) => setNewSection({...newSection, program: value})}>
+                    <Select value={newSection.program} onValueChange={(value) => setNewSection({...newSection, program: value, session: ''})}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select program" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="CSE">CSE</SelectItem>
-                        <SelectItem value="BBA">BBA</SelectItem>
-                        <SelectItem value="EEE">EEE</SelectItem>
-                        <SelectItem value="MBA">MBA</SelectItem>
-                        <SelectItem value="Common">Common</SelectItem>
+                        <SelectItem value="CSE">CSE (Computer Science & Engineering)</SelectItem>
+                        <SelectItem value="BBA">BBA (Bachelor of Business Administration)</SelectItem>
+                        <SelectItem value="EEE">EEE (Electrical and Electronic Engineering)</SelectItem>
+                        <SelectItem value="MBA">MBA (Master of Business Administration)</SelectItem>
+                        <SelectItem value="Common">Common Courses</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Session *</Label>
+                    <Select
+                      value={newSection.session}
+                      onValueChange={(value) => setNewSection({...newSection, session: value})}
+                      disabled={!newSection.program}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={newSection.program ? "Select session" : "Select program first"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {newSection.program === 'CSE' || newSection.program === 'EEE' ? (
+                          <>
+                            <SelectItem value="Fall">Fall</SelectItem>
+                            <SelectItem value="Summer">Summer</SelectItem>
+                            <SelectItem value="Winter">Winter</SelectItem>
+                          </>
+                        ) : newSection.program === 'BBA' || newSection.program === 'MBA' ? (
+                          <>
+                            <SelectItem value="Fall">Fall</SelectItem>
+                            <SelectItem value="Summer">Summer</SelectItem>
+                          </>
+                        ) : newSection.program === 'Common' ? (
+                          <>
+                            <SelectItem value="Fall">Fall</SelectItem>
+                            <SelectItem value="Summer">Summer</SelectItem>
+                            <SelectItem value="Winter">Winter</SelectItem>
+                          </>
+                        ) : null}
                       </SelectContent>
                     </Select>
                   </div>
@@ -1811,7 +1848,7 @@ export const SectionManagement = () => {
               {/* Section Details */}
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h3 className="font-medium text-green-800 mb-3">Step 2: Section Configuration</h3>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div className="space-y-2">
                     <Label>Section Name *</Label>
                     <Input
@@ -1829,6 +1866,45 @@ export const SectionManagement = () => {
                       value={newSection.capacity}
                       onChange={(e) => setNewSection({...newSection, capacity: e.target.value})}
                     />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Course</Label>
+                    <Select value={newSection.course} onValueChange={(value) => setNewSection({...newSection, course: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select course (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {courses
+                          .filter(course => !newSection.program || course.program === newSection.program || newSection.program === 'Common')
+                          .map((course) => (
+                            <SelectItem key={course.code} value={`${course.code} - ${course.title}`}>
+                              {course.code} - {course.title}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Teacher</Label>
+                    <Select value={newSection.teacherId} onValueChange={(value) => {
+                      const selectedTeacher = teachers.find(t => t.id === value)
+                      setNewSection({...newSection, teacherId: value, teacher: selectedTeacher?.name || ''})
+                    }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select teacher (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teachers.map((teacher) => (
+                          <SelectItem key={teacher.id} value={teacher.id}>
+                            {teacher.id} - {teacher.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
