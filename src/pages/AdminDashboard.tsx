@@ -1172,6 +1172,7 @@ export default function AdminDashboard() {
               {(activeTab === 'course-offering' || activeTab === 'courses' || activeTab === 'syllabuses' || activeTab === 'offer-courses' || activeTab === 'section-management') && 'Course Offering'}
               {activeTab === 'class-routine' && 'Central Class Routine & Room Management'}
               {activeTab === 'section-change' && 'Change Students\' Section'}
+              {activeTab === 'add-drop-management' && 'Add/Drop Applications Management'}
               {activeTab === 'advisor-assignment' && 'Student Advisor Assignment'}
               {activeTab === 'ter-reports' && 'TER Reports'}
               {(activeTab === 'student-clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Student Clearance'}
