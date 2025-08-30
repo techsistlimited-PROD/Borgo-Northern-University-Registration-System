@@ -1098,6 +1098,152 @@ export const OfferCourses = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Student Assignment Modal */}
+      <Dialog open={showStudentModal} onOpenChange={setShowStudentModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Manage Students - Section {currentSectionForStudents}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Section Info */}
+            {currentSectionForStudents && (
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    <span className="font-semibold">Section {currentSectionForStudents}</span>
+                  </div>
+                  <Badge variant={getUpdatedSections().find(s => s.id === currentSectionForStudents)?.status === 'Full' ? 'destructive' : 'default'}>
+                    {sectionStudents[currentSectionForStudents]?.length || 0} / {getUpdatedSections().find(s => s.id === currentSectionForStudents)?.maxCapacity || 0} students
+                  </Badge>
+                </div>
+              </div>
+            )}
+
+            {/* Assignment Mode Toggle */}
+            <div className="flex space-x-2">
+              <Button
+                variant={studentAssignmentMode === 'single' ? 'default' : 'outline'}
+                onClick={() => setStudentAssignmentMode('single')}
+                size="sm"
+              >
+                Single Student
+              </Button>
+              <Button
+                variant={studentAssignmentMode === 'bulk' ? 'default' : 'outline'}
+                onClick={() => setStudentAssignmentMode('bulk')}
+                size="sm"
+              >
+                Bulk Assignment
+              </Button>
+            </div>
+
+            {/* Single Student Assignment */}
+            {studentAssignmentMode === 'single' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Add Single Student</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex space-x-2">
+                    <div className="flex-1">
+                      <Input
+                        placeholder="Enter student ID (e.g., 2024-1-60-001)"
+                        value={newStudentId}
+                        onChange={(e) => setNewStudentId(e.target.value)}
+                      />
+                    </div>
+                    <Button onClick={handleAddSingleStudent}>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Student
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Bulk Student Assignment */}
+            {studentAssignmentMode === 'bulk' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Bulk Student Assignment</CardTitle>
+                  <CardDescription>Add multiple students using a range of student IDs</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>From Student ID</Label>
+                      <Input
+                        placeholder="e.g., 2024-1-60-001"
+                        value={bulkStudentFrom}
+                        onChange={(e) => setBulkStudentFrom(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>To Student ID</Label>
+                      <Input
+                        placeholder="e.g., 2024-1-60-050"
+                        value={bulkStudentTo}
+                        onChange={(e) => setBulkStudentTo(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Button onClick={handleAddBulkStudents} className="w-full">
+                        <Plus className="w-4 h-4 mr-1" />
+                        Add Range
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="flex items-start space-x-2">
+                      <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium text-yellow-800">Bulk Assignment Rules:</p>
+                        <ul className="text-yellow-700 mt-1 list-disc ml-4">
+                          <li>Student IDs must follow the same pattern (e.g., 2024-1-60-001)</li>
+                          <li>System will check section capacity and prevent over-enrollment</li>
+                          <li>Duplicate students will be automatically skipped</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Current Students List */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Registered Students ({sectionStudents[currentSectionForStudents]?.length || 0})</CardTitle>
+                <CardDescription>Click on a student to remove them from this section</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {sectionStudents[currentSectionForStudents]?.length ? (
+                  <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto">
+                    {sectionStudents[currentSectionForStudents].map((studentId) => (
+                      <div
+                        key={studentId}
+                        className="flex items-center justify-between p-2 bg-gray-50 rounded border hover:bg-red-50 cursor-pointer transition-colors"
+                        onClick={() => handleRemoveStudent(studentId)}
+                      >
+                        <span className="text-sm font-mono">{studentId}</span>
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p>No students assigned to this section yet</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
