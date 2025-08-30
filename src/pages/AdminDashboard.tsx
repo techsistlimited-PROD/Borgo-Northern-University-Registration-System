@@ -34,6 +34,7 @@ import AttendanceReports from '@/components/admin/AttendanceReports'
 import ResultsGrades from '@/components/admin/ResultsGrades'
 import { TERReports } from '@/components/admin/TERReports'
 import { StudentClearance } from '@/components/admin/StudentClearance'
+import { AddDropManagement } from '@/components/admin/AddDropManagement'
 import {
   Users,
   Calendar,
