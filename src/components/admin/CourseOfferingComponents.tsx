@@ -673,8 +673,11 @@ export const OfferCourses = () => {
       {selectedCourse && (
         <Card>
           <CardHeader>
-            <CardTitle>Existing Sections</CardTitle>
-            <CardDescription>Manage sections and teacher assignments for {selectedCourse}</CardDescription>
+            <CardTitle>Existing Sections for {selectedCourse}</CardTitle>
+            <CardDescription>
+              Offer this course to existing sections and manage teacher assignments.
+              Need a new section? Create it in <strong>Section Management</strong> first.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
