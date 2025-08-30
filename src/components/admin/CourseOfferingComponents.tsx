@@ -726,77 +726,25 @@ export const OfferCourses = () => {
                 </div>
               ))}
 
-              {/* Create New Section */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                <h4 className="text-lg font-semibold mb-3">Create New Section</h4>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label>Section Capacity</Label>
-                    <Input
-                      type="number"
-                      placeholder="Max students"
-                      value={sectionCapacity}
-                      onChange={(e) => setSectionCapacity(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Unoccupied Teacher</Label>
-                    <Select value={teacherEmployeeId} onValueChange={setTeacherEmployeeId}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select teacher" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {teachers.filter(teacher => !sections.some(section => section.teacherId === teacher.id)).map((teacher) => (
-                          <SelectItem key={teacher.id} value={teacher.id}>
-                            {teacher.name} ({teacher.id})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Select Weekdays</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose days" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sun-tue">Sunday & Tuesday</SelectItem>
-                        <SelectItem value="mon-wed">Monday & Wednesday</SelectItem>
-                        <SelectItem value="tue-thu">Tuesday & Thursday</SelectItem>
-                        <SelectItem value="wed-fri">Wednesday & Friday</SelectItem>
-                        <SelectItem value="thu-sat">Thursday & Saturday</SelectItem>
-                        <SelectItem value="sat-sun">Saturday & Sunday</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Room & Time Slot</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Available slots" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="room301-0800">Room 301 - 08:00-09:30</SelectItem>
-                        <SelectItem value="room302-1000">Room 302 - 10:00-11:30</SelectItem>
-                        <SelectItem value="room303-1200">Room 303 - 12:00-13:30</SelectItem>
-                        <SelectItem value="room401-1400">Room 401 - 14:00-15:30</SelectItem>
-                        <SelectItem value="room402-1600">Room 402 - 16:00-17:30</SelectItem>
-                        <SelectItem value="room501-0930">Room 501 - 09:30-11:00</SelectItem>
-                        <SelectItem value="room502-1130">Room 502 - 11:30-13:00</SelectItem>
-                        <SelectItem value="room503-1530">Room 503 - 15:30-17:00</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-end md:col-span-2 lg:col-span-4">
-                    <Button onClick={handleCreateSection} className="w-full">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Section
-                    </Button>
+              {/* Information Box - Redirect to Section Management */}
+              <div className="border-2 border-dashed border-blue-200 bg-blue-50 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Info className="w-6 h-6 text-blue-600 mt-1" />
+                  <div>
+                    <h4 className="text-lg font-semibold text-blue-800 mb-2">Need to Create a New Section?</h4>
+                    <p className="text-blue-700 mb-3">
+                      Section creation has been moved to <strong>Section Management</strong> for better organization.
+                      Create your section there first, then come back here to assign courses and teachers.
+                    </p>
+                    <div className="bg-white rounded-lg p-3 border border-blue-200">
+                      <p className="text-sm text-blue-600 font-medium">Workflow:</p>
+                      <ol className="text-sm text-blue-600 ml-4 mt-1 list-decimal">
+                        <li>Go to <strong>Section Management → Create New Section</strong></li>
+                        <li>Set up section details (program, capacity, schedule, room)</li>
+                        <li>Come back here to assign courses to the section</li>
+                        <li>Assign teachers to specific courses</li>
+                      </ol>
+                    </div>
                   </div>
                 </div>
               </div>
