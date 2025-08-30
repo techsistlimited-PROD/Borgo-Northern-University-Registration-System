@@ -32,7 +32,7 @@ export default function Index() {
             Welcome to NU Registration System
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Access your student portal, teacher dashboard, or administrative panel.
+            Access your student portal, teacher dashboard, or academic affairs panel.
             Choose your role below to get started.
           </p>
         </div>
@@ -84,25 +84,25 @@ export default function Index() {
             </CardContent>
           </Card>
 
-          {/* Admin Portal */}
+          {/* ACAD Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
               <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
                 <Settings className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-deep-plum">Admin Portal</CardTitle>
+              <CardTitle className="text-deep-plum">ACAD Portal</CardTitle>
               <CardDescription>
-                Manage system settings, courses, users, and generate comprehensive reports
+                Manage academic affairs, courses, students, and generate comprehensive reports
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link to="/admin-login">
+              <Link to="/acad-login">
                 <Button className="w-full nu-button-primary">
-                  Access Admin Portal
+                  Access ACAD Portal
                 </Button>
               </Link>
               <p className="text-xs text-gray-500 mt-2">
-                Demo Username: admin
+                Demo Username: acad
               </p>
             </CardContent>
           </Card>
