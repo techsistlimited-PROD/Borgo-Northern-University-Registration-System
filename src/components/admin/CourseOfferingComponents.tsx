@@ -503,7 +503,10 @@ export const OfferCourses = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-deep-plum">Course Offering & Section Management</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-deep-plum">Offer Courses</h1>
+          <p className="text-gray-600 mt-1">Assign courses to existing sections and manage teacher assignments</p>
+        </div>
         <div className="flex space-x-2">
           <Button
             variant={mode === 'single' ? 'default' : 'outline'}
