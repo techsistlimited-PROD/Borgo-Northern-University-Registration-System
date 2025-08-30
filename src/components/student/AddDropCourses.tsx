@@ -27,7 +27,8 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  X
+  X,
+  Calendar
 } from 'lucide-react'
 
 export const AddDropCourses = () => {
@@ -37,6 +38,12 @@ export const AddDropCourses = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [pendingAction, setPendingAction] = useState<any>(null)
+
+  // Deadline for add/drop course applications (example: February 15, 2024)
+  const addDropDeadline = new Date('2024-02-15T23:59:59')
+  const currentDate = new Date()
+  const isDeadlinePassed = currentDate > addDropDeadline
+  const daysUntilDeadline = Math.ceil((addDropDeadline.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24))
 
   // Student's currently enrolled courses
   const enrolledCourses = [
@@ -124,8 +131,19 @@ export const AddDropCourses = () => {
   }
 
   const isEnrolled = (courseCode: string) => enrolledCourses.includes(courseCode)
-  const hasPendingApplication = (courseCode: string) => 
+  const hasPendingApplication = (courseCode: string) =>
     applications.some(app => app.courseCode === courseCode && (app.status === 'Pending' || app.status === 'Under Review'))
+
+  const formatDeadlineDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -150,6 +168,60 @@ export const AddDropCourses = () => {
           <p className="text-gray-600 mt-1">Apply to add or drop courses for the current semester</p>
         </div>
       </div>
+
+      {/* Deadline Information */}
+      <Card className={`border-l-4 ${
+        isDeadlinePassed
+          ? 'border-l-red-500 bg-red-50'
+          : daysUntilDeadline <= 3
+          ? 'border-l-yellow-500 bg-yellow-50'
+          : 'border-l-blue-500 bg-blue-50'
+      }`}>
+        <CardContent className="p-4">
+          <div className="flex items-start space-x-3">
+            <Calendar className={`w-6 h-6 mt-1 ${
+              isDeadlinePassed
+                ? 'text-red-600'
+                : daysUntilDeadline <= 3
+                ? 'text-yellow-600'
+                : 'text-blue-600'
+            }`} />
+            <div>
+              <h3 className={`font-semibold ${
+                isDeadlinePassed
+                  ? 'text-red-800'
+                  : daysUntilDeadline <= 3
+                  ? 'text-yellow-800'
+                  : 'text-blue-800'
+              }`}>
+                Add/Drop Course Application Deadline
+              </h3>
+              <p className={`text-sm ${
+                isDeadlinePassed
+                  ? 'text-red-700'
+                  : daysUntilDeadline <= 3
+                  ? 'text-yellow-700'
+                  : 'text-blue-700'
+              }`}>
+                <strong>Deadline:</strong> {formatDeadlineDate(addDropDeadline)}
+              </p>
+              {isDeadlinePassed ? (
+                <p className="text-sm text-red-700 mt-1 font-medium">
+                  ⚠️ The deadline has passed. Add/Drop course applications are no longer accepted for this semester.
+                </p>
+              ) : (
+                <p className="text-sm text-blue-700 mt-1">
+                  {daysUntilDeadline > 0 ? (
+                    <>📅 You have <strong>{daysUntilDeadline} day{daysUntilDeadline !== 1 ? 's' : ''}</strong> remaining to submit your applications.</>
+                  ) : (
+                    <><Clock className="w-4 h-4 inline mr-1" />Today is the last day to submit your applications!</>
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Current Applications Status */}
       <Card>
@@ -339,23 +411,23 @@ export const AddDropCourses = () => {
                       <div className="flex space-x-2">
                         {enrolled ? (
                           <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleAction(course, 'Drop')}
-                            disabled={pending}
-                            className="text-red-600 hover:text-red-700"
-                          >
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleAction(course, 'Drop')}
+                          disabled={pending || isDeadlinePassed}
+                          className="text-red-600 hover:text-red-700"
+                        >
                             <Minus className="w-4 h-4 mr-1" />
                             Drop
                           </Button>
                         ) : (
                           <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleAction(course, 'Add')}
-                            disabled={pending}
-                            className="text-green-600 hover:text-green-700"
-                          >
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleAction(course, 'Add')}
+                          disabled={pending || isDeadlinePassed}
+                          className="text-green-600 hover:text-green-700"
+                        >
                             <Plus className="w-4 h-4 mr-1" />
                             Add
                           </Button>
