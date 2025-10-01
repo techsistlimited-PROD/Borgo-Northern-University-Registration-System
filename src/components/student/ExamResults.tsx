@@ -1,17 +1,8 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -28,10 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { 
-  FileText,
-  Download,
   GraduationCap,
-  Calendar,
   CheckCircle,
   Award
 } from 'lucide-react'
@@ -100,34 +88,10 @@ const semesterWiseTranscript = [
   }
 ]
 
-interface ExamResultsProps {
-  activeTab?: string
-}
-
-export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
-  const [selectedSemester, setSelectedSemester] = useState('')
-  const [selectedExamType, setSelectedExamType] = useState('')
+export const ExamResults = () => {
   const [selectedResultSemester, setSelectedResultSemester] = useState('')
-  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
-  const examTypes = ['Mid Term', 'Final']
-
-  const handleDownloadClearance = () => {
-    if (!selectedSemester || !selectedExamType) {
-      alert('Please select both semester and exam type.')
-      return
-    }
-
-    // Show preview modal instead of direct download
-    setShowPreviewModal(true)
-  }
-
-  const handleActualDownload = () => {
-    // In real app, this would generate and download the clearance form
-    alert(`Downloading clearance form for ${selectedExamType} exam in ${selectedSemester}`)
-    setShowPreviewModal(false)
-  }
 
   const getSelectedSemesterResult = () => {
     if (!selectedResultSemester) return null
@@ -135,12 +99,12 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
     if (selectedResultSemester === 'Fall 2024') {
       return {
         semester: 'Fall 2024',
-        semesterGPA: 3.375,
+        cgpa: 3.375,
         courses: [
-          { serial: 1, courseCode: 'CSE 1101', courseTitle: 'Introduction to Computers', creditHour: 2.0, letterGrade: 'A', gradePoint: 3.75, tgp: 7.5, isFinal: 'Yes' },
-          { serial: 2, courseCode: 'ENG 1100', courseTitle: 'English Language-I : Sentence and their Elements', creditHour: 0.0, letterGrade: 'B', gradePoint: 3.0, tgp: 0.0, isFinal: 'Yes' },
-          { serial: 3, courseCode: 'GED 1202', courseTitle: 'Emergence of Bangladesh', creditHour: 3.0, letterGrade: 'B+', gradePoint: 3.25, tgp: 9.75, isFinal: 'Yes' },
-          { serial: 4, courseCode: 'ENG 1203', courseTitle: 'English Language-III : Reading and Writing', creditHour: 3.0, letterGrade: 'B+', gradePoint: 3.25, tgp: 9.75, isFinal: 'Yes' }
+          { courseCode: 'CSE 1101', courseName: 'Introduction to Computers', credit: 2.0, grade: 'A', gp: 3.75, tgp: 7.5, isFinal: 'Yes' },
+          { courseCode: 'ENG 1100', courseName: 'English Language-I : Sentence and their Elements', credit: 0.0, grade: 'B', gp: 3.0, tgp: 0.0, isFinal: 'Yes' },
+          { courseCode: 'GED 1202', courseName: 'Emergence of Bangladesh', credit: 3.0, grade: 'B+', gp: 3.25, tgp: 9.75, isFinal: 'Yes' },
+          { courseCode: 'ENG 1203', courseName: 'English Language-III : Reading and Writing', credit: 3.0, grade: 'B+', gp: 3.25, tgp: 9.75, isFinal: 'Yes' }
         ],
         totalCredit: 8.0,
         totalTGP: 27.0
@@ -153,88 +117,78 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-deep-plum">Exam and Results</h1>
+        <h1 className="text-3xl font-bold text-deep-plum">Academic Results</h1>
         <Badge className="bg-purple-100 text-purple-800">
           <GraduationCap className="w-4 h-4 mr-1" />
           Academic Records
         </Badge>
       </div>
 
-      <Tabs value={activeTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="clearance">Clearance for Assessment</TabsTrigger>
-          <TabsTrigger value="results">Result</TabsTrigger>
+      <Tabs defaultValue="academic-transcript" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="academic-transcript">Academic Transcript</TabsTrigger>
+          <TabsTrigger value="semester-wise-transcript">Semester-wise Transcript</TabsTrigger>
+          <TabsTrigger value="semester-wise-result">Semester-wise Result</TabsTrigger>
         </TabsList>
 
-        {/* Clearance for Assessment Tab */}
-        <TabsContent value="clearance">
+        {/* Academic Transcript */}
+        <TabsContent value="academic-transcript">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <FileText className="w-5 h-5 text-deep-plum" />
-                <span>Clearance for Assessment</span>
+                <Award className="w-5 h-5 text-deep-plum" />
+                <span>Academic Transcript</span>
               </CardTitle>
-              <CardDescription>
-                Download your exam clearance form
-              </CardDescription>
+              <CardDescription>Complete academic record</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="semester">Select Semester</Label>
-                  <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose semester" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {semesters.map((semester) => (
-                        <SelectItem key={semester} value={semester}>
-                          {semester}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="examType">Exam Type</Label>
-                  <Select value={selectedExamType} onValueChange={setSelectedExamType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose exam type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {examTypes.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-end">
-                  <Button 
-                    onClick={handleDownloadClearance}
-                    className="nu-button-primary w-full"
-                    disabled={!selectedSemester || !selectedExamType}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Clearance
-                  </Button>
-                </div>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>#</TableHead>
+                      <TableHead>Course Code</TableHead>
+                      <TableHead>Course Title</TableHead>
+                      <TableHead>Credit Hour</TableHead>
+                      <TableHead>Grade Letter</TableHead>
+                      <TableHead>Grade Point</TableHead>
+                      <TableHead>TGP</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {academicTranscript.courses.map((course) => (
+                      <TableRow key={course.serial}>
+                        <TableCell>{course.serial}</TableCell>
+                        <TableCell className="font-medium">{course.courseCode}</TableCell>
+                        <TableCell>{course.courseTitle}</TableCell>
+                        <TableCell>{course.creditHour}</TableCell>
+                        <TableCell>
+                          <Badge className={
+                            course.gradeLetter.startsWith('A') ? 'bg-green-100 text-green-800' :
+                            course.gradeLetter.startsWith('B') ? 'bg-blue-100 text-blue-800' :
+                            course.gradeLetter.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }>
+                            {course.gradeLetter}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{course.gradePoint}</TableCell>
+                        <TableCell>{course.tgp}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
               
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start space-x-3">
-                  <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">Clearance Requirements:</h4>
-                    <ul className="text-sm text-blue-700 space-y-1">
-                      <li>• All dues must be cleared before exam clearance</li>
-                      <li>• Library clearance is required</li>
-                      <li>• Must be registered for the semester</li>
-                      <li>• TER submission must be completed</li>
-                    </ul>
+              <div className="mt-6 p-4 bg-deep-plum text-white rounded-lg">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{academicTranscript.totalCredit}</div>
+                    <div className="text-sm opacity-90">Total Credit</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{academicTranscript.cgpa}</div>
+                    <div className="text-sm opacity-90">Your CGPA</div>
                   </div>
                 </div>
               </div>
@@ -242,27 +196,108 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
           </Card>
         </TabsContent>
 
-        {/* Results Tab */}
-        <TabsContent value="results">
-          <Tabs defaultValue="academic-transcript" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="academic-transcript">Academic Transcript</TabsTrigger>
-              <TabsTrigger value="semester-wise-transcript">Semester-wise Transcript</TabsTrigger>
-              <TabsTrigger value="semester-wise-result">Semester-wise Result</TabsTrigger>
-            </TabsList>
-
-            {/* Academic Transcript */}
-            <TabsContent value="academic-transcript">
-              <Card>
+        {/* Semester-wise Transcript */}
+        <TabsContent value="semester-wise-transcript">
+          <div className="space-y-6">
+            {semesterWiseTranscript.map((semester, index) => (
+              <Card key={index}>
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Award className="w-5 h-5 text-deep-plum" />
-                    <span>Academic Transcript</span>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>{semester.semester}</span>
+                    <Badge className="bg-purple-100 text-purple-800">
+                      CGPA: {semester.cgpa}
+                    </Badge>
                   </CardTitle>
-                  <CardDescription>Complete academic record</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Course Code</TableHead>
+                        <TableHead>Course Name</TableHead>
+                        <TableHead>Credit</TableHead>
+                        <TableHead>Grade</TableHead>
+                        <TableHead>GP</TableHead>
+                        <TableHead>TGP</TableHead>
+                        <TableHead>Is Final</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {semester.courses.map((course, courseIndex) => (
+                        <TableRow key={courseIndex}>
+                          <TableCell className="font-medium">{course.courseCode}</TableCell>
+                          <TableCell>{course.courseName}</TableCell>
+                          <TableCell>{course.credit}</TableCell>
+                          <TableCell>
+                            <Badge className={
+                              course.grade.startsWith('A') ? 'bg-green-100 text-green-800' :
+                              course.grade.startsWith('B') ? 'bg-blue-100 text-blue-800' :
+                              course.grade.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }>
+                              {course.grade}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{course.gp}</TableCell>
+                          <TableCell>{course.tgp}</TableCell>
+                          <TableCell>
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  
+                  <div className="mt-4 pt-4 border-t text-right">
+                    <span className="font-semibold">Total: {semester.totalCredit} credits, TGP: {semester.totalTGP}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Semester-wise Result */}
+        <TabsContent value="semester-wise-result">
+          <Card>
+            <CardHeader>
+              <CardTitle>Semester-wise Result</CardTitle>
+              <CardDescription>Select a semester to view detailed results</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <Label htmlFor="resultSemester">Select Semester</Label>
+                <Select value={selectedResultSemester} onValueChange={setSelectedResultSemester}>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="Choose semester to view results" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {semesters.slice(0, 3).map((semester) => (
+                      <SelectItem key={semester} value={semester}>
+                        {semester}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {selectedResultSemester && (() => {
+                const semesterResult = getSelectedSemesterResult()
+                if (!semesterResult) return null
+
+                return (
+                  <div>
+                    <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="font-semibold text-purple-800">
+                          Semester: {semesterResult.semester}
+                        </span>
+                        <span className="font-bold text-purple-800">
+                          Semester GPA: {semesterResult.cgpa}
+                        </span>
+                      </div>
+                    </div>
+
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -270,370 +305,51 @@ export const ExamResults = ({ activeTab = 'clearance' }: ExamResultsProps) => {
                           <TableHead>Course Code</TableHead>
                           <TableHead>Course Title</TableHead>
                           <TableHead>Credit Hour</TableHead>
-                          <TableHead>Grade Letter</TableHead>
+                          <TableHead>Letter Grade</TableHead>
                           <TableHead>Grade Point</TableHead>
                           <TableHead>TGP</TableHead>
+                          <TableHead>Is Final</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {academicTranscript.courses.map((course) => (
-                          <TableRow key={course.serial}>
-                            <TableCell>{course.serial}</TableCell>
+                        {semesterResult.courses.map((course, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
                             <TableCell className="font-medium">{course.courseCode}</TableCell>
-                            <TableCell>{course.courseTitle}</TableCell>
-                            <TableCell>{course.creditHour}</TableCell>
+                            <TableCell>{course.courseName}</TableCell>
+                            <TableCell>{course.credit}</TableCell>
                             <TableCell>
                               <Badge className={
-                                course.gradeLetter.startsWith('A') ? 'bg-green-100 text-green-800' :
-                                course.gradeLetter.startsWith('B') ? 'bg-blue-100 text-blue-800' :
-                                course.gradeLetter.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
+                                course.grade.startsWith('A') ? 'bg-green-100 text-green-800' :
+                                course.grade.startsWith('B') ? 'bg-blue-100 text-blue-800' :
+                                course.grade.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-red-100 text-red-800'
                               }>
-                                {course.gradeLetter}
+                                {course.grade}
                               </Badge>
                             </TableCell>
-                            <TableCell>{course.gradePoint}</TableCell>
+                            <TableCell>{course.gp}</TableCell>
                             <TableCell>{course.tgp}</TableCell>
+                            <TableCell>
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
-                  </div>
-                  
-                  <div className="mt-6 p-4 bg-deep-plum text-white rounded-lg">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">{academicTranscript.totalCredit}</div>
-                        <div className="text-sm opacity-90">Total Credit</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">{academicTranscript.cgpa}</div>
-                        <div className="text-sm opacity-90">Your CGPA</div>
-                      </div>
+
+                    <div className="mt-4 pt-4 border-t text-right">
+                      <span className="font-semibold">
+                        Total: {semesterResult.totalCredit} credits, TGP: {semesterResult.totalTGP}
+                      </span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Semester-wise Transcript */}
-            <TabsContent value="semester-wise-transcript">
-              <div className="space-y-6">
-                {semesterWiseTranscript.map((semester, index) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span>{semester.semester}</span>
-                        <Badge className="bg-purple-100 text-purple-800">
-                          CGPA: {semester.cgpa}
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Course Code</TableHead>
-                            <TableHead>Course Name</TableHead>
-                            <TableHead>Credit</TableHead>
-                            <TableHead>Grade</TableHead>
-                            <TableHead>GP</TableHead>
-                            <TableHead>TGP</TableHead>
-                            <TableHead>Is Final</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {semester.courses.map((course, courseIndex) => (
-                            <TableRow key={courseIndex}>
-                              <TableCell className="font-medium">{course.courseCode}</TableCell>
-                              <TableCell>{course.courseName}</TableCell>
-                              <TableCell>{course.credit}</TableCell>
-                              <TableCell>
-                                <Badge className={
-                                  course.grade.startsWith('A') ? 'bg-green-100 text-green-800' :
-                                  course.grade.startsWith('B') ? 'bg-blue-100 text-blue-800' :
-                                  course.grade.startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
-                                  'bg-red-100 text-red-800'
-                                }>
-                                  {course.grade}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>{course.gp}</TableCell>
-                              <TableCell>{course.tgp}</TableCell>
-                              <TableCell>
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                      
-                      <div className="mt-4 pt-4 border-t text-right">
-                        <span className="font-semibold">Total: {semester.totalCredit} credits, TGP: {semester.totalTGP}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            {/* Semester-wise Result */}
-            <TabsContent value="semester-wise-result">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Semester-wise Result</CardTitle>
-                  <CardDescription>Select a semester to view detailed results</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-6">
-                    <Label htmlFor="resultSemester">Select Semester</Label>
-                    <Select value={selectedResultSemester} onValueChange={setSelectedResultSemester}>
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Choose semester to view results" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {semesters.slice(0, 3).map((semester) => (
-                          <SelectItem key={semester} value={semester}>
-                            {semester}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {selectedResultSemester && (() => {
-                    const semesterResult = getSelectedSemesterResult()
-                    if (!semesterResult) return null
-
-                    return (
-                      <div>
-                        <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                          <div className="flex justify-between items-center">
-                            <span className="font-semibold text-purple-800">
-                              Semester: {semesterResult.semester}
-                            </span>
-                            <span className="font-bold text-purple-800">
-                              Semester GPA: {semesterResult.semesterGPA || semesterResult.cgpa}
-                            </span>
-                          </div>
-                        </div>
-
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>#</TableHead>
-                              <TableHead>Course Code</TableHead>
-                              <TableHead>Course Title</TableHead>
-                              <TableHead>Credit Hour</TableHead>
-                              <TableHead>Letter Grade</TableHead>
-                              <TableHead>Grade Point</TableHead>
-                              <TableHead>TGP</TableHead>
-                              <TableHead>Is Final</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {semesterResult.courses.map((course, index) => (
-                              <TableRow key={index}>
-                                <TableCell>{course.serial || index + 1}</TableCell>
-                                <TableCell className="font-medium">{course.courseCode}</TableCell>
-                                <TableCell>{course.courseTitle || course.courseName}</TableCell>
-                                <TableCell>{course.creditHour || course.credit}</TableCell>
-                                <TableCell>
-                                  <Badge className={
-                                    (course.letterGrade || course.grade).startsWith('A') ? 'bg-green-100 text-green-800' :
-                                    (course.letterGrade || course.grade).startsWith('B') ? 'bg-blue-100 text-blue-800' :
-                                    (course.letterGrade || course.grade).startsWith('C') ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-red-100 text-red-800'
-                                  }>
-                                    {course.letterGrade || course.grade}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>{course.gradePoint || course.gp}</TableCell>
-                                <TableCell>{course.tgp}</TableCell>
-                                <TableCell>
-                                  <CheckCircle className="w-4 h-4 text-green-600" />
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-
-                        <div className="mt-4 pt-4 border-t text-right">
-                          <span className="font-semibold">
-                            Total: {semesterResult.totalCredit} credits, TGP: {semesterResult.totalTGP}
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })()}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                )
+              })()}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Assessment Clearance Preview Modal */}
-      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
-        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Assessment Clearance Form Preview</DialogTitle>
-            <DialogDescription>
-              Preview of your exam clearance form for {selectedExamType} exam in {selectedSemester}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6 p-4 bg-white border border-gray-200 rounded-lg">
-            {/* Header */}
-            <div className="text-center border-b pb-4">
-              <div className="flex items-center justify-center space-x-3 mb-2">
-                <div className="w-12 h-12 bg-deep-plum rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">NU</span>
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-deep-plum">Northern University</h2>
-                  <p className="text-sm text-gray-600">Dhaka, Bangladesh</p>
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold">EXAMINATION CLEARANCE CERTIFICATE</h3>
-              <p className="text-sm text-gray-600">{selectedSemester} • {selectedExamType} Examination</p>
-            </div>
-
-            {/* Student Information */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-600">Student Name:</label>
-                <p className="font-semibold">Ahmed Hassan Rahman</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Student ID:</label>
-                <p className="font-semibold">20241601234</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Program:</label>
-                <p className="font-semibold">CSE - Bachelor of Science in Computer Science and Engineering</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Semester:</label>
-                <p className="font-semibold">{selectedSemester}</p>
-              </div>
-            </div>
-
-            {/* Clearance Status */}
-            <div className="space-y-3">
-              <h4 className="font-semibold text-deep-plum border-b pb-2">Clearance Status</h4>
-              <div className="grid grid-cols-1 gap-3">
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <span className="font-medium">Academic Standing</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Clear
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <span className="font-medium">Financial Obligations</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Paid
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <span className="font-medium">Library Clearance</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Clear
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <span className="font-medium">TER Submission</span>
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Completed
-                  </Badge>
-                </div>
-              </div>
-            </div>
-
-            {/* Registered Courses */}
-            <div className="space-y-3">
-              <h4 className="font-semibold text-deep-plum border-b pb-2">Registered Courses for {selectedExamType} Exam</h4>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse border border-gray-200">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="border border-gray-200 px-3 py-2 text-left">Course Code</th>
-                      <th className="border border-gray-200 px-3 py-2 text-left">Course Title</th>
-                      <th className="border border-gray-200 px-3 py-2 text-center">Credits</th>
-                      <th className="border border-gray-200 px-3 py-2 text-center">Section</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE401</td>
-                      <td className="border border-gray-200 px-3 py-2">Database Management Systems</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">A</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE403</td>
-                      <td className="border border-gray-200 px-3 py-2">Software Engineering</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">B</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-3 py-2 font-mono">CSE405</td>
-                      <td className="border border-gray-200 px-3 py-2">Computer Networks</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">3</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">A</td>
-                    </tr>
-                    <tr>
-                      <td className="border border-gray-200 px-3 py-2 font-mono">ENG102</td>
-                      <td className="border border-gray-200 px-3 py-2">Technical Writing</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">2</td>
-                      <td className="border border-gray-200 px-3 py-2 text-center">C</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Authorization */}
-            <div className="pt-4 border-t space-y-4">
-              <div className="flex justify-between items-end">
-                <div className="text-center">
-                  <div className="w-40 border-b border-gray-400 mb-2"></div>
-                  <p className="text-sm font-medium">Student Signature</p>
-                  <p className="text-xs text-gray-500">Date: {new Date().toLocaleDateString()}</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-40 border-b border-gray-400 mb-2"></div>
-                  <p className="text-sm font-medium">Registrar Office</p>
-                  <p className="text-xs text-gray-500">Date: {new Date().toLocaleDateString()}</p>
-                </div>
-              </div>
-
-              <div className="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                This clearance certificate is valid only for the {selectedExamType} examination of {selectedSemester}.
-                <br />
-                Certificate ID: CLR-{Date.now()}-{selectedExamType.toUpperCase()}
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowPreviewModal(false)}
-            >
-              Close Preview
-            </Button>
-            <Button onClick={handleActualDownload}>
-              <Download className="w-4 h-4 mr-2" />
-              Download PDF
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

@@ -347,7 +347,7 @@ export const EditStudentProfile = ({ onClose, onSave }: { onClose: () => void, o
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-4">
-              You have already submitted a profile update request. Please wait for admin approval before making another request.
+              You have already submitted a profile update request. Please wait for ACAD approval before making another request.
             </p>
             <Button onClick={onClose} className="w-full">
               Close
@@ -378,7 +378,7 @@ export const EditStudentProfile = ({ onClose, onSave }: { onClose: () => void, o
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-4">
-              Your profile update request has been submitted successfully. An administrator will review your changes and approve them shortly.
+              Your profile update request has been submitted successfully. ACAD will review your changes and approve them shortly.
             </p>
             <Button onClick={onSave} className="w-full nu-button-primary">
               Close
@@ -406,7 +406,7 @@ export const EditStudentProfile = ({ onClose, onSave }: { onClose: () => void, o
               <div>
                 <p className="text-sm font-medium text-yellow-800">Important Notice</p>
                 <p className="text-sm text-yellow-700">
-                  Profile updates require administrator approval. You can only submit one update request at a time.
+                  Profile updates require ACAD approval. You can only submit one update request at a time.
                 </p>
               </div>
             </div>
@@ -511,7 +511,7 @@ export const ChangePassword = ({ onClose, onSave }: { onClose: () => void, onSav
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-4">
-              Your password change request has been submitted successfully. An administrator will review and approve your request shortly.
+              Your password change request has been submitted successfully. ACAD will review and approve your request shortly.
             </p>
             <Button onClick={onSave} className="w-full nu-button-primary">
               Close
@@ -528,7 +528,7 @@ export const ChangePassword = ({ onClose, onSave }: { onClose: () => void, onSav
         <CardHeader>
           <CardTitle>Change Password</CardTitle>
           <CardDescription>
-            Password changes require administrator approval for security.
+            Password changes require ACAD approval for security.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -536,7 +536,7 @@ export const ChangePassword = ({ onClose, onSave }: { onClose: () => void, onSav
             <div className="flex items-start space-x-2">
               <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
               <p className="text-sm text-blue-700">
-                For security reasons, password changes require administrator approval. You will be notified once your request is processed.
+                For security reasons, password changes require ACAD approval. You will be notified once your request is processed.
               </p>
             </div>
           </div>

@@ -7,21 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Users, 
-  Search, 
-  ArrowRight, 
-  Download, 
-  Upload,
+import {
+  Users,
+  Search,
+  ArrowRight,
+  Download,
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Filter,
-  RotateCcw,
   UserCheck,
-  FileText,
-  Calendar,
-  BookOpen
+  FileText
 } from 'lucide-react'
 
 interface Student {
@@ -148,7 +143,7 @@ const changeRequests: SectionChangeRequest[] = [
     reason: 'Medical reasons - need morning classes',
     requestDate: '2024-01-14',
     status: 'approved',
-    processedBy: 'Admin User',
+    processedBy: 'ACAD User',
     processedDate: '2024-01-14',
     notes: 'Approved due to medical documentation'
   },
@@ -163,7 +158,7 @@ const changeRequests: SectionChangeRequest[] = [
     reason: 'Better instructor preference',
     requestDate: '2024-01-13',
     status: 'rejected',
-    processedBy: 'Admin User',
+    processedBy: 'ACAD User',
     processedDate: '2024-01-13',
     notes: 'Section A is full, no capacity available'
   }
@@ -368,16 +363,16 @@ function IndividualSectionChange() {
 
 function BulkSectionChange() {
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set())
-  const [filterSemester, setFilterSemester] = useState('')
-  const [filterProgram, setFilterProgram] = useState('')
-  const [filterCourse, setFilterCourse] = useState('')
+  const [filterSemester, setFilterSemester] = useState('all')
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterCourse, setFilterCourse] = useState('all')
   const [bulkTargetSection, setBulkTargetSection] = useState('')
   const [bulkReason, setBulkReason] = useState('')
 
   const filteredStudents = studentsData.filter(student => {
-    return (!filterSemester || student.semester === filterSemester) &&
-           (!filterProgram || student.program === filterProgram) &&
-           (!filterCourse || student.courseCode === filterCourse)
+    return (filterSemester === 'all' || student.semester === filterSemester) &&
+           (filterProgram === 'all' || student.program === filterProgram) &&
+           (filterCourse === 'all' || student.courseCode === filterCourse)
   })
 
   const handleSelectAll = (checked: boolean) => {
@@ -427,7 +422,7 @@ function BulkSectionChange() {
                   <SelectValue placeholder="All Semesters" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Semesters</SelectItem>
+                  <SelectItem value="all">All Semesters</SelectItem>
                   <SelectItem value="Fall 2024">Fall 2024</SelectItem>
                   <SelectItem value="Spring 2024">Spring 2024</SelectItem>
                   <SelectItem value="Summer 2024">Summer 2024</SelectItem>
@@ -442,7 +437,7 @@ function BulkSectionChange() {
                   <SelectValue placeholder="All Programs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Programs</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
                   <SelectItem value="CSE">CSE</SelectItem>
                   <SelectItem value="BBA">BBA</SelectItem>
                   <SelectItem value="EEE">EEE</SelectItem>
@@ -457,7 +452,7 @@ function BulkSectionChange() {
                   <SelectValue placeholder="All Courses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Courses</SelectItem>
+                  <SelectItem value="all">All Courses</SelectItem>
                   <SelectItem value="CSE401">CSE401</SelectItem>
                   <SelectItem value="BBA401">BBA401</SelectItem>
                   <SelectItem value="EEE201">EEE201</SelectItem>

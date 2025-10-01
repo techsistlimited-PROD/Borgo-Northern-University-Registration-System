@@ -7,25 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
-import { 
-  Users, 
-  Search, 
-  UserPlus, 
-  Download, 
-  Upload,
+import {
+  Users,
+  Search,
+  UserPlus,
+  Download,
   CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Filter,
   RotateCcw,
   UserCheck,
   FileText,
-  Calendar,
-  BookOpen,
   GraduationCap,
-  Phone,
-  Mail,
-  MapPin,
   UserX
 } from 'lucide-react'
 
@@ -62,18 +53,6 @@ interface Student {
   status: 'active' | 'suspended' | 'graduated' | 'dropped'
 }
 
-interface AdvisorAssignment {
-  id: string
-  studentId: string
-  studentName: string
-  teacherId: string
-  teacherName: string
-  assignmentDate: string
-  assignedBy: string
-  isActive: boolean
-  reassignmentReason?: string
-  previousAdvisor?: string
-}
 
 // Mock data for teachers
 const teachersData: Teacher[] = [
@@ -238,40 +217,6 @@ const studentsData: Student[] = [
   }
 ]
 
-// Mock assignment history
-const assignmentHistory: AdvisorAssignment[] = [
-  {
-    id: '1',
-    studentId: '2021-1-60-001',
-    studentName: 'Ahmed Rahman',
-    teacherId: 'T001',
-    teacherName: 'Dr. Rahman Ahmed',
-    assignmentDate: '2021-03-15',
-    assignedBy: 'Admin User',
-    isActive: true
-  },
-  {
-    id: '2',
-    studentId: '2022-1-60-002',
-    studentName: 'Fatima Khan',
-    teacherId: 'T002',
-    teacherName: 'Prof. Sarah Khan',
-    assignmentDate: '2022-03-15',
-    assignedBy: 'Admin User',
-    isActive: true
-  },
-  {
-    id: '3',
-    studentId: '2021-1-60-006',
-    studentName: 'Previous Student',
-    teacherId: 'T001',
-    teacherName: 'Dr. Rahman Ahmed',
-    assignmentDate: '2021-03-15',
-    assignedBy: 'Admin User',
-    isActive: false,
-    reassignmentReason: 'Student graduated'
-  }
-]
 
 function IndividualAssignment() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
@@ -491,13 +436,13 @@ function IndividualAssignment() {
 function BulkAssignment() {
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set())
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
-  const [filterProgram, setFilterProgram] = useState('')
-  const [filterSemester, setFilterSemester] = useState('')
+  const [filterProgram, setFilterProgram] = useState('all')
+  const [filterSemester, setFilterSemester] = useState('all')
   const [bulkReason, setBulkReason] = useState('')
 
   const filteredStudents = studentsData.filter(student => {
-    return (!filterProgram || student.program === filterProgram) &&
-           (!filterSemester || student.semester === filterSemester) &&
+    return (filterProgram === 'all' || student.program === filterProgram) &&
+           (filterSemester === 'all' || student.semester === filterSemester) &&
            student.status === 'active' &&
            !student.currentAdvisor // Only unassigned students
   })
@@ -558,7 +503,7 @@ function BulkAssignment() {
                   <SelectValue placeholder="All Programs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Programs</SelectItem>
+                  <SelectItem value="all">All Programs</SelectItem>
                   <SelectItem value="CSE">CSE</SelectItem>
                   <SelectItem value="BBA">BBA</SelectItem>
                   <SelectItem value="EEE">EEE</SelectItem>
@@ -573,7 +518,7 @@ function BulkAssignment() {
                   <SelectValue placeholder="All Semesters" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Semesters</SelectItem>
+                  <SelectItem value="all">All Semesters</SelectItem>
                   <SelectItem value="Fall 2024">Fall 2024</SelectItem>
                   <SelectItem value="Spring 2024">Spring 2024</SelectItem>
                   <SelectItem value="Summer 2024">Summer 2024</SelectItem>

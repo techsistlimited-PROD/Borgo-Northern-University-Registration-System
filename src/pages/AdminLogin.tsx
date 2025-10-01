@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Settings } from 'lucide-react'
 
-export default function AdminLogin() {
+export default function ACADLogin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,11 +20,11 @@ export default function AdminLogin() {
     setError('')
 
     try {
-      const success = await login({ ...credentials, role: 'admin' })
+      const success = await login({ ...credentials, role: 'acad' })
       if (success) {
-        navigate('/admin/dashboard')
+        navigate('/acad/dashboard')
       } else {
-        setError('Invalid admin credentials')
+        setError('Invalid ACAD credentials')
       }
     } catch (err) {
       setError('Login failed. Please try again.')
@@ -46,9 +46,9 @@ export default function AdminLogin() {
             <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
               <Settings className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl font-bold text-deep-plum">Admin Login</CardTitle>
+            <CardTitle className="text-2xl font-bold text-deep-plum">ACAD Login</CardTitle>
             <CardDescription>
-              Administrative access to system management
+              Academic Affairs access to system management
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -58,7 +58,7 @@ export default function AdminLogin() {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Enter admin username"
+                  placeholder="Enter ACAD username"
                   value={credentials.username}
                   onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
                   required
@@ -92,8 +92,8 @@ export default function AdminLogin() {
             
             <div className="mt-4 p-3 bg-mint-green/20 rounded-md">
               <p className="text-sm text-gray-700 font-medium">Demo Credentials:</p>
-              <p className="text-sm text-gray-600">Username: admin</p>
-              <p className="text-sm text-gray-600">Password: admin123</p>
+              <p className="text-sm text-gray-600">Username: acad</p>
+              <p className="text-sm text-gray-600">Password: acad123</p>
             </div>
           </CardContent>
         </Card>

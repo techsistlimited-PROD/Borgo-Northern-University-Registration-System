@@ -404,7 +404,7 @@ export default function CumulativeScore() {
                 ) : (
                   <>
                     <Save className="w-4 h-4" />
-                    <span>Save Scores</span>
+                    <span>Save & Publish</span>
                   </>
                 )}
               </Button>

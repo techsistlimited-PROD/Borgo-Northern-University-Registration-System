@@ -8,10 +8,14 @@ import { StudentDashboardOverview } from '@/components/student/StudentDashboardO
 import { WaiverInfo } from '@/components/student/WaiverInfo'
 import { SemesterSchedule } from '@/components/student/SemesterSchedule'
 import { SemesterRegistration } from '@/components/student/SemesterRegistration'
+import { AddDropCourses } from '@/components/student/AddDropCourses'
+import { SemesterDropApplication } from '@/components/student/SemesterDropApplication'
+import { StudentSectionChangeApplication } from '@/components/student/StudentSectionChangeApplication'
 import { ClassRoutine } from '@/components/student/ClassRoutine'
 import { PaymentInformation } from '@/components/student/PaymentInformation'
 import { TERForm } from '@/components/student/TERForm'
 import { ExamResults } from '@/components/student/ExamResults'
+import { ClearanceApplication } from '@/components/student/ClearanceApplication'
 import {
   Home,
   Users,
@@ -25,7 +29,10 @@ import {
   CreditCard,
   Clock,
   FileText,
-  Award
+  Award,
+  RefreshCw,
+  UserX,
+  Repeat
 } from 'lucide-react'
 
 const Sidebar = ({ activeTab, setActiveTab }: { 
@@ -46,15 +53,26 @@ const Sidebar = ({ activeTab, setActiveTab }: {
         { id: 'all-registration', label: 'All Registration' }
       ]
     },
+    { id: 'add-drop-courses', label: 'Add/Drop Courses', icon: RefreshCw },
+    { id: 'semester-drop', label: 'Semester Drop', icon: UserX },
+    { id: 'section-change', label: 'Section Change', icon: Repeat },
     { id: 'class-routine', label: 'Class Routine', icon: Clock },
     { id: 'ter-form', label: 'TER Fill Up', icon: FileText },
     {
+      id: 'clearance',
+      label: 'Clearance Applications',
+      icon: FileText,
+      subItems: [
+        { id: 'exam-clearance', label: 'Clearance for Exams' },
+        { id: 'final-clearance', label: 'Final Clearance for Certificates' }
+      ]
+    },
+    {
       id: 'exam-results',
-      label: 'Exam and Results',
+      label: 'Results',
       icon: Award,
       subItems: [
-        { id: 'clearance-assessment', label: 'Clearance for Assessment' },
-        { id: 'results', label: 'Results' }
+        { id: 'results', label: 'Academic Results' }
       ]
     },
     {
@@ -213,15 +231,26 @@ export default function StudentDashboard() {
       case 'all-registration':
         return <SemesterRegistration activeTab="all" studentHolds={studentHolds} />
 
+      case 'add-drop-courses':
+        return <AddDropCourses />
+      case 'semester-drop':
+        return <SemesterDropApplication />
+      case 'section-change':
+        return <StudentSectionChangeApplication />
       case 'class-routine':
         return <ClassRoutine />
       case 'ter-form':
         return <TERForm />
 
+      // Clearance cases
+      case 'clearance':
+      case 'exam-clearance':
+        return <ClearanceApplication activeTab="exam-clearance" />
+      case 'final-clearance':
+        return <ClearanceApplication activeTab="final-clearance" />
+
       // Exam Results cases
       case 'exam-results':
-      case 'clearance-assessment':
-        return <ExamResults activeTab="clearance" />
       case 'results':
         return <ExamResults activeTab="results" />
 
@@ -254,9 +283,13 @@ export default function StudentDashboard() {
               {activeTab === 'waiver-info' && 'Waiver Information'}
               {activeTab === 'semester-schedule' && 'Semester Schedule'}
               {(activeTab === 'semester-registration' || activeTab === 'last-registration' || activeTab === 'new-registration' || activeTab === 'all-registration') && 'Semester Registration'}
+              {activeTab === 'add-drop-courses' && 'Add/Drop Courses'}
+              {activeTab === 'semester-drop' && 'Semester Drop Application'}
+              {activeTab === 'section-change' && 'Section Change Application'}
               {activeTab === 'class-routine' && 'Class Routine'}
               {activeTab === 'ter-form' && 'TER Fill Up'}
-              {(activeTab === 'exam-results' || activeTab === 'clearance-assessment' || activeTab === 'results') && 'Exam and Results'}
+              {(activeTab === 'clearance' || activeTab === 'exam-clearance' || activeTab === 'final-clearance') && 'Clearance Applications'}
+              {(activeTab === 'exam-results' || activeTab === 'results') && 'Academic Results'}
               {(activeTab === 'payment-info' || activeTab === 'payable-list' || activeTab === 'payment-history' || activeTab === 'financial-summary' || activeTab === 'detailed-report') && 'Payment Information'}
             </h1>
             <p className="text-sm text-gray-600">Welcome to Northern University Student Portal</p>
