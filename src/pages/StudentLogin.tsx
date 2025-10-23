@@ -20,7 +20,7 @@ export default function StudentLogin() {
     setError('')
 
     try {
-      const success = await login({ ...credentials, role: 'student' })
+      const success = await login({ username: credentials.username.trim(), password: credentials.password.trim(), role: 'student' })
       if (success) {
         navigate('/student/dashboard')
       } else {
@@ -92,8 +92,19 @@ export default function StudentLogin() {
             
             <div className="mt-4 p-3 bg-mint-green/20 rounded-md">
               <p className="text-sm text-gray-700 font-medium">Demo Credentials:</p>
-              <p className="text-sm text-gray-600">Student ID: 2021-1-60-001</p>
-              <p className="text-sm text-gray-600">Password: student123</p>
+              <div className="flex items-center justify-between mt-1">
+                <div className="text-sm text-gray-600">
+                  <p>Student ID: 2021-1-60-001</p>
+                  <p>Password: student123</p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="ml-4"
+                  onClick={() => setCredentials({ username: '2021-1-60-001', password: 'student123' })}
+                >
+                  Fill Demo</Button>
+              </div>
             </div>
           </CardContent>
         </Card>
