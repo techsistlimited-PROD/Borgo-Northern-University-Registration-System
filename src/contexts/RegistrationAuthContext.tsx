@@ -64,8 +64,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (credentials: { username: string; password: string; role: UserRole }): Promise<boolean> => {
-    const { username, password, role } = credentials
-    
+    const role = credentials.role
+    const username = credentials.username.trim()
+    const password = credentials.password.trim()
+
     // Check demo credentials
     if (demoCredentials[role]?.username === username && demoCredentials[role]?.password === password) {
       const userData = demoUsers[username]
@@ -75,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return true
       }
     }
-    
+
     return false
   }
 
