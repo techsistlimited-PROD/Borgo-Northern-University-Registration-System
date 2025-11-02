@@ -112,11 +112,11 @@ export default function AttendanceIncidents() {
                     <td className="p-3 text-sm font-mono">{row.candidateCode}</td>
                     <td className="p-3 text-sm">{row.name}</td>
                     <td className="p-3">
-                      <select className="p-1 border rounded text-sm">
-                        <option selected={row.status === 'Present'}>Present</option>
-                        <option selected={row.status === 'Late'}>Late</option>
-                        <option selected={row.status === 'Absent'}>Absent</option>
-                        <option selected={row.status === 'Expelled'}>Expelled</option>
+                      <select className="p-1 border rounded text-sm" defaultValue={row.status}>
+                        <option value="Present">Present</option>
+                        <option value="Late">Late</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Expelled">Expelled</option>
                       </select>
                     </td>
                     <td className="p-3">
