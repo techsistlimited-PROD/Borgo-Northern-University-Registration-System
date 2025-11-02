@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-export type UserRole = 'student' | 'acad' | 'teacher' | 'coe'
+export type UserRole = 'student' | 'acad' | 'teacher' | 'coe' | 'finance'
 
 export interface User {
   id: string
@@ -25,7 +25,8 @@ const demoCredentials = {
   student: { username: '2021-1-60-001', password: 'student123' },
   acad: { username: 'acad', password: 'acad123' },
   teacher: { username: 'T001', password: 'teacher123' },
-  coe: { username: 'coe', password: 'coe123' }
+  coe: { username: 'coe', password: 'coe123' },
+  finance: { username: 'finance', password: 'finance123' }
 }
 
 // Demo users
@@ -56,6 +57,12 @@ const demoUsers: Record<string, User> = {
     name: 'Md. Arif Hossain',
     role: 'coe',
     email: 'exam.controller@nu.edu.bd'
+  },
+  'finance': {
+    id: 'finance',
+    name: 'Mahfuz Rahman',
+    role: 'finance',
+    email: 'finance@nu.edu.bd'
   }
 }
 
