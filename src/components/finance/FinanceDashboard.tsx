@@ -162,7 +162,7 @@ export default function FinanceDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Program-wise >90 Day Dues</CardTitle>
+            <CardTitle>Program-wise &gt;90 Day Dues</CardTitle>
             <CardDescription>Critical overdue amounts by program</CardDescription>
           </CardHeader>
           <CardContent>
@@ -171,7 +171,7 @@ export default function FinanceDashboard() {
                 <thead>
                   <tr className="border-b">
                     <th className="text-left p-3 text-sm font-medium text-gray-700">Program</th>
-                    <th className="text-right p-3 text-sm font-medium text-gray-700">>90 Dues (BDT)</th>
+                    <th className="text-right p-3 text-sm font-medium text-gray-700">&gt;90 Dues (BDT)</th>
                     <th className="text-right p-3 text-sm font-medium text-gray-700">Students</th>
                   </tr>
                 </thead>
