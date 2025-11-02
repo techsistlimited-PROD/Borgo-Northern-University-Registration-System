@@ -5,10 +5,12 @@ import StudentLogin from '@/pages/StudentLogin'
 import ACADLogin from '@/pages/AdminLogin'
 import TeacherLogin from '@/pages/TeacherLogin'
 import COELogin from '@/pages/COELogin'
+import FinanceLogin from '@/pages/FinanceLogin'
 import StudentDashboard from '@/pages/StudentDashboard'
 import ACADDashboard from '@/pages/AdminDashboard'
 import TeacherDashboard from '@/pages/TeacherDashboard'
 import COEDashboard from '@/pages/COEDashboard'
+import FinanceDashboard from '@/pages/FinanceDashboard'
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
@@ -35,6 +37,7 @@ function AppRoutes() {
       <Route path="/acad-login" element={<ACADLogin />} />
       <Route path="/teacher-login" element={<TeacherLogin />} />
       <Route path="/coe-login" element={<COELogin />} />
+      <Route path="/finance-login" element={<FinanceLogin />} />
       
       {/* Protected Routes */}
       <Route 
@@ -66,6 +69,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRole="coe">
             <COEDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finance/dashboard"
+        element={
+          <ProtectedRoute allowedRole="finance">
+            <FinanceDashboard />
           </ProtectedRoute>
         }
       />
