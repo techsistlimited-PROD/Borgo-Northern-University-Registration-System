@@ -14,6 +14,10 @@ import MarkEntryStatus from '@/components/coe/MarkEntryStatus'
 import AttendanceIncidents from '@/components/coe/AttendanceIncidents'
 import PublishResults from '@/components/coe/PublishResults'
 import TabulationBoard from '@/components/coe/TabulationBoard'
+import CalendarPolicies from '@/components/coe/CalendarPolicies'
+import SessionsTimetable from '@/components/coe/SessionsTimetable'
+import CertificatesQueue from '@/components/coe/CertificatesQueue'
+import ComplianceReports from '@/components/coe/ComplianceReports'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -38,9 +42,9 @@ export default function COEDashboard() {
       case 'Attendance & Incidents':
         return <AttendanceIncidents />
       case 'Calendar & Policies':
-        return <PlaceholderView title="Calendar & Policies" description="Manage exam calendar and policies" />
+        return <CalendarPolicies />
       case 'Sessions & Timetable':
-        return <PlaceholderView title="Sessions & Timetable" description="Build and manage exam timetable" />
+        return <SessionsTimetable />
       case 'Invigilation Duty':
         return <PlaceholderView title="Invigilation Duty" description="Assign invigilators to exam sessions" />
       case 'Admit Cards':
@@ -52,13 +56,11 @@ export default function COEDashboard() {
       case 'Recheck / Appeals':
         return <PlaceholderView title="Recheck / Appeals" description="Handle recheck and appeal requests" />
       case 'Transcript / Certificate Queue':
-        return <PlaceholderView title="Transcript / Certificate Queue" description="Manage document requests" />
       case 'Gazette Archive':
-        return <PlaceholderView title="Gazette Archive" description="Published results archive" />
+        return <CertificatesQueue />
       case 'Compliance Reports':
-        return <PlaceholderView title="Compliance Reports" description="Generate compliance reports" />
       case 'Analytics':
-        return <PlaceholderView title="Analytics" description="Examination analytics and trends" />
+        return <ComplianceReports />
       default:
         return <COEDashboardView />
     }
