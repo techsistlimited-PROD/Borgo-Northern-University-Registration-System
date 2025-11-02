@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, Users, Settings, BookOpen } from 'lucide-react'
+import { GraduationCap, Users, Settings, BookOpen, ClipboardCheck } from 'lucide-react'
 
 const Header = () => (
   <header className="bg-white shadow-sm border-b">
@@ -37,7 +37,7 @@ export default function Index() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {/* Student Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
@@ -103,6 +103,29 @@ export default function Index() {
               </Link>
               <p className="text-xs text-gray-500 mt-2">
                 Demo Username: acad
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* COE Portal */}
+          <Card className="text-center group hover:scale-105 transition-transform duration-300">
+            <CardHeader className="pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
+                <ClipboardCheck className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-deep-plum">COE Portal</CardTitle>
+              <CardDescription>
+                Controller of Examinations - Manage exams, eligibility, results, and certifications
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/coe-login">
+                <Button className="w-full nu-button-primary">
+                  Access COE Portal
+                </Button>
+              </Link>
+              <p className="text-xs text-gray-500 mt-2">
+                Demo Username: coe
               </p>
             </CardContent>
           </Card>
