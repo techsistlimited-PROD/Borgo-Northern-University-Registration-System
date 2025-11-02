@@ -12,6 +12,8 @@ import EligibilityCheck from '@/components/coe/EligibilityCheck'
 import SeatPlanGenerator from '@/components/coe/SeatPlanGenerator'
 import MarkEntryStatus from '@/components/coe/MarkEntryStatus'
 import AttendanceIncidents from '@/components/coe/AttendanceIncidents'
+import PublishResults from '@/components/coe/PublishResults'
+import TabulationBoard from '@/components/coe/TabulationBoard'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -44,9 +46,9 @@ export default function COEDashboard() {
       case 'Admit Cards':
         return <PlaceholderView title="Admit Cards" description="Generate and manage admit cards" />
       case 'Tabulation Board':
-        return <PlaceholderView title="Tabulation Board" description="Finalize results and board approval" />
+        return <TabulationBoard />
       case 'Publish Results':
-        return <PlaceholderView title="Publish Results" description="Publish examination results" />
+        return <PublishResults />
       case 'Recheck / Appeals':
         return <PlaceholderView title="Recheck / Appeals" description="Handle recheck and appeal requests" />
       case 'Transcript / Certificate Queue':
