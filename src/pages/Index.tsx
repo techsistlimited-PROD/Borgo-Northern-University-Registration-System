@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, Users, Settings, BookOpen, ClipboardCheck, Wallet } from 'lucide-react'
+import { GraduationCap, Users, Settings, BookOpen, ClipboardCheck, Wallet, Shield } from 'lucide-react'
 
 const Header = () => (
   <header className="bg-white shadow-sm border-b">
@@ -37,7 +37,7 @@ export default function Index() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* Student Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
@@ -149,6 +149,29 @@ export default function Index() {
               </Link>
               <p className="text-xs text-gray-500 mt-2">
                 Demo Username: finance
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Admin Portal */}
+          <Card className="text-center group hover:scale-105 transition-transform duration-300">
+            <CardHeader className="pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-deep-plum">Admin Portal</CardTitle>
+              <CardDescription>
+                System administration - users, roles, access control, and compliance logs
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/admin-login">
+                <Button className="w-full nu-button-primary">
+                  Access Admin Portal
+                </Button>
+              </Link>
+              <p className="text-xs text-gray-500 mt-2">
+                Demo Username: admin
               </p>
             </CardContent>
           </Card>
