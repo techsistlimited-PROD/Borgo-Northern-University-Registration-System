@@ -179,12 +179,13 @@ export default function StudentLedger() {
               </div>
               <div className="flex-1">
                 <DialogTitle>{selectedStudent?.name}</DialogTitle>
-                <DialogDescription className="space-y-1 mt-2">
-                  <div className="flex gap-4 text-sm">
+                <DialogDescription>Student account details and transaction history</DialogDescription>
+                <div className="space-y-1 mt-2">
+                  <div className="flex gap-4 text-sm text-gray-700">
                     <span><strong>Student ID:</strong> {selectedStudent?.id}</span>
                     <span><strong>UGC ID:</strong> 029-25-1-00-08131-027</span>
                   </div>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex gap-4 text-sm text-gray-700">
                     <span><strong>Program:</strong> {selectedStudent?.program}</span>
                   </div>
                   <div className="flex items-center gap-2 mt-2">
@@ -195,7 +196,7 @@ export default function StudentLedger() {
                       Balance: BDT {selectedStudent?.balance.toLocaleString('en-BD', { minimumFractionDigits: 2 })}
                     </Badge>
                   </div>
-                </DialogDescription>
+                </div>
               </div>
             </div>
           </DialogHeader>
