@@ -13,6 +13,11 @@ import AccessLog from '@/components/admin/AccessLog'
 import Programs from '@/components/admin/Programs'
 import CampusProgramMapping from '@/components/admin/CampusProgramMapping'
 import CourseManagement from '@/components/admin/CourseManagement'
+import ExemptedCourseGroup from '@/components/admin/ExemptedCourseGroup'
+import BuildingManagement from '@/components/admin/BuildingManagement'
+import AcademicPolicies from '@/components/admin/AcademicPolicies'
+import ActivityLog from '@/components/admin/ActivityLog'
+import RolesPermissions from '@/components/admin/RolesPermissions'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -40,17 +45,21 @@ export default function AdminDashboard() {
         return <CampusProgramMapping />
       case 'Course & Course Group':
         return <CourseManagement />
+      case 'Exempted Course Group':
+        return <ExemptedCourseGroup />
+      case 'Building / Floor / Room':
+        return <BuildingManagement />
+      case 'Academic Policies':
+        return <AcademicPolicies />
       case 'Activity Log':
+        return <ActivityLog />
+      case 'Roles & Permissions':
+        return <RolesPermissions />
       case 'Password Change Log':
       case 'Result Change Log':
       case 'Name Change Log':
         return <PlaceholderView title={activeSection} description="Audit and compliance tracking" />
-      case 'Campus ↔ Program Mapping':
-      case 'Course & Course Group':
-      case 'Exempted Course Group':
       case 'Course Package Copy':
-      case 'Building / Floor / Room':
-      case 'Academic Policies':
       case 'Academic Credit Limit':
         return <PlaceholderView title={activeSection} description="Academic setup and configuration" />
       case 'Master Data':
