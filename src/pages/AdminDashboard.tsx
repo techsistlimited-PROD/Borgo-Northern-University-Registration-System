@@ -11,6 +11,7 @@ import UserManagement from '@/components/admin/UserManagement'
 import AccessControl from '@/components/admin/AccessControl'
 import AccessLog from '@/components/admin/AccessLog'
 import Programs from '@/components/admin/Programs'
+import CampusProgramMapping from '@/components/admin/CampusProgramMapping'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -34,6 +35,8 @@ export default function AdminDashboard() {
         return <AccessLog />
       case 'Programs':
         return <Programs />
+      case 'Campus ↔ Program Mapping':
+        return <CampusProgramMapping />
       case 'Activity Log':
       case 'Password Change Log':
       case 'Result Change Log':
