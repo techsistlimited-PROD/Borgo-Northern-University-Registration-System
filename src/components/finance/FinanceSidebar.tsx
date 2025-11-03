@@ -68,7 +68,18 @@ export default function FinanceSidebar({ activeSection, onSectionChange }: Finan
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 h-screen overflow-y-auto">
+    <aside className="w-64 bg-gradient-to-b from-deep-plum to-accent-purple h-screen overflow-y-auto shadow-lg">
+      <div className="p-4 border-b border-white/20 mb-4">
+        <div className="flex items-center space-x-2">
+          <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+            <LayoutDashboard className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="font-bold text-white">Finance Portal</h2>
+            <p className="text-xs text-white/80">Accounts</p>
+          </div>
+        </div>
+      </div>
       <div className="p-4 space-y-1">
         {sections.map((section) => (
           <div key={section.name}>
@@ -80,8 +91,8 @@ export default function FinanceSidebar({ activeSection, onSectionChange }: Finan
                   onSectionChange(section.path)
                 }
               }}
-              className={`w-full flex items-center justify-between p-2 rounded-md hover:bg-gray-100 transition-colors ${
-                activeSection === section.path ? 'bg-deep-plum text-white hover:bg-deep-plum' : 'text-gray-700'
+              className={`w-full flex items-center justify-between p-2 rounded-md transition-all ${
+                activeSection === section.path ? 'bg-mint-green text-deep-plum shadow-md' : 'text-white/90 hover:bg-white/10 hover:text-white'
               }`}
             >
               <div className="flex items-center space-x-2">
@@ -89,20 +100,20 @@ export default function FinanceSidebar({ activeSection, onSectionChange }: Finan
                 <span className="font-medium text-sm">{section.name}</span>
               </div>
               {section.items && (
-                expandedSections.includes(section.name) ? 
-                  <ChevronDown className="w-4 h-4" /> : 
+                expandedSections.includes(section.name) ?
+                  <ChevronDown className="w-4 h-4" /> :
                   <ChevronRight className="w-4 h-4" />
               )}
             </button>
-            
+
             {section.items && expandedSections.includes(section.name) && (
               <div className="ml-6 mt-1 space-y-1">
                 {section.items.map((item) => (
                   <button
                     key={item}
                     onClick={() => onSectionChange(item)}
-                    className={`w-full text-left p-2 text-sm rounded-md hover:bg-gray-100 transition-colors ${
-                      activeSection === item ? 'bg-mint-green/30 text-deep-plum font-medium' : 'text-gray-600'
+                    className={`w-full text-left p-2 text-sm rounded-md transition-all ${
+                      activeSection === item ? 'bg-mint-green text-deep-plum font-medium shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     {item}
