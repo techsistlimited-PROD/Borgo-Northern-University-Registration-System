@@ -11,6 +11,11 @@ import FinanceDashboard from '@/components/finance/FinanceDashboard'
 import StudentLedger from '@/components/finance/StudentLedger'
 import PaymentCollection from '@/components/finance/PaymentCollection'
 import FinesHolds from '@/components/finance/FinesHolds'
+import StudentPayablesManagement from '@/components/finance/StudentPayablesManagement'
+import BulkLateFeeManagement from '@/components/finance/BulkLateFeeManagement'
+import WaiverScholarshipManagement from '@/components/finance/WaiverScholarshipManagement'
+import BankReconciliationManagement from '@/components/finance/BankReconciliationManagement'
+import CostManagement from '@/components/finance/CostManagement'
 
 export default function FinanceDashboardPage() {
   const { user, logout } = useAuth()
@@ -29,20 +34,21 @@ export default function FinanceDashboardPage() {
       case 'Search Student / Ledger':
         return <StudentLedger />
       case 'Student Payables':
+        return <StudentPayablesManagement />
       case 'Bulk Late Fee Assignment':
-        return <PlaceholderView title={activeSection} description="Billing and payables management" />
+        return <BulkLateFeeManagement />
       case 'Collect Payment':
       case 'Payment Records':
         return <PaymentCollection />
       case 'Waiver & Scholarship':
-        return <PlaceholderView title="Waiver & Scholarship" description="Manage student waivers and scholarships" />
+        return <WaiverScholarshipManagement />
       case 'Fines & Holds':
         return <FinesHolds />
       case 'Bank Reconciliation':
-        return <PlaceholderView title="Bank Reconciliation" description="Bank statement reconciliation" />
+        return <BankReconciliationManagement />
       case 'Cost Heads':
       case 'Cost Packages':
-        return <PlaceholderView title={activeSection} description="Finance setup and configuration" />
+        return <CostManagement />
       default:
         return <FinanceDashboard />
     }
