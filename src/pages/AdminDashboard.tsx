@@ -21,6 +21,14 @@ import RolesPermissions from '@/components/admin/RolesPermissions'
 import MasterData from '@/components/admin/MasterData'
 import PasswordChangeLog from '@/components/admin/PasswordChangeLog'
 import UserListByTask from '@/components/admin/UserListByTask'
+import ResultChangeLog from '@/components/admin/ResultChangeLog'
+import NameChangeLog from '@/components/admin/NameChangeLog'
+import LocationDirectory from '@/components/admin/LocationDirectory'
+import ExternalInstitutes from '@/components/admin/ExternalInstitutes'
+import CurrencyRates from '@/components/admin/CurrencyRates'
+import CodeGenerator from '@/components/admin/CodeGenerator'
+import CoursePackageCopy from '@/components/admin/CoursePackageCopy'
+import AcademicCreditLimit from '@/components/admin/AcademicCreditLimit'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -65,11 +73,21 @@ export default function AdminDashboard() {
       case 'User List by Task':
         return <UserListByTask />
       case 'Result Change Log':
+        return <ResultChangeLog />
       case 'Name Change Log':
-        return <PlaceholderView title={activeSection} description="Audit and compliance tracking" />
+        return <NameChangeLog />
+      case 'Location Directory':
+        return <LocationDirectory />
+      case 'External Institutes':
+        return <ExternalInstitutes />
+      case 'Currency & Rates':
+        return <CurrencyRates />
+      case 'Code Generator':
+        return <CodeGenerator />
       case 'Course Package Copy':
+        return <CoursePackageCopy />
       case 'Academic Credit Limit':
-        return <PlaceholderView title={activeSection} description="Academic setup and configuration" />
+        return <AcademicCreditLimit />
       case 'Master Data':
       case 'Location Directory':
       case 'External Institutes':
