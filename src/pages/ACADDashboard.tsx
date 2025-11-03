@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/RegistrationAuthContext'
 import ACADSidebar from '@/components/admin/ACADSidebar'
 import { ACADProfileDropdown } from '@/components/admin/AdminProfileDropdown'
-import CourseOfferingComponents from '@/components/admin/CourseOfferingComponents'
-import AddDropManagement from '@/components/admin/AddDropManagement'
+import { OfferCourses } from '@/components/admin/CourseOfferingComponents'
+import { AddDropManagement } from '@/components/admin/AddDropManagement'
 import StudentSectionChange from '@/components/admin/StudentSectionChange'
-import SemesterDropManagement from '@/components/admin/SemesterDropManagement'
-import StudentClearance from '@/components/admin/StudentClearance'
+import { SemesterDropManagement } from '@/components/admin/SemesterDropManagement'
+import { StudentClearance } from '@/components/admin/StudentClearance'
 import AdvisorAssignmentManagement from '@/components/admin/AdvisorAssignmentManagement'
-import ClassRoutineManagement from '@/components/admin/ClassRoutineManagement'
+import { ClassRoutineManagement } from '@/components/admin/ClassRoutineManagement'
 import SemesterScheduleManagement from '@/components/admin/SemesterScheduleManagement'
 import ResultsGrades from '@/components/admin/ResultsGrades'
-import TERReports from '@/components/admin/TERReports'
+import { TERReports } from '@/components/admin/TERReports'
 import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
 import AttendanceReports from '@/components/admin/AttendanceReports'
-import AdmitCardReport from '@/components/admin/AdmitCardReport'
+import { AdmitCardReport } from '@/components/admin/AdmitCardReport'
 import { Card } from '@/components/ui/card'
 
 export default function ACADDashboard() {
@@ -41,7 +41,7 @@ export default function ACADDashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case 'Course Offering':
-        return <CourseOfferingComponents />
+        return <OfferCourses />
       case 'Add/Drop Management':
         return <AddDropManagement />
       case 'Section Change':
@@ -49,7 +49,7 @@ export default function ACADDashboard() {
       case 'Semester Drop':
         return <SemesterDropManagement />
       case 'Student Clearance':
-        return <StudentClearance />
+        return <StudentClearance clearanceType="full" />
       case 'Advisor Assignment':
         return <AdvisorAssignmentManagement />
       case 'Class Routine':
@@ -65,7 +65,7 @@ export default function ACADDashboard() {
       case 'Attendance Reports':
         return <AttendanceReports />
       case 'Admit Card Reports':
-        return <AdmitCardReport />
+        return <AdmitCardReport onClose={() => {}} />
       case 'Section Management':
       case 'Faculty Assignment':
       case 'Exam Schedule':
