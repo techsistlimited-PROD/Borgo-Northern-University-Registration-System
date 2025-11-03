@@ -10,6 +10,7 @@ import OrganizationSetup from '@/components/admin/OrganizationSetup'
 import UserManagement from '@/components/admin/UserManagement'
 import AccessControl from '@/components/admin/AccessControl'
 import AccessLog from '@/components/admin/AccessLog'
+import Programs from '@/components/admin/Programs'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -31,12 +32,13 @@ export default function AdminDashboard() {
         return <AccessControl />
       case 'Access Log':
         return <AccessLog />
+      case 'Programs':
+        return <Programs />
       case 'Activity Log':
       case 'Password Change Log':
       case 'Result Change Log':
       case 'Name Change Log':
         return <PlaceholderView title={activeSection} description="Audit and compliance tracking" />
-      case 'Programs':
       case 'Campus ↔ Program Mapping':
       case 'Course & Course Group':
       case 'Exempted Course Group':
