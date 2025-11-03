@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from '@/contexts/RegistrationAuthContext'
 import Index from '@/pages/Index'
 import StudentLogin from '@/pages/StudentLogin'
-import ACADLogin from '@/pages/AdminLogin'
+import ACADLogin from '@/pages/ACADLogin'
 import TeacherLogin from '@/pages/TeacherLogin'
 import COELogin from '@/pages/COELogin'
 import FinanceLogin from '@/pages/FinanceLogin'
