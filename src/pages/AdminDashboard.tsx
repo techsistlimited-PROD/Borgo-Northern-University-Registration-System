@@ -18,6 +18,9 @@ import BuildingManagement from '@/components/admin/BuildingManagement'
 import AcademicPolicies from '@/components/admin/AcademicPolicies'
 import ActivityLog from '@/components/admin/ActivityLog'
 import RolesPermissions from '@/components/admin/RolesPermissions'
+import MasterData from '@/components/admin/MasterData'
+import PasswordChangeLog from '@/components/admin/PasswordChangeLog'
+import UserListByTask from '@/components/admin/UserListByTask'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -55,7 +58,12 @@ export default function AdminDashboard() {
         return <ActivityLog />
       case 'Roles & Permissions':
         return <RolesPermissions />
+      case 'Master Data':
+        return <MasterData />
       case 'Password Change Log':
+        return <PasswordChangeLog />
+      case 'User List by Task':
+        return <UserListByTask />
       case 'Result Change Log':
       case 'Name Change Log':
         return <PlaceholderView title={activeSection} description="Audit and compliance tracking" />
