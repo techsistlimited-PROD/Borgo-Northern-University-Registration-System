@@ -70,9 +70,11 @@ export default function ACADDashboard() {
       case 'Admit Card Reports':
         return <AdmitCardReport onClose={() => {}} />
       case 'Section Management':
+        return <SectionManagement />
       case 'Faculty Assignment':
+        return <FacultyAssignment />
       case 'Exam Schedule':
-        return <PlaceholderView title={activeSection} description="This section is under development" />
+        return <ExamScheduleManagement />
       default:
         return <PlaceholderView title="Welcome" description="Select a section from the sidebar" />
     }
