@@ -102,7 +102,7 @@ export default function Index() {
                 </Button>
               </Link>
               <p className="text-xs text-gray-500 mt-2">
-                Demo Username: acad
+                Demo Username: academic
               </p>
             </CardContent>
           </Card>
