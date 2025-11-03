@@ -14,6 +14,7 @@ import FinalMarks from '@/components/teacher/FinalMarks'
 import AdvisedStudents from '@/components/teacher/AdvisedStudents'
 import AcademicHistory from '@/components/teacher/AcademicHistory'
 import ExamSchedule from '@/components/teacher/ExamSchedule'
+import TeacherExtrasManagement from '@/components/teacher/TeacherExtrasManagement'
 import {
   Calendar,
   Users,
@@ -386,6 +387,12 @@ export default function TeacherDashboard() {
         return <AdvisedStudents />
       case 'academic-history':
         return <AcademicHistory />
+      case 'materials':
+        return <TeacherExtrasManagement type="materials" />
+      case 'announcements':
+        return <TeacherExtrasManagement type="announcements" />
+      case 'invigilation':
+        return <TeacherExtrasManagement type="invigilation" />
       default:
         return (
           <div className="text-center py-20">
