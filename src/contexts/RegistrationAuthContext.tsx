@@ -23,7 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // Demo credentials
 const demoCredentials = {
   student: { username: '2021-1-60-001', password: 'student123' },
-  acad: { username: 'acad', password: 'acad123' },
+  acad: { username: 'academic', password: 'academic123' },
   teacher: { username: 'T001', password: 'teacher123' },
   coe: { username: 'coe', password: 'coe123' },
   finance: { username: 'finance', password: 'finance123' },
@@ -40,8 +40,8 @@ const demoUsers: Record<string, User> = {
     program: 'Computer Science & Engineering',
     semester: 'Fall 2024'
   },
-  'acad': {
-    id: 'acad',
+  'academic': {
+    id: 'academic',
     name: 'Academic Affairs Officer',
     role: 'acad',
     email: 'acad@nu.edu.bd'
