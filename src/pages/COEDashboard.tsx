@@ -18,6 +18,9 @@ import CalendarPolicies from '@/components/coe/CalendarPolicies'
 import SessionsTimetable from '@/components/coe/SessionsTimetable'
 import CertificatesQueue from '@/components/coe/CertificatesQueue'
 import ComplianceReports from '@/components/coe/ComplianceReports'
+import InvigilationDutyManagement from '@/components/coe/InvigilationDutyManagement'
+import AdmitCardsManagement from '@/components/coe/AdmitCardsManagement'
+import RecheckAppealsManagement from '@/components/coe/RecheckAppealsManagement'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
