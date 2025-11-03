@@ -75,7 +75,10 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
         { id: 'advised-students', label: 'Advised Students' },
         { id: 'academic-history', label: 'Academic History' }
       ]
-    }
+    },
+    { id: 'materials', label: 'Course Materials', icon: BookOpen },
+    { id: 'announcements', label: 'Announcements', icon: Bell },
+    { id: 'invigilation', label: 'Invigilation Duty', icon: ClipboardCheck }
   ]
 
   const [expandedItems, setExpandedItems] = useState<string[]>(['dashboard'])
