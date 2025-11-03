@@ -16,6 +16,9 @@ import { TERReports } from '@/components/admin/TERReports'
 import ComprehensiveReports from '@/components/admin/ComprehensiveReports'
 import AttendanceReports from '@/components/admin/AttendanceReports'
 import { AdmitCardReport } from '@/components/admin/AdmitCardReport'
+import SectionManagement from '@/components/admin/SectionManagement'
+import FacultyAssignment from '@/components/admin/FacultyAssignment'
+import ExamScheduleManagement from '@/components/admin/ExamScheduleManagement'
 import { Card } from '@/components/ui/card'
 
 export default function ACADDashboard() {
