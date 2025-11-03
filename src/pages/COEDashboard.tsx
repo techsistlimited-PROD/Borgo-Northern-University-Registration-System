@@ -49,15 +49,15 @@ export default function COEDashboard() {
       case 'Sessions & Timetable':
         return <SessionsTimetable />
       case 'Invigilation Duty':
-        return <PlaceholderView title="Invigilation Duty" description="Assign invigilators to exam sessions" />
+        return <InvigilationDutyManagement />
       case 'Admit Cards':
-        return <PlaceholderView title="Admit Cards" description="Generate and manage admit cards" />
+        return <AdmitCardsManagement />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
         return <PublishResults />
       case 'Recheck / Appeals':
-        return <PlaceholderView title="Recheck / Appeals" description="Handle recheck and appeal requests" />
+        return <RecheckAppealsManagement />
       case 'Transcript / Certificate Queue':
       case 'Gazette Archive':
         return <CertificatesQueue />
