@@ -160,36 +160,44 @@ export default function GuardianDashboard() {
     const newWard = wards.find(w => w.id === wardId)
     if (newWard) {
       setActiveWard(newWard)
-      guardianService.setActiveWardId(wardId)
 
-      LogService.add({
-        actor: user!.id,
-        actorRole: 'GUARDIAN',
-        type: 'GUARDIAN.SWITCH_WARD',
-        payload: { toStudentId: wardId }
-      })
+      if (isStaticMode) {
+        GuardianDemo.setActiveWardId(wardId)
+      } else {
+        guardianService.setActiveWardId(wardId)
+
+        LogService.add({
+          actor: user!.id,
+          actorRole: 'GUARDIAN',
+          type: 'GUARDIAN.SWITCH_WARD',
+          payload: { toStudentId: wardId }
+        })
+      }
     }
   }
 
   const handleSectionChange = (section: ActiveSection) => {
     setActiveSection(section)
 
-    const eventMap: Record<ActiveSection, string> = {
-      dashboard: 'GUARDIAN.DASHBOARD.VIEW',
-      attendance: 'GUARDIAN.ATTENDANCE.VIEW',
-      academics: 'GUARDIAN.RESULTS.VIEW',
-      finance: 'GUARDIAN.FINANCE.VIEW',
-      notifications: 'GUARDIAN.NOTIFICATIONS.VIEW',
-      profile: 'GUARDIAN.PROFILE.VIEW'
-    }
+    // Skip logging in static mode
+    if (!isStaticMode) {
+      const eventMap: Record<ActiveSection, string> = {
+        dashboard: 'GUARDIAN.DASHBOARD.VIEW',
+        attendance: 'GUARDIAN.ATTENDANCE.VIEW',
+        academics: 'GUARDIAN.RESULTS.VIEW',
+        finance: 'GUARDIAN.FINANCE.VIEW',
+        notifications: 'GUARDIAN.NOTIFICATIONS.VIEW',
+        profile: 'GUARDIAN.PROFILE.VIEW'
+      }
 
-    if (eventMap[section]) {
-      LogService.add({
-        actor: user!.id,
-        actorRole: 'GUARDIAN',
-        type: eventMap[section],
-        payload: { wardId: activeWard?.id }
-      })
+      if (eventMap[section]) {
+        LogService.add({
+          actor: user!.id,
+          actorRole: 'GUARDIAN',
+          type: eventMap[section],
+          payload: { wardId: activeWard?.id }
+        })
+      }
     }
   }
 
@@ -198,7 +206,8 @@ export default function GuardianDashboard() {
     navigate('/guardian/login')
   }
 
-  if (!activeWard) {
+  // In static mode, never show "No Wards Linked" - always have wards
+  if (!activeWard && !isStaticMode) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
