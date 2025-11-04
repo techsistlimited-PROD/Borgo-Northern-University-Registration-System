@@ -723,6 +723,104 @@ export function seedAll() {
     publishedDate: `2025-10-${(5 + idx).toString().padStart(2, '0')}`
   }))
 
+  const guardians: Guardian[] = [
+    { id: 'G001', name: 'Md. Abdul Karim', email: 'karim.father@gmail.com', mobile: '01711234001', status: 'Active', preferences: { erpPush: true, sms: true, email: true } },
+    { id: 'G002', name: 'Mrs. Fatima Rahman', email: 'fatima.mother@gmail.com', mobile: '01711234002', status: 'Active', preferences: { erpPush: true, sms: false, email: true } },
+    { id: 'G003', name: 'Mr. Shahidul Islam', email: 'shahid.guardian@gmail.com', mobile: '01711234003', status: 'Active', preferences: { erpPush: true, sms: true, email: false } },
+    { id: 'G004', name: 'Mrs. Rahima Begum', email: 'rahima.mother@gmail.com', mobile: '01711234004', status: 'Active', preferences: { erpPush: true, sms: true, email: true } },
+    { id: 'G005', name: 'Mr. Jahangir Alam', email: 'jahangir.father@gmail.com', mobile: '01711234005', status: 'Active', preferences: { erpPush: false, sms: true, email: true } },
+    { id: 'G006', name: 'Mrs. Nasrin Sultana', email: 'nasrin.mother@gmail.com', mobile: '01711234006', status: 'Active', preferences: { erpPush: true, sms: true, email: true } }
+  ]
+
+  const guardianLinks: GuardianLink[] = [
+    { id: 'GL001', guardianId: 'G001', studentId: students[0].id, relation: 'Father', isPrimary: true, createdAt: '2024-08-01' },
+    { id: 'GL002', guardianId: 'G002', studentId: students[0].id, relation: 'Mother', isPrimary: false, createdAt: '2024-08-01' },
+    { id: 'GL003', guardianId: 'G003', studentId: students[1].id, relation: 'Guardian', isPrimary: true, createdAt: '2024-08-01' },
+    { id: 'GL004', guardianId: 'G004', studentId: students[2].id, relation: 'Mother', isPrimary: true, createdAt: '2024-08-01' },
+    { id: 'GL005', guardianId: 'G005', studentId: students[3].id, relation: 'Father', isPrimary: true, createdAt: '2024-08-01' },
+    { id: 'GL006', guardianId: 'G005', studentId: students[4].id, relation: 'Father', isPrimary: true, createdAt: '2024-08-01' },
+    { id: 'GL007', guardianId: 'G006', studentId: students[5].id, relation: 'Mother', isPrimary: true, createdAt: '2024-08-01' }
+  ]
+
+  const attendanceRecords: AttendanceRecord[] = []
+  students.slice(0, 20).forEach((student, studentIdx) => {
+    const studentSections = sections.filter(s => s.enrolled > 0).slice(studentIdx % 5, (studentIdx % 5) + 3)
+    studentSections.forEach((section, sectionIdx) => {
+      for (let day = 1; day <= 15; day++) {
+        const status: 'P' | 'A' | 'L' = day % 7 === 0 ? 'A' : day % 11 === 0 ? 'L' : 'P'
+        attendanceRecords.push({
+          id: `ATT-${studentIdx}-${sectionIdx}-${day}`,
+          studentId: student.id,
+          sectionId: section.id,
+          date: `2025-10-${day.toString().padStart(2, '0')}`,
+          status,
+          recordedAt: `2025-10-${day.toString().padStart(2, '0')}T09:00:00+06:00`,
+          facultyId: section.facultyId || faculty[0].id
+        })
+      }
+    })
+  })
+
+  const grades: Grade[] = []
+  const termResults: TermResult[] = []
+  students.slice(0, 30).forEach((student, idx) => {
+    const studentCourses = courses.filter(c => c.program === student.program).slice(0, 5)
+    let totalPoints = 0
+    let totalCredits = 0
+
+    studentCourses.forEach(course => {
+      const gradeOptions = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C']
+      const pointMap: Record<string, number> = { 'A+': 4.0, 'A': 3.75, 'A-': 3.5, 'B+': 3.25, 'B': 3.0, 'B-': 2.75, 'C+': 2.5, 'C': 2.25 }
+      const grade = gradeOptions[idx % gradeOptions.length]
+      const gradePoint = pointMap[grade]
+
+      grades.push({
+        id: `GRD-${student.id}-${course.id}`,
+        studentId: student.id,
+        courseId: course.id,
+        sectionId: sections[0].id,
+        termId: 'FA25',
+        grade,
+        gradePoint,
+        credit: course.credit,
+        remarks: idx % 5 === 0 ? 'Excellent performance' : undefined
+      })
+
+      totalPoints += gradePoint * course.credit
+      totalCredits += course.credit
+    })
+
+    const gpa = totalCredits > 0 ? totalPoints / totalCredits : 0
+    const cgpa = gpa
+
+    termResults.push({
+      id: `TR-${student.id}-FA25`,
+      studentId: student.id,
+      termId: 'FA25',
+      gpa: parseFloat(gpa.toFixed(2)),
+      cgpa: parseFloat(cgpa.toFixed(2)),
+      creditsEarned: totalCredits,
+      status: 'Published'
+    })
+  })
+
+  const ters: TER[] = students.slice(0, 30).map((student, idx) => ({
+    id: `TER-${student.id}-FA25`,
+    studentId: student.id,
+    termId: 'FA25',
+    status: idx % 3 === 0 ? 'PENDING' : 'SUBMITTED',
+    submittedAt: idx % 3 !== 0 ? `2025-11-${(5 + idx).toString().padStart(2, '0')}` : undefined
+  }))
+
+  const notifications: Notification[] = [
+    { id: 'NOT001', recipientId: 'G001', recipientType: 'GUARDIAN', channel: 'ERP', title: 'Attendance Alert', message: `Your ward was marked absent on 2025-10-07`, createdAt: '2025-10-07T10:00:00+06:00', status: 'Unread' },
+    { id: 'NOT002', recipientId: 'G001', recipientType: 'GUARDIAN', channel: 'SMS', title: 'Payment Reminder', message: 'Semester fee payment due on 2025-11-30', createdAt: '2025-10-15T09:00:00+06:00', status: 'Read' },
+    { id: 'NOT003', recipientId: 'G003', recipientType: 'GUARDIAN', channel: 'ERP', title: 'Result Published', message: 'Fall 2025 results are now available', createdAt: '2025-11-20T14:00:00+06:00', status: 'Unread' },
+    { id: 'NOT004', recipientId: 'G004', recipientType: 'GUARDIAN', channel: 'Email', title: 'Fee Due Reminder', message: 'Outstanding dues: 15000 BDT. Please clear to view results.', createdAt: '2025-11-18T08:00:00+06:00', status: 'Unread' }
+  ]
+
+  const logEntries: LogEntry[] = []
+
   Repo.set('semesters', semesters)
   Repo.set('campuses', campuses)
   Repo.set('departments', departments)
