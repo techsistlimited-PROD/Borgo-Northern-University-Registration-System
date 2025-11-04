@@ -42,8 +42,30 @@ const menuItems: MenuItem[] = [
       { id: 'leave-bal', label: 'Leave Balances', icon: TrendingUp, path: '/hrm/leave/balances' }
     ]
   },
-  { id: 'payroll', label: 'Payroll', icon: DollarSign, path: '/hrm/payroll' },
-  { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/hrm/performance' },
+  {
+    id: 'payroll',
+    label: 'Payroll',
+    icon: DollarSign,
+    path: '/hrm/payroll',
+    children: [
+      { id: 'salary-structure', label: 'Salary Structure', icon: FileText, path: '/hrm/payroll/structure' },
+      { id: 'payroll-processing', label: 'Payroll Processing', icon: TrendingUp, path: '/hrm/payroll/processing' },
+      { id: 'disbursement', label: 'Salary Disbursement', icon: DollarSign, path: '/hrm/payroll/disbursement' },
+      { id: 'adjustments', label: 'Arrears & Adjustments', icon: FileText, path: '/hrm/payroll/adjustments' },
+      { id: 'payslips', label: 'Payslip Generator', icon: FileBarChart, path: '/hrm/payroll/payslips' }
+    ]
+  },
+  {
+    id: 'performance',
+    label: 'Performance',
+    icon: TrendingUp,
+    path: '/hrm/performance',
+    children: [
+      { id: 'kpi-dashboard', label: 'KPI Dashboard', icon: LayoutDashboard, path: '/hrm/performance/kpi' },
+      { id: 'appraisals', label: 'Appraisals', icon: FileText, path: '/hrm/performance/appraisals' },
+      { id: 'feedback', label: 'Feedback & Recommendations', icon: Users, path: '/hrm/performance/feedback' }
+    ]
+  },
   { id: 'training', label: 'Training', icon: GraduationCap, path: '/hrm/training' },
   { id: 'ess', label: 'ESS Portal', icon: Users, path: '/hrm/ess' },
   { id: 'notices', label: 'HR Notices', icon: Bell, path: '/hrm/notices' },
@@ -56,7 +78,7 @@ type Props = {
 }
 
 export default function HRMSidebar({ activePath, onNavigate }: Props) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment', 'attendance'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment', 'attendance', 'payroll', 'performance'])
 
   const toggleExpand = (id: string) => {
     if (expandedItems.includes(id)) {
