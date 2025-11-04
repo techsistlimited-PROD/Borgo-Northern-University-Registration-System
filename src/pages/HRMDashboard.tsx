@@ -11,23 +11,36 @@ import HRMDashboardView from '@/components/hrm/HRMDashboardView'
 import HRMEmployeeList from '@/components/hrm/HRMEmployeeList'
 import HRMDocuments from '@/components/hrm/HRMDocuments'
 import HRMHistory from '@/components/hrm/HRMHistory'
+import RecruitmentPages from '@/components/hrm/recruitment/RecruitmentPages'
 import { HRM_STATS } from '@/lib/hrmStatic'
 
-type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'other'
+type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'other'
+type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
 
 export default function HRMDashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [activeView, setActiveView] = useState<ActiveView>('dashboard')
+  const [recruitmentView, setRecruitmentView] = useState<RecruitmentView>('vacancies')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
 
   const handleNavigation = (path: string) => {
     setActivePath(path)
-    
+
     if (path === '/hrm/dashboard') setActiveView('dashboard')
     else if (path === '/hrm/employees') setActiveView('employees')
     else if (path === '/hrm/employees/documents') setActiveView('documents')
     else if (path === '/hrm/employees/history') setActiveView('history')
+    else if (path.startsWith('/hrm/recruitment')) {
+      setActiveView('recruitment')
+      if (path.includes('/vacancies')) setRecruitmentView('vacancies')
+      else if (path.includes('/candidates')) setRecruitmentView('candidates')
+      else if (path.includes('/shortlisting')) setRecruitmentView('shortlisting')
+      else if (path.includes('/interviews')) setRecruitmentView('interviews')
+      else if (path.includes('/offers')) setRecruitmentView('offers')
+      else if (path.includes('/onboarding')) setRecruitmentView('onboarding')
+      else setRecruitmentView('vacancies')
+    }
     else setActiveView('other')
   }
 
@@ -46,6 +59,8 @@ export default function HRMDashboard() {
         return <HRMDocuments />
       case 'history':
         return <HRMHistory />
+      case 'recruitment':
+        return <RecruitmentPages view={recruitmentView} />
       case 'other':
         return (
           <div className="p-8 text-center">
