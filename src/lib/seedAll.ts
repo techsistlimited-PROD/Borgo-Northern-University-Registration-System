@@ -845,6 +845,14 @@ export function seedAll() {
   Repo.set('invigilationAssignments', [])
   Repo.set('admitCardBlocks', [])
   Repo.set('assignedWaivers', [])
+  Repo.set('guardians', guardians)
+  Repo.set('guardianLinks', guardianLinks)
+  Repo.set('attendanceRecords', attendanceRecords)
+  Repo.set('grades', grades)
+  Repo.set('termResults', termResults)
+  Repo.set('ters', ters)
+  Repo.set('notifications', notifications)
+  Repo.set('logEntries', logEntries)
 
   localStorage.setItem('nu-erp-seeded', 'true')
 }
