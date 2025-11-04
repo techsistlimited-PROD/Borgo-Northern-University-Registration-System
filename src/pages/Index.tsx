@@ -202,22 +202,22 @@ export default function Index() {
           {/* HRM Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-growth-green to-metal-black rounded-full mx-auto mb-4 flex items-center justify-center">
                 <Users className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-blue-800">HRM Portal</CardTitle>
+              <CardTitle className="text-growth-green font-poppins">HRM Portal</CardTitle>
               <CardDescription>
-                Human Resource Management - employee information, documents, and history
+                Human Resource Management - payroll, recruitment, training, compliance, and analytics
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link to="/hrm-login">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:opacity-90">
+                <Button className="w-full bg-gradient-to-r from-growth-green to-metal-black text-white hover:opacity-90">
                   Access HRM Portal
                 </Button>
               </Link>
               <p className="text-xs text-gray-500 mt-2">
-                Demo: admin / admin123
+                Demo: hr_officer / hrm123
               </p>
             </CardContent>
           </Card>
