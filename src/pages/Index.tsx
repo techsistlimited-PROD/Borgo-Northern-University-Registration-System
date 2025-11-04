@@ -171,7 +171,7 @@ export default function Index() {
                 </Button>
               </Link>
               <p className="text-xs text-gray-500 mt-2">
-                Demo ID: G001
+                Demo: father.cse@demo.nu
               </p>
             </CardContent>
           </Card>
