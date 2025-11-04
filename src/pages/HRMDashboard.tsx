@@ -18,12 +18,22 @@ import DailyAttendance from '@/components/hrm/attendance/DailyAttendance'
 import MonthlyReports from '@/components/hrm/attendance/MonthlyReports'
 import LeaveApplications from '@/components/hrm/leave/LeaveApplications'
 import LeaveBalances from '@/components/hrm/leave/LeaveBalances'
+import SalaryStructure from '@/components/hrm/payroll/SalaryStructure'
+import PayrollProcessing from '@/components/hrm/payroll/PayrollProcessing'
+import SalaryDisbursement from '@/components/hrm/payroll/SalaryDisbursement'
+import ArrearsAdjustments from '@/components/hrm/payroll/ArrearsAdjustments'
+import PayslipGenerator from '@/components/hrm/payroll/PayslipGenerator'
+import KPIDashboard from '@/components/hrm/performance/KPIDashboard'
+import Appraisals from '@/components/hrm/performance/Appraisals'
+import FeedbackRecommendations from '@/components/hrm/performance/FeedbackRecommendations'
 import { HRM_STATS } from '@/lib/hrmStatic'
 
-type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'other'
+type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'other'
 type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
 type AttendanceView = 'att-dashboard' | 'roster' | 'daily' | 'monthly'
 type LeaveView = 'applications' | 'balances'
+type PayrollView = 'structure' | 'processing' | 'disbursement' | 'adjustments' | 'payslips'
+type PerformanceView = 'kpi' | 'appraisals' | 'feedback'
 
 export default function HRMDashboard() {
   const { user, logout } = useAuth()
@@ -32,6 +42,8 @@ export default function HRMDashboard() {
   const [recruitmentView, setRecruitmentView] = useState<RecruitmentView>('vacancies')
   const [attendanceView, setAttendanceView] = useState<AttendanceView>('att-dashboard')
   const [leaveView, setLeaveView] = useState<LeaveView>('applications')
+  const [payrollView, setPayrollView] = useState<PayrollView>('structure')
+  const [performanceView, setPerformanceView] = useState<PerformanceView>('kpi')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
 
   const handleNavigation = (path: string) => {
@@ -65,6 +77,22 @@ export default function HRMDashboard() {
       else if (path.includes('/balances')) setLeaveView('balances')
       else setLeaveView('applications')
     }
+    else if (path.startsWith('/hrm/payroll')) {
+      setActiveView('payroll')
+      if (path.includes('/structure')) setPayrollView('structure')
+      else if (path.includes('/processing')) setPayrollView('processing')
+      else if (path.includes('/disbursement')) setPayrollView('disbursement')
+      else if (path.includes('/adjustments')) setPayrollView('adjustments')
+      else if (path.includes('/payslips')) setPayrollView('payslips')
+      else setPayrollView('structure')
+    }
+    else if (path.startsWith('/hrm/performance')) {
+      setActiveView('performance')
+      if (path.includes('/kpi')) setPerformanceView('kpi')
+      else if (path.includes('/appraisals')) setPerformanceView('appraisals')
+      else if (path.includes('/feedback')) setPerformanceView('feedback')
+      else setPerformanceView('kpi')
+    }
     else setActiveView('other')
   }
 
@@ -95,6 +123,18 @@ export default function HRMDashboard() {
         if (leaveView === 'applications') return <LeaveApplications />
         if (leaveView === 'balances') return <LeaveBalances />
         return <LeaveApplications />
+      case 'payroll':
+        if (payrollView === 'structure') return <SalaryStructure />
+        if (payrollView === 'processing') return <PayrollProcessing />
+        if (payrollView === 'disbursement') return <SalaryDisbursement />
+        if (payrollView === 'adjustments') return <ArrearsAdjustments />
+        if (payrollView === 'payslips') return <PayslipGenerator />
+        return <SalaryStructure />
+      case 'performance':
+        if (performanceView === 'kpi') return <KPIDashboard />
+        if (performanceView === 'appraisals') return <Appraisals />
+        if (performanceView === 'feedback') return <FeedbackRecommendations />
+        return <KPIDashboard />
       case 'other':
         return (
           <div className="p-8 text-center">
