@@ -7,12 +7,14 @@ import TeacherLogin from '@/pages/TeacherLogin'
 import COELogin from '@/pages/COELogin'
 import FinanceLogin from '@/pages/FinanceLogin'
 import AdminLogin from '@/pages/AdminLogin'
+import GuardianLogin from '@/pages/GuardianLogin'
 import StudentDashboard from '@/pages/StudentDashboard'
 import ACADDashboard from '@/pages/ACADDashboard'
 import TeacherDashboard from '@/pages/TeacherDashboard'
 import COEDashboard from '@/pages/COEDashboard'
 import FinanceDashboard from '@/pages/FinanceDashboard'
 import AdminDashboard from '@/pages/AdminDashboard'
+import GuardianDashboard from '@/pages/GuardianDashboard'
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
