@@ -336,5 +336,8 @@ export function seedGuardianDemoData() {
     Repo.upsertMany('notifications', notifications)
 
     console.log('✅ Guardian Portal demo data seeded successfully')
+    console.log('   - Guardians:', guardians.length, '→', guardians.map(g => `${g.id} (${g.email})`).join(', '))
+    console.log('   - Students:', students.length, '→', students.map(s => `${s.id} (${s.name})`).join(', '))
+    console.log('   - Guardian Links:', guardianLinks.length, '→', guardianLinks.map(l => `${l.guardianId} → ${l.studentId}`).join(', '))
   })
 }

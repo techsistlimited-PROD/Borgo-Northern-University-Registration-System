@@ -40,6 +40,8 @@ export default function GuardianDashboard() {
       return
     }
 
+    console.log('🔍 GuardianDashboard: Loading data for user:', user.id, user.email)
+
     // Log guardian login
     LogService.add({
       actor: user.id,
@@ -49,15 +51,54 @@ export default function GuardianDashboard() {
     })
 
     // Load wards
-    const myWards = guardianService.getMyWards(user.id)
+    let myWards = guardianService.getMyWards(user.id)
+    console.log('🔍 GuardianDashboard: Found wards:', myWards.length, myWards.map(w => w.id))
+
+    // DEMO MODE SELF-HEAL: If no wards found, create guardian link
+    if (myWards.length === 0 && user.email) {
+      console.log('⚠️ No wards found for guardian', user.id, '- attempting self-heal...')
+
+      const email = user.email.toLowerCase()
+      const allLinks = Repo.get<import('@/lib/seedAll').GuardianLink>('guardianLinks')
+      console.log('🔍 All guardian links:', allLinks.map(l => `${l.guardianId} → ${l.studentId}`))
+
+      // Try to create a link based on email
+      let studentId = ''
+      if (email === 'father.cse@demo.nu' || email === 'mother.cse@demo.nu') {
+        studentId = 'stu_cse_01'
+      } else if (email === 'guardian.bba@demo.nu') {
+        studentId = 'stu_bba_01'
+      }
+
+      if (studentId) {
+        console.log('🔧 Self-heal: Creating link', user.id, '→', studentId)
+        const newLink: import('@/lib/seedAll').GuardianLink = {
+          id: `auto_${user.id}_${studentId}`,
+          guardianId: user.id,
+          studentId,
+          relation: 'Guardian',
+          isPrimary: true,
+          createdAt: new Date().toISOString()
+        }
+        Repo.add('guardianLinks', newLink)
+        myWards = guardianService.getMyWards(user.id)
+        console.log('✅ Self-heal complete. Wards now:', myWards.length)
+      } else {
+        console.log('❌ Self-heal failed: Unknown email', email)
+      }
+    }
+
     setWards(myWards)
 
     // Set active ward
     const savedWardId = guardianService.getActiveWardId()
     const ward = myWards.find(w => w.id === savedWardId) || myWards[0]
     if (ward) {
+      console.log('✅ Active ward set to:', ward.id, ward.name)
       setActiveWard(ward)
       guardianService.setActiveWardId(ward.id)
+    } else {
+      console.log('⚠️ No ward found to set as active')
     }
 
     // Load semesters
