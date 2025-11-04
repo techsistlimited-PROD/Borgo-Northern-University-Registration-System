@@ -57,6 +57,10 @@ export default {
         'lavender-bg': '#F3F0FF',
         'pink-accent': '#E879F9',
         'mint-green': '#A7F3D0',
+        // HRM & Global ERP colors
+        'growth-green': '#00A676',
+        'metal-black': '#20232A',
+        'accent-cyan': '#1ECBE1',
       },
       borderRadius: {
         lg: "var(--radius)",
