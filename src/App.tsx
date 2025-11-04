@@ -123,6 +123,30 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/hrm"
+        element={
+          <ProtectedRoute allowedRole="admin">
+            <HRMDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hrm/dashboard"
+        element={
+          <ProtectedRoute allowedRole="admin">
+            <HRMDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hrm/*"
+        element={
+          <ProtectedRoute allowedRole="admin">
+            <HRMDashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/" replace />} />
