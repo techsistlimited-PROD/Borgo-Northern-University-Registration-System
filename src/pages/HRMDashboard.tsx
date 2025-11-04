@@ -12,16 +12,26 @@ import HRMEmployeeList from '@/components/hrm/HRMEmployeeList'
 import HRMDocuments from '@/components/hrm/HRMDocuments'
 import HRMHistory from '@/components/hrm/HRMHistory'
 import RecruitmentPages from '@/components/hrm/recruitment/RecruitmentPages'
+import AttendanceDashboard from '@/components/hrm/attendance/AttendanceDashboard'
+import ShiftRosterPlanner from '@/components/hrm/attendance/ShiftRosterPlanner'
+import DailyAttendance from '@/components/hrm/attendance/DailyAttendance'
+import MonthlyReports from '@/components/hrm/attendance/MonthlyReports'
+import LeaveApplications from '@/components/hrm/leave/LeaveApplications'
+import LeaveBalances from '@/components/hrm/leave/LeaveBalances'
 import { HRM_STATS } from '@/lib/hrmStatic'
 
-type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'other'
+type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'other'
 type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
+type AttendanceView = 'att-dashboard' | 'roster' | 'daily' | 'monthly'
+type LeaveView = 'applications' | 'balances'
 
 export default function HRMDashboard() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [activeView, setActiveView] = useState<ActiveView>('dashboard')
   const [recruitmentView, setRecruitmentView] = useState<RecruitmentView>('vacancies')
+  const [attendanceView, setAttendanceView] = useState<AttendanceView>('att-dashboard')
+  const [leaveView, setLeaveView] = useState<LeaveView>('applications')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
 
   const handleNavigation = (path: string) => {
@@ -40,6 +50,20 @@ export default function HRMDashboard() {
       else if (path.includes('/offers')) setRecruitmentView('offers')
       else if (path.includes('/onboarding')) setRecruitmentView('onboarding')
       else setRecruitmentView('vacancies')
+    }
+    else if (path.startsWith('/hrm/attendance')) {
+      setActiveView('attendance')
+      if (path.includes('/dashboard')) setAttendanceView('att-dashboard')
+      else if (path.includes('/roster')) setAttendanceView('roster')
+      else if (path.includes('/daily')) setAttendanceView('daily')
+      else if (path.includes('/monthly')) setAttendanceView('monthly')
+      else setAttendanceView('att-dashboard')
+    }
+    else if (path.startsWith('/hrm/leave')) {
+      setActiveView('leave')
+      if (path.includes('/applications')) setLeaveView('applications')
+      else if (path.includes('/balances')) setLeaveView('balances')
+      else setLeaveView('applications')
     }
     else setActiveView('other')
   }
@@ -61,6 +85,16 @@ export default function HRMDashboard() {
         return <HRMHistory />
       case 'recruitment':
         return <RecruitmentPages view={recruitmentView} />
+      case 'attendance':
+        if (attendanceView === 'att-dashboard') return <AttendanceDashboard />
+        if (attendanceView === 'roster') return <ShiftRosterPlanner />
+        if (attendanceView === 'daily') return <DailyAttendance />
+        if (attendanceView === 'monthly') return <MonthlyReports />
+        return <AttendanceDashboard />
+      case 'leave':
+        if (leaveView === 'applications') return <LeaveApplications />
+        if (leaveView === 'balances') return <LeaveBalances />
+        return <LeaveApplications />
       case 'other':
         return (
           <div className="p-8 text-center">
