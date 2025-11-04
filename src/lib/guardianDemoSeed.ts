@@ -27,17 +27,26 @@ function nowMinus(days: number) {
   return d.toISOString()
 }
 
+// Canonical IDs (shared across users, guardians, guardianLinks)
+const G_FATHER_01 = 'g_father_01'
+const G_MOTHER_01 = 'g_mother_01'
+const G_GUARDIAN_02 = 'g_guardian_02'
+
+const STU_CSE_01 = 'stu_cse_01'
+const STU_CSE_02 = 'stu_cse_02'
+const STU_BBA_01 = 'stu_bba_01'
+
 function buildAttendance(studentId: string, courseId: string, section: string, n: number): AttendanceRecord[] {
   const rows: AttendanceRecord[] = []
   for (let i = 0; i < n; i++) {
     const d = new Date()
     d.setDate(d.getDate() - i)
     const status: 'P' | 'A' | 'L' = i % 7 === 0 ? 'A' : (i % 13 === 0 ? 'L' : 'P')
-    rows.push({ 
-      id: `att_${studentId}_${courseId}_${i}`, 
-      studentId, 
+    rows.push({
+      id: `att_${studentId}_${courseId}_${i}`,
+      studentId,
       sectionId: section,
-      date: d.toISOString().slice(0, 10), 
+      date: d.toISOString().slice(0, 10),
       status,
       recordedAt: d.toISOString(),
       facultyId: 'F001'
@@ -50,32 +59,31 @@ export function seedGuardianDemoData() {
   if (!DEMO_MODE) return
 
   Repo.seedOnceDemo('guardian-portal-demo:v1', () => {
-    // USERS (roles: GUARDIAN) - these will be added to auth context
-    // Demo credentials: father.cse@demo.nu / guardian123, guardian.bba@demo.nu / guardian123
+    console.log('🔄 Seeding Guardian Portal Demo Data...')
 
     // GUARDIANS
     const guardians: Guardian[] = [
-      { 
-        id: 'g_father_01', 
-        name: 'Abdul Karim', 
-        email: 'father.cse@demo.nu', 
-        mobile: '01711111111', 
+      {
+        id: G_FATHER_01,
+        name: 'Abdul Karim',
+        email: 'father.cse@demo.nu',
+        mobile: '01711111111',
         status: 'Active',
         preferences: { erpPush: true, sms: true, email: true }
       },
-      { 
-        id: 'g_mother_01', 
-        name: 'Rokia Begum', 
-        email: 'mother.cse@demo.nu', 
-        mobile: '01722222222', 
+      {
+        id: G_MOTHER_01,
+        name: 'Rokia Begum',
+        email: 'mother.cse@demo.nu',
+        mobile: '01722222222',
         status: 'Active',
         preferences: { erpPush: true, sms: false, email: true }
       },
-      { 
-        id: 'g_guardian_02', 
-        name: 'Shahidul Islam', 
-        email: 'guardian.bba@demo.nu', 
-        mobile: '01833333333', 
+      {
+        id: G_GUARDIAN_02,
+        name: 'Shahidul Islam',
+        email: 'guardian.bba@demo.nu',
+        mobile: '01833333333',
         status: 'Active',
         preferences: { erpPush: true, sms: true, email: false }
       }
@@ -83,8 +91,8 @@ export function seedGuardianDemoData() {
 
     // STUDENTS (ensure these exist)
     const students: Student[] = [
-      { 
-        id: 'stu_cse_01', 
+      {
+        id: STU_CSE_01, 
         ugcId: 'CSE-25010345', 
         name: 'Mahin Hasan', 
         program: 'CSE',
@@ -98,23 +106,23 @@ export function seedGuardianDemoData() {
         photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MahinHasan',
         admitBlocked: false
       },
-      { 
-        id: 'stu_cse_02', 
-        ugcId: 'CSE-25010346', 
-        name: 'Arisha Khan', 
+      {
+        id: STU_CSE_02,
+        ugcId: 'CSE-25010346',
+        name: 'Arisha Khan',
         program: 'CSE',
         programName: 'BSc in Computer Science & Engg.',
         campusId: 'PRM',
-        email: 'arisha.cse@nub.edu.bd', 
+        email: 'arisha.cse@nub.edu.bd',
         mobile: '01711234568',
         batch: 'Batch 25C',
         semester: 'Spring 2025',
-        cgpa: 3.82, 
+        cgpa: 3.82,
         photoUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ArishaKhan',
         admitBlocked: false
       },
-      { 
-        id: 'stu_bba_01', 
+      {
+        id: STU_BBA_01, 
         ugcId: 'BBA-25030312', 
         name: 'Rafi Ahmed', 
         program: 'BBA',
@@ -130,11 +138,11 @@ export function seedGuardianDemoData() {
       }
     ]
 
-    // GUARDIAN LINKS
+    // GUARDIAN LINKS (guardianId MUST match user.id from auth)
     const guardianLinks: GuardianLink[] = [
-      { id: 'link1', guardianId: 'g_father_01', studentId: 'stu_cse_01', relation: 'Father', isPrimary: true, createdAt: now() },
-      { id: 'link2', guardianId: 'g_mother_01', studentId: 'stu_cse_01', relation: 'Mother', isPrimary: false, createdAt: now() },
-      { id: 'link3', guardianId: 'g_guardian_02', studentId: 'stu_bba_01', relation: 'Guardian', isPrimary: true, createdAt: now() }
+      { id: 'link1', guardianId: G_FATHER_01, studentId: STU_CSE_01, relation: 'Father', isPrimary: true, createdAt: now() },
+      { id: 'link2', guardianId: G_MOTHER_01, studentId: STU_CSE_01, relation: 'Mother', isPrimary: false, createdAt: now() },
+      { id: 'link3', guardianId: G_GUARDIAN_02, studentId: STU_BBA_01, relation: 'Guardian', isPrimary: true, createdAt: now() }
     ]
 
     // TERMS (active)
