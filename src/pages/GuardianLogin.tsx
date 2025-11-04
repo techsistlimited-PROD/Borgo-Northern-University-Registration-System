@@ -39,7 +39,7 @@ export default function GuardianLogin() {
   }
 
   const handleFillDemo = () => {
-    setUsername('G001')
+    setUsername('father.cse@demo.nu')
     setPassword('guardian123')
   }
 
@@ -68,12 +68,12 @@ export default function GuardianLogin() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Guardian ID</label>
+                <label className="text-sm font-medium text-gray-700">Guardian Email</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
-                    type="text"
-                    placeholder="Enter your guardian ID"
+                    type="email"
+                    placeholder="Enter your guardian email"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="pl-10"
@@ -120,8 +120,10 @@ export default function GuardianLogin() {
                 Fill Demo Credentials
               </Button>
 
-              <div className="text-center text-sm text-gray-600 mt-4">
-                <p>Demo: G001 / guardian123</p>
+              <div className="text-center text-sm text-gray-600 mt-4 space-y-1">
+                <p className="font-medium">Demo Credentials:</p>
+                <p className="text-xs">father.cse@demo.nu / guardian123</p>
+                <p className="text-xs">guardian.bba@demo.nu / guardian123</p>
               </div>
             </form>
           </CardContent>

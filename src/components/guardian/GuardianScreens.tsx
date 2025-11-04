@@ -420,7 +420,7 @@ export function GuardianProfile({ guardianId }: { guardianId: string }) {
           </div>
           <div className="flex items-center justify-between">
             <span>Email Notifications</span>
-            <input type="checkbox" checked={(e) => setPrefs({ ...prefs, email: e.target.checked })} className="toggle" />
+            <input type="checkbox" checked={prefs.email} onChange={(e) => setPrefs({ ...prefs, email: e.target.checked })} className="toggle" />
           </div>
           <Button onClick={handleSavePreferences}>Save Preferences</Button>
         </CardContent>
