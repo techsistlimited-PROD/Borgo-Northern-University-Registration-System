@@ -115,6 +115,35 @@ export default function HRMDashboard() {
       else if (path.includes('/feedback')) setPerformanceView('feedback')
       else setPerformanceView('kpi')
     }
+    else if (path.startsWith('/hrm/training')) {
+      setActiveView('training')
+      if (path.includes('/calendar')) setTrainingView('calendar')
+      else if (path.includes('/nominations')) setTrainingView('nominations')
+      else if (path.includes('/evaluation')) setTrainingView('evaluation')
+      else if (path.includes('/certificates')) setTrainingView('certificates')
+      else setTrainingView('calendar')
+    }
+    else if (path.startsWith('/hrm/ess')) {
+      setActiveView('ess')
+      if (path.includes('/profile')) setESSView('profile')
+      else if (path.includes('/leave-attendance')) setESSView('leave-attendance')
+      else if (path.includes('/payroll')) setESSView('payroll')
+      else if (path.includes('/loans')) setESSView('loans')
+      else if (path.includes('/performance')) setESSView('performance')
+      else setESSView('profile')
+    }
+    else if (path.startsWith('/hrm/notices')) {
+      setActiveView('notices')
+      if (path.includes('/inbox')) setNoticesView('inbox')
+      else setNoticesView('all')
+    }
+    else if (path.startsWith('/hrm/compliance')) {
+      setActiveView('compliance')
+      if (path.includes('/tax-pf')) setComplianceView('tax-pf')
+      else if (path.includes('/analytics')) setComplianceView('analytics')
+      else if (path.includes('/reports')) setComplianceView('reports')
+      else setComplianceView('tax-pf')
+    }
     else setActiveView('other')
   }
 
