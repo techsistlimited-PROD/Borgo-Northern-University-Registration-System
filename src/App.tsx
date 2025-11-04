@@ -8,6 +8,7 @@ import COELogin from '@/pages/COELogin'
 import FinanceLogin from '@/pages/FinanceLogin'
 import AdminLogin from '@/pages/AdminLogin'
 import GuardianLogin from '@/pages/GuardianLogin'
+import HRMLogin from '@/pages/HRMLogin'
 import StudentDashboard from '@/pages/StudentDashboard'
 import ACADDashboard from '@/pages/ACADDashboard'
 import TeacherDashboard from '@/pages/TeacherDashboard'
@@ -15,6 +16,7 @@ import COEDashboard from '@/pages/COEDashboard'
 import FinanceDashboard from '@/pages/FinanceDashboard'
 import AdminDashboard from '@/pages/AdminDashboard'
 import GuardianDashboard from '@/pages/GuardianDashboard'
+import HRMDashboard from '@/pages/HRMDashboard'
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
@@ -45,6 +47,8 @@ function AppRoutes() {
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/guardian-login" element={<GuardianLogin />} />
       <Route path="/guardian/login" element={<GuardianLogin />} />
+      <Route path="/hrm-login" element={<HRMLogin />} />
+      <Route path="/hrm/login" element={<HRMLogin />} />
 
       {/* Protected Routes */}
       <Route 
