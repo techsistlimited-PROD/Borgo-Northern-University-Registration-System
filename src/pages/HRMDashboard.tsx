@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Users, UserX, UserCheck, LogOut, Building2, Calendar } from 'lucide-react'
+import { Users, UserX, UserCheck, LogOut, Building2, Calendar, ChevronRight, RefreshCw, CheckCircle2 } from 'lucide-react'
 import HRMSidebar from '@/components/hrm/HRMSidebar'
 import HRMDashboardView from '@/components/hrm/HRMDashboardView'
 import HRMEmployeeList from '@/components/hrm/HRMEmployeeList'
@@ -41,6 +41,8 @@ import TaxPFGratuity from '@/components/hrm/compliance/TaxPFGratuity'
 import HRAnalytics from '@/components/hrm/compliance/HRAnalytics'
 import CustomReports from '@/components/hrm/compliance/CustomReports'
 import { HRM_STATS } from '@/lib/hrmStatic'
+import { motion } from 'framer-motion'
+import { toast } from 'sonner'
 
 type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'training' | 'ess' | 'notices' | 'compliance' | 'other'
 type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
@@ -52,6 +54,8 @@ type TrainingView = 'calendar' | 'nominations' | 'evaluation' | 'certificates'
 type ESSView = 'profile' | 'leave-attendance' | 'payroll' | 'loans' | 'performance'
 type NoticesView = 'all' | 'inbox'
 type ComplianceView = 'tax-pf' | 'analytics' | 'reports'
+
+type BreadcrumbItem = { label: string; path?: string }
 
 export default function HRMDashboard() {
   const { user, logout } = useAuth()
@@ -67,171 +71,240 @@ export default function HRMDashboard() {
   const [noticesView, setNoticesView] = useState<NoticesView>('all')
   const [complianceView, setComplianceView] = useState<ComplianceView>('tax-pf')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([{ label: 'Dashboard' }])
 
   const handleNavigation = (path: string) => {
     setActivePath(path)
 
-    if (path === '/hrm/dashboard') setActiveView('dashboard')
-    else if (path === '/hrm/employees') setActiveView('employees')
-    else if (path === '/hrm/employees/documents') setActiveView('documents')
-    else if (path === '/hrm/employees/history') setActiveView('history')
+    const updateBreadcrumbs = (group: string, subPage: string) => {
+      setBreadcrumbs([{ label: group }, { label: subPage }])
+    }
+
+    if (path === '/hrm/dashboard') {
+      setActiveView('dashboard')
+      setBreadcrumbs([{ label: 'Dashboard' }])
+    }
+    else if (path === '/hrm/employees') {
+      setActiveView('employees')
+      setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'Employee List' }])
+    }
+    else if (path === '/hrm/employees/documents') {
+      setActiveView('documents')
+      setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'Documents' }])
+    }
+    else if (path === '/hrm/employees/history') {
+      setActiveView('history')
+      setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'History' }])
+    }
     else if (path.startsWith('/hrm/recruitment')) {
       setActiveView('recruitment')
-      if (path.includes('/vacancies')) setRecruitmentView('vacancies')
-      else if (path.includes('/candidates')) setRecruitmentView('candidates')
-      else if (path.includes('/shortlisting')) setRecruitmentView('shortlisting')
-      else if (path.includes('/interviews')) setRecruitmentView('interviews')
-      else if (path.includes('/offers')) setRecruitmentView('offers')
-      else if (path.includes('/onboarding')) setRecruitmentView('onboarding')
-      else setRecruitmentView('vacancies')
+      if (path.includes('/vacancies')) { setRecruitmentView('vacancies'); updateBreadcrumbs('Recruitment', 'Vacancies') }
+      else if (path.includes('/candidates')) { setRecruitmentView('candidates'); updateBreadcrumbs('Recruitment', 'Candidates') }
+      else if (path.includes('/shortlisting')) { setRecruitmentView('shortlisting'); updateBreadcrumbs('Recruitment', 'Shortlisting') }
+      else if (path.includes('/interviews')) { setRecruitmentView('interviews'); updateBreadcrumbs('Recruitment', 'Interviews') }
+      else if (path.includes('/offers')) { setRecruitmentView('offers'); updateBreadcrumbs('Recruitment', 'Offers') }
+      else if (path.includes('/onboarding')) { setRecruitmentView('onboarding'); updateBreadcrumbs('Recruitment', 'Onboarding') }
+      else { setRecruitmentView('vacancies'); updateBreadcrumbs('Recruitment', 'Vacancies') }
     }
     else if (path.startsWith('/hrm/attendance')) {
       setActiveView('attendance')
-      if (path.includes('/dashboard')) setAttendanceView('att-dashboard')
-      else if (path.includes('/roster')) setAttendanceView('roster')
-      else if (path.includes('/daily')) setAttendanceView('daily')
-      else if (path.includes('/monthly')) setAttendanceView('monthly')
-      else setAttendanceView('att-dashboard')
+      if (path.includes('/dashboard')) { setAttendanceView('att-dashboard'); updateBreadcrumbs('Attendance & Leave', 'Attendance Dashboard') }
+      else if (path.includes('/roster')) { setAttendanceView('roster'); updateBreadcrumbs('Attendance & Leave', 'Shift & Roster Planner') }
+      else if (path.includes('/daily')) { setAttendanceView('daily'); updateBreadcrumbs('Attendance & Leave', 'Daily Attendance') }
+      else if (path.includes('/monthly')) { setAttendanceView('monthly'); updateBreadcrumbs('Attendance & Leave', 'Monthly Reports') }
+      else { setAttendanceView('att-dashboard'); updateBreadcrumbs('Attendance & Leave', 'Attendance Dashboard') }
     }
     else if (path.startsWith('/hrm/leave')) {
       setActiveView('leave')
-      if (path.includes('/applications')) setLeaveView('applications')
-      else if (path.includes('/balances')) setLeaveView('balances')
-      else setLeaveView('applications')
+      if (path.includes('/applications')) { setLeaveView('applications'); updateBreadcrumbs('Attendance & Leave', 'Leave Applications') }
+      else if (path.includes('/balances')) { setLeaveView('balances'); updateBreadcrumbs('Attendance & Leave', 'Leave Balances') }
+      else { setLeaveView('applications'); updateBreadcrumbs('Attendance & Leave', 'Leave Applications') }
     }
     else if (path.startsWith('/hrm/payroll')) {
       setActiveView('payroll')
-      if (path.includes('/structure')) setPayrollView('structure')
-      else if (path.includes('/processing')) setPayrollView('processing')
-      else if (path.includes('/disbursement')) setPayrollView('disbursement')
-      else if (path.includes('/adjustments')) setPayrollView('adjustments')
-      else if (path.includes('/payslips')) setPayrollView('payslips')
-      else setPayrollView('structure')
+      if (path.includes('/structure')) { setPayrollView('structure'); updateBreadcrumbs('Payroll', 'Salary Structure') }
+      else if (path.includes('/processing')) { setPayrollView('processing'); updateBreadcrumbs('Payroll', 'Payroll Processing') }
+      else if (path.includes('/disbursement')) { setPayrollView('disbursement'); updateBreadcrumbs('Payroll', 'Salary Disbursement') }
+      else if (path.includes('/adjustments')) { setPayrollView('adjustments'); updateBreadcrumbs('Payroll', 'Arrears & Adjustments') }
+      else if (path.includes('/payslips')) { setPayrollView('payslips'); updateBreadcrumbs('Payroll', 'Payslip Generator') }
+      else { setPayrollView('structure'); updateBreadcrumbs('Payroll', 'Salary Structure') }
     }
     else if (path.startsWith('/hrm/performance')) {
       setActiveView('performance')
-      if (path.includes('/kpi')) setPerformanceView('kpi')
-      else if (path.includes('/appraisals')) setPerformanceView('appraisals')
-      else if (path.includes('/feedback')) setPerformanceView('feedback')
-      else setPerformanceView('kpi')
+      if (path.includes('/kpi')) { setPerformanceView('kpi'); updateBreadcrumbs('Performance', 'KPI Dashboard') }
+      else if (path.includes('/appraisals')) { setPerformanceView('appraisals'); updateBreadcrumbs('Performance', 'Appraisals') }
+      else if (path.includes('/feedback')) { setPerformanceView('feedback'); updateBreadcrumbs('Performance', 'Feedback & Recommendations') }
+      else { setPerformanceView('kpi'); updateBreadcrumbs('Performance', 'KPI Dashboard') }
     }
     else if (path.startsWith('/hrm/training')) {
       setActiveView('training')
-      if (path.includes('/calendar')) setTrainingView('calendar')
-      else if (path.includes('/nominations')) setTrainingView('nominations')
-      else if (path.includes('/evaluation')) setTrainingView('evaluation')
-      else if (path.includes('/certificates')) setTrainingView('certificates')
-      else setTrainingView('calendar')
+      if (path.includes('/calendar')) { setTrainingView('calendar'); updateBreadcrumbs('Training & Development', 'Training Calendar') }
+      else if (path.includes('/nominations')) { setTrainingView('nominations'); updateBreadcrumbs('Training & Development', 'Nominations & Attendance') }
+      else if (path.includes('/evaluation')) { setTrainingView('evaluation'); updateBreadcrumbs('Training & Development', 'Post-Training Evaluation') }
+      else if (path.includes('/certificates')) { setTrainingView('certificates'); updateBreadcrumbs('Training & Development', 'Certificates') }
+      else { setTrainingView('calendar'); updateBreadcrumbs('Training & Development', 'Training Calendar') }
     }
     else if (path.startsWith('/hrm/ess')) {
       setActiveView('ess')
-      if (path.includes('/profile')) setESSView('profile')
-      else if (path.includes('/leave-attendance')) setESSView('leave-attendance')
-      else if (path.includes('/payroll')) setESSView('payroll')
-      else if (path.includes('/loans')) setESSView('loans')
-      else if (path.includes('/performance')) setESSView('performance')
-      else setESSView('profile')
+      if (path.includes('/profile')) { setESSView('profile'); updateBreadcrumbs('Employee Self-Service', 'My Profile') }
+      else if (path.includes('/leave-attendance')) { setESSView('leave-attendance'); updateBreadcrumbs('Employee Self-Service', 'Leave & Attendance') }
+      else if (path.includes('/payroll')) { setESSView('payroll'); updateBreadcrumbs('Employee Self-Service', 'Payroll (Payslips & Tax)') }
+      else if (path.includes('/loans')) { setESSView('loans'); updateBreadcrumbs('Employee Self-Service', 'Loans & Advances') }
+      else if (path.includes('/performance')) { setESSView('performance'); updateBreadcrumbs('Employee Self-Service', 'Performance') }
+      else { setESSView('profile'); updateBreadcrumbs('Employee Self-Service', 'My Profile') }
     }
     else if (path.startsWith('/hrm/notices')) {
       setActiveView('notices')
-      if (path.includes('/inbox')) setNoticesView('inbox')
-      else setNoticesView('all')
+      if (path.includes('/inbox')) { setNoticesView('inbox'); updateBreadcrumbs('Notices & Announcements', 'My Inbox') }
+      else { setNoticesView('all'); updateBreadcrumbs('Notices & Announcements', 'HR Notices') }
     }
     else if (path.startsWith('/hrm/compliance')) {
       setActiveView('compliance')
-      if (path.includes('/tax-pf')) setComplianceView('tax-pf')
-      else if (path.includes('/analytics')) setComplianceView('analytics')
-      else if (path.includes('/reports')) setComplianceView('reports')
-      else setComplianceView('tax-pf')
+      if (path.includes('/tax-pf')) { setComplianceView('tax-pf'); updateBreadcrumbs('Compliance & Reports', 'Tax & PF/Gratuity') }
+      else if (path.includes('/analytics')) { setComplianceView('analytics'); updateBreadcrumbs('Compliance & Reports', 'HR Analytics Dashboard') }
+      else if (path.includes('/reports')) { setComplianceView('reports'); updateBreadcrumbs('Compliance & Reports', 'Custom Reports') }
+      else { setComplianceView('tax-pf'); updateBreadcrumbs('Compliance & Reports', 'Tax & PF/Gratuity') }
     }
     else setActiveView('other')
   }
 
   const handleLogout = () => {
     logout()
-    navigate('/admin/login')
+    navigate('/hrm-login')
+  }
+
+  const handleResetDemoData = () => {
+    try {
+      // Clear HRM-related localStorage keys
+      const keys = Object.keys(localStorage)
+      keys.forEach(key => {
+        if (key.startsWith('hrm_') || key.includes('employee') || key.includes('payroll')) {
+          localStorage.removeItem(key)
+        }
+      })
+      
+      toast.success('Demo data reset successfully', {
+        description: 'All HRM demo data has been cleared and will be reseeded on next interaction.',
+        icon: <CheckCircle2 className="w-4 h-4" />
+      })
+      
+      // Reload the page to reseed data
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    } catch (error) {
+      toast.error('Failed to reset demo data', {
+        description: 'An error occurred while resetting the data.'
+      })
+    }
   }
 
   const renderContent = () => {
-    switch (activeView) {
-      case 'dashboard':
-        return <HRMDashboardView />
-      case 'employees':
-        return <HRMEmployeeList />
-      case 'documents':
-        return <HRMDocuments />
-      case 'history':
-        return <HRMHistory />
-      case 'recruitment':
-        return <RecruitmentPages view={recruitmentView} />
-      case 'attendance':
-        if (attendanceView === 'att-dashboard') return <AttendanceDashboard />
-        if (attendanceView === 'roster') return <ShiftRosterPlanner />
-        if (attendanceView === 'daily') return <DailyAttendance />
-        if (attendanceView === 'monthly') return <MonthlyReports />
-        return <AttendanceDashboard />
-      case 'leave':
-        if (leaveView === 'applications') return <LeaveApplications />
-        if (leaveView === 'balances') return <LeaveBalances />
-        return <LeaveApplications />
-      case 'payroll':
-        if (payrollView === 'structure') return <SalaryStructure />
-        if (payrollView === 'processing') return <PayrollProcessing />
-        if (payrollView === 'disbursement') return <SalaryDisbursement />
-        if (payrollView === 'adjustments') return <ArrearsAdjustments />
-        if (payrollView === 'payslips') return <PayslipGenerator />
-        return <SalaryStructure />
-      case 'performance':
-        if (performanceView === 'kpi') return <KPIDashboard />
-        if (performanceView === 'appraisals') return <Appraisals />
-        if (performanceView === 'feedback') return <FeedbackRecommendations />
-        return <KPIDashboard />
-      case 'training':
-        if (trainingView === 'calendar') return <TrainingCalendar />
-        if (trainingView === 'nominations') return <NominationsAttendance />
-        if (trainingView === 'evaluation') return <PostTrainingEvaluation />
-        if (trainingView === 'certificates') return <Certificates />
-        return <TrainingCalendar />
-      case 'ess':
-        if (essView === 'profile') return <MyProfile />
-        if (essView === 'leave-attendance') return <LeaveAttendance />
-        if (essView === 'payroll') return <PayrollTax />
-        if (essView === 'loans') return <LoansAdvances />
-        if (essView === 'performance') return <PerformanceSelf />
-        return <MyProfile />
-      case 'notices':
-        if (noticesView === 'all') return <HRNotices />
-        if (noticesView === 'inbox') return <MyInbox />
-        return <HRNotices />
-      case 'compliance':
-        if (complianceView === 'tax-pf') return <TaxPFGratuity />
-        if (complianceView === 'analytics') return <HRAnalytics />
-        if (complianceView === 'reports') return <CustomReports />
-        return <TaxPFGratuity />
-      case 'other':
-        return (
-          <div className="p-8 text-center">
-            <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">Under Development</h3>
-            <p className="text-gray-600">This module is currently under development.</p>
-          </div>
-        )
+    const content = (() => {
+      switch (activeView) {
+        case 'dashboard':
+          return <HRMDashboardView />
+        case 'employees':
+          return <HRMEmployeeList />
+        case 'documents':
+          return <HRMDocuments />
+        case 'history':
+          return <HRMHistory />
+        case 'recruitment':
+          return <RecruitmentPages view={recruitmentView} />
+        case 'attendance':
+          if (attendanceView === 'att-dashboard') return <AttendanceDashboard />
+          if (attendanceView === 'roster') return <ShiftRosterPlanner />
+          if (attendanceView === 'daily') return <DailyAttendance />
+          if (attendanceView === 'monthly') return <MonthlyReports />
+          return <AttendanceDashboard />
+        case 'leave':
+          if (leaveView === 'applications') return <LeaveApplications />
+          if (leaveView === 'balances') return <LeaveBalances />
+          return <LeaveApplications />
+        case 'payroll':
+          if (payrollView === 'structure') return <SalaryStructure />
+          if (payrollView === 'processing') return <PayrollProcessing />
+          if (payrollView === 'disbursement') return <SalaryDisbursement />
+          if (payrollView === 'adjustments') return <ArrearsAdjustments />
+          if (payrollView === 'payslips') return <PayslipGenerator />
+          return <SalaryStructure />
+        case 'performance':
+          if (performanceView === 'kpi') return <KPIDashboard />
+          if (performanceView === 'appraisals') return <Appraisals />
+          if (performanceView === 'feedback') return <FeedbackRecommendations />
+          return <KPIDashboard />
+        case 'training':
+          if (trainingView === 'calendar') return <TrainingCalendar />
+          if (trainingView === 'nominations') return <NominationsAttendance />
+          if (trainingView === 'evaluation') return <PostTrainingEvaluation />
+          if (trainingView === 'certificates') return <Certificates />
+          return <TrainingCalendar />
+        case 'ess':
+          if (essView === 'profile') return <MyProfile />
+          if (essView === 'leave-attendance') return <LeaveAttendance />
+          if (essView === 'payroll') return <PayrollTax />
+          if (essView === 'loans') return <LoansAdvances />
+          if (essView === 'performance') return <PerformanceSelf />
+          return <MyProfile />
+        case 'notices':
+          if (noticesView === 'all') return <HRNotices />
+          if (noticesView === 'inbox') return <MyInbox />
+          return <HRNotices />
+        case 'compliance':
+          if (complianceView === 'tax-pf') return <TaxPFGratuity />
+          if (complianceView === 'analytics') return <HRAnalytics />
+          if (complianceView === 'reports') return <CustomReports />
+          return <TaxPFGratuity />
+        case 'other':
+          return (
+            <div className="p-8 text-center">
+              <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">Under Development</h3>
+              <p className="text-gray-600">This module is currently under development.</p>
+            </div>
+          )
+        default:
+          return <HRMDashboardView />
+      }
+    })()
+
+    return (
+      <motion.div
+        key={activePath}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {content}
+      </motion.div>
+    )
+  }
+
+  const getRoleBadge = () => {
+    switch (user?.role) {
+      case 'hr_head':
+        return <span className="px-2 py-1 text-xs bg-accent-cyan/20 text-accent-cyan rounded-full font-medium">HR Head</span>
+      case 'hr_officer':
+        return <span className="px-2 py-1 text-xs bg-green-500/20 text-green-600 rounded-full font-medium">HR Officer</span>
+      case 'system_admin':
+        return <span className="px-2 py-1 text-xs bg-purple-500/20 text-purple-600 rounded-full font-medium">System Admin</span>
       default:
-        return <HRMDashboardView />
+        return null
     }
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
-      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-growth-green to-metal-black text-white shadow-lg sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Users className="w-8 h-8" />
               <div>
-                <h1 className="text-xl font-bold">Human Resource Management</h1>
-                <p className="text-sm text-white/80">Employee Information & Administration</p>
+                <h1 className="text-xl font-semibold font-poppins">Human Resource Management</h1>
+                <p className="text-sm text-white/80 font-inter">Employee Information & Administration</p>
               </div>
             </div>
 
@@ -252,15 +325,29 @@ export default function HRMDashboard() {
                 </div>
               </div>
 
+              {/* Reset Demo Data Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetDemoData}
+                className="hidden md:flex items-center space-x-1 bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span className="text-xs">Reset Demo</span>
+              </Button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="text-white hover:bg-white/10">
                     <Avatar className="w-8 h-8 mr-2">
-                      <AvatarFallback className="bg-white text-blue-600">
+                      <AvatarFallback className="bg-white text-growth-green">
                         {user?.name.split(' ').map(n => n[0]).join('').substring(0, 2) || 'HR'}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden md:inline">{user?.name || 'HR Officer'}</span>
+                    <div className="hidden md:flex flex-col items-start mr-2">
+                      <span className="text-sm font-medium">{user?.name || 'HR User'}</span>
+                      {getRoleBadge()}
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -273,6 +360,19 @@ export default function HRMDashboard() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+          </div>
+
+          {/* Breadcrumbs */}
+          <div className="mt-3 flex items-center space-x-2 text-sm text-white/90">
+            <span className="font-poppins">HRM</span>
+            {breadcrumbs.map((crumb, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <ChevronRight className="w-4 h-4" />
+                <span className={index === breadcrumbs.length - 1 ? 'font-semibold text-accent-cyan' : ''}>
+                  {crumb.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </header>
