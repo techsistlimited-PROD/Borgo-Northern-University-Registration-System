@@ -186,6 +186,28 @@ export default function HRMDashboard() {
         if (performanceView === 'appraisals') return <Appraisals />
         if (performanceView === 'feedback') return <FeedbackRecommendations />
         return <KPIDashboard />
+      case 'training':
+        if (trainingView === 'calendar') return <TrainingCalendar />
+        if (trainingView === 'nominations') return <NominationsAttendance />
+        if (trainingView === 'evaluation') return <PostTrainingEvaluation />
+        if (trainingView === 'certificates') return <Certificates />
+        return <TrainingCalendar />
+      case 'ess':
+        if (essView === 'profile') return <MyProfile />
+        if (essView === 'leave-attendance') return <LeaveAttendance />
+        if (essView === 'payroll') return <PayrollTax />
+        if (essView === 'loans') return <LoansAdvances />
+        if (essView === 'performance') return <PerformanceSelf />
+        return <MyProfile />
+      case 'notices':
+        if (noticesView === 'all') return <HRNotices />
+        if (noticesView === 'inbox') return <MyInbox />
+        return <HRNotices />
+      case 'compliance':
+        if (complianceView === 'tax-pf') return <TaxPFGratuity />
+        if (complianceView === 'analytics') return <HRAnalytics />
+        if (complianceView === 'reports') return <CustomReports />
+        return <TaxPFGratuity />
       case 'other':
         return (
           <div className="p-8 text-center">
