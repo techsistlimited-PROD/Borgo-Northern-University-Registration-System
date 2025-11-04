@@ -19,17 +19,20 @@ import GuardianDashboard from '@/pages/GuardianDashboard'
 import HRMDashboard from '@/pages/HRMDashboard'
 
 // Protected Route Component
-function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole: string }) {
+function ProtectedRoute({ children, allowedRole, allowedRoles }: { children: React.ReactNode, allowedRole?: string, allowedRoles?: string[] }) {
   const { user, isAuthenticated } = useAuth()
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/" replace />
   }
-  
-  if (user?.role !== allowedRole) {
+
+  // Support both single role and multiple roles
+  const roles = allowedRoles || (allowedRole ? [allowedRole] : [])
+
+  if (roles.length > 0 && !roles.includes(user?.role || '')) {
     return <Navigate to="/" replace />
   }
-  
+
   return <>{children}</>
 }
 
@@ -126,7 +129,7 @@ function AppRoutes() {
       <Route
         path="/hrm"
         element={
-          <ProtectedRoute allowedRole="admin">
+          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
             <HRMDashboard />
           </ProtectedRoute>
         }
@@ -134,7 +137,7 @@ function AppRoutes() {
       <Route
         path="/hrm/dashboard"
         element={
-          <ProtectedRoute allowedRole="admin">
+          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
             <HRMDashboard />
           </ProtectedRoute>
         }
@@ -142,7 +145,7 @@ function AppRoutes() {
       <Route
         path="/hrm/*"
         element={
-          <ProtectedRoute allowedRole="admin">
+          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
             <HRMDashboard />
           </ProtectedRoute>
         }
