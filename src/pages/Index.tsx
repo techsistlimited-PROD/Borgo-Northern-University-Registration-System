@@ -153,6 +153,29 @@ export default function Index() {
             </CardContent>
           </Card>
 
+          {/* Guardian Portal */}
+          <Card className="text-center group hover:scale-105 transition-transform duration-300">
+            <CardHeader className="pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-deep-plum to-accent-purple rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-deep-plum">Guardian Portal</CardTitle>
+              <CardDescription>
+                Track your ward's attendance, academic performance, and finances
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/guardian-login">
+                <Button className="w-full nu-button-primary">
+                  Access Guardian Portal
+                </Button>
+              </Link>
+              <p className="text-xs text-gray-500 mt-2">
+                Demo ID: G001
+              </p>
+            </CardContent>
+          </Card>
+
           {/* Admin Portal */}
           <Card className="text-center group hover:scale-105 transition-transform duration-300">
             <CardHeader className="pb-4">
