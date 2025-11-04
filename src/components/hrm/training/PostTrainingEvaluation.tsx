@@ -52,20 +52,20 @@ export default function PostTrainingEvaluation() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {TRAINING_EVALUATIONS.map(eval => (
-                <tr key={eval.id}>
-                  <td className="px-3 py-2 font-medium">{eval.empName}</td>
+              {TRAINING_EVALUATIONS.map(evaluation => (
+                <tr key={evaluation.id}>
+                  <td className="px-3 py-2 font-medium">{evaluation.empName}</td>
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <span key={i} className={i < eval.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
+                        <span key={i} className={i < evaluation.rating ? 'text-yellow-400' : 'text-gray-300'}>★</span>
                       ))}
-                      <span className="ml-1">{eval.rating}.0</span>
+                      <span className="ml-1">{evaluation.rating}.0</span>
                     </div>
                   </td>
-                  <td className="px-3 py-2">{eval.feedback}</td>
-                  <td className="px-3 py-2">{eval.improvementObserved}</td>
-                  <td className="px-3 py-2">{eval.followUp}</td>
+                  <td className="px-3 py-2">{evaluation.feedback}</td>
+                  <td className="px-3 py-2">{evaluation.improvementObserved}</td>
+                  <td className="px-3 py-2">{evaluation.followUp}</td>
                 </tr>
               ))}
             </tbody>
