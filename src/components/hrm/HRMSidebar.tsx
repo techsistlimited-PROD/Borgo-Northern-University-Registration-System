@@ -66,10 +66,52 @@ const menuItems: MenuItem[] = [
       { id: 'feedback', label: 'Feedback & Recommendations', icon: Users, path: '/hrm/performance/feedback' }
     ]
   },
-  { id: 'training', label: 'Training', icon: GraduationCap, path: '/hrm/training' },
-  { id: 'ess', label: 'ESS Portal', icon: Users, path: '/hrm/ess' },
-  { id: 'notices', label: 'HR Notices', icon: Bell, path: '/hrm/notices' },
-  { id: 'reports', label: 'Reports', icon: FileBarChart, path: '/hrm/reports' }
+  {
+    id: 'training',
+    label: 'Training & Development',
+    icon: GraduationCap,
+    path: '/hrm/training',
+    children: [
+      { id: 'training-calendar', label: 'Training Calendar', icon: Calendar, path: '/hrm/training/calendar' },
+      { id: 'nominations', label: 'Nominations & Attendance', icon: Users, path: '/hrm/training/nominations' },
+      { id: 'evaluation', label: 'Post-Training Evaluation', icon: FileText, path: '/hrm/training/evaluation' },
+      { id: 'certificates', label: 'Certificates', icon: FileBarChart, path: '/hrm/training/certificates' }
+    ]
+  },
+  {
+    id: 'ess',
+    label: 'Employee Self-Service',
+    icon: Users,
+    path: '/hrm/ess',
+    children: [
+      { id: 'ess-profile', label: 'My Profile', icon: Users, path: '/hrm/ess/profile' },
+      { id: 'ess-leave', label: 'Leave & Attendance', icon: Calendar, path: '/hrm/ess/leave-attendance' },
+      { id: 'ess-payroll', label: 'Payroll (Payslips & Tax)', icon: DollarSign, path: '/hrm/ess/payroll' },
+      { id: 'ess-loans', label: 'Loans & Advances', icon: FileText, path: '/hrm/ess/loans' },
+      { id: 'ess-performance', label: 'Performance', icon: TrendingUp, path: '/hrm/ess/performance' }
+    ]
+  },
+  {
+    id: 'notices',
+    label: 'Notices & Announcements',
+    icon: Bell,
+    path: '/hrm/notices',
+    children: [
+      { id: 'hr-notices', label: 'HR Notices', icon: Bell, path: '/hrm/notices/all' },
+      { id: 'inbox', label: 'My Inbox', icon: FileText, path: '/hrm/notices/inbox' }
+    ]
+  },
+  {
+    id: 'compliance',
+    label: 'Compliance & Reports',
+    icon: FileBarChart,
+    path: '/hrm/compliance',
+    children: [
+      { id: 'tax-pf', label: 'Tax & PF/Gratuity', icon: DollarSign, path: '/hrm/compliance/tax-pf' },
+      { id: 'analytics', label: 'HR Analytics Dashboard', icon: TrendingUp, path: '/hrm/compliance/analytics' },
+      { id: 'custom-reports', label: 'Custom Reports', icon: FileBarChart, path: '/hrm/compliance/reports' }
+    ]
+  }
 ]
 
 type Props = {
@@ -78,7 +120,7 @@ type Props = {
 }
 
 export default function HRMSidebar({ activePath, onNavigate }: Props) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment', 'attendance', 'payroll', 'performance'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment', 'attendance', 'payroll', 'performance', 'training', 'ess', 'notices', 'compliance'])
 
   const toggleExpand = (id: string) => {
     if (expandedItems.includes(id)) {
