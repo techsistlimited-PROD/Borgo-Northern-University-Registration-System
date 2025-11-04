@@ -542,3 +542,352 @@ export const HRM_DEPT_DISTRIBUTION = [
   { department: 'Library', count: 1 },
   { department: 'Admission', count: 1 }
 ]
+
+export type AttendanceRecord = {
+  id: string
+  empId: string
+  name: string
+  dept: string
+  date: string
+  inTime: string
+  outTime: string
+  hours: number
+  late: number
+  status: 'Present' | 'Absent' | 'Late' | 'On Leave'
+  shift: string
+  remarks?: string
+}
+
+export type Shift = {
+  id: string
+  name: string
+  start: string
+  end: string
+  type: 'Regular' | 'Night' | 'Flex'
+  campus: string
+  remarks?: string
+}
+
+export type Roster = {
+  dept: string
+  date: string
+  shiftId: string
+  employees: string[]
+}
+
+export type LeaveType = 'Casual' | 'Medical' | 'Earn' | 'Maternity' | 'Special' | 'Duty' | 'Study' | 'Semester Break'
+
+export type LeaveApplication = {
+  id: string
+  empId: string
+  name: string
+  dept: string
+  type: LeaveType
+  from: string
+  to: string
+  totalDays: number
+  reason: string
+  status: 'Pending' | 'Approved' | 'Rejected' | 'Cancelled'
+  workflow: {
+    hod: 'Pending' | 'Approved' | 'Rejected'
+    dean: 'Pending' | 'Approved' | 'Rejected'
+    hr: 'Pending' | 'Approved' | 'Rejected'
+    registrar: 'Pending' | 'Approved' | 'Rejected'
+    vc: 'Pending' | 'Approved' | 'Rejected'
+  }
+  remarks?: string
+  appliedOn: string
+}
+
+export type LeaveBalance = {
+  empId: string
+  name: string
+  dept: string
+  casual: number
+  medical: number
+  earn: number
+  special: number
+  used: number
+  remaining: number
+}
+
+export const HRM_SHIFTS: Shift[] = [
+  { id: 'R1', name: 'Regular Day', start: '08:30', end: '16:30', type: 'Regular', campus: 'Permanent Campus' },
+  { id: 'R2', name: 'Night Shift', start: '16:00', end: '00:00', type: 'Night', campus: 'Banani Campus' },
+  { id: 'F1', name: 'Flex Morning', start: '07:00', end: '15:00', type: 'Flex', campus: 'Permanent Campus' },
+  { id: 'F2', name: 'Flex Evening', start: '14:00', end: '22:00', type: 'Flex', campus: 'Banani Campus' }
+]
+
+const generateAttendance = (): AttendanceRecord[] => {
+  const records: AttendanceRecord[] = []
+  const depts = ['CSE', 'BBA', 'HR', 'Accounts', 'IT']
+  const employees = HRM_EMPLOYEES.filter(e => e.status === 'Active').slice(0, 10)
+  const statuses: AttendanceRecord['status'][] = ['Present', 'Present', 'Present', 'Present', 'Late', 'On Leave', 'Absent']
+
+  for (let day = 1; day <= 12; day++) {
+    employees.forEach(emp => {
+      const status = statuses[Math.floor(Math.random() * statuses.length)]
+      const late = status === 'Late' ? Math.floor(Math.random() * 45) + 5 : 0
+      const hours = status === 'Present' ? 8 : status === 'Late' ? 7.5 : 0
+      const inTime = status === 'Present' ? '08:30' : status === 'Late' ? `08:${35 + late}` : '-'
+      const outTime = status === 'Present' || status === 'Late' ? '16:30' : '-'
+
+      records.push({
+        id: `ATT-${emp.id}-2025-01-${day.toString().padStart(2, '0')}`,
+        empId: emp.id,
+        name: emp.name,
+        dept: emp.department,
+        date: `2025-01-${day.toString().padStart(2, '0')}`,
+        inTime,
+        outTime,
+        hours,
+        late,
+        status,
+        shift: 'R1'
+      })
+    })
+  }
+
+  return records
+}
+
+export const HRM_ATTENDANCE: AttendanceRecord[] = generateAttendance()
+
+export const HRM_ROSTER: Roster[] = [
+  { dept: 'CSE', date: '2025-01-20', shiftId: 'R1', employees: ['EMP-2025-001', 'EMP-2025-006'] },
+  { dept: 'CSE', date: '2025-01-21', shiftId: 'R1', employees: ['EMP-2025-001', 'EMP-2025-006'] },
+  { dept: 'BBA', date: '2025-01-20', shiftId: 'R1', employees: ['EMP-2025-002', 'EMP-2025-008'] },
+  { dept: 'BBA', date: '2025-01-21', shiftId: 'F1', employees: ['EMP-2025-008'] },
+  { dept: 'HR', date: '2025-01-20', shiftId: 'R1', employees: ['EMP-2025-003', 'EMP-2025-012'] },
+  { dept: 'Accounts', date: '2025-01-20', shiftId: 'R1', employees: ['EMP-2025-004', 'EMP-2025-013'] }
+]
+
+export const HRM_LEAVE_APPLICATIONS: LeaveApplication[] = [
+  {
+    id: 'LV-001',
+    empId: 'EMP-2025-002',
+    name: 'Mahbub Alam',
+    dept: 'BBA',
+    type: 'Medical',
+    from: '2025-01-15',
+    to: '2025-01-17',
+    totalDays: 3,
+    reason: 'Fever and flu',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-14'
+  },
+  {
+    id: 'LV-002',
+    empId: 'EMP-2025-001',
+    name: 'Dr. Ayesha Karim',
+    dept: 'CSE',
+    type: 'Casual',
+    from: '2025-01-22',
+    to: '2025-01-23',
+    totalDays: 2,
+    reason: 'Personal work',
+    status: 'Pending',
+    workflow: { hod: 'Approved', dean: 'Pending', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    appliedOn: '2025-01-18'
+  },
+  {
+    id: 'LV-003',
+    empId: 'EMP-2025-003',
+    name: 'Saiful Islam',
+    dept: 'HR',
+    type: 'Earn',
+    from: '2025-02-01',
+    to: '2025-02-10',
+    totalDays: 10,
+    reason: 'Family vacation',
+    status: 'Pending',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Pending', vc: 'Pending' },
+    appliedOn: '2025-01-10'
+  },
+  {
+    id: 'LV-004',
+    empId: 'EMP-2025-004',
+    name: 'Nusrat Jahan',
+    dept: 'Accounts',
+    type: 'Casual',
+    from: '2025-01-25',
+    to: '2025-01-25',
+    totalDays: 1,
+    reason: 'Medical appointment',
+    status: 'Rejected',
+    workflow: { hod: 'Approved', dean: 'Rejected', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    remarks: 'Request for different date',
+    appliedOn: '2025-01-20'
+  },
+  {
+    id: 'LV-005',
+    empId: 'EMP-2025-006',
+    name: 'Dr. Farhan Chowdhury',
+    dept: 'CSE',
+    type: 'Study',
+    from: '2025-03-01',
+    to: '2025-03-15',
+    totalDays: 15,
+    reason: 'Conference in Singapore',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-05'
+  },
+  {
+    id: 'LV-006',
+    empId: 'EMP-2025-007',
+    name: 'Shabnam Akter',
+    dept: 'Library',
+    type: 'Casual',
+    from: '2025-01-28',
+    to: '2025-01-29',
+    totalDays: 2,
+    reason: 'Family function',
+    status: 'Pending',
+    workflow: { hod: 'Pending', dean: 'Pending', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    appliedOn: '2025-01-19'
+  },
+  {
+    id: 'LV-007',
+    empId: 'EMP-2025-008',
+    name: 'Rafiqul Islam',
+    dept: 'BBA',
+    type: 'Medical',
+    from: '2025-01-12',
+    to: '2025-01-14',
+    totalDays: 3,
+    reason: 'Back pain treatment',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-11'
+  },
+  {
+    id: 'LV-008',
+    empId: 'EMP-2025-009',
+    name: 'Tasneem Hossain',
+    dept: 'Admission',
+    type: 'Special',
+    from: '2025-02-14',
+    to: '2025-02-14',
+    totalDays: 1,
+    reason: 'Marriage anniversary',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-30'
+  },
+  {
+    id: 'LV-009',
+    empId: 'EMP-2025-010',
+    name: 'Prof. Dr. Rahim Uddin',
+    dept: 'CSE',
+    type: 'Duty',
+    from: '2025-02-05',
+    to: '2025-02-07',
+    totalDays: 3,
+    reason: 'University accreditation visit',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-25'
+  },
+  {
+    id: 'LV-010',
+    empId: 'EMP-2025-011',
+    name: 'Dr. Khaleda Rahman',
+    dept: 'BBA',
+    type: 'Earn',
+    from: '2025-03-20',
+    to: '2025-03-30',
+    totalDays: 11,
+    reason: 'Umrah pilgrimage',
+    status: 'Pending',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Pending' },
+    appliedOn: '2025-01-15'
+  },
+  {
+    id: 'LV-011',
+    empId: 'EMP-2025-012',
+    name: 'Aminul Haque',
+    dept: 'HR',
+    type: 'Casual',
+    from: '2025-01-24',
+    to: '2025-01-24',
+    totalDays: 1,
+    reason: 'Personal emergency',
+    status: 'Cancelled',
+    workflow: { hod: 'Pending', dean: 'Pending', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    remarks: 'Cancelled by employee',
+    appliedOn: '2025-01-23'
+  },
+  {
+    id: 'LV-012',
+    empId: 'EMP-2025-013',
+    name: 'Jahangir Kabir',
+    dept: 'Accounts',
+    type: 'Medical',
+    from: '2025-02-01',
+    to: '2025-02-02',
+    totalDays: 2,
+    reason: 'Dental surgery',
+    status: 'Pending',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    appliedOn: '2025-01-19'
+  },
+  {
+    id: 'LV-013',
+    empId: 'EMP-2025-001',
+    name: 'Dr. Ayesha Karim',
+    dept: 'CSE',
+    type: 'Study',
+    from: '2025-04-10',
+    to: '2025-04-20',
+    totalDays: 11,
+    reason: 'Research workshop in Malaysia',
+    status: 'Pending',
+    workflow: { hod: 'Pending', dean: 'Pending', hr: 'Pending', registrar: 'Pending', vc: 'Pending' },
+    appliedOn: '2025-01-21'
+  },
+  {
+    id: 'LV-014',
+    empId: 'EMP-2025-003',
+    name: 'Saiful Islam',
+    dept: 'HR',
+    type: 'Casual',
+    from: '2025-01-30',
+    to: '2025-01-31',
+    totalDays: 2,
+    reason: 'Child illness',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-29'
+  },
+  {
+    id: 'LV-015',
+    empId: 'EMP-2025-007',
+    name: 'Shabnam Akter',
+    dept: 'Library',
+    type: 'Medical',
+    from: '2025-01-20',
+    to: '2025-01-21',
+    totalDays: 2,
+    reason: 'Medical checkup',
+    status: 'Approved',
+    workflow: { hod: 'Approved', dean: 'Approved', hr: 'Approved', registrar: 'Approved', vc: 'Approved' },
+    appliedOn: '2025-01-18'
+  }
+]
+
+export const HRM_LEAVE_BALANCES: LeaveBalance[] = [
+  { empId: 'EMP-2025-001', name: 'Dr. Ayesha Karim', dept: 'CSE', casual: 15, medical: 20, earn: 30, special: 10, used: 13, remaining: 62 },
+  { empId: 'EMP-2025-002', name: 'Mahbub Alam', dept: 'BBA', casual: 12, medical: 15, earn: 20, special: 5, used: 3, remaining: 49 },
+  { empId: 'EMP-2025-003', name: 'Saiful Islam', dept: 'HR', casual: 15, medical: 20, earn: 25, special: 10, used: 12, remaining: 58 },
+  { empId: 'EMP-2025-004', name: 'Nusrat Jahan', dept: 'Accounts', casual: 15, medical: 20, earn: 28, special: 10, used: 0, remaining: 73 },
+  { empId: 'EMP-2025-006', name: 'Dr. Farhan Chowdhury', dept: 'CSE', casual: 15, medical: 20, earn: 35, special: 15, used: 15, remaining: 70 },
+  { empId: 'EMP-2025-007', name: 'Shabnam Akter', dept: 'Library', casual: 15, medical: 20, earn: 25, special: 10, used: 4, remaining: 66 },
+  { empId: 'EMP-2025-008', name: 'Rafiqul Islam', dept: 'BBA', casual: 15, medical: 20, earn: 30, special: 10, used: 3, remaining: 72 },
+  { empId: 'EMP-2025-009', name: 'Tasneem Hossain', dept: 'Admission', casual: 12, medical: 15, earn: 18, special: 5, used: 1, remaining: 49 },
+  { empId: 'EMP-2025-010', name: 'Prof. Dr. Rahim Uddin', dept: 'CSE', casual: 15, medical: 20, earn: 40, special: 20, used: 3, remaining: 92 },
+  { empId: 'EMP-2025-011', name: 'Dr. Khaleda Rahman', dept: 'BBA', casual: 15, medical: 20, earn: 38, special: 20, used: 11, remaining: 82 },
+  { empId: 'EMP-2025-012', name: 'Aminul Haque', dept: 'HR', casual: 15, medical: 20, earn: 32, special: 15, used: 0, remaining: 82 },
+  { empId: 'EMP-2025-013', name: 'Jahangir Kabir', dept: 'Accounts', casual: 15, medical: 20, earn: 35, special: 15, used: 2, remaining: 83 }
+]

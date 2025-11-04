@@ -28,7 +28,20 @@ const menuItems: MenuItem[] = [
       { id: 'onboarding', label: 'Onboarding', icon: Users, path: '/hrm/recruitment/onboarding' }
     ]
   },
-  { id: 'attendance', label: 'Attendance & Leave', icon: Calendar, path: '/hrm/attendance' },
+  {
+    id: 'attendance',
+    label: 'Attendance & Leave',
+    icon: Calendar,
+    path: '/hrm/attendance',
+    children: [
+      { id: 'att-dashboard', label: 'Attendance Dashboard', icon: LayoutDashboard, path: '/hrm/attendance/dashboard' },
+      { id: 'roster', label: 'Shift & Roster Planner', icon: Calendar, path: '/hrm/attendance/roster' },
+      { id: 'daily', label: 'Daily Attendance', icon: FileText, path: '/hrm/attendance/daily' },
+      { id: 'monthly', label: 'Monthly Reports', icon: FileBarChart, path: '/hrm/attendance/monthly' },
+      { id: 'leave-apps', label: 'Leave Applications', icon: FileText, path: '/hrm/leave/applications' },
+      { id: 'leave-bal', label: 'Leave Balances', icon: TrendingUp, path: '/hrm/leave/balances' }
+    ]
+  },
   { id: 'payroll', label: 'Payroll', icon: DollarSign, path: '/hrm/payroll' },
   { id: 'performance', label: 'Performance', icon: TrendingUp, path: '/hrm/performance' },
   { id: 'training', label: 'Training', icon: GraduationCap, path: '/hrm/training' },
@@ -43,7 +56,7 @@ type Props = {
 }
 
 export default function HRMSidebar({ activePath, onNavigate }: Props) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['recruitment', 'attendance'])
 
   const toggleExpand = (id: string) => {
     if (expandedItems.includes(id)) {
