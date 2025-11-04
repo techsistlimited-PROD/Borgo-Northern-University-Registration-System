@@ -1,5 +1,8 @@
 import { HRM_EMPLOYEES } from './hrmStatic'
 
+// Re-export HRM_EMPLOYEES for components that need it
+export { HRM_EMPLOYEES }
+
 // Payroll Types
 export type SalaryTemplate = {
   id: string
