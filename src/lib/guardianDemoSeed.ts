@@ -219,34 +219,34 @@ export function seedGuardianDemoData() {
 
     // FINANCE — payables & payments (simulate dues)
     const payables: StudentPayable[] = [
-      { 
-        id: 'p1', 
+      {
+        id: 'p1',
         billNo: 'INV-2025-FA-001',
-        studentId: 'stu_cse_01', 
-        semesterId: 'FALL-2025', 
+        studentId: STU_CSE_01,
+        semesterId: 'FALL-2025',
         lines: [
           { costHeadId: 'TUITION', amount: 35000, waiverAmount: 0, scholarshipAmount: 0, netAmount: 35000 },
           { costHeadId: 'LABFEE', amount: 3000, waiverAmount: 0, scholarshipAmount: 0, netAmount: 3000 },
           { costHeadId: 'LIBFEE', amount: 1000, waiverAmount: 0, scholarshipAmount: 0, netAmount: 1000 }
-        ], 
-        totalAmount: 39000, 
-        paidAmount: 22000, 
+        ],
+        totalAmount: 39000,
+        paidAmount: 22000,
         dueAmount: 17000,
         status: 'Partially Paid',
         billDate: '2025-09-01',
         dueDate: '2025-11-30'
       },
-      { 
-        id: 'p2', 
+      {
+        id: 'p2',
         billNo: 'INV-2025-FA-002',
-        studentId: 'stu_bba_01', 
-        semesterId: 'FALL-2025', 
+        studentId: STU_BBA_01,
+        semesterId: 'FALL-2025',
         lines: [
           { costHeadId: 'TUITION', amount: 32000, waiverAmount: 0, scholarshipAmount: 0, netAmount: 32000 },
           { costHeadId: 'REGFEE', amount: 1500, waiverAmount: 0, scholarshipAmount: 0, netAmount: 1500 }
-        ], 
-        totalAmount: 33500, 
-        paidAmount: 33500, 
+        ],
+        totalAmount: 33500,
+        paidAmount: 33500,
         dueAmount: 0,
         status: 'Paid',
         billDate: '2025-09-01',
@@ -255,24 +255,24 @@ export function seedGuardianDemoData() {
     ]
 
     const receipts: Receipt[] = [
-      { 
-        id: 'mr-10021', 
+      {
+        id: 'mr-10021',
         moneyReceiptNo: 'MR-2025-10021',
-        studentId: 'stu_cse_01', 
+        studentId: STU_CSE_01,
         payableId: 'p1',
-        amount: 22000, 
-        method: 'Bank', 
+        amount: 22000,
+        method: 'Bank',
         reference: 'TXN-CSE-22000',
         date: nowMinus(10).slice(0, 10),
         collectedBy: 'Mahfuz Rahman'
       },
-      { 
-        id: 'mr-10055', 
+      {
+        id: 'mr-10055',
         moneyReceiptNo: 'MR-2025-10055',
-        studentId: 'stu_bba_01', 
+        studentId: STU_BBA_01,
         payableId: 'p2',
-        amount: 33500, 
-        method: 'Bank', 
+        amount: 33500,
+        method: 'Bank',
         reference: 'TXN-BBA-33500',
         date: nowMinus(5).slice(0, 10),
         collectedBy: 'Mahfuz Rahman'
