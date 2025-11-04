@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { FileDown, Eye } from 'lucide-react'
@@ -262,8 +263,4 @@ export default function MonthlyReports() {
       </Dialog>
     </div>
   )
-}
-
-function Input({ type, value, onChange }: { type: string; value: string; onChange: (e: any) => void }) {
-  return <input type={type} value={value} onChange={onChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
 }
