@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { AlertCircle, Calendar, DollarSign, GraduationCap, TrendingUp } from 'lucide-react'
 import { attendanceService, resultService, financeService, terService } from '@/lib/guardianServices'
 import { Repo } from '@/lib/repo'
-import { Student, AttendanceRecord, Receipt } from '@/lib/seedAll'
+import { Student, AttendanceRecord, Receipt, Section, Offering, Course } from '@/lib/seedAll'
 
 interface Props {
   wardId: string
@@ -187,20 +187,27 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {recentAttendance.map(att => (
-                <tr key={att.id}>
-                  <td className="px-4 py-2 text-sm">{att.date}</td>
-                  <td className="px-4 py-2 text-sm">Course Section</td>
-                  <td className="px-4 py-2 text-sm">
-                    <Badge variant={att.status === 'P' ? 'default' : att.status === 'L' ? 'secondary' : 'destructive'}>
-                      {att.status === 'P' ? 'Present' : att.status === 'L' ? 'Late' : 'Absent'}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-600">
-                    {new Date(att.recordedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                  </td>
-                </tr>
-              ))}
+              {recentAttendance.map(att => {
+                const section = Repo.get<Section>('sections').find(s => s.id === att.sectionId)
+                const offering = section ? Repo.get<Offering>('offerings').find(o => o.id === section.offeringId) : null
+                const course = offering ? Repo.get<Course>('courses').find(c => c.id === offering.courseId) : null
+                const courseDisplay = course ? `${course.code} - ${course.title}` : att.sectionId
+
+                return (
+                  <tr key={att.id}>
+                    <td className="px-4 py-2 text-sm">{att.date}</td>
+                    <td className="px-4 py-2 text-sm">{courseDisplay}</td>
+                    <td className="px-4 py-2 text-sm">
+                      <Badge variant={att.status === 'P' ? 'default' : att.status === 'L' ? 'secondary' : 'destructive'}>
+                        {att.status === 'P' ? 'Present' : att.status === 'L' ? 'Late' : 'Absent'}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-600">
+                      {new Date(att.recordedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
           {recentAttendance.length === 0 && (

@@ -13,7 +13,7 @@ import {
   LogService 
 } from '@/lib/guardianServices'
 import { Repo } from '@/lib/repo'
-import { AttendanceRecord, Notification, Guardian, GuardianLink, Student, Course, Section, Offering, CostHead } from '@/lib/seedAll'
+import { AttendanceRecord, Notification, Guardian, GuardianLink, Student, Course, Section, Offering } from '@/lib/seedAll'
 import { exportToCSV } from '@/lib/exportUtils'
 
 // Guardian Attendance Component
@@ -87,22 +87,34 @@ export function GuardianAttendance({ wardId, termId }: { wardId: string; termId:
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Date</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Course</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Recorded At</th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {records.map(record => (
-                <tr key={record.id}>
-                  <td className="px-4 py-3 text-sm">{record.date}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <Badge variant={record.status === 'P' ? 'default' : record.status === 'L' ? 'secondary' : 'destructive'}>
-                      {record.status === 'P' ? 'Present' : record.status === 'L' ? 'Late' : 'Absent'}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-sm">{new Date(record.recordedAt).toLocaleString()}</td>
-                </tr>
-              ))}
+              {records.map(record => {
+                const sections = Repo.get<Section>('sections')
+                const offerings = Repo.get<Offering>('offerings')
+                const courses = Repo.get<Course>('courses')
+                const section = sections.find(s => s.id === record.sectionId)
+                const offering = section ? offerings.find(o => o.id === section.offeringId) : null
+                const course = offering ? courses.find(c => c.id === offering.courseId) : null
+                const courseDisplay = course ? `${course.code} - ${course.title}` : 'N/A'
+
+                return (
+                  <tr key={record.id}>
+                    <td className="px-4 py-3 text-sm">{record.date}</td>
+                    <td className="px-4 py-3 text-sm">{courseDisplay}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <Badge variant={record.status === 'P' ? 'default' : record.status === 'L' ? 'secondary' : 'destructive'}>
+                        {record.status === 'P' ? 'Present' : record.status === 'L' ? 'Late' : 'Absent'}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-sm">{new Date(record.recordedAt).toLocaleString()}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
           {records.length === 0 && <div className="text-center py-12 text-gray-500">No attendance records found</div>}
