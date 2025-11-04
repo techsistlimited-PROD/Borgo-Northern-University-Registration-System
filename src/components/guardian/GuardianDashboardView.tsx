@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Calendar, DollarSign, GraduationCap, TrendingUp } from 'lucide-react'
+import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
+import { GuardianDemo } from '@/services/guardianDemo'
 import { attendanceService, resultService, financeService, terService } from '@/lib/guardianServices'
 import { Repo } from '@/lib/repo'
 import { Student, AttendanceRecord, Receipt, Section, Offering, Course } from '@/lib/seedAll'
@@ -13,47 +15,85 @@ interface Props {
 }
 
 export default function GuardianDashboardView({ wardId, termId }: Props) {
-  const [student, setStudent] = useState<Student | null>(null)
+  const [student, setStudent] = useState<any>(null)
   const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0, late: 0, percentage: 0 })
   const [financeStats, setFinanceStats] = useState({ totalDue: 0, lastPaymentDate: '' })
   const [academicStats, setAcademicStats] = useState({ gpa: 0, locked: false, reasons: [] as string[] })
-  const [recentAttendance, setRecentAttendance] = useState<AttendanceRecord[]>([])
-  const [recentPayments, setRecentPayments] = useState<Receipt[]>([])
+  const [recentAttendance, setRecentAttendance] = useState<any[]>([])
+  const [recentPayments, setRecentPayments] = useState<any[]>([])
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
     loadData()
   }, [wardId, termId])
 
   const loadData = () => {
-    const students = Repo.get<Student>('students')
-    const ward = students.find(s => s.id === wardId)
-    setStudent(ward || null)
+    if (isStaticMode) {
+      // Load from static demo
+      const wards = GuardianDemo.getWards()
+      const ward = wards.find(w => w.id === wardId)
+      setStudent(ward || null)
 
-    // Attendance stats
-    const attStats = attendanceService.getStats(wardId, termId)
-    setAttendanceStats(attStats)
+      // Attendance stats
+      const attStats = GuardianDemo.getAttendanceStats(wardId)
+      setAttendanceStats(attStats)
 
-    // Recent attendance
-    const recentAtt = attendanceService.listByStudent(wardId, { termId }).slice(0, 5)
-    setRecentAttendance(recentAtt)
+      // Recent attendance (last 5)
+      const recentAtt = GuardianDemo.getAttendance(wardId).slice(0, 5)
+      setRecentAttendance(recentAtt)
 
-    // Finance stats
-    const statement = financeService.getStatement(wardId, { termId })
-    const payments = financeService.listPayments(wardId, { termId })
-    setFinanceStats({
-      totalDue: statement.outstanding,
-      lastPaymentDate: payments[0]?.date || 'N/A'
-    })
-    setRecentPayments(payments.slice(0, 5))
+      // Finance stats
+      const finance = GuardianDemo.getFinance(wardId)
+      setFinanceStats({
+        totalDue: finance.summary.due,
+        lastPaymentDate: finance.payments[0]?.date || 'N/A'
+      })
+      setRecentPayments(finance.payments.slice(0, 5))
 
-    // Academic stats
-    const resultCheck = resultService.isResultUnlocked(wardId, termId)
-    const termResult = resultService.getTermSummary(wardId, termId)
-    setAcademicStats({
-      gpa: termResult?.gpa || 0,
-      locked: !resultCheck.unlocked,
-      reasons: resultCheck.reasons
-    })
+      // Academic stats
+      const results = GuardianDemo.getResults(wardId)
+      const blocked = results.gates.dues > 0 || results.gates.terPending
+      const reasons = []
+      if (results.gates.dues > 0) reasons.push('Outstanding dues must be cleared')
+      if (results.gates.terPending) reasons.push('TER not submitted')
+
+      setAcademicStats({
+        gpa: results.semesters[results.semesters.length - 1]?.gpa || 0,
+        locked: blocked,
+        reasons
+      })
+    } else {
+      // Load from Repo
+      const students = Repo.get<Student>('students')
+      const ward = students.find(s => s.id === wardId)
+      setStudent(ward || null)
+
+      // Attendance stats
+      const attStats = attendanceService.getStats(wardId, termId)
+      setAttendanceStats(attStats)
+
+      // Recent attendance
+      const recentAtt = attendanceService.listByStudent(wardId, { termId }).slice(0, 5)
+      setRecentAttendance(recentAtt)
+
+      // Finance stats
+      const statement = financeService.getStatement(wardId, { termId })
+      const payments = financeService.listPayments(wardId, { termId })
+      setFinanceStats({
+        totalDue: statement.outstanding,
+        lastPaymentDate: payments[0]?.date || 'N/A'
+      })
+      setRecentPayments(payments.slice(0, 5))
+
+      // Academic stats
+      const resultCheck = resultService.isResultUnlocked(wardId, termId)
+      const termResult = resultService.getTermSummary(wardId, termId)
+      setAcademicStats({
+        gpa: termResult?.gpa || 0,
+        locked: !resultCheck.unlocked,
+        reasons: resultCheck.reasons
+      })
+    }
   }
 
   if (!student) {
@@ -187,14 +227,23 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {recentAttendance.map(att => {
-                const section = Repo.get<Section>('sections').find(s => s.id === att.sectionId)
-                const offering = section ? Repo.get<Offering>('offerings').find(o => o.id === section.offeringId) : null
-                const course = offering ? Repo.get<Course>('courses').find(c => c.id === offering.courseId) : null
-                const courseDisplay = course ? `${course.code} - ${course.title}` : att.sectionId
+              {recentAttendance.map((att, idx) => {
+                let courseDisplay = ''
+                let timeDisplay = ''
+
+                if (isStaticMode) {
+                  courseDisplay = `${att.course} - ${att.title}`
+                  timeDisplay = att.slot || 'N/A'
+                } else {
+                  const section = Repo.get<Section>('sections').find(s => s.id === att.sectionId)
+                  const offering = section ? Repo.get<Offering>('offerings').find(o => o.id === section.offeringId) : null
+                  const course = offering ? Repo.get<Course>('courses').find(c => c.id === offering.courseId) : null
+                  courseDisplay = course ? `${course.code} - ${course.title}` : att.sectionId
+                  timeDisplay = att.recordedAt ? new Date(att.recordedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+                }
 
                 return (
-                  <tr key={att.id}>
+                  <tr key={att.id || idx}>
                     <td className="px-4 py-2 text-sm">{att.date}</td>
                     <td className="px-4 py-2 text-sm">{courseDisplay}</td>
                     <td className="px-4 py-2 text-sm">
@@ -202,9 +251,7 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
                         {att.status === 'P' ? 'Present' : att.status === 'L' ? 'Late' : 'Absent'}
                       </Badge>
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-600">
-                      {new Date(att.recordedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                    </td>
+                    <td className="px-4 py-2 text-sm text-gray-600">{timeDisplay}</td>
                   </tr>
                 )
               })}
@@ -236,17 +283,23 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {recentPayments.map(payment => (
-                <tr key={payment.id}>
-                  <td className="px-4 py-2 text-sm font-medium">{payment.moneyReceiptNo}</td>
+              {recentPayments.map((payment, idx) => (
+                <tr key={payment.id || payment.mr || idx}>
+                  <td className="px-4 py-2 text-sm font-medium">{payment.mr || payment.moneyReceiptNo}</td>
                   <td className="px-4 py-2 text-sm">{payment.amount.toFixed(2)} BDT</td>
                   <td className="px-4 py-2 text-sm"><Badge variant="outline">{payment.method}</Badge></td>
                   <td className="px-4 py-2 text-sm">{payment.date}</td>
                   <td className="px-4 py-2 text-sm">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="ghost"
-                      onClick={() => financeService.downloadReceipt(payment.moneyReceiptNo)}
+                      onClick={() => {
+                        if (isStaticMode) {
+                          window.print()
+                        } else {
+                          financeService.downloadReceipt(payment.moneyReceiptNo)
+                        }
+                      }}
                     >
                       Receipt
                     </Button>
