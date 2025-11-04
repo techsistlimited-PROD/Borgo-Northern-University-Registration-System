@@ -148,21 +148,34 @@ export function GuardianAttendance({ wardId, termId }: { wardId: string; termId:
 
 // Guardian Academics Component (with gating)
 export function GuardianAcademics({ wardId, termId }: { wardId: string; termId: string }) {
-  const [termResult, setTermResult] = useState<any>(null)
-  const [courseResults, setCourseResults] = useState<any[]>([])
+  const [results, setResults] = useState<any>(null)
   const [unlockStatus, setUnlockStatus] = useState({ unlocked: true, reasons: [] as string[] })
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
     loadData()
   }, [wardId, termId])
 
   const loadData = () => {
-    const status = resultService.isResultUnlocked(wardId, termId)
-    setUnlockStatus(status)
+    if (isStaticMode) {
+      const res = GuardianDemo.getResults(wardId)
+      setResults(res)
 
-    if (status.unlocked) {
-      setTermResult(resultService.getTermSummary(wardId, termId))
-      setCourseResults(resultService.listCourseResults(wardId, termId))
+      const blocked = res.gates.dues > 0 || res.gates.terPending
+      const reasons = []
+      if (res.gates.dues > 0) reasons.push(`Outstanding dues: ${res.gates.dues} BDT must be cleared`)
+      if (res.gates.terPending) reasons.push('Teacher Evaluation Report (TER) not submitted')
+
+      setUnlockStatus({ unlocked: !blocked, reasons })
+    } else {
+      const status = resultService.isResultUnlocked(wardId, termId)
+      setUnlockStatus(status)
+
+      if (status.unlocked) {
+        const termRes = resultService.getTermSummary(wardId, termId)
+        const courseRes = resultService.listCourseResults(wardId, termId)
+        setResults({ termResult: termRes, courseResults: courseRes })
+      }
     }
   }
 
@@ -186,41 +199,84 @@ export function GuardianAcademics({ wardId, termId }: { wardId: string; termId: 
         </div>
       )}
 
-      {unlockStatus.unlocked && termResult && (
+      {unlockStatus.unlocked && results && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">GPA</div><div className="text-3xl font-bold text-deep-plum">{termResult.gpa.toFixed(2)}</div></CardContent></Card>
-            <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">CGPA</div><div className="text-3xl font-bold text-deep-plum">{termResult.cgpa.toFixed(2)}</div></CardContent></Card>
-            <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Credits Earned</div><div className="text-3xl font-bold text-deep-plum">{termResult.creditsEarned}</div></CardContent></Card>
-          </div>
+          {isStaticMode ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">CGPA</div><div className="text-3xl font-bold text-deep-plum">{results.cgpa.toFixed(2)}</div></CardContent></Card>
+                <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Total Semesters</div><div className="text-3xl font-bold text-deep-plum">{results.semesters.length}</div></CardContent></Card>
+              </div>
 
-          <Card>
-            <CardHeader><CardTitle>Course Results</CardTitle></CardHeader>
-            <CardContent className="p-0">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Course Code</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Title</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Credit</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Grade</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Grade Point</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {courseResults.map((result, idx) => (
-                    <tr key={idx}>
-                      <td className="px-4 py-3 text-sm font-medium">{result.courseCode}</td>
-                      <td className="px-4 py-3 text-sm">{result.title}</td>
-                      <td className="px-4 py-3 text-sm">{result.credit}</td>
-                      <td className="px-4 py-3 text-sm"><Badge>{result.grade}</Badge></td>
-                      <td className="px-4 py-3 text-sm">{result.gradePoint.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CardContent>
-          </Card>
+              {results.semesters.map((sem: any, semIdx: number) => (
+                <Card key={semIdx} className="mt-4">
+                  <CardHeader>
+                    <CardTitle>{sem.term} - GPA: {sem.gpa.toFixed(2)}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 border-b">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-sm font-semibold">Course Code</th>
+                          <th className="px-4 py-3 text-left text-sm font-semibold">Title</th>
+                          <th className="px-4 py-3 text-left text-sm font-semibold">Credit</th>
+                          <th className="px-4 py-3 text-left text-sm font-semibold">Grade</th>
+                          <th className="px-4 py-3 text-left text-sm font-semibold">Grade Point</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                        {sem.courses.map((course: any, idx: number) => (
+                          <tr key={idx}>
+                            <td className="px-4 py-3 text-sm font-medium">{course.code}</td>
+                            <td className="px-4 py-3 text-sm">{course.title}</td>
+                            <td className="px-4 py-3 text-sm">{course.credit}</td>
+                            <td className="px-4 py-3 text-sm"><Badge>{course.grade}</Badge></td>
+                            <td className="px-4 py-3 text-sm">{course.gp.toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">GPA</div><div className="text-3xl font-bold text-deep-plum">{results.termResult.gpa.toFixed(2)}</div></CardContent></Card>
+                <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">CGPA</div><div className="text-3xl font-bold text-deep-plum">{results.termResult.cgpa.toFixed(2)}</div></CardContent></Card>
+                <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Credits Earned</div><div className="text-3xl font-bold text-deep-plum">{results.termResult.creditsEarned}</div></CardContent></Card>
+              </div>
+
+              <Card>
+                <CardHeader><CardTitle>Course Results</CardTitle></CardHeader>
+                <CardContent className="p-0">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-semibold">Course Code</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold">Title</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold">Credit</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold">Grade</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold">Grade Point</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {results.courseResults.map((result: any, idx: number) => (
+                        <tr key={idx}>
+                          <td className="px-4 py-3 text-sm font-medium">{result.courseCode}</td>
+                          <td className="px-4 py-3 text-sm">{result.title}</td>
+                          <td className="px-4 py-3 text-sm">{result.credit}</td>
+                          <td className="px-4 py-3 text-sm"><Badge>{result.grade}</Badge></td>
+                          <td className="px-4 py-3 text-sm">{result.gradePoint.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </>
       )}
     </div>
@@ -229,24 +285,27 @@ export function GuardianAcademics({ wardId, termId }: { wardId: string; termId: 
 
 // Guardian Finance Component
 export function GuardianFinance({ wardId, termId }: { wardId: string; termId: string }) {
-  const [statement, setStatement] = useState<any>(null)
-  const [costHeads, setCostHeads] = useState<CostHead[]>([])
+  const [finance, setFinance] = useState<any>(null)
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
-    setStatement(financeService.getStatement(wardId, { termId }))
-    setCostHeads(Repo.get<CostHead>('costHeads'))
+    if (isStaticMode) {
+      setFinance(GuardianDemo.getFinance(wardId))
+    } else {
+      setFinance(financeService.getStatement(wardId, { termId }))
+    }
   }, [wardId, termId])
 
-  if (!statement) return <div className="p-6">Loading...</div>
+  if (!finance) return <div className="p-6">Loading...</div>
 
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-deep-plum">Finance</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Total Bill</div><div className="text-2xl font-bold">{statement.totalBill.toFixed(2)} BDT</div></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Total Paid</div><div className="text-2xl font-bold text-green-600">{statement.totalPaid.toFixed(2)} BDT</div></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Outstanding</div><div className="text-2xl font-bold text-red-600">{statement.outstanding.toFixed(2)} BDT</div></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Total Bill</div><div className="text-2xl font-bold">{(isStaticMode ? finance.summary.totalBill : finance.totalBill).toFixed(2)} BDT</div></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Total Paid</div><div className="text-2xl font-bold text-green-600">{(isStaticMode ? finance.summary.totalPaid : finance.totalPaid).toFixed(2)} BDT</div></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-sm text-gray-600">Outstanding</div><div className="text-2xl font-bold text-red-600">{(isStaticMode ? finance.summary.due : finance.outstanding).toFixed(2)} BDT</div></CardContent></Card>
       </div>
 
       <Card>
@@ -255,20 +314,18 @@ export function GuardianFinance({ wardId, termId }: { wardId: string; termId: st
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Bill No</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Total</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Paid</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Due</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Bill No / Head</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Amount</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Due Date</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {statement.payables.map((p: any) => (
-                <tr key={p.id}>
-                  <td className="px-4 py-3 text-sm">{p.billNo}</td>
-                  <td className="px-4 py-3 text-sm">{p.totalAmount.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-sm text-green-600">{p.paidAmount.toFixed(2)}</td>
-                  <td className="px-4 py-3 text-sm text-red-600">{p.dueAmount.toFixed(2)}</td>
+              {finance.payables.map((p: any, idx: number) => (
+                <tr key={p.id || p.mr || idx}>
+                  <td className="px-4 py-3 text-sm">{isStaticMode ? `${p.mr} - ${p.head}` : p.billNo}</td>
+                  <td className="px-4 py-3 text-sm">{p.amount.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-sm">{p.due || 'N/A'}</td>
                   <td className="px-4 py-3 text-sm"><Badge variant={p.status === 'Paid' ? 'default' : 'destructive'}>{p.status}</Badge></td>
                 </tr>
               ))}
@@ -291,14 +348,14 @@ export function GuardianFinance({ wardId, termId }: { wardId: string; termId: st
               </tr>
             </thead>
             <tbody className="divide-y">
-              {statement.payments.map((p: any) => (
-                <tr key={p.id}>
-                  <td className="px-4 py-3 text-sm">{p.moneyReceiptNo}</td>
+              {finance.payments.map((p: any, idx: number) => (
+                <tr key={p.id || p.mr || idx}>
+                  <td className="px-4 py-3 text-sm">{p.mr || p.moneyReceiptNo}</td>
                   <td className="px-4 py-3 text-sm">{p.amount.toFixed(2)}</td>
                   <td className="px-4 py-3 text-sm"><Badge variant="outline">{p.method}</Badge></td>
                   <td className="px-4 py-3 text-sm">{p.date}</td>
                   <td className="px-4 py-3 text-sm">
-                    <Button size="sm" variant="ghost" onClick={() => financeService.downloadReceipt(p.moneyReceiptNo)}>
+                    <Button size="sm" variant="ghost" onClick={() => isStaticMode ? window.print() : financeService.downloadReceipt(p.moneyReceiptNo)}>
                       Download
                     </Button>
                   </td>
@@ -314,20 +371,32 @@ export function GuardianFinance({ wardId, termId }: { wardId: string; termId: st
 
 // Guardian Notifications Component
 export function GuardianNotifications({ guardianId }: { guardianId: string }) {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [notifications, setNotifications] = useState<any[]>([])
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
     loadData()
-    const unsub = notificationService.subscribe(loadData)
-    return unsub
+
+    if (!isStaticMode) {
+      const unsub = notificationService.subscribe(loadData)
+      return unsub
+    }
   }, [guardianId])
 
   const loadData = () => {
-    setNotifications(notificationService.listForGuardian(guardianId))
+    if (isStaticMode) {
+      setNotifications(GuardianDemo.getNotifications())
+    } else {
+      setNotifications(notificationService.listForGuardian(guardianId))
+    }
   }
 
   const handleMarkRead = (id: string) => {
-    notificationService.markAsRead(id)
+    if (isStaticMode) {
+      GuardianDemo.markAsRead(id)
+    } else {
+      notificationService.markAsRead(id)
+    }
     loadData()
   }
 
@@ -348,22 +417,28 @@ export function GuardianNotifications({ guardianId }: { guardianId: string }) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {notifications.map(notif => (
-                <tr key={notif.id} className={notif.status === 'Unread' ? 'bg-blue-50' : ''}>
-                  <td className="px-4 py-3 text-sm">{new Date(notif.createdAt).toLocaleString()}</td>
-                  <td className="px-4 py-3 text-sm"><Badge variant="outline">{notif.channel}</Badge></td>
-                  <td className="px-4 py-3 text-sm font-medium">{notif.title}</td>
-                  <td className="px-4 py-3 text-sm">{notif.message}</td>
-                  <td className="px-4 py-3 text-sm"><Badge variant={notif.status === 'Unread' ? 'default' : 'secondary'}>{notif.status}</Badge></td>
-                  <td className="px-4 py-3 text-sm">
-                    {notif.status === 'Unread' && (
-                      <Button size="sm" variant="ghost" onClick={() => handleMarkRead(notif.id)}>
-                        <CheckCircle className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {notifications.map(notif => {
+                const isUnread = isStaticMode ? !notif.read : notif.status === 'Unread'
+                const timestamp = isStaticMode ? notif.ts : notif.createdAt
+                const channel = isStaticMode ? 'ERP' : notif.channel
+
+                return (
+                  <tr key={notif.id} className={isUnread ? 'bg-blue-50' : ''}>
+                    <td className="px-4 py-3 text-sm">{new Date(timestamp).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm"><Badge variant="outline">{channel}</Badge></td>
+                    <td className="px-4 py-3 text-sm font-medium">{notif.title}</td>
+                    <td className="px-4 py-3 text-sm">{isStaticMode ? notif.body : notif.message}</td>
+                    <td className="px-4 py-3 text-sm"><Badge variant={isUnread ? 'default' : 'secondary'}>{isUnread ? 'Unread' : 'Read'}</Badge></td>
+                    <td className="px-4 py-3 text-sm">
+                      {isUnread && (
+                        <Button size="sm" variant="ghost" onClick={() => handleMarkRead(notif.id)}>
+                          <CheckCircle className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
           {notifications.length === 0 && <div className="text-center py-12 text-gray-500">No notifications</div>}
@@ -375,25 +450,49 @@ export function GuardianNotifications({ guardianId }: { guardianId: string }) {
 
 // Guardian Profile Component
 export function GuardianProfile({ guardianId }: { guardianId: string }) {
-  const [guardian, setGuardian] = useState<Guardian | null>(null)
-  const [wards, setWards] = useState<{ student: Student; link: GuardianLink }[]>([])
+  const [guardian, setGuardian] = useState<any>(null)
+  const [wards, setWards] = useState<any[]>([])
   const [prefs, setPrefs] = useState({ erpPush: true, sms: true, email: true })
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
-    const g = guardianService.getMyProfile(guardianId)
-    setGuardian(g)
-    if (g?.preferences) setPrefs(g.preferences)
+    if (isStaticMode) {
+      const userStr = localStorage.getItem('nu-user')
+      if (userStr) {
+        const user = JSON.parse(userStr)
+        setGuardian({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          mobile: 'N/A',
+          status: 'Active',
+          preferences: { erpPush: true, sms: true, email: true }
+        })
+      }
 
-    const wardList = guardianService.getMyWards(guardianId)
-    const links = Repo.get<GuardianLink>('guardianLinks').filter(l => l.guardianId === guardianId)
-    setWards(wardList.map(student => ({
-      student,
-      link: links.find(l => l.studentId === student.id)!
-    })))
+      const wardList = GuardianDemo.getWards()
+      setWards(wardList.map(w => ({
+        student: w,
+        link: { relation: 'Guardian', isPrimary: true }
+      })))
+    } else {
+      const g = guardianService.getMyProfile(guardianId)
+      setGuardian(g)
+      if (g?.preferences) setPrefs(g.preferences)
+
+      const wardList = guardianService.getMyWards(guardianId)
+      const links = Repo.get<GuardianLink>('guardianLinks').filter(l => l.guardianId === guardianId)
+      setWards(wardList.map(student => ({
+        student,
+        link: links.find(l => l.studentId === student.id)!
+      })))
+    }
   }, [guardianId])
 
   const handleSavePreferences = () => {
-    guardianService.updatePreferences(guardianId, prefs)
+    if (!isStaticMode) {
+      guardianService.updatePreferences(guardianId, prefs)
+    }
     alert('Preferences saved successfully')
   }
 
@@ -427,15 +526,20 @@ export function GuardianProfile({ guardianId }: { guardianId: string }) {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {wards.map(({ student, link }) => (
-                <tr key={student.id}>
-                  <td className="px-4 py-3 text-sm">{student.name}</td>
-                  <td className="px-4 py-3 text-sm">{student.id}</td>
-                  <td className="px-4 py-3 text-sm">{student.program}</td>
-                  <td className="px-4 py-3 text-sm"><Badge variant="outline">{link.relation}</Badge></td>
-                  <td className="px-4 py-3 text-sm">{link.isPrimary ? <CheckCircle className="w-4 h-4 text-green-600" /> : '-'}</td>
-                </tr>
-              ))}
+              {wards.map(({ student, link }) => {
+                const studentId = isStaticMode ? student.universityId : student.id
+                const programName = isStaticMode ? student.program : student.programName
+
+                return (
+                  <tr key={student.id}>
+                    <td className="px-4 py-3 text-sm">{student.name}</td>
+                    <td className="px-4 py-3 text-sm">{studentId}</td>
+                    <td className="px-4 py-3 text-sm">{programName}</td>
+                    <td className="px-4 py-3 text-sm"><Badge variant="outline">{link.relation}</Badge></td>
+                    <td className="px-4 py-3 text-sm">{link.isPrimary ? <CheckCircle className="w-4 h-4 text-green-600" /> : '-'}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </CardContent>
