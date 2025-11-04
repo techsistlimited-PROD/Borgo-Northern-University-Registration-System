@@ -95,6 +95,30 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/guardian"
+        element={
+          <ProtectedRoute allowedRole="guardian">
+            <GuardianDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/guardian/dashboard"
+        element={
+          <ProtectedRoute allowedRole="guardian">
+            <GuardianDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/guardian/*"
+        element={
+          <ProtectedRoute allowedRole="guardian">
+            <GuardianDashboard />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/" replace />} />
