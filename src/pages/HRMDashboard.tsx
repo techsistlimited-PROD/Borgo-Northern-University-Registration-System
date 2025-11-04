@@ -26,14 +26,32 @@ import PayslipGenerator from '@/components/hrm/payroll/PayslipGenerator'
 import KPIDashboard from '@/components/hrm/performance/KPIDashboard'
 import Appraisals from '@/components/hrm/performance/Appraisals'
 import FeedbackRecommendations from '@/components/hrm/performance/FeedbackRecommendations'
+import TrainingCalendar from '@/components/hrm/training/TrainingCalendar'
+import NominationsAttendance from '@/components/hrm/training/NominationsAttendance'
+import PostTrainingEvaluation from '@/components/hrm/training/PostTrainingEvaluation'
+import Certificates from '@/components/hrm/training/Certificates'
+import MyProfile from '@/components/hrm/ess/MyProfile'
+import LeaveAttendance from '@/components/hrm/ess/LeaveAttendance'
+import PayrollTax from '@/components/hrm/ess/PayrollTax'
+import LoansAdvances from '@/components/hrm/ess/LoansAdvances'
+import PerformanceSelf from '@/components/hrm/ess/PerformanceSelf'
+import HRNotices from '@/components/hrm/notices/HRNotices'
+import MyInbox from '@/components/hrm/notices/MyInbox'
+import TaxPFGratuity from '@/components/hrm/compliance/TaxPFGratuity'
+import HRAnalytics from '@/components/hrm/compliance/HRAnalytics'
+import CustomReports from '@/components/hrm/compliance/CustomReports'
 import { HRM_STATS } from '@/lib/hrmStatic'
 
-type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'other'
+type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'training' | 'ess' | 'notices' | 'compliance' | 'other'
 type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
 type AttendanceView = 'att-dashboard' | 'roster' | 'daily' | 'monthly'
 type LeaveView = 'applications' | 'balances'
 type PayrollView = 'structure' | 'processing' | 'disbursement' | 'adjustments' | 'payslips'
 type PerformanceView = 'kpi' | 'appraisals' | 'feedback'
+type TrainingView = 'calendar' | 'nominations' | 'evaluation' | 'certificates'
+type ESSView = 'profile' | 'leave-attendance' | 'payroll' | 'loans' | 'performance'
+type NoticesView = 'all' | 'inbox'
+type ComplianceView = 'tax-pf' | 'analytics' | 'reports'
 
 export default function HRMDashboard() {
   const { user, logout } = useAuth()
@@ -44,6 +62,10 @@ export default function HRMDashboard() {
   const [leaveView, setLeaveView] = useState<LeaveView>('applications')
   const [payrollView, setPayrollView] = useState<PayrollView>('structure')
   const [performanceView, setPerformanceView] = useState<PerformanceView>('kpi')
+  const [trainingView, setTrainingView] = useState<TrainingView>('calendar')
+  const [essView, setESSView] = useState<ESSView>('profile')
+  const [noticesView, setNoticesView] = useState<NoticesView>('all')
+  const [complianceView, setComplianceView] = useState<ComplianceView>('tax-pf')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
 
   const handleNavigation = (path: string) => {
