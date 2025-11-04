@@ -41,8 +41,6 @@ import TaxPFGratuity from '@/components/hrm/compliance/TaxPFGratuity'
 import HRAnalytics from '@/components/hrm/compliance/HRAnalytics'
 import CustomReports from '@/components/hrm/compliance/CustomReports'
 import { HRM_STATS } from '@/lib/hrmStatic'
-import { motion } from 'framer-motion'
-import { toast } from 'sonner'
 
 type ActiveView = 'dashboard' | 'employees' | 'documents' | 'history' | 'recruitment' | 'attendance' | 'leave' | 'payroll' | 'performance' | 'training' | 'ess' | 'notices' | 'compliance' | 'other'
 type RecruitmentView = 'vacancies' | 'candidates' | 'shortlisting' | 'interviews' | 'offers' | 'onboarding'
@@ -174,6 +172,12 @@ export default function HRMDashboard() {
   }
 
   const handleResetDemoData = () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to reset all HRM demo data? This will clear all localStorage data and reload the page.'
+    )
+
+    if (!confirmed) return
+
     try {
       // Clear HRM-related localStorage keys
       const keys = Object.keys(localStorage)
@@ -182,24 +186,18 @@ export default function HRMDashboard() {
           localStorage.removeItem(key)
         }
       })
-      
-      toast.success('Demo data reset successfully', {
-        description: 'All HRM demo data has been cleared and will be reseeded on next interaction.',
-        icon: <CheckCircle2 className="w-4 h-4" />
-      })
-      
+
+      alert('Demo data reset successfully. The page will now reload.')
+
       // Reload the page to reseed data
-      setTimeout(() => {
-        window.location.reload()
-      }, 1000)
+      window.location.reload()
     } catch (error) {
-      toast.error('Failed to reset demo data', {
-        description: 'An error occurred while resetting the data.'
-      })
+      alert('Failed to reset demo data. Please try again.')
     }
   }
 
   const renderContent = () => {
+    const contentKey = activePath
     const content = (() => {
       switch (activeView) {
         case 'dashboard':
@@ -270,14 +268,15 @@ export default function HRMDashboard() {
     })()
 
     return (
-      <motion.div
-        key={activePath}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+      <div
+        key={contentKey}
+        className="animate-fadeIn"
+        style={{
+          animation: 'fadeIn 0.3s ease-in-out'
+        }}
       >
         {content}
-      </motion.div>
+      </div>
     )
   }
 
