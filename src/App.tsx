@@ -129,7 +129,7 @@ function AppRoutes() {
       <Route
         path="/hrm"
         element={
-          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
+          <ProtectedRoute allowedRole="hrm">
             <HRMDashboard />
           </ProtectedRoute>
         }
@@ -137,7 +137,7 @@ function AppRoutes() {
       <Route
         path="/hrm/dashboard"
         element={
-          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
+          <ProtectedRoute allowedRole="hrm">
             <HRMDashboard />
           </ProtectedRoute>
         }
@@ -145,7 +145,7 @@ function AppRoutes() {
       <Route
         path="/hrm/*"
         element={
-          <ProtectedRoute allowedRoles={['hr_officer', 'hr_head', 'system_admin']}>
+          <ProtectedRoute allowedRole="hrm">
             <HRMDashboard />
           </ProtectedRoute>
         }
