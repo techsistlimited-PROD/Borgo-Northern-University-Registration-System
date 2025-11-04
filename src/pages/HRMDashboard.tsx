@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/RegistrationAuthContext'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Users, UserX, UserCheck, LogOut, Building2, Calendar, ChevronRight, RefreshCw, CheckCircle2 } from 'lucide-react'
+import { Users, UserX, UserCheck, LogOut, Building2, Calendar, ChevronRight } from 'lucide-react'
 import HRMSidebar from '@/components/hrm/HRMSidebar'
 import HRMDashboardView from '@/components/hrm/HRMDashboardView'
 import HRMEmployeeList from '@/components/hrm/HRMEmployeeList'
@@ -146,7 +145,7 @@ export default function HRMDashboard() {
       setActiveView('ess')
       if (path.includes('/profile')) { setESSView('profile'); updateBreadcrumbs('Employee Self-Service', 'My Profile') }
       else if (path.includes('/leave-attendance')) { setESSView('leave-attendance'); updateBreadcrumbs('Employee Self-Service', 'Leave & Attendance') }
-      else if (path.includes('/payroll')) { setESSView('payroll'); updateBreadcrumbs('Employee Self-Service', 'Payroll (Payslips & Tax)') }
+      else if (path.includes('/payroll')) { setESSView('payroll'); updateBreadcrumbs('Employee Self-Service', 'Payroll & Tax') }
       else if (path.includes('/loans')) { setESSView('loans'); updateBreadcrumbs('Employee Self-Service', 'Loans & Advances') }
       else if (path.includes('/performance')) { setESSView('performance'); updateBreadcrumbs('Employee Self-Service', 'Performance') }
       else { setESSView('profile'); updateBreadcrumbs('Employee Self-Service', 'My Profile') }
@@ -169,31 +168,6 @@ export default function HRMDashboard() {
   const handleLogout = () => {
     logout()
     navigate('/hrm-login')
-  }
-
-  const handleResetDemoData = () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to reset all HRM demo data? This will clear all localStorage data and reload the page.'
-    )
-
-    if (!confirmed) return
-
-    try {
-      // Clear HRM-related localStorage keys
-      const keys = Object.keys(localStorage)
-      keys.forEach(key => {
-        if (key.startsWith('hrm_') || key.includes('employee') || key.includes('payroll')) {
-          localStorage.removeItem(key)
-        }
-      })
-
-      alert('Demo data reset successfully. The page will now reload.')
-
-      // Reload the page to reseed data
-      window.location.reload()
-    } catch (error) {
-      alert('Failed to reset demo data. Please try again.')
-    }
   }
 
   const renderContent = () => {
@@ -258,8 +232,8 @@ export default function HRMDashboard() {
           return (
             <div className="p-8 text-center">
               <Building2 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Under Development</h3>
-              <p className="text-gray-600">This module is currently under development.</p>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">Module Not Available</h3>
+              <p className="text-gray-600">This module is currently unavailable.</p>
             </div>
           )
         default:
@@ -271,39 +245,23 @@ export default function HRMDashboard() {
       <div
         key={contentKey}
         className="animate-fadeIn"
-        style={{
-          animation: 'fadeIn 0.3s ease-in-out'
-        }}
       >
         {content}
       </div>
     )
   }
 
-  const getRoleBadge = () => {
-    switch (user?.role) {
-      case 'hr_head':
-        return <span className="px-2 py-1 text-xs bg-accent-cyan/20 text-accent-cyan rounded-full font-medium">HR Head</span>
-      case 'hr_officer':
-        return <span className="px-2 py-1 text-xs bg-green-500/20 text-green-600 rounded-full font-medium">HR Officer</span>
-      case 'system_admin':
-        return <span className="px-2 py-1 text-xs bg-purple-500/20 text-purple-600 rounded-full font-medium">System Admin</span>
-      default:
-        return null
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
-      <header className="bg-gradient-to-r from-growth-green to-metal-black text-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-deep-violet to-soft-plum text-white shadow-lg sticky top-0 z-50">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Users className="w-8 h-8" />
               <div>
                 <h1 className="text-xl font-semibold font-poppins">Human Resource Management</h1>
-                <p className="text-sm text-white/80 font-inter">Employee Information & Administration</p>
+                <p className="text-sm text-white/80 font-inter">Employee Administration</p>
               </div>
             </div>
 
@@ -324,33 +282,27 @@ export default function HRMDashboard() {
                 </div>
               </div>
 
-              {/* Reset Demo Data Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleResetDemoData}
-                className="hidden md:flex items-center space-x-1 bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
-              >
-                <RefreshCw className="w-3 h-3" />
-                <span className="text-xs">Reset Demo</span>
-              </Button>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="text-white hover:bg-white/10">
                     <Avatar className="w-8 h-8 mr-2">
-                      <AvatarFallback className="bg-white text-growth-green">
+                      <AvatarFallback className="bg-white text-deep-violet font-semibold">
                         {user?.name.split(' ').map(n => n[0]).join('').substring(0, 2) || 'HR'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden md:flex flex-col items-start mr-2">
-                      <span className="text-sm font-medium">{user?.name || 'HR User'}</span>
-                      {getRoleBadge()}
+                      <span className="text-sm font-medium">{user?.name || 'HR Officer'}</span>
+                      <span className="text-xs text-white/70">{user?.email || 'hr@nu.edu.bd'}</span>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>HR Account</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="rounded-xl">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <span className="font-semibold">{user?.name || 'HR Officer'}</span>
+                      <span className="text-xs text-gray-500">{user?.email || 'hr@nu.edu.bd'}</span>
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
@@ -367,7 +319,7 @@ export default function HRMDashboard() {
             {breadcrumbs.map((crumb, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <ChevronRight className="w-4 h-4" />
-                <span className={index === breadcrumbs.length - 1 ? 'font-semibold text-accent-cyan' : ''}>
+                <span className={index === breadcrumbs.length - 1 ? 'font-semibold text-light-lavender' : ''}>
                   {crumb.label}
                 </span>
               </div>

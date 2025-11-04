@@ -57,10 +57,11 @@ export default {
         'lavender-bg': '#F3F0FF',
         'pink-accent': '#E879F9',
         'mint-green': '#A7F3D0',
-        // HRM & Global ERP colors
-        'growth-green': '#00A676',
-        'metal-black': '#20232A',
-        'accent-cyan': '#1ECBE1',
+        // ERP Standard Purple Theme
+        'deep-violet': '#4B145B',
+        'soft-plum': '#6C2676',
+        'light-lavender': '#D5B8E7',
+        'dark-text': '#2E1B3C',
       },
       borderRadius: {
         lg: "var(--radius)",

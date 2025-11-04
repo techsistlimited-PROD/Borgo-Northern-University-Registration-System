@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
 import { DEMO_GUARDIANS, DEMO_WARDS } from '@/lib/guardianStatic'
 
-export type UserRole = 'student' | 'acad' | 'teacher' | 'coe' | 'finance' | 'admin' | 'guardian' | 'hr_officer' | 'hr_head' | 'system_admin'
+export type UserRole = 'student' | 'acad' | 'teacher' | 'coe' | 'finance' | 'admin' | 'guardian' | 'hrm'
 
 export interface User {
   id: string
@@ -35,9 +35,7 @@ const demoCredentials = {
     'guardian.bba@demo.nu': 'guardian123',
     'mother.cse@demo.nu': 'guardian123'
   },
-  hr_officer: { username: 'hr_officer', password: 'hrm123' },
-  hr_head: { username: 'hr_head', password: 'hrm123' },
-  system_admin: { username: 'sys_admin', password: 'hrm123' }
+  hrm: { username: 'hr@nu.edu.bd', password: 'hr123' }
 }
 
 // Demo users
@@ -99,23 +97,11 @@ const demoUsers: Record<string, User> = {
     role: 'guardian',
     email: 'mother.cse@demo.nu'
   },
-  'hr_officer': {
-    id: 'hr_officer_01',
-    name: 'Sadia Akter',
-    role: 'hr_officer',
-    email: 'hr.officer@nu.edu.bd'
-  },
-  'hr_head': {
-    id: 'hr_head_01',
-    name: 'Md. Kamal Hossain',
-    role: 'hr_head',
-    email: 'hr.head@nu.edu.bd'
-  },
-  'sys_admin': {
-    id: 'sys_admin_01',
-    name: 'System Administrator',
-    role: 'system_admin',
-    email: 'sysadmin@nu.edu.bd'
+  'hr@nu.edu.bd': {
+    id: 'hrm_001',
+    name: 'Sadia Rahman',
+    role: 'hrm',
+    email: 'hr@nu.edu.bd'
   }
 }
 
