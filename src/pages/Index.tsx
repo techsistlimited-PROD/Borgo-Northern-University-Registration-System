@@ -198,6 +198,29 @@ export default function Index() {
               </p>
             </CardContent>
           </Card>
+
+          {/* HRM Portal */}
+          <Card className="text-center group hover:scale-105 transition-transform duration-300">
+            <CardHeader className="pb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <CardTitle className="text-blue-800">HRM Portal</CardTitle>
+              <CardDescription>
+                Human Resource Management - employee information, documents, and history
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/hrm-login">
+                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:opacity-90">
+                  Access HRM Portal
+                </Button>
+              </Link>
+              <p className="text-xs text-gray-500 mt-2">
+                Demo: admin / admin123
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Features Grid */}
