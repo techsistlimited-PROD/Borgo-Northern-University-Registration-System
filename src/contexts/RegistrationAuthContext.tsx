@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
+import { DEMO_GUARDIANS, DEMO_WARDS } from '@/lib/guardianStatic'
 
 export type UserRole = 'student' | 'acad' | 'teacher' | 'coe' | 'finance' | 'admin' | 'guardian'
 
@@ -114,6 +116,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Special handling for guardian role (email-based)
     if (role === 'guardian') {
+      // Static guardian demo mode
+      if (DEMO_MODE && DEMO_STATIC_GUARDIAN && password === 'guardian123') {
+        const guardian = DEMO_GUARDIANS.find(g => g.email.toLowerCase() === username.toLowerCase())
+        if (guardian) {
+          const userData: User = {
+            id: guardian.id,
+            name: guardian.name,
+            role: 'guardian',
+            email: guardian.email
+          }
+          setUser(userData)
+          localStorage.setItem('nu-user', JSON.stringify(userData))
+
+          // Auto-set first ward as active
+          const wards = DEMO_WARDS[guardian.id]
+          if (wards && wards.length > 0) {
+            localStorage.setItem('guardian.activeWard', wards[0].id)
+          }
+
+          console.log('✅ Static guardian login:', guardian.id, '→', guardian.email)
+          return true
+        }
+      }
+
+      // Fallback to regular demo credentials
       const guardianCreds = demoCredentials.guardian as Record<string, string>
       if (guardianCreds[username] === password) {
         const userData = demoUsers[username]
