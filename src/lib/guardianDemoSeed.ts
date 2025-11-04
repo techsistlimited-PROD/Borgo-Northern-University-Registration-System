@@ -193,28 +193,28 @@ export function seedGuardianDemoData() {
 
     // ATTENDANCE — last 30 days rolling
     const attendance: AttendanceRecord[] = [
-      ...buildAttendance('stu_cse_01', 'cse101', 'A1', 30),
-      ...buildAttendance('stu_cse_01', 'cse102', 'B1', 12),
-      ...buildAttendance('stu_cse_01', 'cse203', 'A2', 20),
-      ...buildAttendance('stu_bba_01', 'bba101', 'M1', 18)
+      ...buildAttendance(STU_CSE_01, 'cse101', 'A1', 30),
+      ...buildAttendance(STU_CSE_01, 'cse102', 'B1', 12),
+      ...buildAttendance(STU_CSE_01, 'cse203', 'A2', 20),
+      ...buildAttendance(STU_BBA_01, 'bba101', 'M1', 18)
     ]
 
     // RESULTS — transcript-like past + current term status
     const grades: Grade[] = [
       // Historical (Spring-2025) for CSE student
-      { id: 'res1', studentId: 'stu_cse_01', courseId: 'cse101', sectionId: 'SEC1', termId: 'SPR-2025', grade: 'A-', gradePoint: 3.7, credit: 3 },
-      { id: 'res2', studentId: 'stu_cse_01', courseId: 'cse102', sectionId: 'SEC2', termId: 'SPR-2025', grade: 'A', gradePoint: 4.0, credit: 1 },
+      { id: 'res1', studentId: STU_CSE_01, courseId: 'cse101', sectionId: 'SEC1', termId: 'SPR-2025', grade: 'A-', gradePoint: 3.7, credit: 3 },
+      { id: 'res2', studentId: STU_CSE_01, courseId: 'cse102', sectionId: 'SEC2', termId: 'SPR-2025', grade: 'A', gradePoint: 4.0, credit: 1 },
       // Current term in-progress (will be shown but locked if blocked)
-      { id: 'res3', studentId: 'stu_cse_01', courseId: 'cse203', sectionId: 'SEC3', termId: 'FALL-2025', grade: 'B+', gradePoint: 3.25, credit: 3 },
+      { id: 'res3', studentId: STU_CSE_01, courseId: 'cse203', sectionId: 'SEC3', termId: 'FALL-2025', grade: 'B+', gradePoint: 3.25, credit: 3 },
       // BBA historical
-      { id: 'res4', studentId: 'stu_bba_01', courseId: 'bba101', sectionId: 'SEC10', termId: 'SPR-2025', grade: 'B+', gradePoint: 3.3, credit: 3 }
+      { id: 'res4', studentId: STU_BBA_01, courseId: 'bba101', sectionId: 'SEC10', termId: 'SPR-2025', grade: 'B+', gradePoint: 3.3, credit: 3 }
     ]
 
     const termResults: TermResult[] = [
-      { id: 'tr1', studentId: 'stu_cse_01', termId: 'SPR-2025', gpa: 3.85, cgpa: 3.85, creditsEarned: 4, status: 'Published' },
-      { id: 'tr2', studentId: 'stu_cse_01', termId: 'FALL-2025', gpa: 3.25, cgpa: 3.55, creditsEarned: 7, status: 'Published' },
-      { id: 'tr3', studentId: 'stu_bba_01', termId: 'SPR-2025', gpa: 3.3, cgpa: 3.3, creditsEarned: 3, status: 'Published' },
-      { id: 'tr4', studentId: 'stu_bba_01', termId: 'FALL-2025', gpa: 3.5, cgpa: 3.4, creditsEarned: 6, status: 'Published' }
+      { id: 'tr1', studentId: STU_CSE_01, termId: 'SPR-2025', gpa: 3.85, cgpa: 3.85, creditsEarned: 4, status: 'Published' },
+      { id: 'tr2', studentId: STU_CSE_01, termId: 'FALL-2025', gpa: 3.25, cgpa: 3.55, creditsEarned: 7, status: 'Published' },
+      { id: 'tr3', studentId: STU_BBA_01, termId: 'SPR-2025', gpa: 3.3, cgpa: 3.3, creditsEarned: 3, status: 'Published' },
+      { id: 'tr4', studentId: STU_BBA_01, termId: 'FALL-2025', gpa: 3.5, cgpa: 3.4, creditsEarned: 6, status: 'Published' }
     ]
 
     // FINANCE — payables & payments (simulate dues)
