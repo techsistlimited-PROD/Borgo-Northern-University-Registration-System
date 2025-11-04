@@ -4,13 +4,15 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AlertCircle, Download, Eye, CheckCircle } from 'lucide-react'
-import { 
-  attendanceService, 
-  resultService, 
-  financeService, 
+import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
+import { GuardianDemo } from '@/services/guardianDemo'
+import {
+  attendanceService,
+  resultService,
+  financeService,
   notificationService,
   guardianService,
-  LogService 
+  LogService
 } from '@/lib/guardianServices'
 import { Repo } from '@/lib/repo'
 import { AttendanceRecord, Notification, Guardian, GuardianLink, Student, Course, Section, Offering } from '@/lib/seedAll'
@@ -18,29 +20,39 @@ import { exportToCSV } from '@/lib/exportUtils'
 
 // Guardian Attendance Component
 export function GuardianAttendance({ wardId, termId }: { wardId: string; termId: string }) {
-  const [records, setRecords] = useState<AttendanceRecord[]>([])
+  const [records, setRecords] = useState<any[]>([])
   const [stats, setStats] = useState({ present: 0, absent: 0, late: 0, percentage: 0 })
-  const [filters, setFilters] = useState({ from: '', to: '', status: '' })
+  const [filters, setFilters] = useState({ from: '', to: '', status: '', course: '' })
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
     loadData()
-    const unsub = attendanceService.subscribeStudentStream(wardId, (newRecord) => {
-      loadData()
-    })
-    return unsub
+
+    if (!isStaticMode) {
+      const unsub = attendanceService.subscribeStudentStream(wardId, (newRecord) => {
+        loadData()
+      })
+      return unsub
+    }
   }, [wardId, termId, filters])
 
   const loadData = () => {
-    const data = attendanceService.listByStudent(wardId, { termId, ...filters })
-    setRecords(data)
-    setStats(attendanceService.getStats(wardId, termId))
+    if (isStaticMode) {
+      const data = GuardianDemo.getAttendance(wardId, filters)
+      setRecords(data)
+      setStats(GuardianDemo.getAttendanceStats(wardId))
+    } else {
+      const data = attendanceService.listByStudent(wardId, { termId, ...filters })
+      setRecords(data)
+      setStats(attendanceService.getStats(wardId, termId))
+    }
   }
 
   const handleExport = () => {
     const exportData = records.map(r => ({
       Date: r.date,
-      Status: r.status,
-      'Recorded At': r.recordedAt
+      Course: isStaticMode ? `${r.course} - ${r.title}` : r.sectionId,
+      Status: r.status === 'P' ? 'Present' : r.status === 'L' ? 'Late' : 'Absent'
     }))
     exportToCSV(exportData, 'attendance')
   }
@@ -68,9 +80,10 @@ export function GuardianAttendance({ wardId, termId }: { wardId: string; termId:
       <Card>
         <CardHeader><CardTitle>Filters</CardTitle></CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Input type="date" value={filters.from} onChange={(e) => setFilters({ ...filters, from: e.target.value })} placeholder="From Date" />
             <Input type="date" value={filters.to} onChange={(e) => setFilters({ ...filters, to: e.target.value })} placeholder="To Date" />
+            <Input type="text" value={filters.course} onChange={(e) => setFilters({ ...filters, course: e.target.value })} placeholder="Course Code" />
             <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })} className="border rounded-md px-3 py-2">
               <option value="">All Status</option>
               <option value="P">Present</option>
@@ -93,17 +106,26 @@ export function GuardianAttendance({ wardId, termId }: { wardId: string; termId:
               </tr>
             </thead>
             <tbody className="divide-y">
-              {records.map(record => {
-                const sections = Repo.get<Section>('sections')
-                const offerings = Repo.get<Offering>('offerings')
-                const courses = Repo.get<Course>('courses')
-                const section = sections.find(s => s.id === record.sectionId)
-                const offering = section ? offerings.find(o => o.id === section.offeringId) : null
-                const course = offering ? courses.find(c => c.id === offering.courseId) : null
-                const courseDisplay = course ? `${course.code} - ${course.title}` : 'N/A'
+              {records.map((record, idx) => {
+                let courseDisplay = ''
+                let timeDisplay = ''
+
+                if (isStaticMode) {
+                  courseDisplay = `${record.course} - ${record.title}`
+                  timeDisplay = record.slot || 'N/A'
+                } else {
+                  const sections = Repo.get<Section>('sections')
+                  const offerings = Repo.get<Offering>('offerings')
+                  const courses = Repo.get<Course>('courses')
+                  const section = sections.find(s => s.id === record.sectionId)
+                  const offering = section ? offerings.find(o => o.id === section.offeringId) : null
+                  const course = offering ? courses.find(c => c.id === offering.courseId) : null
+                  courseDisplay = course ? `${course.code} - ${course.title}` : 'N/A'
+                  timeDisplay = new Date(record.recordedAt).toLocaleString()
+                }
 
                 return (
-                  <tr key={record.id}>
+                  <tr key={record.id || `${record.wardId}-${idx}`}>
                     <td className="px-4 py-3 text-sm">{record.date}</td>
                     <td className="px-4 py-3 text-sm">{courseDisplay}</td>
                     <td className="px-4 py-3 text-sm">
@@ -111,7 +133,7 @@ export function GuardianAttendance({ wardId, termId }: { wardId: string; termId:
                         {record.status === 'P' ? 'Present' : record.status === 'L' ? 'Late' : 'Absent'}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-sm">{new Date(record.recordedAt).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm">{timeDisplay}</td>
                   </tr>
                 )
               })}
