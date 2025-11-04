@@ -5,21 +5,24 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  GraduationCap, 
-  DollarSign, 
-  Bell, 
-  User, 
+import {
+  LayoutDashboard,
+  Calendar,
+  GraduationCap,
+  DollarSign,
+  Bell,
+  User,
   LogOut,
-  ChevronDown 
+  ChevronDown
 } from 'lucide-react'
+import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
+import { GuardianDemo } from '@/services/guardianDemo'
 import { guardianService, LogService, notificationService } from '@/lib/guardianServices'
 import { Student, Semester } from '@/lib/seedAll'
 import { Repo } from '@/lib/repo'
 import GuardianDashboardView from '@/components/guardian/GuardianDashboardView'
 import { GuardianAttendance, GuardianAcademics, GuardianFinance, GuardianNotifications, GuardianProfile } from '@/components/guardian/GuardianScreens'
+import type { Ward } from '@/lib/guardianStatic'
 
 type ActiveSection = 'dashboard' | 'attendance' | 'academics' | 'finance' | 'notifications' | 'profile'
 
@@ -28,11 +31,12 @@ export default function GuardianDashboard() {
   const navigate = useNavigate()
 
   const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard')
-  const [wards, setWards] = useState<Student[]>([])
-  const [activeWard, setActiveWard] = useState<Student | null>(null)
+  const [wards, setWards] = useState<Student[] | Ward[]>([])
+  const [activeWard, setActiveWard] = useState<Student | Ward | null>(null)
   const [semesters, setSemesters] = useState<Semester[]>([])
-  const [activeTerm, setActiveTerm] = useState<string>('')
+  const [activeTerm, setActiveTerm] = useState<string>('FALL-2025')
   const [unreadCount, setUnreadCount] = useState(0)
+  const isStaticMode = DEMO_MODE && DEMO_STATIC_GUARDIAN
 
   useEffect(() => {
     if (!user || user.role !== 'guardian') {
@@ -40,88 +44,117 @@ export default function GuardianDashboard() {
       return
     }
 
-    console.log('🔍 GuardianDashboard: Loading data for user:', user.id, user.email)
+    console.log('🔍 GuardianDashboard: Loading data for user:', user.id, user.email, 'Static mode:', isStaticMode)
 
-    // Log guardian login
-    LogService.add({
-      actor: user.id,
-      actorRole: 'GUARDIAN',
-      type: 'GUARDIAN.LOGIN.VIEW',
-      payload: {}
-    })
+    // Log guardian login (skip in static mode to avoid errors)
+    if (!isStaticMode) {
+      LogService.add({
+        actor: user.id,
+        actorRole: 'GUARDIAN',
+        type: 'GUARDIAN.LOGIN.VIEW',
+        payload: {}
+      })
+    }
 
-    // Load wards
-    let myWards = guardianService.getMyWards(user.id)
-    console.log('🔍 GuardianDashboard: Found wards:', myWards.length, myWards.map(w => w.id))
+    // Load wards - use static demo in static mode
+    let myWards: Student[] | Ward[]
+    if (isStaticMode) {
+      myWards = GuardianDemo.getWards()
+      console.log('✅ Static mode: Loaded', myWards.length, 'wards:', myWards.map(w => w.name))
+    } else {
+      myWards = guardianService.getMyWards(user.id)
+      console.log('🔍 Repo mode: Found wards:', myWards.length, myWards.map(w => w.id))
 
-    // DEMO MODE SELF-HEAL: If no wards found, create guardian link
-    if (myWards.length === 0 && user.email) {
-      console.log('⚠️ No wards found for guardian', user.id, '- attempting self-heal...')
+      // DEMO MODE SELF-HEAL: If no wards found, create guardian link
+      if (myWards.length === 0 && user.email) {
+        console.log('⚠️ No wards found for guardian', user.id, '- attempting self-heal...')
 
-      const email = user.email.toLowerCase()
-      const allLinks = Repo.get<import('@/lib/seedAll').GuardianLink>('guardianLinks')
-      console.log('🔍 All guardian links:', allLinks.map(l => `${l.guardianId} → ${l.studentId}`))
+        const email = user.email.toLowerCase()
+        const allLinks = Repo.get<import('@/lib/seedAll').GuardianLink>('guardianLinks')
+        console.log('🔍 All guardian links:', allLinks.map(l => `${l.guardianId} → ${l.studentId}`))
 
-      // Try to create a link based on email
-      let studentId = ''
-      if (email === 'father.cse@demo.nu' || email === 'mother.cse@demo.nu') {
-        studentId = 'stu_cse_01'
-      } else if (email === 'guardian.bba@demo.nu') {
-        studentId = 'stu_bba_01'
-      }
-
-      if (studentId) {
-        console.log('🔧 Self-heal: Creating link', user.id, '→', studentId)
-        const newLink: import('@/lib/seedAll').GuardianLink = {
-          id: `auto_${user.id}_${studentId}`,
-          guardianId: user.id,
-          studentId,
-          relation: 'Guardian',
-          isPrimary: true,
-          createdAt: new Date().toISOString()
+        // Try to create a link based on email
+        let studentId = ''
+        if (email === 'father.cse@demo.nu' || email === 'mother.cse@demo.nu') {
+          studentId = 'stu_cse_01'
+        } else if (email === 'guardian.bba@demo.nu') {
+          studentId = 'stu_bba_01'
         }
-        Repo.add('guardianLinks', newLink)
-        myWards = guardianService.getMyWards(user.id)
-        console.log('✅ Self-heal complete. Wards now:', myWards.length)
-      } else {
-        console.log('❌ Self-heal failed: Unknown email', email)
+
+        if (studentId) {
+          console.log('🔧 Self-heal: Creating link', user.id, '→', studentId)
+          const newLink: import('@/lib/seedAll').GuardianLink = {
+            id: `auto_${user.id}_${studentId}`,
+            guardianId: user.id,
+            studentId,
+            relation: 'Guardian',
+            isPrimary: true,
+            createdAt: new Date().toISOString()
+          }
+          Repo.add('guardianLinks', newLink)
+          myWards = guardianService.getMyWards(user.id)
+          console.log('✅ Self-heal complete. Wards now:', myWards.length)
+        } else {
+          console.log('❌ Self-heal failed: Unknown email', email)
+        }
       }
     }
 
     setWards(myWards)
 
     // Set active ward
-    const savedWardId = guardianService.getActiveWardId()
-    const ward = myWards.find(w => w.id === savedWardId) || myWards[0]
+    let savedWardId: string | null
+    let ward: Student | Ward | null
+
+    if (isStaticMode) {
+      savedWardId = GuardianDemo.getActiveWardId()
+      ward = myWards.find(w => w.id === savedWardId) || myWards[0] || null
+      if (ward) {
+        GuardianDemo.setActiveWardId(ward.id)
+      }
+    } else {
+      savedWardId = guardianService.getActiveWardId()
+      ward = myWards.find(w => w.id === savedWardId) || myWards[0] || null
+      if (ward) {
+        guardianService.setActiveWardId(ward.id)
+      }
+    }
+
     if (ward) {
       console.log('✅ Active ward set to:', ward.id, ward.name)
       setActiveWard(ward)
-      guardianService.setActiveWardId(ward.id)
     } else {
       console.log('⚠️ No ward found to set as active')
     }
 
-    // Load semesters
-    const allSemesters = Repo.get<Semester>('semesters')
-    setSemesters(allSemesters)
-    const activeSem = allSemesters.find(s => s.status === 'Active')
-    if (activeSem) {
-      setActiveTerm(activeSem.id)
+    // Load semesters (skip in static mode)
+    if (!isStaticMode) {
+      const allSemesters = Repo.get<Semester>('semesters')
+      setSemesters(allSemesters)
+      const activeSem = allSemesters.find(s => s.status === 'Active')
+      if (activeSem) {
+        setActiveTerm(activeSem.id)
+      }
     }
 
     // Load unread notifications
-    const unread = notificationService.getUnreadCount(user.id)
-    setUnreadCount(unread)
+    if (isStaticMode) {
+      const unread = GuardianDemo.getUnreadCount()
+      setUnreadCount(unread)
+    } else {
+      const unread = notificationService.getUnreadCount(user.id)
+      setUnreadCount(unread)
 
-    // Subscribe to changes
-    const unsubNotif = notificationService.subscribe(() => {
-      setUnreadCount(notificationService.getUnreadCount(user.id))
-    })
+      // Subscribe to changes
+      const unsubNotif = notificationService.subscribe(() => {
+        setUnreadCount(notificationService.getUnreadCount(user.id))
+      })
 
-    return () => {
-      unsubNotif()
+      return () => {
+        unsubNotif()
+      }
     }
-  }, [user, navigate])
+  }, [user, navigate, isStaticMode])
 
   const handleWardChange = (wardId: string) => {
     const newWard = wards.find(w => w.id === wardId)
