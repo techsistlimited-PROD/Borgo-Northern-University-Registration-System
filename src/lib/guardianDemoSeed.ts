@@ -1,18 +1,20 @@
 import { Repo } from './repo'
 import { DEMO_MODE } from '@/config/demo'
-import { 
-  Student, 
-  Guardian, 
-  GuardianLink, 
-  AttendanceRecord, 
-  Grade, 
-  TermResult, 
-  TER, 
-  StudentPayable, 
-  Receipt, 
+import {
+  Student,
+  Guardian,
+  GuardianLink,
+  AttendanceRecord,
+  Grade,
+  TermResult,
+  TER,
+  StudentPayable,
+  Receipt,
   Notification,
   Course,
-  Semester
+  Semester,
+  Offering,
+  Section
 } from './seedAll'
 
 function now() { 
@@ -165,6 +167,22 @@ export function seedGuardianDemoData() {
       { id: 'bba101', code: 'BBA101', title: 'Principles of Management', credit: 3, type: 'Core', program: 'BBA' }
     ]
 
+    // OFFERINGS
+    const offerings: Offering[] = [
+      { id: 'OFF-cse101-FA25', courseId: 'cse101', semesterId: 'FALL-2025', campusId: 'PRM', status: 'Published' },
+      { id: 'OFF-cse102-FA25', courseId: 'cse102', semesterId: 'FALL-2025', campusId: 'PRM', status: 'Published' },
+      { id: 'OFF-cse203-FA25', courseId: 'cse203', semesterId: 'FALL-2025', campusId: 'PRM', status: 'Published' },
+      { id: 'OFF-bba101-FA25', courseId: 'bba101', semesterId: 'FALL-2025', campusId: 'BAN', status: 'Published' }
+    ]
+
+    // SECTIONS
+    const sections: Section[] = [
+      { id: 'A1', offeringId: 'OFF-cse101-FA25', code: 'A', capacity: 40, enrolled: 25, status: 'Published', facultyId: 'F001' },
+      { id: 'B1', offeringId: 'OFF-cse102-FA25', code: 'B', capacity: 30, enrolled: 20, status: 'Published', facultyId: 'F002' },
+      { id: 'A2', offeringId: 'OFF-cse203-FA25', code: 'A', capacity: 40, enrolled: 22, status: 'Published', facultyId: 'F001' },
+      { id: 'M1', offeringId: 'OFF-bba101-FA25', code: 'M', capacity: 35, enrolled: 18, status: 'Published', facultyId: 'F005' }
+    ]
+
     // ATTENDANCE — last 30 days rolling
     const attendance: AttendanceRecord[] = [
       ...buildAttendance('stu_cse_01', 'cse101', 'A1', 30),
@@ -299,6 +317,8 @@ export function seedGuardianDemoData() {
     Repo.upsertMany('guardianLinks', guardianLinks)
     Repo.upsertMany('semesters', terms)
     Repo.upsertMany('courses', courses)
+    Repo.upsertMany('offerings', offerings)
+    Repo.upsertMany('sections', sections)
     Repo.upsertMany('attendanceRecords', attendance)
     Repo.upsertMany('grades', grades)
     Repo.upsertMany('termResults', termResults)
