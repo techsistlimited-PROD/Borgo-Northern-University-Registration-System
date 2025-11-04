@@ -206,8 +206,21 @@ export default function GuardianDashboard() {
     navigate('/guardian/login')
   }
 
-  // In static mode, never show "No Wards Linked" - always have wards
-  if (!activeWard && !isStaticMode) {
+  // Show loading state while activeWard is being set
+  if (!activeWard) {
+    // In static mode, show loading instead of "No Wards Linked"
+    if (isStaticMode) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-deep-plum mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading guardian portal...</p>
+          </div>
+        </div>
+      )
+    }
+
+    // In non-static mode, show "No Wards Linked" if truly no wards
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -222,19 +235,19 @@ export default function GuardianDashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <GuardianDashboardView wardId={activeWard.id} termId={activeTerm} />
+        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} />
       case 'attendance':
-        return <GuardianAttendance wardId={activeWard.id} termId={activeTerm} />
+        return <GuardianAttendance wardId={activeWard!.id} termId={activeTerm} />
       case 'academics':
-        return <GuardianAcademics wardId={activeWard.id} termId={activeTerm} />
+        return <GuardianAcademics wardId={activeWard!.id} termId={activeTerm} />
       case 'finance':
-        return <GuardianFinance wardId={activeWard.id} termId={activeTerm} />
+        return <GuardianFinance wardId={activeWard!.id} termId={activeTerm} />
       case 'notifications':
         return <GuardianNotifications guardianId={user!.id} />
       case 'profile':
         return <GuardianProfile guardianId={user!.id} />
       default:
-        return <GuardianDashboardView wardId={activeWard.id} termId={activeTerm} />
+        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} />
     }
   }
 
@@ -257,7 +270,7 @@ export default function GuardianDashboard() {
               <h1 className="text-xl font-bold">Guardian Portal</h1>
               
               {/* Ward Selector */}
-              {wards.length > 1 && (
+              {wards.length > 1 && activeWard && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="text-white hover:bg-white/10">
@@ -273,7 +286,7 @@ export default function GuardianDashboard() {
                       <DropdownMenuItem
                         key={ward.id}
                         onClick={() => handleWardChange(ward.id)}
-                        className={activeWard.id === ward.id ? 'bg-mint-green/20' : ''}
+                        className={activeWard!.id === ward.id ? 'bg-mint-green/20' : ''}
                       >
                         <div>
                           <div className="font-medium">{ward.name}</div>
@@ -342,13 +355,15 @@ export default function GuardianDashboard() {
           </div>
 
           {/* Ward Info Bar */}
-          <div className="mt-3 flex items-center space-x-4 text-sm text-white/90">
-            <div>Student: <span className="font-medium">{activeWard.id}</span></div>
-            <div>·</div>
-            <div>Program: <span className="font-medium">{activeWard.program}</span></div>
-            <div>·</div>
-            <div>CGPA: <Badge variant="secondary" className="bg-mint-green text-deep-plum">{activeWard.cgpa.toFixed(2)}</Badge></div>
-          </div>
+          {activeWard && (
+            <div className="mt-3 flex items-center space-x-4 text-sm text-white/90">
+              <div>Student: <span className="font-medium">{isStaticMode ? (activeWard as Ward).universityId : activeWard.id}</span></div>
+              <div>·</div>
+              <div>Program: <span className="font-medium">{activeWard.program}</span></div>
+              <div>·</div>
+              <div>CGPA: <Badge variant="secondary" className="bg-mint-green text-deep-plum">{activeWard.cgpa.toFixed(2)}</Badge></div>
+            </div>
+          )}
         </div>
       </header>
 
