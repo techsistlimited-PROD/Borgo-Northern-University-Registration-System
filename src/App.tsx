@@ -43,7 +43,9 @@ function AppRoutes() {
       <Route path="/coe-login" element={<COELogin />} />
       <Route path="/finance-login" element={<FinanceLogin />} />
       <Route path="/admin-login" element={<AdminLogin />} />
-      
+      <Route path="/guardian-login" element={<GuardianLogin />} />
+      <Route path="/guardian/login" element={<GuardianLogin />} />
+
       {/* Protected Routes */}
       <Route 
         path="/student/dashboard" 
