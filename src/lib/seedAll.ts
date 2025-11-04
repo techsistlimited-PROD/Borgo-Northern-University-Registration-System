@@ -1,4 +1,5 @@
 import { Repo } from './repo'
+import { seedGuardianDemoData } from './guardianDemoSeed'
 
 export interface Semester {
   id: string
@@ -855,4 +856,7 @@ export function seedAll() {
   Repo.set('logEntries', logEntries)
 
   localStorage.setItem('nu-erp-seeded', 'true')
+
+  // Seed guardian demo data
+  seedGuardianDemoData()
 }

@@ -28,7 +28,11 @@ const demoCredentials = {
   coe: { username: 'coe', password: 'coe123' },
   finance: { username: 'finance', password: 'finance123' },
   admin: { username: 'admin', password: 'admin123' },
-  guardian: { username: 'G001', password: 'guardian123' }
+  guardian: {
+    'father.cse@demo.nu': 'guardian123',
+    'guardian.bba@demo.nu': 'guardian123',
+    'mother.cse@demo.nu': 'guardian123'
+  }
 }
 
 // Demo users
@@ -72,11 +76,23 @@ const demoUsers: Record<string, User> = {
     role: 'admin',
     email: 'admin@nu.edu.bd'
   },
-  'G001': {
-    id: 'G001',
-    name: 'Md. Abdul Karim',
+  'father.cse@demo.nu': {
+    id: 'g_father_01',
+    name: 'Abdul Karim',
     role: 'guardian',
-    email: 'karim.father@gmail.com'
+    email: 'father.cse@demo.nu'
+  },
+  'guardian.bba@demo.nu': {
+    id: 'g_guardian_02',
+    name: 'Shahidul Islam',
+    role: 'guardian',
+    email: 'guardian.bba@demo.nu'
+  },
+  'mother.cse@demo.nu': {
+    id: 'g_mother_01',
+    name: 'Rokia Begum',
+    role: 'guardian',
+    email: 'mother.cse@demo.nu'
   }
 }
 
@@ -96,7 +112,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const username = credentials.username.trim()
     const password = credentials.password.trim()
 
-    // Check demo credentials
+    // Special handling for guardian role (email-based)
+    if (role === 'guardian') {
+      const guardianCreds = demoCredentials.guardian as Record<string, string>
+      if (guardianCreds[username] === password) {
+        const userData = demoUsers[username]
+        if (userData) {
+          setUser(userData)
+          localStorage.setItem('nu-user', JSON.stringify(userData))
+          return true
+        }
+      }
+      return false
+    }
+
+    // Check demo credentials for other roles
     if (demoCredentials[role]?.username === username && demoCredentials[role]?.password === password) {
       const userData = demoUsers[username]
       if (userData) {

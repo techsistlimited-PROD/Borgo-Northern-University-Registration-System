@@ -65,6 +65,29 @@ class Repository {
     localStorage.removeItem(`nu-erp-${key}`)
     this.notify(key, [])
   }
+
+  seedOnceDemo(key: string, seedFn: () => void): void {
+    const seededKey = `nu-erp-demo-seeded-${key}`
+    const alreadySeeded = localStorage.getItem(seededKey)
+
+    if (alreadySeeded === 'true') {
+      return
+    }
+
+    seedFn()
+    localStorage.setItem(seededKey, 'true')
+  }
+
+  upsertMany<T extends { id: string | number }>(key: string, items: T[]): void {
+    const existing = this.get<T>(key)
+    const existingMap = new Map(existing.map(item => [item.id, item]))
+
+    items.forEach(item => {
+      existingMap.set(item.id, item)
+    })
+
+    this.set(key, Array.from(existingMap.values()))
+  }
 }
 
 export const Repo = new Repository()
