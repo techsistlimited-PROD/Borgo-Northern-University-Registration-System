@@ -19,7 +19,7 @@ import { guardianService, LogService, notificationService } from '@/lib/guardian
 import { Student, Semester } from '@/lib/seedAll'
 import { Repo } from '@/lib/repo'
 import GuardianDashboardView from '@/components/guardian/GuardianDashboardView'
-import { GuardianAttendance, GuardianAcademics, GuardianFinance, GuardianNotifications, GuardianProfile } from '@/components/guardian'
+import { GuardianAttendance, GuardianAcademics, GuardianFinance, GuardianNotifications, GuardianProfile } from '@/components/guardian/GuardianScreens'
 
 type ActiveSection = 'dashboard' | 'attendance' | 'academics' | 'finance' | 'notifications' | 'profile'
 
