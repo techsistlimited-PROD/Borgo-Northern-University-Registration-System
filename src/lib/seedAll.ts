@@ -261,6 +261,88 @@ export interface TeacherAnnouncement {
   publishedDate: string
 }
 
+export interface Guardian {
+  id: string
+  name: string
+  email: string
+  mobile: string
+  status: 'Active' | 'Inactive'
+  preferences?: {
+    erpPush: boolean
+    sms: boolean
+    email: boolean
+  }
+}
+
+export interface GuardianLink {
+  id: string
+  guardianId: string
+  studentId: string
+  relation: 'Father' | 'Mother' | 'Guardian'
+  isPrimary: boolean
+  createdAt: string
+}
+
+export interface AttendanceRecord {
+  id: string
+  studentId: string
+  sectionId: string
+  date: string
+  status: 'P' | 'A' | 'L'
+  recordedAt: string
+  facultyId: string
+}
+
+export interface Grade {
+  id: string
+  studentId: string
+  courseId: string
+  sectionId: string
+  termId: string
+  grade: string
+  gradePoint: number
+  credit: number
+  remarks?: string
+}
+
+export interface TermResult {
+  id: string
+  studentId: string
+  termId: string
+  gpa: number
+  cgpa: number
+  creditsEarned: number
+  status: 'Draft' | 'Published'
+}
+
+export interface TER {
+  id: string
+  studentId: string
+  termId: string
+  status: 'PENDING' | 'SUBMITTED' | 'BLOCKED'
+  submittedAt?: string
+}
+
+export interface Notification {
+  id: string
+  recipientId: string
+  recipientType: 'STUDENT' | 'GUARDIAN' | 'FACULTY'
+  channel: 'ERP' | 'SMS' | 'Email'
+  title: string
+  message: string
+  createdAt: string
+  status: 'Unread' | 'Read'
+}
+
+export interface LogEntry {
+  id: string
+  actor: string
+  actorRole: string
+  type: string
+  payload?: any
+  timestamp: string
+}
+
 function generateStudentID(deptCode: string, year: string, semCode: string, serial: number): string {
   return `${deptCode}${year}${semCode}${serial.toString().padStart(4, '0')}`
 }
