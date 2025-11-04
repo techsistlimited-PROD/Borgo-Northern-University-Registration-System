@@ -281,41 +281,41 @@ export function seedGuardianDemoData() {
 
     // TER (Teacher Evaluation Report) flags — guardian result visibility depends on this
     const terFlags: TER[] = [
-      { id: 'ter_cse_01_fall', studentId: 'stu_cse_01', termId: 'FALL-2025', status: 'PENDING', submittedAt: undefined },
-      { id: 'ter_bba_01_fall', studentId: 'stu_bba_01', termId: 'FALL-2025', status: 'SUBMITTED', submittedAt: nowMinus(15) }
+      { id: 'ter_cse_01_fall', studentId: STU_CSE_01, termId: 'FALL-2025', status: 'PENDING', submittedAt: undefined },
+      { id: 'ter_bba_01_fall', studentId: STU_BBA_01, termId: 'FALL-2025', status: 'SUBMITTED', submittedAt: nowMinus(15) }
     ]
 
     // NOTIFICATIONS
     const notifications: Notification[] = [
-      { 
-        id: 'NOT_DEMO_001', 
-        recipientId: 'g_father_01', 
-        recipientType: 'GUARDIAN', 
-        channel: 'ERP', 
-        title: 'Attendance Alert', 
-        message: 'Your ward Mahin Hasan was marked absent in CSE101 on 2025-10-07', 
-        createdAt: nowMinus(7), 
-        status: 'Unread' 
+      {
+        id: 'NOT_DEMO_001',
+        recipientId: G_FATHER_01,
+        recipientType: 'GUARDIAN',
+        channel: 'ERP',
+        title: 'Attendance Alert',
+        message: 'Your ward Mahin Hasan was marked absent in CSE101 on 2025-10-07',
+        createdAt: nowMinus(7),
+        status: 'Unread'
       },
-      { 
-        id: 'NOT_DEMO_002', 
-        recipientId: 'g_father_01', 
-        recipientType: 'GUARDIAN', 
-        channel: 'SMS', 
-        title: 'Payment Reminder', 
-        message: 'Outstanding dues: 17,000 BDT. Please clear before 2025-11-30 to view results.', 
-        createdAt: nowMinus(5), 
-        status: 'Read' 
+      {
+        id: 'NOT_DEMO_002',
+        recipientId: G_FATHER_01,
+        recipientType: 'GUARDIAN',
+        channel: 'SMS',
+        title: 'Payment Reminder',
+        message: 'Outstanding dues: 17,000 BDT. Please clear before 2025-11-30 to view results.',
+        createdAt: nowMinus(5),
+        status: 'Read'
       },
-      { 
-        id: 'NOT_DEMO_003', 
-        recipientId: 'g_guardian_02', 
-        recipientType: 'GUARDIAN', 
-        channel: 'ERP', 
-        title: 'Result Published', 
-        message: 'Fall 2025 results for Rafi Ahmed are now available', 
-        createdAt: nowMinus(3), 
-        status: 'Unread' 
+      {
+        id: 'NOT_DEMO_003',
+        recipientId: G_GUARDIAN_02,
+        recipientType: 'GUARDIAN',
+        channel: 'ERP',
+        title: 'Result Published',
+        message: 'Fall 2025 results for Rafi Ahmed are now available',
+        createdAt: nowMinus(3),
+        status: 'Unread'
       }
     ]
 
