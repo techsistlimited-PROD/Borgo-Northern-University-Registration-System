@@ -32,6 +32,7 @@ export default function InvigilationDutyManagement() {
 
   const [selectedSchedule, setSelectedSchedule] = useState<ExamSchedule | null>(null)
   const [showAssignDialog, setShowAssignDialog] = useState(false)
+  const [showStatusDialog, setShowStatusDialog] = useState(false)
   const [selectedFaculty, setSelectedFaculty] = useState<string[]>([])
 
   useEffect(() => {
