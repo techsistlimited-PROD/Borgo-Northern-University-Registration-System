@@ -2,8 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Eye, Edit } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function CalendarPolicies() {
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showPolicyModal, setShowPolicyModal] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
   const calendarItems = [
     { 
       type: 'Paper Setting Deadline', 
