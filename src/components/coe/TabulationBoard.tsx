@@ -140,12 +140,12 @@ export default function TabulationBoard() {
                           <Eye className="w-4 h-4" />
                         </Button>
                         {item.status === 'Pending Board Approval' && (
-                          <Button className="nu-button-primary" size="sm">
+                          <Button className="nu-button-primary" size="sm" onClick={() => alert('Approved tabulation for ' + item.program)}>
                             <CheckCircle className="w-4 h-4 mr-1" />
                             Approve
                           </Button>
                         )}
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => alert('Sent back tabulation for ' + item.program)}>
                           <XCircle className="w-4 h-4 mr-1" />
                           Send Back
                         </Button>
