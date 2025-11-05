@@ -121,14 +121,14 @@ export default function CertificatesQueue() {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => { setSelectedReq(req); setShowReqPreview(true) }}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => { setSelectedReq(req); setShowDocModal(true) }}>
                           <FileText className="w-4 h-4" />
                         </Button>
                         {req.status === 'Ready for Pickup' && (
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => alert('Marked as collected for ' + req.name)}>
                             <CheckCircle className="w-4 h-4" />
                           </Button>
                         )}
