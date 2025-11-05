@@ -2,8 +2,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Eye, Users, FileText, Download, AlertTriangle } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function SessionsTimetable() {
+  const [showSessionPreview, setShowSessionPreview] = useState(false)
+  const [showInvigilatorModal, setShowInvigilatorModal] = useState(false)
+  const [showPaperModal, setShowPaperModal] = useState(false)
+  const [selectedSession, setSelectedSession] = useState<any>(null)
+
   const sessions = [
     { 
       date: '02 Nov 2025', 
