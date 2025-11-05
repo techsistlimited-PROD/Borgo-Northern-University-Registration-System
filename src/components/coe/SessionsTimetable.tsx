@@ -186,6 +186,65 @@ export default function SessionsTimetable() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={showSessionPreview} onOpenChange={setShowSessionPreview}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Session Preview</DialogTitle>
+            <DialogDescription>View session details</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div><strong>Date:</strong> {selectedSession?.date}</div>
+            <div><strong>Time:</strong> {selectedSession?.time}</div>
+            <div><strong>Course:</strong> {selectedSession?.code} — {selectedSession?.title}</div>
+            <div><strong>Sections:</strong> {selectedSession?.sections}</div>
+            <div><strong>Rooms:</strong> {selectedSession?.rooms}</div>
+            <div><strong>Invigilators Assigned:</strong> {selectedSession?.invigilatorsAssigned ? 'Yes' : 'No'}</div>
+            <div><strong>Paper Status:</strong> {selectedSession?.paperStatus}</div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSessionPreview(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showInvigilatorModal} onOpenChange={setShowInvigilatorModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Manage Invigilators</DialogTitle>
+            <DialogDescription>Assign or view invigilators for this session</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm">Invigilator assignments for <strong>{selectedSession?.code}</strong> — {selectedSession?.date}</p>
+            <ul className="list-disc ml-6">
+              <li>Dr. A. Rahman — Room A-501</li>
+              <li>Ms. Sultana — Room A-502</li>
+            </ul>
+            <p className="text-sm text-gray-500">Use the full Invigilation Duty module to make permanent changes.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInvigilatorModal(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showPaperModal} onOpenChange={setShowPaperModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Exam Paper</DialogTitle>
+            <DialogDescription>Preview or download the exam paper</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm">Paper for <strong>{selectedSession?.code}</strong></p>
+            <div className="p-4 bg-gray-50 rounded-md border">[Paper content preview would appear here in production]</div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPaperModal(false)}>Close</Button>
+            <Button className="nu-button-primary">Download Paper</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
