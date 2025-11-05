@@ -189,6 +189,40 @@ export default function CertificatesQueue() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={showReqPreview} onOpenChange={setShowReqPreview}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request Preview</DialogTitle>
+            <DialogDescription>Preview document request details</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <div><strong>Request ID:</strong> {selectedReq?.id}</div>
+            <div><strong>Name:</strong> {selectedReq?.name}</div>
+            <div><strong>Program:</strong> {selectedReq?.program}</div>
+            <div><strong>Type:</strong> {selectedReq?.type}</div>
+            <div><strong>Status:</strong> <Badge className={selectedReq?.statusColor}>{selectedReq?.status}</Badge></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowReqPreview(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showDocModal} onOpenChange={setShowDocModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Document Viewer</DialogTitle>
+            <DialogDescription>Preview the requested document</DialogDescription>
+          </DialogHeader>
+          <div className="p-4 bg-gray-50 rounded-md border">[Document preview would appear here in production]</div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDocModal(false)}>Close</Button>
+            <Button className="nu-button-primary">Download</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
