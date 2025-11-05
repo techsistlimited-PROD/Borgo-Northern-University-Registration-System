@@ -121,12 +121,12 @@ export default function AttendanceIncidents() {
               <CardDescription>CSE 2211 - Data Structures | Center A / Room 501</CardDescription>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">Mark All Present</Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleMarkAllPresent}>Mark All Present</Button>
+              <Button variant="outline" size="sm" onClick={handleSaveDraft}>
                 <Save className="w-4 h-4 mr-2" />
                 Save Draft
               </Button>
-              <Button className="nu-button-primary" size="sm">Submit Attendance</Button>
+              <Button className="nu-button-primary" size="sm" onClick={handleSubmitAttendance}>Submit Attendance</Button>
             </div>
           </div>
         </CardHeader>
