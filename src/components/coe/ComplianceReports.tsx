@@ -308,6 +308,127 @@ export default function ComplianceReports() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={showReportPreview} onOpenChange={setShowReportPreview}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedReport?.name}</DialogTitle>
+            <DialogDescription>
+              {selectedReport?.description} • Generated: {selectedReport?.lastGenerated}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="overflow-x-auto">
+              <table className="w-full border">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {selectedReport?.sampleData && selectedReport.sampleData.length > 0 &&
+                      Object.keys(selectedReport.sampleData[0]).map((key) => (
+                        <th key={key} className="p-3 text-left text-sm font-medium text-gray-700 border capitalize">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </th>
+                      ))
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedReport?.sampleData?.map((row: any, idx: number) => (
+                    <tr key={idx} className="border-b hover:bg-gray-50">
+                      {Object.values(row).map((value: any, i: number) => (
+                        <td key={i} className="p-3 text-sm border">
+                          {value}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-between items-center pt-4 border-t">
+              <p className="text-xs text-gray-500">
+                This is a preview. Download full report for complete data.
+              </p>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => handleDownloadReport(selectedReport, 'XLSX')}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export XLSX
+                </Button>
+                <Button variant="outline" onClick={() => handleDownloadReport(selectedReport, 'PDF')}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Export PDF
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showAnalyticsDetail} onOpenChange={setShowAnalyticsDetail}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{selectedAnalytic?.detail?.title}</DialogTitle>
+            <DialogDescription>
+              Detailed breakdown and trend analysis
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-gray-50 rounded-md">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Current Value</span>
+                <span className="text-2xl font-bold text-deep-plum">{selectedAnalytic?.value}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {selectedAnalytic?.trend === 'up' ? (
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                ) : (
+                  <TrendingUp className="w-5 h-5 text-red-600 rotate-180" />
+                )}
+                <span className={`text-sm font-medium ${selectedAnalytic?.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                  {selectedAnalytic?.change} vs last semester
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full border">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {selectedAnalytic?.detail?.data && selectedAnalytic.detail.data.length > 0 &&
+                      Object.keys(selectedAnalytic.detail.data[0]).map((key) => (
+                        <th key={key} className="p-3 text-left text-sm font-medium text-gray-700 border capitalize">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </th>
+                      ))
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedAnalytic?.detail?.data?.map((row: any, idx: number) => (
+                    <tr key={idx} className="border-b hover:bg-gray-50">
+                      {Object.values(row).map((value: any, i: number) => (
+                        <td key={i} className="p-3 text-sm border">
+                          {value}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowAnalyticsDetail(false)}>Close</Button>
+              <Button className="nu-button-primary" onClick={() => alert('Exporting detailed analytics report...')}>
+                <Download className="w-4 h-4 mr-2" />
+                Export Report
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
