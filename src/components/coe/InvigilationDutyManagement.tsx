@@ -464,31 +464,41 @@ export default function InvigilationDutyManagement() {
 
               <div className="space-y-3">
                 <button
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors flex items-start justify-between ${
                     selectedSchedule.status === 'Draft'
                       ? 'border-deep-plum bg-deep-plum/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => handleStatusChange('Draft')}
                 >
-                  <div className="font-medium">Draft</div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    Session is editable, assignments can be changed
+                  <div>
+                    <div className="font-medium">Draft</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      Session is editable, assignments can be changed
+                    </div>
                   </div>
+                  {selectedSchedule.status === 'Draft' && (
+                    <Check className="w-5 h-5 text-green-600" />
+                  )}
                 </button>
 
                 <button
-                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors flex items-start justify-between ${
                     selectedSchedule.status === 'Locked'
                       ? 'border-deep-plum bg-deep-plum/5'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => handleStatusChange('Locked')}
                 >
-                  <div className="font-medium">Locked</div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    Session is finalized, assignments are locked
+                  <div>
+                    <div className="font-medium">Locked</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      Session is finalized, assignments are locked
+                    </div>
                   </div>
+                  {selectedSchedule.status === 'Locked' && (
+                    <Check className="w-5 h-5 text-green-600" />
+                  )}
                 </button>
               </div>
 
