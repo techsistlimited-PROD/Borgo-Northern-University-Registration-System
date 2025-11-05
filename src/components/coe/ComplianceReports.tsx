@@ -1,9 +1,16 @@
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Download, FileText, TrendingUp } from 'lucide-react'
+import { Download, FileText, TrendingUp, Eye } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export default function ComplianceReports() {
+  const [showReportPreview, setShowReportPreview] = useState(false)
+  const [selectedReport, setSelectedReport] = useState<any>(null)
+  const [showAnalyticsDetail, setShowAnalyticsDetail] = useState(false)
+  const [selectedAnalytic, setSelectedAnalytic] = useState<any>(null)
+
   const reports = [
     { name: 'Pass/Fail Summary by Program', description: 'Semester-wise pass rates and statistics', lastGenerated: '02 Dec 2025' },
     { name: 'Gold Medal Eligibility List', description: 'Top CGPA graduates for convocation', lastGenerated: '01 Dec 2025' },
