@@ -153,33 +153,199 @@ export default function CalendarPolicies() {
       </div>
 
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Calendar Item</DialogTitle>
             <DialogDescription>Modify calendar item dates and notes</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <div><strong>Type:</strong> {selectedItem?.type}</div>
-            <div><strong>Start:</strong> {selectedItem?.startDate}</div>
-            <div><strong>End:</strong> {selectedItem?.endDate}</div>
-            <div className="p-3 bg-gray-50 rounded-md">Notes: {selectedItem?.notes}</div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-md"
+                defaultValue={selectedItem?.type}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                  defaultValue={selectedItem?.startDate}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                  defaultValue={selectedItem?.endDate}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <textarea
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                defaultValue={selectedItem?.notes}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select className="w-full p-2 border rounded-md" defaultValue={selectedItem?.status}>
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+              </select>
+            </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowEditModal(false)}>Close</Button>
-            <Button className="nu-button-primary">Save</Button>
+            <Button variant="outline" onClick={() => setShowEditModal(false)}>Cancel</Button>
+            <Button className="nu-button-primary" onClick={() => {
+              setShowEditModal(false)
+              alert('Calendar item updated successfully')
+            }}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Calendar Item</DialogTitle>
+            <DialogDescription>Add a new item to the exam calendar</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
+              <select className="w-full p-2 border rounded-md">
+                <option value="">Select type...</option>
+                <option value="Paper Setting Deadline">Paper Setting Deadline</option>
+                <option value="Exam Window (Midterm)">Exam Window (Midterm)</option>
+                <option value="Exam Window (Final)">Exam Window (Final)</option>
+                <option value="Result Publish">Result Publish</option>
+                <option value="Recheck Window">Recheck Window</option>
+                <option value="Grade Appeal Deadline">Grade Appeal Deadline</option>
+                <option value="Convocation">Convocation</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Notes / Instructions</label>
+              <textarea
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                placeholder="Add any relevant notes or instructions..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Initial Status</label>
+              <select className="w-full p-2 border rounded-md" defaultValue="Draft">
+                <option value="Draft">Draft (not visible to others)</option>
+                <option value="Published">Published (visible to all)</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateModal(false)}>Cancel</Button>
+            <Button className="nu-button-primary" onClick={() => {
+              setShowCreateModal(false)
+              alert('Calendar item created successfully')
+            }}>Create Item</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={showPolicyModal} onOpenChange={setShowPolicyModal}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Policy Viewer</DialogTitle>
-            <DialogDescription>View full policy details</DialogDescription>
+            <DialogTitle>{selectedItem?.title}</DialogTitle>
+            <DialogDescription>Policy details and rules</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <h3 className="font-semibold">{selectedItem?.title}</h3>
-            <p className="text-sm text-gray-600">{selectedItem?.description}</p>
+          <div className="space-y-4">
+            <div className="p-4 bg-gray-50 rounded-md">
+              <p className="text-sm text-gray-700">{selectedItem?.description}</p>
+            </div>
+
+            {selectedItem?.title === 'Eligibility Policy' && (
+              <div className="border rounded-md p-4">
+                <h4 className="font-medium text-sm mb-2">Rule Details (JSON)</h4>
+                <pre className="text-xs bg-gray-900 text-green-400 p-3 rounded overflow-x-auto">
+{`{
+  "attendance": { "min": 70, "unit": "%" },
+  "finance": { "holds": false },
+  "registration": { "current_semester": true },
+  "academic": { "probation_override": false }
+}`}
+                </pre>
+              </div>
+            )}
+
+            {selectedItem?.title === 'Malpractice Policy' && (
+              <div className="border rounded-md p-4">
+                <h4 className="font-medium text-sm mb-3">Actions by Severity</h4>
+                <ul className="text-sm space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="font-medium text-red-600">•</span>
+                    <span>Unauthorized device: Script cancellation</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-medium text-red-600">•</span>
+                    <span>Copying/Cheating: 1-term exam ban + script cancellation</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-medium text-red-600">•</span>
+                    <span>Repeat offense: Permanent expulsion from university</span>
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            {selectedItem?.title === 'Recheck Policy' && (
+              <div className="border rounded-md p-4">
+                <h4 className="font-medium text-sm mb-3">Recheck Window Configuration</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Days After Publication</label>
+                    <input type="number" className="w-full p-2 border rounded-md" defaultValue="7" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Recheck Fee (BDT)</label>
+                    <input type="number" className="w-full p-2 border rounded-md" defaultValue="1000" />
+                  </div>
+                  <Button className="nu-button-primary w-full" onClick={() => {
+                    setShowPolicyModal(false)
+                    alert('Recheck policy updated')
+                  }}>
+                    Update Policy
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPolicyModal(false)}>Close</Button>
