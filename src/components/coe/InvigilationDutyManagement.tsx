@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Download, UserPlus, Wand2, Printer, Users } from 'lucide-react'
+import { Download, UserPlus, Wand2, Printer, Users, Check } from 'lucide-react'
 import { exportToCSV, printContent, generateTableHTML } from '@/lib/exportUtils'
 
 export default function InvigilationDutyManagement() {
