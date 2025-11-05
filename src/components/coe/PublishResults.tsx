@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Lock, Unlock, Eye, AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function PublishResults() {
   const [showPublishModal, setShowPublishModal] = useState(false)
