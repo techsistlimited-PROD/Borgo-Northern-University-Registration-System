@@ -8,13 +8,50 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 export default function AttendanceIncidents() {
   const [showIncidentModal, setShowIncidentModal] = useState(false)
   const [selectedIncident, setSelectedIncident] = useState<any>(null)
+  const [showNewIncidentModal, setShowNewIncidentModal] = useState(false)
+  const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false)
+  const [attendanceRecords, setAttendanceRecords] = useState([
+    { seat: '01', candidateCode: 'CND-2025-0001', name: 'Ayesha Rahman', status: 'Present', notes: '' },
+    { seat: '02', candidateCode: 'CND-2025-0144', name: 'Nishat Sultana', status: 'Present', notes: '' },
+    { seat: '03', candidateCode: 'CND-2025-0089', name: 'Tanvir Ahmed', status: 'Late', notes: '' },
+    { seat: '04', candidateCode: 'CND-2025-0212', name: 'Arman Chowdhury', status: 'Absent', notes: '' }
+  ])
 
-  const attendanceData = [
-    { seat: '01', candidateCode: 'CND-2025-0001', name: 'Ayesha Rahman', status: 'Present' },
-    { seat: '02', candidateCode: 'CND-2025-0144', name: 'Nishat Sultana', status: 'Present' },
-    { seat: '03', candidateCode: 'CND-2025-0089', name: 'Tanvir Ahmed', status: 'Late' },
-    { seat: '04', candidateCode: 'CND-2025-0212', name: 'Arman Chowdhury', status: 'Absent' }
-  ]
+  const handleMarkAllPresent = () => {
+    setAttendanceRecords(prev => prev.map(record => ({ ...record, status: 'Present' })))
+    alert('All students marked as Present')
+  }
+
+  const handleSaveDraft = () => {
+    alert('Attendance draft saved successfully')
+  }
+
+  const handleSubmitAttendance = () => {
+    setShowSubmitConfirmation(true)
+  }
+
+  const confirmSubmitAttendance = () => {
+    setShowSubmitConfirmation(false)
+    alert('Attendance submitted successfully. Lock applied.')
+  }
+
+  const handleUpdateStatus = (index: number, newStatus: string) => {
+    setAttendanceRecords(prev => {
+      const updated = [...prev]
+      updated[index].status = newStatus
+      return updated
+    })
+  }
+
+  const handleUpdateNotes = (index: number, notes: string) => {
+    setAttendanceRecords(prev => {
+      const updated = [...prev]
+      updated[index].notes = notes
+      return updated
+    })
+  }
+
+  const attendanceData = attendanceRecords
 
   const incidents = [
     { 
