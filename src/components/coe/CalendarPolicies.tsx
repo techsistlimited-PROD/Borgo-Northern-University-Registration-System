@@ -110,7 +110,7 @@ export default function CalendarPolicies() {
                           <Badge className={item.statusColor}>{item.status}</Badge>
                         </td>
                         <td className="p-3">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => { setSelectedItem(item); setShowEditModal(true) }}>
                             <Edit className="w-4 h-4" />
                           </Button>
                         </td>
