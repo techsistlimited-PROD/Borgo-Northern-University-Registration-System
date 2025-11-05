@@ -9,6 +9,7 @@ export default function PublishResults() {
   const [showPublishModal, setShowPublishModal] = useState(false)
   const [showBlockModal, setShowBlockModal] = useState(false)
   const [selectedResult, setSelectedResult] = useState<any>(null)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
 
   const results = [
     { 
