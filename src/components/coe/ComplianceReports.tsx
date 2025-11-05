@@ -225,15 +225,18 @@ export default function ComplianceReports() {
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-gray-500">Last: {report.lastGenerated}</span>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => {
+                      setSelectedReport(report)
+                      setShowReportPreview(true)
+                    }}>
                       <FileText className="w-4 h-4 mr-1" />
                       View
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleDownloadReport(report, 'XLSX')}>
                       <Download className="w-4 h-4 mr-1" />
                       XLSX
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleDownloadReport(report, 'PDF')}>
                       <Download className="w-4 h-4 mr-1" />
                       PDF
                     </Button>
