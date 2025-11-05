@@ -136,13 +136,13 @@ export default function SessionsTimetable() {
                         <td className="p-3 text-sm">{session.paperStatus}</td>
                         <td className="p-3">
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" onClick={() => { setSelectedSession(session); setShowSessionPreview(true) }}>
                               <Eye className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" onClick={() => { setSelectedSession(session); setShowInvigilatorModal(true) }}>
                               <Users className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" size="sm" onClick={() => { setSelectedSession(session); setShowPaperModal(true) }}>
                               <FileText className="w-4 h-4" />
                             </Button>
                           </div>
