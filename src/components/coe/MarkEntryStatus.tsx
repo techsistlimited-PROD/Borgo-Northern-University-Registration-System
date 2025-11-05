@@ -123,12 +123,12 @@ export default function MarkEntryStatus() {
                           <Eye className="w-4 h-4" />
                         </Button>
                         {entry.status === 'Submitted' && !entry.locked && (
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => alert('Locking marks for ' + entry.code + ' ' + entry.section)}>
                             <Lock className="w-4 h-4" />
                           </Button>
                         )}
                         {entry.locked && (
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => alert('Unlocking marks for ' + entry.code + ' ' + entry.section)}>
                             <Unlock className="w-4 h-4" />
                           </Button>
                         )}
