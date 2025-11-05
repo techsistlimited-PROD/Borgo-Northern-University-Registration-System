@@ -148,6 +148,42 @@ export default function CalendarPolicies() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Calendar Item</DialogTitle>
+            <DialogDescription>Modify calendar item dates and notes</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div><strong>Type:</strong> {selectedItem?.type}</div>
+            <div><strong>Start:</strong> {selectedItem?.startDate}</div>
+            <div><strong>End:</strong> {selectedItem?.endDate}</div>
+            <div className="p-3 bg-gray-50 rounded-md">Notes: {selectedItem?.notes}</div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditModal(false)}>Close</Button>
+            <Button className="nu-button-primary">Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showPolicyModal} onOpenChange={setShowPolicyModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Policy Viewer</DialogTitle>
+            <DialogDescription>View full policy details</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <h3 className="font-semibold">{selectedItem?.title}</h3>
+            <p className="text-sm text-gray-600">{selectedItem?.description}</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPolicyModal(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
