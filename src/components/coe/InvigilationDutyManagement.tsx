@@ -442,6 +442,65 @@ export default function InvigilationDutyManagement() {
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Status</DialogTitle>
+          </DialogHeader>
+          {selectedSchedule && (
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="font-medium">
+                  {getScheduleDetails(selectedSchedule).course?.code} - Section {getScheduleDetails(selectedSchedule).section?.code}
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  {getScheduleDetails(selectedSchedule).slot?.name} · {selectedSchedule.date} · {getScheduleDetails(selectedSchedule).room?.code}
+                </div>
+                <div className="text-sm text-gray-600 mt-2">
+                  Current Status: <Badge variant={selectedSchedule.status === 'Locked' ? 'default' : 'secondary'}>{selectedSchedule.status}</Badge>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
+                    selectedSchedule.status === 'Draft'
+                      ? 'border-deep-plum bg-deep-plum/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => handleStatusChange('Draft')}
+                >
+                  <div className="font-medium">Draft</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    Session is editable, assignments can be changed
+                  </div>
+                </button>
+
+                <button
+                  className={`w-full p-4 border-2 rounded-lg text-left transition-colors ${
+                    selectedSchedule.status === 'Locked'
+                      ? 'border-deep-plum bg-deep-plum/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => handleStatusChange('Locked')}
+                >
+                  <div className="font-medium">Locked</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    Session is finalized, assignments are locked
+                  </div>
+                </button>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t">
+                <Button variant="outline" onClick={() => setShowStatusDialog(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
