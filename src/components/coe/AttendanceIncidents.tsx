@@ -149,7 +149,11 @@ export default function AttendanceIncidents() {
                     <td className="p-3 text-sm font-mono">{row.candidateCode}</td>
                     <td className="p-3 text-sm">{row.name}</td>
                     <td className="p-3">
-                      <select className="p-1 border rounded text-sm" defaultValue={row.status}>
+                      <select
+                        className="p-1 border rounded text-sm"
+                        value={row.status}
+                        onChange={(e) => handleUpdateStatus(idx, e.target.value)}
+                      >
                         <option value="Present">Present</option>
                         <option value="Late">Late</option>
                         <option value="Absent">Absent</option>
@@ -157,7 +161,13 @@ export default function AttendanceIncidents() {
                       </select>
                     </td>
                     <td className="p-3">
-                      <input type="text" placeholder="Add notes..." className="p-1 border rounded text-sm w-full" />
+                      <input
+                        type="text"
+                        placeholder="Add notes..."
+                        className="p-1 border rounded text-sm w-full"
+                        value={row.notes}
+                        onChange={(e) => handleUpdateNotes(idx, e.target.value)}
+                      />
                     </td>
                   </tr>
                 ))}
