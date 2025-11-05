@@ -331,9 +331,19 @@ export default function InvigilationDutyManagement() {
                         </button>
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <Badge variant={schedule.status === 'Locked' ? 'default' : 'secondary'}>
-                          {schedule.status}
-                        </Badge>
+                        <button
+                          onClick={() => {
+                            setSelectedSchedule(schedule)
+                            setShowStatusDialog(true)
+                          }}
+                        >
+                          <Badge
+                            variant={schedule.status === 'Locked' ? 'default' : 'secondary'}
+                            className="cursor-pointer hover:opacity-80"
+                          >
+                            {schedule.status}
+                          </Badge>
+                        </button>
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <Button
