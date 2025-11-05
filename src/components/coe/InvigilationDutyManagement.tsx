@@ -116,6 +116,17 @@ export default function InvigilationDutyManagement() {
     setSelectedFaculty([])
   }
 
+  const handleStatusChange = (newStatus: 'Draft' | 'Locked') => {
+    if (!selectedSchedule) return
+
+    Repo.update<ExamSchedule>('examSchedules', selectedSchedule.id, {
+      status: newStatus
+    })
+
+    setShowStatusDialog(false)
+    setSelectedSchedule(null)
+  }
+
   const handleAutoAssign = () => {
     let assigned = 0
     const schedulesToAssign = examSchedules.filter(s => s.invigilatorIds.length === 0)
