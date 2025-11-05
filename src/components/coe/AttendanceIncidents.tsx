@@ -184,7 +184,7 @@ export default function AttendanceIncidents() {
               <CardTitle>Incident Reports</CardTitle>
               <CardDescription>View and manage examination incidents</CardDescription>
             </div>
-            <Button className="nu-button-primary" size="sm">
+            <Button className="nu-button-primary" size="sm" onClick={() => setShowNewIncidentModal(true)}>
               <AlertTriangle className="w-4 h-4 mr-2" />
               File New Incident
             </Button>
