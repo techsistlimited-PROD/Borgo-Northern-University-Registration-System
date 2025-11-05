@@ -63,7 +63,7 @@ export default function COESidebar({ activeSection, onSectionChange }: COESideba
   }
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-deep-plum to-accent-purple h-screen overflow-y-auto shadow-lg">
+    <aside className="w-64 bg-gradient-to-b from-deep-plum to-accent-purple min-h-screen sticky top-0 overflow-y-auto shadow-lg">
       <div className="p-4 border-b border-white/20 mb-4">
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
