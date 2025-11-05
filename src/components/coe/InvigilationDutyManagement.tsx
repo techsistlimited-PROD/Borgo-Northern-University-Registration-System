@@ -309,17 +309,26 @@ export default function InvigilationDutyManagement() {
                       </td>
                       <td className="px-4 py-3 text-sm">{room?.capacity || 0}</td>
                       <td className="px-4 py-3 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Badge variant={assignedFaculty.length > 0 ? 'default' : 'secondary'}>
-                            <Users className="w-3 h-3 mr-1" />
-                            {assignedFaculty.length}
-                          </Badge>
-                          {assignedFaculty.length > 0 && (
-                            <div className="text-xs text-gray-600">
-                              {assignedFaculty.map(f => f.initial).join(', ')}
-                            </div>
-                          )}
-                        </div>
+                        <button
+                          className="text-left hover:bg-gray-100 p-2 rounded transition-colors w-full"
+                          onClick={() => {
+                            setSelectedSchedule(schedule)
+                            setSelectedFaculty(schedule.invigilatorIds)
+                            setShowAssignDialog(true)
+                          }}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Badge variant={assignedFaculty.length > 0 ? 'default' : 'secondary'}>
+                              <Users className="w-3 h-3 mr-1" />
+                              {assignedFaculty.length}
+                            </Badge>
+                            {assignedFaculty.length > 0 && (
+                              <div className="text-xs text-gray-600">
+                                {assignedFaculty.map(f => f.initial).join(', ')}
+                              </div>
+                            )}
+                          </div>
+                        </button>
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <Badge variant={schedule.status === 'Locked' ? 'default' : 'secondary'}>
