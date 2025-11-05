@@ -2,8 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Eye, FileText, Download, CheckCircle } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function CertificatesQueue() {
+  const [showReqPreview, setShowReqPreview] = useState(false)
+  const [showDocModal, setShowDocModal] = useState(false)
+  const [selectedReq, setSelectedReq] = useState<any>(null)
   const requests = [
     { 
       id: 'DOC-2025-114', 
