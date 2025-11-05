@@ -176,9 +176,15 @@ export default function ComplianceReports() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {analytics.map((item, idx) => (
-          <Card key={idx}>
+          <Card key={idx} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+            setSelectedAnalytic(item)
+            setShowAnalyticsDetail(true)
+          }}>
             <CardHeader className="pb-3">
-              <CardDescription className="text-xs">{item.label}</CardDescription>
+              <div className="flex items-center justify-between">
+                <CardDescription className="text-xs">{item.label}</CardDescription>
+                <Eye className="w-4 h-4 text-gray-400" />
+              </div>
               <CardTitle className="text-2xl">{item.value}</CardTitle>
             </CardHeader>
             <CardContent>
