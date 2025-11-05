@@ -137,7 +137,7 @@ export default function CalendarPolicies() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-xs text-gray-600 mb-3">{policy.description}</p>
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" onClick={() => { setSelectedItem(policy); setShowPolicyModal(true) }}>
                       <Eye className="w-3 h-3 mr-2" />
                       {policy.action}
                     </Button>
