@@ -213,6 +213,26 @@ export default function PublishResults() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Result Preview</DialogTitle>
+            <DialogDescription>Quick preview of result publication details</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            <div><strong>Scope:</strong> {selectedResult?.scope}</div>
+            <div><strong>Sections:</strong> {selectedResult?.sections}</div>
+            <div><strong>Status:</strong> <Badge className={selectedResult?.statusColor}>{selectedResult?.status}</Badge></div>
+            <div><strong>Last Publish:</strong> {selectedResult?.lastPublish}</div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPreviewModal(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showBlockModal} onOpenChange={setShowBlockModal}>
         <DialogContent>
           <DialogHeader>
