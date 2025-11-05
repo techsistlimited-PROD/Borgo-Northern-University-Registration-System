@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Eye, Download, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function TabulationBoard() {
   const [showSheetModal, setShowSheetModal] = useState(false)
