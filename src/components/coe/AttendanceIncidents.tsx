@@ -245,7 +245,7 @@ export default function AttendanceIncidents() {
               Review incident details and apply controller decision
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -284,8 +284,8 @@ export default function AttendanceIncidents() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Decision Reason (Required)</label>
-              <textarea 
-                className="w-full p-2 border rounded-md" 
+              <textarea
+                className="w-full p-2 border rounded-md"
                 rows={3}
                 placeholder="Enter reason for decision..."
               />
@@ -293,7 +293,133 @@ export default function AttendanceIncidents() {
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setShowIncidentModal(false)}>Cancel</Button>
-              <Button className="nu-button-primary">Apply Decision</Button>
+              <Button className="nu-button-primary" onClick={() => {
+                setShowIncidentModal(false)
+                alert('Decision applied successfully')
+              }}>Apply Decision</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showNewIncidentModal} onOpenChange={setShowNewIncidentModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>File New Incident</DialogTitle>
+            <DialogDescription>
+              Report an examination incident or violation
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>Center A / Room 501</option>
+                  <option>Center B / Room 301</option>
+                  <option>Center B / Auditorium</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select className="w-full p-2 border rounded-md">
+                  <option>Unauthorized Device</option>
+                  <option>Talking / Disturbance</option>
+                  <option>Cheating / Copying</option>
+                  <option>Late Arrival</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Candidate Code</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-md"
+                placeholder="e.g., CND-2025-0144 or 'Room-wide'"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description (Required)</label>
+              <textarea
+                className="w-full p-2 border rounded-md"
+                rows={4}
+                placeholder="Provide detailed description of the incident..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Time of Incident</label>
+              <input type="time" className="w-full p-2 border rounded-md" />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowNewIncidentModal(false)}>Cancel</Button>
+              <Button className="nu-button-primary" onClick={() => {
+                setShowNewIncidentModal(false)
+                alert('Incident report filed successfully. Ticket ID will be generated.')
+              }}>File Incident</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSubmitConfirmation} onOpenChange={setShowSubmitConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Attendance Submission</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to submit this attendance? This action will lock the attendance and cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
+              <div className="flex items-start gap-2">
+                <Lock className="w-5 h-5 text-amber-600 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-amber-800">Attendance will be locked</p>
+                  <p className="text-amber-700 mt-1">Once submitted, you will not be able to modify this attendance record.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-sm space-y-1">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Session:</span>
+                <span className="font-medium">CSE 2211 - Data Structures</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Room:</span>
+                <span className="font-medium">Center A / Room 501</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total Students:</span>
+                <span className="font-medium">{attendanceData.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Present:</span>
+                <span className="font-medium text-green-600">
+                  {attendanceData.filter(r => r.status === 'Present').length}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Absent:</span>
+                <span className="font-medium text-red-600">
+                  {attendanceData.filter(r => r.status === 'Absent').length}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowSubmitConfirmation(false)}>Cancel</Button>
+              <Button className="nu-button-primary" onClick={confirmSubmitAttendance}>
+                <Lock className="w-4 h-4 mr-2" />
+                Submit & Lock
+              </Button>
             </div>
           </div>
         </DialogContent>
