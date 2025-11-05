@@ -13,7 +13,6 @@ const Header = () => (
           </div>
           <div>
             <h1 className="text-xl font-bold text-deep-plum">Northern University Bangladesh</h1>
-            <p className="text-sm text-gray-600">Registration & Advising System</p>
           </div>
         </div>
       </div>
