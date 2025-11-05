@@ -81,7 +81,12 @@ export default function COESidebar({ activeSection, onSectionChange }: COESideba
             <button
               onClick={() => {
                 if (section.items) {
+                  const isExp = expandedSections.includes(section.name)
                   toggleSection(section.name)
+                  // When expanding, also navigate to the first child so content is visible
+                  if (!isExp && section.items && section.items.length > 0) {
+                    onSectionChange(section.items[0])
+                  }
                 } else if (section.path) {
                   onSectionChange(section.path)
                 }
