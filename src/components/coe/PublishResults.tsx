@@ -124,7 +124,7 @@ export default function PublishResults() {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => { setSelectedResult(result); setShowPreviewModal(true) }}>
                           <Eye className="w-4 h-4" />
                         </Button>
                         {result.status === 'Ready' && (
