@@ -71,11 +71,13 @@ export default function CalendarPolicies() {
           <p className="text-sm text-gray-600 mt-1">Control the official exam calendar and policies</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" onClick={() => setShowCreateModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Create New Calendar
           </Button>
-          <Button className="nu-button-primary">Publish Calendar</Button>
+          <Button className="nu-button-primary" onClick={() => alert('Publishing calendar... This will make all draft items visible to faculty and students.')}>
+            Publish Calendar
+          </Button>
           <Badge className="bg-green-100 text-green-800">Published v2</Badge>
         </div>
       </div>
