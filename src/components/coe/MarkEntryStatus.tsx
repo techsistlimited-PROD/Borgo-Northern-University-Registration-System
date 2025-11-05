@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Download, Lock, Unlock, Eye } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useState } from 'react'
 
 export default function MarkEntryStatus() {
   const [selectedSection, setSelectedSection] = useState<any>(null)
