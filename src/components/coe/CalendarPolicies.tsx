@@ -8,6 +8,7 @@ import { useState } from 'react'
 export default function CalendarPolicies() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showPolicyModal, setShowPolicyModal] = useState(false)
+  const [showCreateModal, setShowCreateModal] = useState(false)
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const calendarItems = [
     { 
