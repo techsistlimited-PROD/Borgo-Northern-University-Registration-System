@@ -27,6 +27,7 @@ import ResultCorrectionView from '@/coe/views/ResultCorrectionView'
 import BlockManagerView from '@/coe/views/BlockManagerView'
 import BlockSettingsView from '@/coe/views/BlockSettingsView'
 import TranscriptManagerView from '@/coe/views/TranscriptManagerView'
+import CertificatesManagerView from '@/coe/views/CertificatesManagerView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -70,6 +71,8 @@ export default function COEDashboard() {
         return <BlockSettingsView />
       case 'Transcripts':
         return <TranscriptManagerView />
+      case 'Certificates Manager':
+        return <CertificatesManagerView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
