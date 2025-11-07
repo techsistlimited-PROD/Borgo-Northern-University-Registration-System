@@ -157,3 +157,62 @@ export function parseExcelData(
 
   return data
 }
+
+export interface CorrectionRecomputeResult {
+  attendance: number | null
+  ca: number | null
+  midterm: number | null
+  final: number | null
+  total: number
+  letterGrade: string
+  gradePoint: number
+}
+
+export function recomputeAfterCorrection(
+  attendance: number | null,
+  ca: number | null,
+  midterm: number | null,
+  final: number | null,
+  weights: { attendance: number; ca: number; midterm: number; final: number },
+  gradeScale: GradeScale[],
+  tieBreakRule: 'round-half-up' | 'truncate' = 'round-half-up',
+  isGradeOverride: boolean = false,
+  overrideGrade?: string,
+  overrideGP?: number
+): CorrectionRecomputeResult {
+  if (isGradeOverride && overrideGrade) {
+    const total =
+      ((attendance || 0) * weights.attendance) / 100 +
+      ((ca || 0) * weights.ca) / 100 +
+      ((midterm || 0) * weights.midterm) / 100 +
+      ((final || 0) * weights.final) / 100
+
+    return {
+      attendance,
+      ca,
+      midterm,
+      final,
+      total: Math.round(total * 100) / 100,
+      letterGrade: overrideGrade,
+      gradePoint: overrideGP !== undefined ? overrideGP : 0.0
+    }
+  }
+
+  const total =
+    ((attendance || 0) * weights.attendance) / 100 +
+    ((ca || 0) * weights.ca) / 100 +
+    ((midterm || 0) * weights.midterm) / 100 +
+    ((final || 0) * weights.final) / 100
+
+  const gradeResult = applyPolicy(total, gradeScale, tieBreakRule)
+
+  return {
+    attendance,
+    ca,
+    midterm,
+    final,
+    total: gradeResult.total,
+    letterGrade: gradeResult.letterGrade,
+    gradePoint: gradeResult.gradePoint
+  }
+}

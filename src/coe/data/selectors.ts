@@ -65,3 +65,39 @@ export const listSections = (courseCode: string, semesterId: string) => {
 }
 
 export const getMarkDistributionTemplates = () => MARK_DISTRIBUTION_TEMPLATES
+
+export const getStudentById = (studentId: string) => {
+  const marks = STUDENT_MARKS.find(m => m.studentId === studentId)
+  if (marks) {
+    return {
+      id: marks.studentId,
+      name: marks.studentName,
+      programCode: marks.programCode
+    }
+  }
+  return null
+}
+
+export const getCourseByCode = (courseCode: string, semesterId: string) => {
+  const template = MARK_DISTRIBUTION_TEMPLATES.find(
+    t => t.courseCode === courseCode && t.semesterId === semesterId
+  )
+  return template ? { code: template.courseCode, name: template.courseName } : null
+}
+
+export const getSectionByCourse = (courseCode: string, section: string, semesterId: string) => {
+  const exists = MARK_DISTRIBUTION_TEMPLATES.some(
+    t => t.courseCode === courseCode && t.section === section && t.semesterId === semesterId
+  )
+  return exists ? section : null
+}
+
+export const getStudentMarks = (studentId: string, courseCode: string, section: string, semesterId: string) => {
+  return STUDENT_MARKS.find(
+    m =>
+      m.studentId === studentId &&
+      m.courseCode === courseCode &&
+      m.section === section &&
+      m.semesterId === semesterId
+  )
+}
