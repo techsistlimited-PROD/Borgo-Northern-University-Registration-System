@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, LayoutDashboard, Calendar, Clock, Users, ClipboardList, FileCheck, AlertCircle, FileText, Award, FileBarChart, BarChart3 } from 'lucide-react'
+import { ChevronDown, ChevronRight, LayoutDashboard, Calendar, ClipboardList, FileCheck, FileText, Award, FileBarChart, Users2, ShieldCheck } from 'lucide-react'
 
 interface SidebarSection {
   name: string
@@ -30,19 +30,48 @@ const sections: SidebarSection[] = [
     items: ['Attendance & Incidents']
   },
   {
-    name: 'Marks & Tabulation',
+    name: 'Marks & Result',
     icon: <FileText className="w-4 h-4" />,
-    items: ['Mark Entry Status', 'Tabulation Board', 'Publish Results', 'Recheck / Appeals']
+    items: [
+      'Grading Policy',
+      'Mark Distribution',
+      'Excel Upload (Marks)',
+      'Result Correction',
+      'Publish Results',
+      'Block/Unblock (Student-wise)',
+      'Block/Unblock Settings',
+      'Tabulation Board'
+    ]
   },
   {
-    name: 'Certificates & Documents',
+    name: 'Transcripts & Certificates',
     icon: <Award className="w-4 h-4" />,
-    items: ['Transcript / Certificate Queue', 'Gazette Archive']
+    items: [
+      'Transcript Manager',
+      'Certificates Manager',
+      'Document Printing'
+    ]
+  },
+  {
+    name: 'Academic Actions',
+    icon: <Users2 className="w-4 h-4" />,
+    items: [
+      'Student Updates',
+      'Admission Cancel / Re-Admission',
+      'Credit Transfer',
+      'Course Exemption',
+      'CBE (Board)'
+    ]
+  },
+  {
+    name: 'Verification',
+    icon: <ShieldCheck className="w-4 h-4" />,
+    items: ['Student/Degree Verification']
   },
   {
     name: 'Reports',
     icon: <FileBarChart className="w-4 h-4" />,
-    items: ['Compliance Reports', 'Analytics']
+    items: ['Compliance & UGC/BANBAIS', 'Analytics']
   }
 ]
 
