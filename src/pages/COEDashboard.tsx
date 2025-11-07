@@ -26,6 +26,7 @@ import MarkDistributionView from '@/coe/views/MarkDistributionView'
 import ResultCorrectionView from '@/coe/views/ResultCorrectionView'
 import BlockManagerView from '@/coe/views/BlockManagerView'
 import BlockSettingsView from '@/coe/views/BlockSettingsView'
+import TranscriptManagerView from '@/coe/views/TranscriptManagerView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -67,6 +68,8 @@ export default function COEDashboard() {
         return <BlockManagerView />
       case 'Block/Unblock Settings':
         return <BlockSettingsView />
+      case 'Transcripts':
+        return <TranscriptManagerView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
