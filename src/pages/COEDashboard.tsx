@@ -32,6 +32,10 @@ import DocumentPrintingHubView from '@/coe/views/DocumentPrintingHubView'
 import AdmissionActionsView from '@/coe/views/AdmissionActionsView'
 import CreditTransferView from '@/coe/views/CreditTransferView'
 import CourseExemptionView from '@/coe/views/CourseExemptionView'
+import CBEConsoleView from '@/coe/views/CBEConsoleView'
+import ScholarshipAssignView from '@/coe/views/ScholarshipAssignView'
+import VerificationHubView from '@/coe/views/VerificationHubView'
+import ConvocationManagerView from '@/coe/views/ConvocationManagerView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -85,6 +89,14 @@ export default function COEDashboard() {
         return <CreditTransferView />
       case 'Course Exemption':
         return <CourseExemptionView />
+      case 'CBE (Board)':
+        return <CBEConsoleView />
+      case 'Scholarship Assign':
+        return <ScholarshipAssignView />
+      case 'Student/Degree Verification':
+        return <VerificationHubView />
+      case 'Convocation':
+        return <ConvocationManagerView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':

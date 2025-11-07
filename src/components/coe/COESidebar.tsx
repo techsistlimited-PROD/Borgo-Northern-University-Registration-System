@@ -59,13 +59,14 @@ const sections: SidebarSection[] = [
       'Admission Actions',
       'Credit Transfer',
       'Course Exemption',
-      'CBE (Board)'
+      'CBE (Board)',
+      'Scholarship Assign'
     ]
   },
   {
-    name: 'Verification',
+    name: 'Verification & Convocation',
     icon: <ShieldCheck className="w-4 h-4" />,
-    items: ['Student/Degree Verification']
+    items: ['Student/Degree Verification', 'Convocation']
   },
   {
     name: 'Reports',
