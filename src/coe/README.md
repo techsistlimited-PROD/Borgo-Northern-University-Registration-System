@@ -46,9 +46,9 @@ All dummy data files created with rich, realistic data:
 - Attendance & Incidents
 
 ### Marks & Result
-- Grading Policy ⏳
-- Mark Distribution ⏳
-- Excel Upload (Marks) ⏳
+- Grading Policy ✅
+- Mark Distribution ✅
+- Excel Upload (Marks) ✅ (Integrated in Mark Distribution)
 - Result Correction ⏳
 - Publish Results ✅
 - Block/Unblock (Student-wise) ⏳
@@ -87,16 +87,25 @@ All Phase 1 deliverables completed:
 - [x] Updated COE sidebar with new menu groupings
 - [x] Preserved all existing working routes
 
-**Awaiting approval to proceed with Phase 2.**
+## Phase 2 - Marks & Result (In Progress)
 
-## Phase 2 - Marks & Result (Pending Approval)
+### Completed Items ✅
+1. **Grading Policy Management** ✅
+   - Route: `/coe/marks/grading-policy`
+   - Components: GradeScaleTable, CgpaBandsCard, PolicyEditorDialog, PreviewCalculationDrawer
+   - Features: View/edit grade scale, CGPA bands, preview calculations, export
+   - See: `src/coe/PHASE2_ITEM1_COMPLETE.md`
 
-Next steps will implement in order:
-1. Grading Policy Management
-2. Mark Distribution Manager
-3. Excel Marks Upload
-4. Result Correction Manager
-5. Student Result Block/Unblock
-6. Block/Unblock Settings
+2. **Mark Distribution Manager** ✅
+   - Route: `/coe/marks/mark-distribution`
+   - Components: DistributionTemplateCard, DistributionEditorDialog, CourseDistributionGrid, LockBanner, UploadExcelDrawer
+   - Features: Template library, weight distribution, lock/unlock, Excel upload with grade calculation, export
+   - Note: Excel Marks Upload is integrated within this feature
+   - See: `src/coe/PHASE2_ITEM2_COMPLETE.md`
 
-Each component will be built one at a time with approval between items.
+### Pending Items ⏳
+3. Result Correction Manager
+4. Student Result Block/Unblock
+5. Block/Unblock Settings
+
+**Awaiting approval to proceed with Phase 2, Item 3: Result Correction Manager.**
