@@ -111,23 +111,23 @@ This document tracks the progress of Phase 2 (Marks & Result) implementation for
 ## Statistics
 
 ### Code Metrics
-| Metric | Phase 2.1 | Phase 2.2 | Total |
-|--------|-----------|-----------|-------|
-| Views | 1 | 1 | 2 |
-| Components | 4 | 5 | 9 |
-| Utility Files | 0 | 1 | 1 |
-| Lines of Code | ~800 | ~1,665 | ~2,465 |
-| Data Files Used | 5 | 6 | 8 (unique) |
+| Metric | Phase 2.1 | Phase 2.2 | Phase 2.3 | Total |
+|--------|-----------|-----------|-----------|-------|
+| Views | 1 | 1 | 1 | 3 |
+| Components | 4 | 5 | 5 | 14 |
+| Utility Functions | 0 | 1 | 1 | 2 |
+| Lines of Code | ~800 | ~1,665 | ~1,970 | ~4,435 |
+| Data Files Used | 5 | 6 | 5 | 8 (unique) |
 
 ### Feature Coverage
 - ✅ Grading Policy Management (100%)
 - ✅ Mark Distribution Management (100%)
 - ✅ Excel Marks Upload (100% - integrated)
-- ⏳ Result Correction (0%)
+- ✅ Result Correction (100%)
 - ⏳ Student Blocks (0%)
 - ⏳ Block Settings (0%)
 
-**Overall Phase 2 Progress**: 50% (3/6 items, counting Excel as part of Item 2)
+**Overall Phase 2 Progress**: 67% (4/6 items, counting Excel as part of Item 2)
 
 ---
 
@@ -303,10 +303,17 @@ switch (activeSection) {
 - studentMarks.ts (dummy data for upload preview)
 - selectors.ts (helper functions)
 
-// Item 3 will use:
-- resultCorrectionQueue.ts (4 requests ready)
-- studentMarks.ts (current marks)
-- gradePolicy.ts (grade recalculation)
+// Item 3 uses:
+- resultCorrectionQueue.ts (4 correction requests)
+- studentMarks.ts (current marks for students)
+- gradePolicy.ts (grade recalculation via recomputeAfterCorrection)
+- semesters.ts, programs.ts, examTypes.ts (filters)
+- markDistributionTemplates.ts (course/section data)
+
+// Item 4 will use:
+- blockSettings.ts (block records and settings)
+- studentMarks.ts (student data)
+- resultCorrectionQueue.ts (related to blocked students)
 ```
 
 ---
