@@ -1,0 +1,11 @@
+# COE Shared Components
+
+This folder will contain reusable COE-specific UI components.
+
+Examples:
+- GradeCalculator
+- MarkEntryForm
+- StudentSelector
+- SemesterFilter
+- ExportButtons
+- PrintableDocument

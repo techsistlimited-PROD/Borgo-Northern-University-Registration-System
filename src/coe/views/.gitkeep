@@ -1,0 +1,22 @@
+# COE Views
+
+This folder will contain all COE portal page components.
+
+## Phase 2 Pages (To be implemented):
+1. GradingPolicy.tsx
+2. MarkDistribution.tsx
+3. ExcelMarksUpload.tsx
+4. ResultCorrection.tsx
+5. StudentResultBlock.tsx
+6. BlockSettings.tsx
+
+## Future Phases:
+- Transcript Manager
+- Certificates Manager
+- Document Printing
+- Student Updates
+- Admission Actions
+- Credit Transfer
+- Course Exemption
+- CBE Board
+- Verification
