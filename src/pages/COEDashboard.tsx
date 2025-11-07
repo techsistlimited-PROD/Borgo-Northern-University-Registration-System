@@ -30,6 +30,7 @@ import TranscriptManagerView from '@/coe/views/TranscriptManagerView'
 import CertificatesManagerView from '@/coe/views/CertificatesManagerView'
 import DocumentPrintingHubView from '@/coe/views/DocumentPrintingHubView'
 import AdmissionActionsView from '@/coe/views/AdmissionActionsView'
+import CreditTransferView from '@/coe/views/CreditTransferView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -79,6 +80,8 @@ export default function COEDashboard() {
         return <DocumentPrintingHubView />
       case 'Admission Actions':
         return <AdmissionActionsView />
+      case 'Credit Transfer':
+        return <CreditTransferView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
