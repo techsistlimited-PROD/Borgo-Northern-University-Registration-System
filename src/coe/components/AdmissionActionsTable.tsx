@@ -157,7 +157,7 @@ export default function AdmissionActionsTable({
                             onClick={() => onApprove(action.id)}
                             title="Approve"
                           >
-                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                            <CheckCircle2 className="w-4 h-4 text-purple-600" />
                           </Button>
                         )}
 

@@ -120,7 +120,7 @@ export default function CourseDistributionGrid({
                   <td className="p-3 text-right">
                     <span
                       className={`text-sm font-bold ${
-                        isValidTotal ? 'text-green-600' : 'text-red-600'
+                        isValidTotal ? 'text-purple-600' : 'text-red-600'
                       }`}
                     >
                       {totalWeight.toFixed(2)}%

@@ -15,7 +15,7 @@ export default function CorrectionAuditTimeline({ auditTrail }: CorrectionAuditT
   const getIcon = (action: string) => {
     const actionLower = action.toLowerCase()
     if (actionLower.includes('approved') || actionLower.includes('applied')) {
-      return <CheckCircle className="w-5 h-5 text-green-600" />
+      return <CheckCircle className="w-5 h-5 text-purple-600" />
     }
     if (actionLower.includes('rejected')) {
       return <XCircle className="w-5 h-5 text-red-600" />

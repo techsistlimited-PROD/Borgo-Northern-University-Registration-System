@@ -187,7 +187,7 @@ export default function UploadExcelDrawer({
                 <h4 className="font-semibold text-deep-plum">
                   Preview ({previewData.length} students)
                 </h4>
-                <Badge className="bg-green-600 text-white">
+                <Badge className="bg-purple-600 text-white">
                   <CheckCircle className="w-3 h-3 mr-1" />
                   Ready to Save
                 </Badge>

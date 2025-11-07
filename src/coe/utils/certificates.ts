@@ -73,7 +73,7 @@ export const getStatusColor = (status: CertificateRequest['status']): string => 
   const colors: Record<CertificateRequest['status'], string> = {
     'Requested': 'bg-blue-100 text-blue-800',
     'Processing': 'bg-yellow-100 text-yellow-800',
-    'Ready': 'bg-green-100 text-green-800',
+    'Ready': 'bg-indigo-100 text-indigo-800',
     'Collected': 'bg-gray-100 text-gray-800',
     'Rejected': 'bg-red-100 text-red-800'
   }

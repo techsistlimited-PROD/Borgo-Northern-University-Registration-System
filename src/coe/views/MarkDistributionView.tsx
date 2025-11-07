@@ -575,8 +575,8 @@ export default function MarkDistributionView() {
                     current grading policy.
                   </p>
                   {uploadedMarks.length > 0 && (
-                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-md">
-                      <p className="text-sm text-green-800">
+                    <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-md">
+                      <p className="text-sm text-purple-800">
                         ✓ {uploadedMarks.length} student marks uploaded and processed
                       </p>
                     </div>
