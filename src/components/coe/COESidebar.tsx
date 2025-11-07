@@ -71,7 +71,7 @@ const sections: SidebarSection[] = [
   {
     name: 'Reports',
     icon: <FileBarChart className="w-4 h-4" />,
-    items: ['Compliance & UGC/BANBAIS', 'Analytics']
+    items: ['Reports Factory', 'Compliance & UGC/BANBAIS', 'Analytics']
   }
 ]
 

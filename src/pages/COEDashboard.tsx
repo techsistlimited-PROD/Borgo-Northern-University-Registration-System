@@ -36,6 +36,7 @@ import CBEConsoleView from '@/coe/views/CBEConsoleView'
 import ScholarshipAssignView from '@/coe/views/ScholarshipAssignView'
 import VerificationHubView from '@/coe/views/VerificationHubView'
 import ConvocationManagerView from '@/coe/views/ConvocationManagerView'
+import ReportsFactoryView from '@/coe/views/ReportsFactoryView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -97,6 +98,8 @@ export default function COEDashboard() {
         return <VerificationHubView />
       case 'Convocation':
         return <ConvocationManagerView />
+      case 'Reports Factory':
+        return <ReportsFactoryView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
