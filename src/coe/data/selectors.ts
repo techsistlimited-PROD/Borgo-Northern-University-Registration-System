@@ -3,6 +3,7 @@ import { PROGRAMS } from './programs'
 import { EXAM_TYPES } from './examTypes'
 import { STUDENT_MARKS } from './studentMarks'
 import { GLOBAL_GRADE_SCALE, CGPA_BANDS } from './gradePolicy'
+import { MARK_DISTRIBUTION_TEMPLATES } from './markDistributionTemplates'
 
 export const getActiveSemester = () => getCurrentSemester()
 
@@ -36,3 +37,31 @@ export const getUniqueStudents = () => {
     return true
   })
 }
+
+export const listCoursesByProgram = (programCode: string, semesterId: string) => {
+  const coursesSet = new Set<string>()
+  const courses: Array<{ code: string; name: string }> = []
+
+  MARK_DISTRIBUTION_TEMPLATES.filter(
+    t => (programCode === 'ALL' || t.programCode === programCode) && t.semesterId === semesterId
+  ).forEach(t => {
+    if (!coursesSet.has(t.courseCode)) {
+      coursesSet.add(t.courseCode)
+      courses.push({ code: t.courseCode, name: t.courseName })
+    }
+  })
+
+  return courses
+}
+
+export const listSections = (courseCode: string, semesterId: string) => {
+  const sections = new Set<string>()
+
+  MARK_DISTRIBUTION_TEMPLATES.filter(
+    t => t.courseCode === courseCode && t.semesterId === semesterId
+  ).forEach(t => sections.add(t.section))
+
+  return Array.from(sections).sort()
+}
+
+export const getMarkDistributionTemplates = () => MARK_DISTRIBUTION_TEMPLATES
