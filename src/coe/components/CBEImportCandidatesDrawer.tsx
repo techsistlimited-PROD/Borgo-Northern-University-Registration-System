@@ -54,21 +54,21 @@ export default function CBEImportCandidatesDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="max-w-2xl mx-auto max-h-[90vh]">
-        <DrawerHeader className="border-b">
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="max-w-2xl overflow-y-auto">
+        <SheetHeader className="border-b pb-4">
           <div className="flex justify-between items-start">
             <div>
-              <DrawerTitle>Import CBE Candidates</DrawerTitle>
-              <DrawerDescription>
+              <SheetTitle>Import CBE Candidates</SheetTitle>
+              <SheetDescription>
                 Add candidates to this CBE meeting manually or via CSV upload
-              </DrawerDescription>
+              </SheetDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
             </Button>
           </div>
-        </DrawerHeader>
+        </SheetHeader>
 
         <div className="p-6 space-y-6 overflow-y-auto">
           <Card>
@@ -160,7 +160,7 @@ export default function CBEImportCandidatesDrawer({
             </CardContent>
           </Card>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

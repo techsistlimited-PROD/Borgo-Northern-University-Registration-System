@@ -34,15 +34,15 @@ export default function CBECandidateDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onClose}>
-      <DrawerContent className="max-w-3xl mx-auto max-h-[90vh]">
-        <DrawerHeader className="border-b">
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="max-w-3xl overflow-y-auto">
+        <SheetHeader className="border-b pb-4">
           <div className="flex justify-between items-start">
             <div>
-              <DrawerTitle className="text-xl">CBE Candidate Details</DrawerTitle>
-              <DrawerDescription>
+              <SheetTitle className="text-xl">CBE Candidate Details</SheetTitle>
+              <SheetDescription>
                 {candidate.studentId} - {candidate.studentName}
-              </DrawerDescription>
+              </SheetDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
@@ -61,7 +61,7 @@ export default function CBECandidateDrawer({
               </Button>
             ))}
           </div>
-        </DrawerHeader>
+        </SheetHeader>
 
         <div className="p-6 overflow-y-auto">
           {activeTab === 'summary' && (
@@ -239,7 +239,7 @@ export default function CBECandidateDrawer({
             </div>
           )}
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }
