@@ -1,52 +1,64 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Eye, Download, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
+import { Eye, Download, CheckCircle, XCircle, AlertTriangle, Edit3 } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { RESULT_CORRECTION_QUEUE } from '@/coe/data/resultCorrectionQueue'
 
 export default function TabulationBoard() {
   const [showSheetModal, setShowSheetModal] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState<any>(null)
+  const [showOnlyCorrected, setShowOnlyCorrected] = useState(false)
+
+  const appliedCorrections = RESULT_CORRECTION_QUEUE.filter(c => c.status === 'Approved' || c.auditTrail.some(a => a.action === 'Applied'))
+  const correctedStudentIds = new Set(appliedCorrections.map(c => c.studentId))
 
   const tabulationData = [
-    { 
-      program: 'BSc CSE', 
-      semester: 'Fall 2025', 
-      sections: 24, 
-      avgGPA: 3.42, 
-      passPercent: 82, 
-      failPercent: 18, 
+    {
+      program: 'BSc CSE',
+      semester: 'Fall 2025',
+      sections: 24,
+      avgGPA: 3.42,
+      passPercent: 82,
+      failPercent: 18,
       status: 'Board Approved',
       statusColor: 'bg-green-100 text-green-800'
     },
-    { 
-      program: 'BBA', 
-      semester: 'Fall 2025', 
-      sections: 14, 
-      avgGPA: 3.11, 
-      passPercent: 78, 
-      failPercent: 22, 
+    {
+      program: 'BBA',
+      semester: 'Fall 2025',
+      sections: 14,
+      avgGPA: 3.11,
+      passPercent: 78,
+      failPercent: 22,
       status: 'Pending Board Approval',
       statusColor: 'bg-amber-100 text-amber-800'
     },
-    { 
-      program: 'LLB (Hons)', 
-      semester: 'Fall 2025', 
-      sections: 12, 
-      avgGPA: 3.28, 
-      passPercent: 85, 
-      failPercent: 15, 
+    {
+      program: 'LLB (Hons)',
+      semester: 'Fall 2025',
+      sections: 12,
+      avgGPA: 3.28,
+      passPercent: 85,
+      failPercent: 15,
       status: 'Published',
       statusColor: 'bg-blue-100 text-blue-800'
     }
   ]
 
   const tabulationSheetData = [
-    { id: 'CSE-25-011234', name: 'Ayesha Rahman', cse2211: 'A-', cse2203: 'B+', mat1101: 'A', totalMarks: 267, gpa: 3.61, result: 'Passed' },
-    { id: 'CSE-25-011255', name: 'Tanvir Ahmed', cse2211: 'B+', cse2203: 'A-', mat1101: 'B', totalMarks: 245, gpa: 3.28, result: 'Passed' },
-    { id: 'BBA-25-004412', name: 'Nishat Sultana', cse2211: 'A', cse2203: 'A', mat1101: 'A-', totalMarks: 278, gpa: 3.85, result: 'Passed' }
-  ]
+    { id: 'CSE-25-011234', name: 'Ayesha Rahman', cse2211: 'A-', cse2203: 'B+', mat1101: 'A', totalMarks: 267, gpa: 3.61, result: 'Passed', hasCorrectionapplied: false },
+    { id: 'CSE-25-011255', name: 'Tanvir Ahmed', cse2211: 'B+', cse2203: 'A-', mat1101: 'B', totalMarks: 245, gpa: 3.28, result: 'Passed', hasCorrectionApplied: false },
+    { id: 'STU-2023-0004', name: 'Raihan Ahmed', cse2211: 'A-', cse2203: 'A-', mat1101: 'B+', totalMarks: 256, gpa: 3.45, result: 'Passed', hasCorrectionApplied: true }
+  ].map(row => ({
+    ...row,
+    hasCorrectionApplied: correctedStudentIds.has(row.id)
+  }))
+
+  const filteredSheetData = showOnlyCorrected
+    ? tabulationSheetData.filter(row => row.hasCorrectionApplied)
+    : tabulationSheetData
 
   const discrepancies = [
     '2 cases where Midterm vs Final scaling looks off',
@@ -169,7 +181,7 @@ export default function TabulationBoard() {
           </DialogHeader>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex gap-2">
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
@@ -183,6 +195,15 @@ export default function TabulationBoard() {
                   Show Distribution
                 </Button>
               </div>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showOnlyCorrected}
+                  onChange={(e) => setShowOnlyCorrected(e.target.checked)}
+                  className="rounded"
+                />
+                <span>Show only corrected rows</span>
+              </label>
             </div>
 
             <div className="overflow-x-auto">
@@ -200,10 +221,20 @@ export default function TabulationBoard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tabulationSheetData.map((row, idx) => (
-                    <tr key={idx} className="border-b hover:bg-gray-50">
+                  {filteredSheetData.map((row, idx) => (
+                    <tr key={idx} className={`border-b hover:bg-gray-50 ${row.hasCorrectionApplied ? 'bg-blue-50/30' : ''}`}>
                       <td className="p-2 font-mono text-xs">{row.id}</td>
-                      <td className="p-2">{row.name}</td>
+                      <td className="p-2">
+                        <div className="flex items-center gap-2">
+                          {row.name}
+                          {row.hasCorrectionApplied && (
+                            <Badge className="bg-blue-100 text-blue-700 text-xs flex items-center gap-1">
+                              <Edit3 className="w-3 h-3" />
+                              Adjusted by Correction
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
                       <td className="p-2 text-center">{row.cse2211}</td>
                       <td className="p-2 text-center">{row.cse2203}</td>
                       <td className="p-2 text-center">{row.mat1101}</td>

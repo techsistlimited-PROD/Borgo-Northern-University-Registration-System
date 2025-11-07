@@ -1,9 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Lock, Unlock, Eye, AlertCircle } from 'lucide-react'
+import { Lock, Unlock, Eye, AlertCircle, ShieldAlert } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { getActiveBlocks } from '@/coe/data/blockSettings'
 
 export default function PublishResults() {
   const [showPublishModal, setShowPublishModal] = useState(false)
@@ -11,34 +12,49 @@ export default function PublishResults() {
   const [selectedResult, setSelectedResult] = useState<any>(null)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
 
+  const activeBlocks = getActiveBlocks()
+  const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
+  const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
+  const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
+
   const results = [
-    { 
-      scope: 'BSc CSE · Fall 2025', 
-      sections: 24, 
-      status: 'Ready', 
+    {
+      scope: 'BSc CSE · Fall 2025',
+      sections: 24,
+      status: 'Ready',
       lastPublish: '-',
-      blockedCount: 0,
-      statusColor: 'bg-green-100 text-green-800'
+      blockedCount: cseBlocks.length,
+      statusColor: 'bg-green-100 text-green-800',
+      hasActiveBlocks: cseBlocks.length > 0,
+      blockTypes: cseBlocks.map(b => b.reason).join(', ')
     },
-    { 
-      scope: 'BBA · Fall 2025', 
-      sections: 14, 
-      status: 'Published', 
+    {
+      scope: 'BBA · Fall 2025',
+      sections: 14,
+      status: 'Published',
       lastPublish: '02 Dec 2025 · 11:14 AM',
-      blockedCount: 2,
-      statusColor: 'bg-blue-100 text-blue-800'
+      blockedCount: bbaBlocks.length,
+      statusColor: 'bg-blue-100 text-blue-800',
+      hasActiveBlocks: bbaBlocks.length > 0,
+      blockTypes: bbaBlocks.map(b => b.reason).join(', ')
     },
-    { 
-      scope: 'LLB (Hons) · Fall 2025', 
-      sections: 12, 
-      status: 'Draft', 
+    {
+      scope: 'LLB (Hons) · Fall 2025',
+      sections: 12,
+      status: 'Draft',
       lastPublish: '-',
-      blockedCount: 1,
-      statusColor: 'bg-gray-100 text-gray-800'
+      blockedCount: llbBlocks.length,
+      statusColor: 'bg-gray-100 text-gray-800',
+      hasActiveBlocks: llbBlocks.length > 0,
+      blockTypes: llbBlocks.map(b => b.reason).join(', ')
     }
   ]
 
   const handlePublish = (result: any) => {
+    if (result.hasActiveBlocks) {
+      alert('Cannot publish: Active result blocks exist for this program. Clear blocks in Block Manager first.')
+      return
+    }
     setSelectedResult(result)
     setShowPublishModal(true)
   }
@@ -123,21 +139,32 @@ export default function PublishResults() {
                       )}
                     </td>
                     <td className="p-3">
+                      {result.hasActiveBlocks && (
+                        <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-800 flex items-start gap-2">
+                          <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-semibold">Publishing Blocked</div>
+                            <div>Active holds: {result.blockTypes}. Clear in Block Manager.</div>
+                          </div>
+                        </div>
+                      )}
                       <div className="flex gap-2">
                         <Button variant="ghost" size="sm" onClick={() => { setSelectedResult(result); setShowPreviewModal(true) }}>
                           <Eye className="w-4 h-4" />
                         </Button>
                         {result.status === 'Ready' && (
-                          <Button 
-                            className="nu-button-primary" 
+                          <Button
+                            className="nu-button-primary"
                             size="sm"
                             onClick={() => handlePublish(result)}
+                            disabled={result.hasActiveBlocks}
+                            title={result.hasActiveBlocks ? 'Publishing blocked due to active holds (Finance/TER/Disciplinary/Custom). Clear holds in Block Manager.' : ''}
                           >
                             Publish Now
                           </Button>
                         )}
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => {
                             setSelectedResult(result)
