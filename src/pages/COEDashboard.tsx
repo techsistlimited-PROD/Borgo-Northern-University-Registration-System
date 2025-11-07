@@ -23,6 +23,7 @@ import AdmitCardsManagement from '@/components/coe/AdmitCardsManagement'
 import RecheckAppealsManagement from '@/components/coe/RecheckAppealsManagement'
 import GradingPolicyView from '@/coe/views/GradingPolicyView'
 import MarkDistributionView from '@/coe/views/MarkDistributionView'
+import ResultCorrectionView from '@/coe/views/ResultCorrectionView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -58,6 +59,8 @@ export default function COEDashboard() {
         return <GradingPolicyView />
       case 'Mark Distribution':
         return <MarkDistributionView />
+      case 'Result Correction':
+        return <ResultCorrectionView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
