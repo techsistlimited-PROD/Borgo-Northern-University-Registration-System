@@ -56,8 +56,7 @@ const sections: SidebarSection[] = [
     name: 'Academic Actions',
     icon: <Users2 className="w-4 h-4" />,
     items: [
-      'Student Updates',
-      'Admission Cancel / Re-Admission',
+      'Admission Actions',
       'Credit Transfer',
       'Course Exemption',
       'CBE (Board)'
