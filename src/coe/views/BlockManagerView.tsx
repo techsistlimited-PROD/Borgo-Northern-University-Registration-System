@@ -11,6 +11,7 @@ import BlockBulkActionsBar from '@/coe/components/BlockBulkActionsBar'
 import AutoBlockBanner from '@/coe/components/AutoBlockBanner'
 import { RESULT_BLOCKS, BLOCK_SETTINGS } from '@/coe/data/blockSettings'
 import { getAllSemesters, getAllPrograms } from '@/coe/data/selectors'
+import { getBlockSettings } from '@/coe/data/settingsStore'
 
 export default function BlockManagerView() {
   const semesters = getAllSemesters()
@@ -38,10 +39,15 @@ export default function BlockManagerView() {
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showHelpPopover, setShowHelpPopover] = useState(false)
 
+  const settingsStore = getBlockSettings()
+  const financeRule = settingsStore.autoBlockRules.find(r => r.id === 'finance-dues')
+  const terRule = settingsStore.autoBlockRules.find(r => r.id === 'ter-not-submitted')
+  const discRule = settingsStore.autoBlockRules.find(r => r.id === 'disciplinary-hold')
+
   const autoBlockSettings = {
-    autoBlockOnDues: BLOCK_SETTINGS.autoBlockOnDues,
-    autoBlockOnTER: BLOCK_SETTINGS.autoBlockOnTER,
-    disciplinaryHold: true
+    autoBlockOnDues: financeRule?.enabled || BLOCK_SETTINGS.autoBlockOnDues,
+    autoBlockOnTER: terRule?.enabled || BLOCK_SETTINGS.autoBlockOnTER,
+    disciplinaryHold: discRule?.enabled || true
   }
 
   const filteredData = useMemo(() => {

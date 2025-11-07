@@ -25,6 +25,7 @@ import GradingPolicyView from '@/coe/views/GradingPolicyView'
 import MarkDistributionView from '@/coe/views/MarkDistributionView'
 import ResultCorrectionView from '@/coe/views/ResultCorrectionView'
 import BlockManagerView from '@/coe/views/BlockManagerView'
+import BlockSettingsView from '@/coe/views/BlockSettingsView'
 
 export default function COEDashboard() {
   const { user, logout } = useAuth()
@@ -64,6 +65,8 @@ export default function COEDashboard() {
         return <ResultCorrectionView />
       case 'Block/Unblock (Student-wise)':
         return <BlockManagerView />
+      case 'Block/Unblock Settings':
+        return <BlockSettingsView />
       case 'Tabulation Board':
         return <TabulationBoard />
       case 'Publish Results':
