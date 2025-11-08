@@ -211,34 +211,69 @@ export default function PaymentCollection() {
                   </tr>
                 </thead>
                 <tbody>
-                  {paymentRecords.map((record, idx) => (
-                    <tr key={idx} className="border-b hover:bg-gray-50">
-                      <td className="p-3 text-sm font-mono">{record.mr}</td>
-                      <td className="p-3 text-sm">
-                        <div className="font-mono text-xs">{record.studentId}</div>
-                        <div>{record.name}</div>
-                      </td>
-                      <td className="p-3 text-sm text-right font-semibold">{record.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}</td>
-                      <td className="p-3 text-sm">{record.method}</td>
-                      <td className="p-3 text-sm font-mono text-xs">{record.invoice}</td>
-                      <td className="p-3 text-sm">{record.time}</td>
-                      <td className="p-3">
-                        <Badge className={record.status === 'Refunded' ? 'bg-teal-100 text-teal-800' : 'bg-gray-100 text-gray-800'}>
-                          {record.status}
-                        </Badge>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
-                            <FileText className="w-4 h-4" />
-                          </Button>
-                          {record.status === 'Normal' && (
-                            <Button variant="ghost" size="sm">🔒 Refund</Button>
-                          )}
-                        </div>
+                  {filteredPayments.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="p-6 text-center text-gray-500">
+                        No payment records found
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    filteredPayments.map((payment) => (
+                      <tr key={payment.id} className="border-b hover:bg-gray-50">
+                        <td className="p-3 text-sm font-mono">{payment.receiptNo}</td>
+                        <td className="p-3 text-sm">
+                          <div className="font-mono text-xs text-gray-600">{payment.studentId}</div>
+                          <div className="font-medium">{payment.studentName}</div>
+                        </td>
+                        <td className="p-3 text-sm text-right font-semibold text-green-600">
+                          {formatCurrency(payment.totalAmount)}
+                        </td>
+                        <td className="p-3 text-sm">
+                          <Badge variant="outline">{payment.method}</Badge>
+                        </td>
+                        <td className="p-3 text-sm font-mono text-xs">
+                          {payment.allocations?.map(a => a.billNo).join(', ') || '-'}
+                        </td>
+                        <td className="p-3 text-sm">
+                          {new Date(payment.createdAt).toLocaleString('en-GB', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </td>
+                        <td className="p-3">
+                          <Badge className={
+                            payment.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                            payment.status === 'Refunded' ? 'bg-teal-100 text-teal-800' :
+                            'bg-gray-100 text-gray-800'
+                          }>
+                            {payment.status}
+                          </Badge>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleViewPayment(payment)}
+                              title="View Details"
+                            >
+                              <Eye className="w-4 h-4 text-blue-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              title="Print Receipt"
+                            >
+                              <FileText className="w-4 h-4 text-orange-600" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
