@@ -370,8 +370,8 @@ export const ledgerEntriesStatic = generateLedgerEntries(studentBillsStatic, pay
 export const bankStatementsStatic = generateBankStatements(paymentsStatic)
 export const waiverAssignmentsStatic = generateWaiverAssignments(studentBillsStatic)
 
-// 40 Unregistered Students for Drop/Readmission report
-export const unregisteredStudentsStatic = studentBillsStatic.filter(b => b.status === 'Overdue').slice(0, 40).map((b, i) => ({
+// 90 Unregistered Students for Drop/Readmission report
+export const unregisteredStudentsStatic = studentBillsStatic.filter(b => b.status === 'Overdue').slice(0, 90).map((b, i) => ({
   studentId: b.studentId,
   studentName: b.studentName,
   program: b.program,
