@@ -1,6 +1,8 @@
 // Admin Security Seeds - Demo data for security features
 // All datasets seeded with ≥25 rows for comprehensive demo
 
+import { DEMO_MODE } from '@/config/demo'
+
 export interface LoginHistoryEntry {
   id: string
   timestamp: string
