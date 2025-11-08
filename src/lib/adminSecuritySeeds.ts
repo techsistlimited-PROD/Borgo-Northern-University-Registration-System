@@ -338,6 +338,11 @@ const baseBlocklist: IPBlocklistEntry[] = [
   })
 ]
 
+// Export filtered blocklist - remove demo IP in DEMO_MODE
+export const ipBlocklistStatic = DEMO_MODE
+  ? baseBlocklist.filter(x => x.ip !== '103.102.101.1')
+  : baseBlocklist
+
 // IP-Based Login Audit Entry
 export interface IPLoginAuditEntry {
   id: string
