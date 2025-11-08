@@ -23,7 +23,7 @@ export default function ReportsFactoryView() {
   const reportData = useMemo(() => {
     if (!selectedReport) return []
     const rawData = selectedReport.getData()
-    return applyFilters(rawData, filters, selectedReport.columns)
+    return applyFilters(rawData, filters, selectedReport.columns, selectedReport.code)
   }, [selectedReport, filters])
 
   const handleResetFilters = () => {
