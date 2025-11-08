@@ -336,6 +336,166 @@ export const ipBlocklistStatic: IPBlocklistEntry[] = [
   })
 ]
 
+// IP-Based Login Audit Entry
+export interface IPLoginAuditEntry {
+  id: string
+  timestamp: string
+  userId: string
+  userName: string
+  ipAddress: string
+  location: string
+  device: string
+  status: 'Success' | 'Failed' | 'Locked' | 'Blocked'
+  loginResultMessage: string
+}
+
+const locations = [
+  'Dhaka, Bangladesh', 'Chattogram, Bangladesh', 'Sylhet, Bangladesh',
+  'Rajshahi, Bangladesh', 'Khulna, Bangladesh', 'Mumbai, India',
+  'Kolkata, India', 'New York, USA', 'London, UK', 'Singapore'
+]
+
+const browsers = ['Chrome', 'Firefox', 'Safari', 'Edge', 'Opera']
+const os = ['Windows 11', 'Windows 10', 'macOS', 'Ubuntu', 'Android 12', 'iOS 16']
+
+// Generate IP Login Audit (50 rows)
+export const ipLoginAuditStatic: IPLoginAuditEntry[] = Array.from({ length: 50 }, (_, i) => {
+  const user = randItem(users)
+  const daysAgo = randInt(0, 14)
+  const hoursAgo = randInt(0, 23)
+  const minsAgo = randInt(0, 59)
+  const date = new Date()
+  date.setDate(date.getDate() - daysAgo)
+  date.setHours(date.getHours() - hoursAgo)
+  date.setMinutes(date.getMinutes() - minsAgo)
+
+  const statusRand = rand()
+  const status: 'Success' | 'Failed' | 'Locked' | 'Blocked' =
+    statusRand < 0.75 ? 'Success' :
+    statusRand < 0.90 ? 'Failed' :
+    statusRand < 0.95 ? 'Locked' : 'Blocked'
+
+  const messages = {
+    Success: 'Login successful',
+    Failed: randItem(['Invalid password', 'User not found', 'Account inactive', 'OTP verification failed']),
+    Locked: 'Account locked due to brute force attempts',
+    Blocked: 'IP address blocked by security policy'
+  }
+
+  return {
+    id: `ip-audit-${8000 + i}`,
+    timestamp: date.toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    }),
+    userId: user.id,
+    userName: user.name,
+    ipAddress: randItem(ips),
+    location: randItem(locations),
+    device: `${randItem(browsers)} / ${randItem(os)}`,
+    status,
+    loginResultMessage: messages[status]
+  }
+})
+
+// Data Update History Entry
+export interface DataUpdateHistoryEntry {
+  id: string
+  timestamp: string
+  userId: string
+  userName: string
+  module: 'Student' | 'Admission' | 'Exam' | 'Finance' | 'Admin' | 'General Settings'
+  actionType: 'Created' | 'Updated' | 'Deleted'
+  itemId: string
+  description: string
+  beforeValues: string
+  afterValues: string
+}
+
+const modules: Array<'Student' | 'Admission' | 'Exam' | 'Finance' | 'Admin' | 'General Settings'> =
+  ['Student', 'Admission', 'Exam', 'Finance', 'Admin', 'General Settings']
+
+const actionTypes: Array<'Created' | 'Updated' | 'Deleted'> = ['Created', 'Updated', 'Deleted']
+
+const updateTemplates = [
+  {
+    module: 'Student' as const,
+    actionType: 'Updated' as const,
+    itemId: () => `STU-${randInt(2020, 2024)}-${String(randInt(1, 9999)).padStart(4, '0')}`,
+    description: () => randItem(['Updated contact information', 'Changed program enrollment', 'Modified guardian details', 'Updated address']),
+    before: () => JSON.stringify({ email: 'old.email@student.nub.ac.bd', phone: '+880-1712-345678' }, null, 2),
+    after: () => JSON.stringify({ email: 'new.email@student.nub.ac.bd', phone: '+880-1812-345678' }, null, 2)
+  },
+  {
+    module: 'Admission' as const,
+    actionType: 'Created' as const,
+    itemId: () => `ADM-${randInt(2024, 2025)}-${String(randInt(1, 999)).padStart(3, '0')}`,
+    description: () => 'Created new admission application',
+    before: () => JSON.stringify({}, null, 2),
+    after: () => JSON.stringify({ program: 'CSE', semester: 'Fall 2025', status: 'Pending' }, null, 2)
+  },
+  {
+    module: 'Exam' as const,
+    actionType: 'Updated' as const,
+    itemId: () => `EXAM-${randInt(2024, 2025)}-${String(randInt(1, 99)).padStart(2, '0')}`,
+    description: () => randItem(['Updated exam schedule', 'Modified exam room', 'Changed exam date', 'Updated marks']),
+    before: () => JSON.stringify({ date: '2025-01-15', room: 'R-301', marks: 75 }, null, 2),
+    after: () => JSON.stringify({ date: '2025-01-20', room: 'R-401', marks: 80 }, null, 2)
+  },
+  {
+    module: 'Finance' as const,
+    actionType: 'Updated' as const,
+    itemId: () => `FIN-${randInt(2024, 2025)}-${String(randInt(1, 9999)).padStart(4, '0')}`,
+    description: () => randItem(['Corrected bill amount', 'Applied late fee waiver', 'Updated payment status', 'Adjusted scholarship']),
+    before: () => JSON.stringify({ amount: 25000, discount: 0, status: 'Pending' }, null, 2),
+    after: () => JSON.stringify({ amount: 22500, discount: 2500, status: 'Paid' }, null, 2)
+  },
+  {
+    module: 'Admin' as const,
+    actionType: 'Updated' as const,
+    itemId: () => `USR-${String(randInt(1, 999)).padStart(3, '0')}`,
+    description: () => randItem(['Updated user role', 'Changed permissions', 'Modified access level', 'Updated user status']),
+    before: () => JSON.stringify({ role: 'Staff', permissions: ['view'] }, null, 2),
+    after: () => JSON.stringify({ role: 'Admin', permissions: ['view', 'edit', 'delete'] }, null, 2)
+  },
+  {
+    module: 'General Settings' as const,
+    actionType: 'Updated' as const,
+    itemId: () => `CFG-${String(randInt(1, 99)).padStart(2, '0')}`,
+    description: () => randItem(['Updated campus details', 'Modified building information', 'Changed program configuration', 'Updated academic policy']),
+    before: () => JSON.stringify({ name: 'Old Campus', capacity: 500 }, null, 2),
+    after: () => JSON.stringify({ name: 'New Campus', capacity: 1000 }, null, 2)
+  }
+]
+
+// Generate Data Update History (70 rows)
+export const dataUpdateHistoryStatic: DataUpdateHistoryEntry[] = Array.from({ length: 70 }, (_, i) => {
+  const user = randItem(users)
+  const daysAgo = randInt(0, 30)
+  const hoursAgo = randInt(0, 23)
+  const date = new Date()
+  date.setDate(date.getDate() - daysAgo)
+  date.setHours(date.getHours() - hoursAgo)
+
+  const template = randItem(updateTemplates)
+
+  return {
+    id: `update-${9000 + i}`,
+    timestamp: date.toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    }),
+    userId: user.id,
+    userName: user.name,
+    module: template.module,
+    actionType: template.actionType,
+    itemId: template.itemId(),
+    description: template.description(),
+    beforeValues: template.before(),
+    afterValues: template.after()
+  }
+})
+
 // Helper to ensure minimum rows
 export function ensureMinSecurityRows<T>(
   baseArray: T[],
