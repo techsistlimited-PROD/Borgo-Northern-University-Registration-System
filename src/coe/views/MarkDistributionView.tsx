@@ -35,7 +35,11 @@ interface ProcessedMark {
   status: string
 }
 
-export default function MarkDistributionView() {
+interface MarkDistributionViewProps {
+  autoOpenUpload?: boolean
+}
+
+export default function MarkDistributionView({ autoOpenUpload = false }: MarkDistributionViewProps) {
   const semesters = getAllSemesters()
   const programs = getAllPrograms()
   const examTypes = getExamTypeList()
@@ -56,7 +60,7 @@ export default function MarkDistributionView() {
   const [uploadedMarks, setUploadedMarks] = useState<ProcessedMark[]>([])
 
   const [showEditorDialog, setShowEditorDialog] = useState(false)
-  const [showUploadDrawer, setShowUploadDrawer] = useState(false)
+  const [showUploadDrawer, setShowUploadDrawer] = useState(autoOpenUpload)
   const [showHelpPopover, setShowHelpPopover] = useState(false)
   const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create')
   const [editingTemplateId, setEditingTemplateId] = useState<string | undefined>()
