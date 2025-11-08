@@ -7,10 +7,12 @@ import { Search, Receipt, Download, Printer } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { Payment } from '../data/types'
 import { formatCurrency, formatShortId } from '../utils/financeUtils'
+import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
 
 export default function PaymentRecordsView() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [searchTerm, setSearchTerm] = useState('')
+  const { filters } = useFinanceFilters()
 
   useEffect(() => {
     loadPayments()
@@ -23,11 +25,22 @@ export default function PaymentRecordsView() {
     setPayments(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
   }
 
-  const filteredPayments = payments.filter(p =>
-    p.receiptNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.studentName.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPayments = payments.filter(p => {
+    const matchesSearch =
+      p.receiptNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.studentName.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesGlobalFilters =
+      (filters.semester === 'All' || p.semester.includes(filters.semester)) &&
+      (filters.campus === 'All' || p.campus === filters.campus) &&
+      (filters.program === 'All' || p.program === filters.program) &&
+      (filters.studentSearch === '' ||
+       p.studentId.toLowerCase().includes(filters.studentSearch.toLowerCase()) ||
+       p.studentName.toLowerCase().includes(filters.studentSearch.toLowerCase()))
+
+    return matchesSearch && matchesGlobalFilters
+  })
 
   const getStatusBadge = (status: string) => {
     const colors = {

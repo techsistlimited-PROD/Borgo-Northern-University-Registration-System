@@ -7,6 +7,7 @@ import { AlertCircle, Play, Plus, Edit, Trash2 } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { StudentBill, LateFeePolicy, BillLineItem } from '../data/types'
 import { formatCurrency, calculateLateFee } from '../utils/financeUtils'
+import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
 
 export default function LateFeeAssignmentView() {
   const [bills, setBills] = useState<StudentBill[]>([])
@@ -14,6 +15,7 @@ export default function LateFeeAssignmentView() {
   const [activePolicy, setActivePolicy] = useState<LateFeePolicy | null>(null)
   const [eligibleBills, setEligibleBills] = useState<Array<StudentBill & { paidPercent: number; lateFee: number }>>([])
   const [selectedBills, setSelectedBills] = useState<Set<string>>(new Set())
+  const { filters } = useFinanceFilters()
 
   useEffect(() => {
     loadData()
@@ -45,7 +47,17 @@ export default function LateFeeAssignmentView() {
     }
 
     const eligible = bills
-      .filter(b => b.balanceDue > 0 && b.status !== 'Paid')
+      .filter(b => {
+        const matchesGlobalFilters =
+          (filters.semester === 'All' || b.semester.includes(filters.semester)) &&
+          (filters.campus === 'All' || b.campus === filters.campus) &&
+          (filters.program === 'All' || b.program === filters.program) &&
+          (filters.studentSearch === '' ||
+           b.studentId.toLowerCase().includes(filters.studentSearch.toLowerCase()) ||
+           b.studentName.toLowerCase().includes(filters.studentSearch.toLowerCase()))
+
+        return b.balanceDue > 0 && b.status !== 'Paid' && matchesGlobalFilters
+      })
       .map(b => {
         const paidPercent = (b.paidAmount / b.netTotal) * 100
         const lateFee = calculateLateFee(b, paidPercent, activePolicy.rules)

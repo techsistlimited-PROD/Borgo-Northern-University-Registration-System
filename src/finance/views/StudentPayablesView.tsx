@@ -8,10 +8,12 @@ import { Search, Plus, Edit, Trash2, FileText, RefreshCw, Upload, Download, Chec
 import { Repo } from '@/lib/repo'
 import { StudentBill, BillLineItem, BillStatus } from '../data/types'
 import { formatCurrency, rebuildBillFromPackage, parseBillCSV, exportTableToCSV, downloadCSV } from '../utils/financeUtils'
+import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
 
 export default function StudentPayablesView() {
   const [bills, setBills] = useState<StudentBill[]>([])
   const [searchTerm, setSearchTerm] = useState('')
+  const { filters } = useFinanceFilters()
   const [selectedBills, setSelectedBills] = useState<Set<string>>(new Set())
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isCSVDialogOpen, setIsCSVDialogOpen] = useState(false)
@@ -31,13 +33,24 @@ export default function StudentPayablesView() {
     setBills(data)
   }
 
-  const filteredBills = bills.filter(bill =>
-    bill.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.billNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.semester.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    bill.program.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredBills = bills.filter(bill => {
+    const matchesSearch =
+      bill.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.billNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.semester.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bill.program.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesGlobalFilters =
+      (filters.semester === 'All' || bill.semester.includes(filters.semester)) &&
+      (filters.campus === 'All' || bill.campus === filters.campus) &&
+      (filters.program === 'All' || bill.program === filters.program) &&
+      (filters.studentSearch === '' ||
+       bill.studentId.toLowerCase().includes(filters.studentSearch.toLowerCase()) ||
+       bill.studentName.toLowerCase().includes(filters.studentSearch.toLowerCase()))
+
+    return matchesSearch && matchesGlobalFilters
+  })
 
   const handleToggleSelect = (id: string) => {
     const newSelected = new Set(selectedBills)
