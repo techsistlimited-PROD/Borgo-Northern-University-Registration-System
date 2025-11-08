@@ -23,22 +23,33 @@ export const applyFilters = (data: any[], filters: ReportFilters, columns: strin
 
   // Special handling for Top Rankers report
   if (reportCode === 'TOP_RANKERS') {
-    // First filter by program if selected
+    const cgpaIdx = columns.indexOf('CGPA')
+
+    // Filter by program if selected
     if (filters.program && filters.program !== 'all') {
       const progIdx = columns.indexOf('Program')
       if (progIdx >= 0) {
         filtered = filtered.filter(row => row[progIdx] === filters.program)
       }
+    }
 
-      // Re-rank after program filtering
-      filtered = filtered.map((row, idx) => {
-        const newRow = [...row]
-        newRow[0] = idx + 1 // Update rank
-        // Update Award Eligible (now at index 6 after removing Category column)
-        newRow[6] = idx === 0 ? 'Gold Medal' : idx < 3 ? 'Merit Certificate' : 'Recognition'
-        return newRow
+    // Sort by CGPA descending (after program filtering)
+    if (cgpaIdx >= 0) {
+      filtered = filtered.sort((a, b) => {
+        const cgpaA = parseFloat(a[cgpaIdx])
+        const cgpaB = parseFloat(b[cgpaIdx])
+        return cgpaB - cgpaA // Descending order
       })
     }
+
+    // Re-rank based on sorted order
+    filtered = filtered.map((row, idx) => {
+      const newRow = [...row]
+      newRow[0] = idx + 1 // Update rank
+      // Update Award Eligible (at index 6)
+      newRow[6] = idx === 0 ? 'Gold Medal' : idx < 3 ? 'Merit Certificate' : 'Recognition'
+      return newRow
+    })
 
     // Apply top count filter (Top 3 or Top 10)
     const topCount = filters.topCount === 'top3' ? 3 : 10
