@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
-import { Search, Plus, Edit, Trash2, X } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { X, Eye } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { CostHead, CostHeadType, CostHeadStatus } from '../data/types'
+import { CostHead } from '../data/types'
 
 export default function CostHeadSetup() {
   const [costHeads, setCostHeads] = useState<CostHead[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [anyText, setAnyText] = useState('')
+  const [codeFilter, setCodeFilter] = useState('')
+  const [nameFilter, setNameFilter] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isViewOpen, setIsViewOpen] = useState(false)
   const [editingCostHead, setEditingCostHead] = useState<CostHead | null>(null)
-  const [formData, setFormData] = useState<Partial<CostHead>>({
+  const [viewingCostHead, setViewingCostHead] = useState<CostHead | null>(null)
+  
+  const [formData, setFormData] = useState({
     code: '',
+    serialNo: '',
     name: '',
-    type: 'Tuition',
-    glAccount: '',
-    taxable: false,
-    status: 'Active',
-    description: ''
+    isActive: true,
+    remarks: ''
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -35,19 +37,57 @@ export default function CostHeadSetup() {
     setCostHeads(data)
   }
 
-  const filteredCostHeads = costHeads.filter(ch =>
-    ch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ch.type.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredCostHeads = costHeads.filter(ch => {
+    const matchesAnyText = anyText === '' || 
+      ch.code.toLowerCase().includes(anyText.toLowerCase()) ||
+      ch.name.toLowerCase().includes(anyText.toLowerCase()) ||
+      (ch.description || '').toLowerCase().includes(anyText.toLowerCase())
+    
+    const matchesCode = codeFilter === '' || ch.code.includes(codeFilter)
+    const matchesName = nameFilter === '' || ch.name.toLowerCase().includes(nameFilter.toLowerCase())
+
+    return matchesAnyText && matchesCode && matchesName
+  })
+
+  const handleSearch = () => {
+    // Filter is reactive, this just forces a re-render
+    loadCostHeads()
+  }
+
+  const handleOpenForm = (costHead?: CostHead) => {
+    if (costHead) {
+      setEditingCostHead(costHead)
+      setFormData({
+        code: costHead.code,
+        serialNo: costHead.serialNo.toString(),
+        name: costHead.name,
+        isActive: costHead.status === 'Active',
+        remarks: costHead.description || ''
+      })
+    } else {
+      setEditingCostHead(null)
+      setFormData({
+        code: '',
+        serialNo: '',
+        name: '',
+        isActive: true,
+        remarks: ''
+      })
+    }
+    setErrors({})
+    setIsFormOpen(true)
+  }
+
+  const handleView = (costHead: CostHead) => {
+    setViewingCostHead(costHead)
+    setIsViewOpen(true)
+  }
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.code?.trim()) {
+    if (!formData.code) {
       newErrors.code = 'Code is required'
-    } else if (!/^[A-Z_]+$/.test(formData.code)) {
-      newErrors.code = 'Code must be UPPER_SNAKE_CASE'
     } else {
       const duplicate = costHeads.find(ch => ch.code === formData.code && ch.id !== editingCostHead?.id)
       if (duplicate) {
@@ -55,43 +95,18 @@ export default function CostHeadSetup() {
       }
     }
 
+    if (!formData.serialNo) {
+      newErrors.serialNo = 'Serial No is required'
+    } else if (!/^\d+$/.test(formData.serialNo)) {
+      newErrors.serialNo = 'Serial No must be numeric'
+    }
+
     if (!formData.name?.trim()) {
       newErrors.name = 'Name is required'
     }
 
-    if (!formData.type) {
-      newErrors.type = 'Type is required'
-    }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
-  }
-
-  const handleOpenDialog = (costHead?: CostHead) => {
-    if (costHead) {
-      setEditingCostHead(costHead)
-      setFormData(costHead)
-    } else {
-      setEditingCostHead(null)
-      setFormData({
-        code: '',
-        name: '',
-        type: 'Tuition',
-        glAccount: '',
-        taxable: false,
-        status: 'Active',
-        description: ''
-      })
-    }
-    setErrors({})
-    setIsDialogOpen(true)
-  }
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false)
-    setEditingCostHead(null)
-    setFormData({})
-    setErrors({})
   }
 
   const handleSave = () => {
@@ -101,121 +116,148 @@ export default function CostHeadSetup() {
 
     if (editingCostHead) {
       Repo.update('finance-cost-heads', editingCostHead.id, {
-        ...formData,
+        code: formData.code,
+        serialNo: parseInt(formData.serialNo),
+        name: formData.name,
+        status: formData.isActive ? 'Active' : 'Inactive',
+        description: formData.remarks,
         updatedAt: now
       })
     } else {
-      const newCostHead: CostHead = {
-        id: `ch-${Date.now()}`,
-        code: formData.code!,
-        name: formData.name!,
-        type: formData.type!,
-        glAccount: formData.glAccount || '',
-        taxable: formData.taxable || false,
-        status: formData.status || 'Active',
-        description: formData.description,
-        createdAt: now,
-        updatedAt: now
+      const existingCostHead = costHeads.find(ch => ch.code === formData.code)
+      if (existingCostHead) {
+        const newCostHead: CostHead = {
+          ...existingCostHead,
+          code: formData.code,
+          serialNo: parseInt(formData.serialNo),
+          name: formData.name,
+          status: formData.isActive ? 'Active' : 'Inactive',
+          description: formData.remarks,
+          createdAt: now,
+          updatedAt: now
+        }
+        Repo.update('finance-cost-heads', existingCostHead.id, newCostHead)
+      } else {
+        const newCostHead: CostHead = {
+          id: `ch-${Date.now()}`,
+          code: formData.code,
+          serialNo: parseInt(formData.serialNo),
+          name: formData.name,
+          type: 'Others',
+          glAccount: '',
+          taxable: false,
+          status: formData.isActive ? 'Active' : 'Inactive',
+          description: formData.remarks,
+          createdAt: now,
+          updatedAt: now
+        }
+        Repo.add('finance-cost-heads', newCostHead)
       }
-      Repo.add('finance-cost-heads', newCostHead)
     }
 
-    handleCloseDialog()
+    setIsFormOpen(false)
   }
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to deactivate this cost head?')) {
-      Repo.update('finance-cost-heads', id, { status: 'Inactive' })
-    }
-  }
-
-  const toggleStatus = (costHead: CostHead) => {
-    const newStatus: CostHeadStatus = costHead.status === 'Active' ? 'Inactive' : 'Active'
-    Repo.update('finance-cost-heads', costHead.id, { status: newStatus })
-  }
-
-  const costHeadTypes: CostHeadType[] = ['Admission', 'Tuition', 'Registration', 'Lab', 'Library', 'Exam', 'Penalty', 'Others']
+  // Generate code options (001-999)
+  const codeOptions = Array.from({ length: 999 }, (_, i) => {
+    const num = i + 1
+    return String(num).padStart(3, '0')
+  })
 
   return (
     <div className="p-6 space-y-6">
+      {/* Header with Create Button */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Cost Head Setup</h1>
-          <p className="text-sm text-gray-600">Manage fee cost heads (types of charges)</p>
+          <h1 className="text-2xl font-bold text-deep-plum">Cost Head</h1>
+          <p className="text-sm text-gray-600">Dynamic Cost Head Creation & Management</p>
         </div>
-        <Button onClick={() => handleOpenDialog()} className="nu-button-primary">
-          <Plus className="w-4 h-4 mr-2" />
-          New Cost Head
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => handleOpenForm()} className="nu-button-primary">
+            Create Cost Head
+          </Button>
+          <Button variant="outline">
+            Cost Head List
+          </Button>
+        </div>
       </div>
 
+      {/* Horizontal Filter Bar */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Cost Heads ({filteredCostHeads.length})</CardTitle>
-            <div className="relative w-80">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <CardContent className="pt-6">
+          <div className="flex items-end gap-3">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Any Text</label>
               <Input
-                placeholder="Search by code, name, or type..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                value={anyText}
+                onChange={(e) => setAnyText(e.target.value)}
+                placeholder="Search by any text"
               />
             </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Code</label>
+              <Input
+                value={codeFilter}
+                onChange={(e) => setCodeFilter(e.target.value)}
+                placeholder="Search by code"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Name</label>
+              <Input
+                value={nameFilter}
+                onChange={(e) => setNameFilter(e.target.value)}
+                placeholder="Search by name"
+              />
+            </div>
+            <Button onClick={handleSearch} className="nu-button-primary">
+              Search
+            </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Cost Head List Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Cost Head List ({filteredCostHeads.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Code</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">code</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Serial Number</th>
                   <th className="text-left p-3 text-sm font-medium text-gray-700">Name</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Type</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">GL Account</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Taxable</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Status</th>
-                  <th className="text-right p-3 text-sm font-medium text-gray-700">Actions</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Is Active</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Remarks</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredCostHeads.map((ch) => (
                   <tr key={ch.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3 text-sm font-mono">{ch.code}</td>
-                    <td className="p-3 text-sm font-medium">{ch.name}</td>
-                    <td className="p-3 text-sm">
-                      <Badge variant="outline">{ch.type}</Badge>
-                    </td>
-                    <td className="p-3 text-sm">{ch.glAccount}</td>
-                    <td className="p-3 text-sm">{ch.taxable ? 'Yes' : 'No'}</td>
+                    <td className="p-3 text-sm">{ch.code}</td>
+                    <td className="p-3 text-sm">{ch.serialNo}</td>
+                    <td className="p-3 text-sm">{ch.name}</td>
+                    <td className="p-3 text-sm">{ch.status === 'Active' ? 'Yes' : 'No'}</td>
+                    <td className="p-3 text-sm text-gray-600">{ch.description || ''}</td>
                     <td className="p-3">
-                      <button
-                        onClick={() => toggleStatus(ch)}
-                        className={`px-2 py-1 rounded text-xs font-medium ${
-                          ch.status === 'Active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
-                      >
-                        {ch.status}
-                      </button>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleOpenDialog(ch)}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleView(ch)}
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
                         >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(ch.id)}
+                          View
+                        </button>
+                        <span className="text-gray-400">/</span>
+                        <button
+                          onClick={() => handleOpenForm(ch)}
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
                         >
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
+                          Edit
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -226,96 +268,150 @@ export default function CostHeadSetup() {
         </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      {/* Create/Edit Form Dialog */}
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{editingCostHead ? 'Edit Cost Head' : 'New Cost Head'}</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>{editingCostHead ? 'Edit Cost Head' : 'Create Cost Head'}</DialogTitle>
+              <button onClick={() => setIsFormOpen(false)}>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-4 py-4">
+          <div className="space-y-4 py-4">
             <div>
               <label className="block text-sm font-medium mb-2">Code *</label>
-              <Input
-                value={formData.code || ''}
-                onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                placeholder="UPPER_SNAKE_CASE"
-                className={errors.code ? 'border-red-500' : ''}
-              />
+              <select
+                value={formData.code}
+                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                <option value="">Select code</option>
+                {codeOptions.map(code => (
+                  <option key={code} value={code}>{code}</option>
+                ))}
+              </select>
               {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Name *</label>
+              <label className="block text-sm font-medium mb-2">Serial No *</label>
               <Input
-                value={formData.name || ''}
+                type="number"
+                value={formData.serialNo}
+                onChange={(e) => setFormData({ ...formData, serialNo: e.target.value })}
+                placeholder="Enter serial number"
+                className={errors.serialNo ? 'border-red-500' : ''}
+              />
+              {errors.serialNo && <p className="text-red-500 text-xs mt-1">{errors.serialNo}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Name (Cost Head Name) *</label>
+              <Input
+                value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Display name"
+                placeholder="Enter the name of the cost head"
                 className={errors.name ? 'border-red-500' : ''}
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Type *</label>
-              <select
-                value={formData.type || 'Tuition'}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as CostHeadType })}
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                {costHeadTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">GL Account</label>
-              <Input
-                value={formData.glAccount || ''}
-                onChange={(e) => setFormData({ ...formData, glAccount: e.target.value })}
-                placeholder="e.g., 4010"
-              />
-            </div>
-
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                id="taxable"
-                checked={formData.taxable || false}
-                onChange={(e) => setFormData({ ...formData, taxable: e.target.checked })}
+                id="isActive"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                 className="w-4 h-4"
               />
-              <label htmlFor="taxable" className="text-sm font-medium">Taxable</label>
+              <label htmlFor="isActive" className="text-sm font-medium">Is Active</label>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Status</label>
-              <select
-                value={formData.status || 'Active'}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as CostHeadStatus })}
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
-
-            <div className="col-span-2">
-              <label className="block text-sm font-medium mb-2">Description (optional)</label>
+              <label className="block text-sm font-medium mb-2">Remarks</label>
               <textarea
-                value={formData.description || ''}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                value={formData.remarks}
+                onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
                 className="w-full px-3 py-2 border rounded-md"
                 rows={3}
-                placeholder="Optional notes..."
+                placeholder="Optional notes or description"
               />
             </div>
-          </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleSave} className="nu-button-primary">Save</Button>
-          </DialogFooter>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsFormOpen(false)}>Cancel</Button>
+              <Button onClick={handleSave} className="nu-button-primary">Create</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Modal (shows additional fields) */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle>View Cost Head</DialogTitle>
+              <button onClick={() => setIsViewOpen(false)}>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </DialogHeader>
+
+          {viewingCostHead && (
+            <div className="space-y-3 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Code</label>
+                  <p className="text-sm mt-1">{viewingCostHead.code}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Serial Number</label>
+                  <p className="text-sm mt-1">{viewingCostHead.serialNo}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Name</label>
+                  <p className="text-sm mt-1">{viewingCostHead.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Is Active</label>
+                  <p className="text-sm mt-1">{viewingCostHead.status === 'Active' ? 'Yes' : 'No'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Type</label>
+                  <p className="text-sm mt-1">{viewingCostHead.type}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">GL Account</label>
+                  <p className="text-sm mt-1">{viewingCostHead.glAccount}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Taxable</label>
+                  <p className="text-sm mt-1">{viewingCostHead.taxable ? 'Yes' : 'No'}</p>
+                </div>
+                <div className="col-span-2">
+                  <label className="text-sm font-medium text-gray-600">Remarks</label>
+                  <p className="text-sm mt-1">{viewingCostHead.description || '—'}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button onClick={() => setIsViewOpen(false)}>Close</Button>
+                <Button 
+                  onClick={() => {
+                    setIsViewOpen(false)
+                    handleOpenForm(viewingCostHead)
+                  }} 
+                  className="nu-button-primary"
+                >
+                  Edit
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
