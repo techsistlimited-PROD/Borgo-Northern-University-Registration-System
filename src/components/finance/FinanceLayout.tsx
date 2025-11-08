@@ -1,9 +1,18 @@
 import { ReactNode } from 'react'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Home, BarChart3, User, Search } from 'lucide-react'
+import { Home, BarChart3, User, Search, LogOut } from 'lucide-react'
 import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
+import { useAuth } from '@/contexts/RegistrationAuthContext'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface FinanceLayoutProps {
   children: ReactNode
@@ -29,9 +38,16 @@ const routeNameMap: Record<string, string> = {
 
 export default function FinanceLayout({ children, showGlobalFilter = false }: FinanceLayoutProps) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { filters, setFilters } = useFinanceFilters()
+  const { user, logout } = useAuth()
 
   const currentPageName = routeNameMap[location.pathname] || 'Dashboard'
+
+  const handleLogout = () => {
+    logout()
+    navigate('/finance-login')
+  }
 
   const semesters = ['Spring 2025', 'Fall 2025', 'Summer 2025', 'Spring 2024', 'Fall 2024']
   const campuses = ['All', 'Main Campus', 'Permanent Campus', 'Uttara Campus', 'Banasree Campus']
@@ -56,9 +72,26 @@ export default function FinanceLayout({ children, showGlobalFilter = false }: Fi
             <button className="p-2 hover:bg-gray-100 rounded transition-colors" title="Analytics">
               <BarChart3 className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded transition-colors" title="Profile">
-              <User className="w-5 h-5 text-gray-600" />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 hover:bg-gray-100 rounded transition-colors" title="Profile">
+                  <User className="w-5 h-5 text-gray-600" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || 'Finance User'}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email || 'finance@nu.edu.bd'}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
