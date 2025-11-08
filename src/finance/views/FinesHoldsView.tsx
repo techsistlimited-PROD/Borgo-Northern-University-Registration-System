@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Trash2, ToggleLeft, ToggleRight, Eye } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { StudentFine, StudentHold } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
@@ -11,19 +12,24 @@ import { addLedgerEntry } from '../utils/ledger'
 
 export default function FinesHoldsView() {
   const [tab, setTab] = useState<'fines' | 'holds'>('fines')
-  
+
   const [fines, setFines] = useState<StudentFine[]>([])
   const [holds, setHolds] = useState<StudentHold[]>([])
-  
+
   const [studentId, setStudentId] = useState('')
   const [studentName, setStudentName] = useState('')
-  
+
   const [fineType, setFineType] = useState<'Late Fine' | 'Library Fine' | 'Exam Fine' | 'Misc Fine'>('Late Fine')
   const [fineAmount, setFineAmount] = useState('')
   const [fineRemarks, setFineRemarks] = useState('')
-  
+
   const [holdType, setHoldType] = useState<'Finance Hold' | 'Registration Hold' | 'Exam Hold'>('Finance Hold')
   const [holdReason, setHoldReason] = useState('')
+
+  const [viewFineDialogOpen, setViewFineDialogOpen] = useState(false)
+  const [selectedFine, setSelectedFine] = useState<StudentFine | null>(null)
+  const [viewHoldDialogOpen, setViewHoldDialogOpen] = useState(false)
+  const [selectedHold, setSelectedHold] = useState<StudentHold | null>(null)
 
   useEffect(() => {
     loadData()
