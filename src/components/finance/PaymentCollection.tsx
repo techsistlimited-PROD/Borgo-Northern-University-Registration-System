@@ -280,6 +280,94 @@ export default function PaymentCollection() {
           </CardContent>
         </Card>
       )}
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Payment Receipt Details</DialogTitle>
+          </DialogHeader>
+
+          {selectedPayment && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Receipt No</p>
+                  <p className="font-mono font-semibold">{selectedPayment.receiptNo}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Payment Date</p>
+                  <p className="font-medium">{selectedPayment.paymentDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-mono">{selectedPayment.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedPayment.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Program</p>
+                  <p className="font-medium">{selectedPayment.program}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Semester</p>
+                  <p className="font-medium">{selectedPayment.semester}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Amount Paid</p>
+                  <p className="font-semibold text-green-600 text-lg">
+                    {formatCurrency(selectedPayment.totalAmount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Payment Method</p>
+                  <p className="font-medium">{selectedPayment.method}</p>
+                </div>
+                {selectedPayment.transactionRef && (
+                  <div className="col-span-2">
+                    <p className="text-sm text-gray-600">Transaction Reference</p>
+                    <p className="font-mono text-sm">{selectedPayment.transactionRef}</p>
+                  </div>
+                )}
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600">Allocated to Bills</p>
+                  <div className="mt-1 space-y-1">
+                    {selectedPayment.allocations?.map((alloc, idx) => (
+                      <div key={idx} className="flex justify-between text-sm">
+                        <span className="font-mono">{alloc.billNo}</span>
+                        <span className="font-semibold">{formatCurrency(alloc.allocatedAmount)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {selectedPayment.collectedBy && (
+                  <div>
+                    <p className="text-sm text-gray-600">Collected By</p>
+                    <p className="font-medium">{selectedPayment.collectedBy}</p>
+                  </div>
+                )}
+                {selectedPayment.notes && (
+                  <div className="col-span-2">
+                    <p className="text-sm text-gray-600">Notes</p>
+                    <p className="font-medium">{selectedPayment.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+                  Close
+                </Button>
+                <Button className="nu-button-primary">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Print Receipt
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
