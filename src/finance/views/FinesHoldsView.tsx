@@ -148,6 +148,16 @@ export default function FinesHoldsView() {
     loadData()
   }
 
+  const handleViewFine = (fine: StudentFine) => {
+    setSelectedFine(fine)
+    setViewFineDialogOpen(true)
+  }
+
+  const handleViewHold = (hold: StudentHold) => {
+    setSelectedHold(hold)
+    setViewHoldDialogOpen(true)
+  }
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold text-deep-plum">Fines & Holds Management</h1>
