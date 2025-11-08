@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Plus, Download, Upload, Eye, Edit, Lock } from 'lucide-react'
+import { Plus, Download, Upload, Eye, Edit, Lock, AlertTriangle, Unlock } from 'lucide-react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function UserManagement() {
   const users = [
@@ -94,44 +95,81 @@ export default function UserManagement() {
               </thead>
               <tbody>
                 {users.map((user, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
-                    <td className="p-3 text-sm font-mono">{user.id}</td>
-                    <td className="p-3 text-sm font-medium">{user.name}</td>
-                    <td className="p-3 text-sm">{user.role}</td>
-                    <td className="p-3 text-sm">{user.email}</td>
-                    <td className="p-3 text-sm">{user.mobile}</td>
-                    <td className="p-3">
-                      <Badge className={
-                        user.status === 'Active' ? 'bg-green-100 text-green-800' :
-                        user.status === 'Locked' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }>
-                        {user.status === 'Active' && '🟢'} 
-                        {user.status === 'Locked' && '🔒'} 
-                        {user.status}
-                      </Badge>
-                    </td>
-                    <td className="p-3 text-sm">{user.lastLogin}</td>
-                    <td className="p-3">
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        {user.status === 'Active' && (
-                          <Button variant="ghost" size="sm">Deactivate</Button>
-                        )}
-                        {user.status === 'Locked' && (
-                          <Button variant="ghost" size="sm">Activate</Button>
-                        )}
-                        <Button variant="ghost" size="sm">
-                          <Lock className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+                  <>
+                    <tr key={idx} className="border-b hover:bg-gray-50">
+                      <td className="p-3 text-sm font-mono">{user.id}</td>
+                      <td className="p-3 text-sm font-medium">{user.name}</td>
+                      <td className="p-3 text-sm">{user.role}</td>
+                      <td className="p-3 text-sm">{user.email}</td>
+                      <td className="p-3 text-sm">{user.mobile}</td>
+                      <td className="p-3">
+                        <Badge className={
+                          user.status === 'Active' ? 'bg-green-100 text-green-800' :
+                          user.status === 'Locked' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }>
+                          {user.status === 'Active' && '🟢'}
+                          {user.status === 'Locked' && '🔒'}
+                          {user.status}
+                        </Badge>
+                      </td>
+                      <td className="p-3 text-sm">{user.lastLogin}</td>
+                      <td className="p-3">
+                        <div className="flex gap-2">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          {user.status === 'Active' && (
+                            <Button variant="ghost" size="sm">Deactivate</Button>
+                          )}
+                          {user.status === 'Locked' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => alert(showDemoToast('Unlock user account'))}
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <Unlock className="w-4 h-4 mr-1" />
+                              Unlock
+                            </Button>
+                          )}
+                          <Button variant="ghost" size="sm">
+                            <Lock className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                    {/* Locked Account Banner */}
+                    {user.status === 'Locked' && (
+                      <tr key={`${idx}-locked-banner`}>
+                        <td colSpan={8} className="p-0">
+                          <div className="mx-3 mb-2 p-3 bg-red-50 border border-red-200 rounded-md flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                              <span className="text-sm text-red-800 font-medium">
+                                Auto-locked due to repeated failures
+                              </span>
+                              <span className="text-xs text-red-600">
+                                (5+ failed login attempts in 10 minutes)
+                              </span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => alert(showDemoToast('Unlock user account'))}
+                              className="border-red-300 text-red-700 hover:bg-red-50"
+                            >
+                              <Unlock className="w-4 h-4 mr-1" />
+                              Unlock Account
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
             </table>
