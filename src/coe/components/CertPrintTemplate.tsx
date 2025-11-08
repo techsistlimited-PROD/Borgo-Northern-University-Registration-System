@@ -25,7 +25,7 @@ export default function CertPrintTemplate({ request }: CertPrintTemplateProps) {
       <div className="border-4 border-deep-plum p-8">
         <div className="text-center mb-6 border-b-2 border-accent-purple pb-4">
           <div className="text-xs text-gray-600 mb-1">REPUBLIC OF BANGLADESH</div>
-          <h1 className="text-2xl font-bold text-deep-plum mb-1">NORTH SOUTH UNIVERSITY</h1>
+          <h1 className="text-2xl font-bold text-deep-plum mb-1">NORTHERN UNIVERSITY BANGLADESH</h1>
           <div className="text-sm text-gray-700">Bashundhara, Dhaka-1229, Bangladesh</div>
           <div className="text-xs text-gray-600 mt-1">Office of the Controller of Examinations</div>
         </div>
@@ -78,7 +78,7 @@ export default function CertPrintTemplate({ request }: CertPrintTemplateProps) {
                 This is to certify that <span className="font-semibold">{request.studentName}</span>,
                 Student ID <span className="font-semibold">{request.studentId}</span>, is a bonafide student
                 of <span className="font-semibold">{transcript?.programName || request.programCode}</span> program
-                at North South University.
+                at Northern University Bangladesh.
               </p>
               {typeCode === 'CHAR' && (
                 <p>
