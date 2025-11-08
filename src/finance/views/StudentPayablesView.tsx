@@ -3,11 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Search, FileText, Eye, Edit } from 'lucide-react'
+import { Search, FileText, Eye, Pencil, Trash2 } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { StudentBill, BillLineItem } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { generatePayablePDF } from '../utils/pdfExport'
+import { studentBillsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoBill } from '../utils/demoFillers'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function StudentPayablesView() {
   const [bills, setBills] = useState<StudentBill[]>([])
@@ -26,8 +29,10 @@ export default function StudentPayablesView() {
   }, [])
 
   const loadBills = () => {
-    const data = Repo.get<StudentBill>('finance-student-bills')
-    setBills(data)
+    // Apply data amplification for demo mode
+    const baseBills = DEMO_MODE ? studentBillsStatic : Repo.get<StudentBill>('finance-student-bills')
+    const amplifiedBills = ensureMinRows(baseBills, 200, buildDemoBill)
+    setBills(amplifiedBills)
   }
 
   const handleSearch = () => {
@@ -56,8 +61,12 @@ export default function StudentPayablesView() {
   }
 
   const handleEditBill = (bill: StudentBill) => {
-    setSelectedBill(bill)
-    setViewDialogOpen(true)
+    if (DEMO_MODE) {
+      alert(showDemoToast('Edit available in production build'))
+    } else {
+      setSelectedBill(bill)
+      setViewDialogOpen(true)
+    }
   }
 
   const handleExportPDF = (bill: StudentBill) => {
@@ -171,32 +180,39 @@ export default function StudentPayablesView() {
                     <td className="p-3 text-sm font-medium">{bill.studentName}</td>
                     <td className="p-3 text-sm">{bill.semester}</td>
                     <td className="p-3">
-                      <div className="flex justify-center gap-2">
+                      <div className="flex justify-center gap-1">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleViewBill(bill)}
-                          className="text-blue-600 hover:text-blue-800"
+                          title="View"
                         >
-                          View
+                          <Eye className="w-4 h-4 text-blue-600" />
                         </Button>
-                        <span className="text-gray-400">|</span>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleEditBill(bill)}
-                          className="text-blue-600 hover:text-blue-800"
+                          title="Edit"
                         >
-                          Edit
+                          <Pencil className="w-4 h-4 text-amber-600" />
                         </Button>
-                        <span className="text-gray-400">|</span>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleExportPDF(bill)}
-                          title="Export PDF"
+                          title="PDF"
                         >
-                          <FileText className="w-4 h-4 text-red-600" />
+                          <FileText className="w-4 h-4 text-violet-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => alert(showDemoToast('Delete disabled in demo mode'))}
+                          title="Delete"
+                          disabled={DEMO_MODE}
+                        >
+                          <Trash2 className="w-4 h-4 text-rose-600" />
                         </Button>
                       </div>
                     </td>
