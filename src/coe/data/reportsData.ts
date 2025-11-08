@@ -229,11 +229,12 @@ export const REPORTS_CATALOG: ReportDefinition[] = [
     getData: () => {
       // Generate 100 students to ensure we have enough for program-wise filtering (10+ per program)
       const allStudents = generateStudentData(100)
-      // Boost CGPA for more realistic top performers
+      // Boost CGPA for more realistic top performers and return unsorted
+      // (sorting will happen in applyFilters based on program selection)
       return allStudents.map(s => ({
         ...s,
         cgpa: 3.2 + Math.random() * 0.8 // CGPA range 3.2-4.0 for top performers
-      })).sort((a, b) => b.cgpa - a.cgpa).map((s, i) => [
+      })).map((s, i) => [
         i + 1, s.studentId, s.name, s.program, s.cgpa.toFixed(2), 120,
         i === 0 ? 'Gold Medal' : i < 3 ? 'Merit Certificate' : 'Recognition'
       ])
