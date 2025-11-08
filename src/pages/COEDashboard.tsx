@@ -72,6 +72,8 @@ export default function COEDashboard() {
         return <GradingPolicyView />
       case 'Mark Distribution':
         return <MarkDistributionView />
+      case 'Upload Marks':
+        return <MarkDistributionView autoOpenUpload={true} />
       case 'Result Correction':
         return <ResultCorrectionView />
       case 'Block/Unblock (Student-wise)':
