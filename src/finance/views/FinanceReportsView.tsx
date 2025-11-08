@@ -7,6 +7,7 @@ import { Download, Printer, FileText, Calendar, DollarSign } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { StudentBill, Payment } from '../data/types'
 import { formatCurrency, exportTableToCSV, downloadCSV } from '../utils/financeUtils'
+import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
 
 type ReportType = 'collection_summary' | 'dues_aging' | 'revenue_by_head' | 'cashier_recon' | 'waiver_impact' | 'payment_mix' | 'outstanding_by_program' | 'mr_register'
 
@@ -17,6 +18,7 @@ export default function FinanceReportsView() {
   const [selectedProgram, setSelectedProgram] = useState('All')
   const [selectedMethod, setSelectedMethod] = useState('All')
   const [reportData, setReportData] = useState<any[]>([])
+  const { filters } = useFinanceFilters()
 
   const reports = [
     { id: 'collection_summary', name: 'Collection Summary', icon: DollarSign },
@@ -31,7 +33,7 @@ export default function FinanceReportsView() {
 
   useEffect(() => {
     generateReport()
-  }, [selectedReport, dateFrom, dateTo, selectedProgram, selectedMethod])
+  }, [selectedReport, dateFrom, dateTo, selectedProgram, selectedMethod, filters])
 
   const generateReport = () => {
     const bills = Repo.get<StudentBill>('finance-student-bills')
@@ -69,9 +71,13 @@ export default function FinanceReportsView() {
   const generateCollectionSummary = (payments: Payment[]) => {
     const filtered = payments.filter(p => {
       const date = new Date(p.paymentDate)
-      return date >= new Date(dateFrom) && date <= new Date(dateTo) &&
-             (selectedProgram === 'All' || p.program === selectedProgram) &&
-             (selectedMethod === 'All' || p.method === selectedMethod)
+      const matchesDateFilter = date >= new Date(dateFrom) && date <= new Date(dateTo)
+      const matchesLocalFilters = (selectedProgram === 'All' || p.program === selectedProgram) &&
+                                   (selectedMethod === 'All' || p.method === selectedMethod)
+      const matchesGlobalFilters = (filters.semester === 'All' || p.semester.includes(filters.semester)) &&
+                                    (filters.campus === 'All' || p.campus === filters.campus) &&
+                                    (filters.program === 'All' || p.program === filters.program)
+      return matchesDateFilter && matchesLocalFilters && matchesGlobalFilters
     })
 
     const summary = filtered.reduce((acc, p) => {
