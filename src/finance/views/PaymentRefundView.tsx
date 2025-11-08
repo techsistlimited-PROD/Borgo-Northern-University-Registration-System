@@ -3,17 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { FileText, Search } from 'lucide-react'
+import { FileText, Search, Eye } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { Payment, PaymentRefund, PaymentAllocation } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { numberToWords } from '../utils/moneyInWords'
 import { addLedgerEntry, reverseRefundAlloca } from '../utils/ledger'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { refundsStatic, paymentsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoRefund, buildDemoPayment } from '../utils/demoFillers'
 
 export default function PaymentRefundView() {
   const [mode, setMode] = useState<'list' | 'new'>('list')
   const [refunds, setRefunds] = useState<PaymentRefund[]>([])
-  
+
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0])
   const [studentId, setStudentId] = useState('')
   const [program, setProgram] = useState('')
@@ -26,10 +29,10 @@ export default function PaymentRefundView() {
   const [inWords, setInWords] = useState('')
   const [bankName, setBankName] = useState('')
   const [branchName, setBranchName] = useState('')
-  
+
   const [studentReceipts, setStudentReceipts] = useState<Payment[]>([])
   const [selectedReceipt, setSelectedReceipt] = useState<Payment | null>(null)
-  
+
   const [studentIdFilter, setStudentIdFilter] = useState('')
   const [semesterFilter, setSemesterFilter] = useState('All')
   const [programFilter, setProgramFilter] = useState('All')
@@ -43,10 +46,10 @@ export default function PaymentRefundView() {
 
   useEffect(() => {
     if (studentId) {
-      const payments = Repo.get<Payment>('finance-payments')
-      const receipts = payments.filter(p => p.studentId === studentId && p.status === 'Completed')
+      const payments = DEMO_MODE ? paymentsStatic : Repo.get<Payment>('finance-payments')
+      const receipts = payments.filter((p: Payment) => p.studentId === studentId && p.status === 'Completed')
       setStudentReceipts(receipts)
-      
+
       if (receipts.length > 0) {
         setProgram(receipts[0].program)
         setSemester(receipts[0].semester)
@@ -83,8 +86,10 @@ export default function PaymentRefundView() {
   }, [refundAmount])
 
   const loadRefunds = () => {
-    const data = Repo.get<PaymentRefund>('finance-refunds')
-    setRefunds(data.sort((a, b) => new Date(b.refundDate).getTime() - new Date(a.refundDate).getTime()))
+    // Apply data amplification for demo mode
+    const baseRefunds = DEMO_MODE ? refundsStatic : Repo.get<PaymentRefund>('finance-refunds')
+    const amplifiedRefunds = ensureMinRows(baseRefunds, 20, buildDemoRefund)
+    setRefunds(amplifiedRefunds.sort((a, b) => new Date(b.refundDate).getTime() - new Date(a.refundDate).getTime()))
   }
 
   const generateRefundNo = (): string => {
@@ -121,8 +126,15 @@ export default function PaymentRefundView() {
       return
     }
 
+    if (DEMO_MODE) {
+      alert(showDemoToast('Create refund'))
+      handleReset()
+      setMode('list')
+      return
+    }
+
     const refundNo = generateRefundNo()
-    
+
     const refund: PaymentRefund = {
       id: `refund-${Date.now()}`,
       refundNo,
@@ -176,6 +188,11 @@ export default function PaymentRefundView() {
   }
 
   const handleExportRefundPDF = (refund: PaymentRefund) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Print refund receipt'))
+      return
+    }
+
     const printWindow = window.open('', '_blank')
     if (!printWindow) return
 
@@ -498,14 +515,24 @@ export default function PaymentRefundView() {
                     </td>
                     <td className="p-3 text-sm font-mono">{refund.originalReceiptNo}</td>
                     <td className="p-3 text-center">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleExportRefundPDF(refund)}
-                        title="Export PDF"
-                      >
-                        <FileText className="w-4 h-4 text-red-600" />
-                      </Button>
+                      <div className="flex justify-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {/* Could add a view dialog here */}}
+                          title="View"
+                        >
+                          <Eye className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleExportRefundPDF(refund)}
+                          title="PDF"
+                        >
+                          <FileText className="w-4 h-4 text-violet-600" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
