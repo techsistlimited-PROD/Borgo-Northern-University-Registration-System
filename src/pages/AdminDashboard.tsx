@@ -29,6 +29,14 @@ import CurrencyRates from '@/components/admin/CurrencyRates'
 import CodeGenerator from '@/components/admin/CodeGenerator'
 import CoursePackageCopy from '@/components/admin/CoursePackageCopy'
 import AcademicCreditLimit from '@/components/admin/AcademicCreditLimit'
+import TwoFactorSettings from '@/components/admin/TwoFactorSettings'
+import LoginAuditView from '@/components/admin/LoginAuditView'
+import PermissionLogsView from '@/components/admin/PermissionLogsView'
+import PasswordResetsView from '@/components/admin/PasswordResetsView'
+import EmailLogsView from '@/components/admin/EmailLogsView'
+import IPBlocklistView from '@/components/admin/IPBlocklistView'
+import PermissionsReportsByUser from '@/components/admin/PermissionsReportsByUser'
+import PermissionsReportsByRole from '@/components/admin/PermissionsReportsByRole'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -88,6 +96,22 @@ export default function AdminDashboard() {
         return <CoursePackageCopy />
       case 'Academic Credit Limit':
         return <AcademicCreditLimit />
+      case '2FA Settings':
+        return <TwoFactorSettings />
+      case 'Login Audit':
+        return <LoginAuditView />
+      case 'Permission Change Logs':
+        return <PermissionLogsView />
+      case 'Password Reset Logs':
+        return <PasswordResetsView />
+      case 'Email Verification Logs':
+        return <EmailLogsView />
+      case 'IP Blocklist':
+        return <IPBlocklistView />
+      case 'Permissions by User':
+        return <PermissionsReportsByUser />
+      case 'Permissions by Role':
+        return <PermissionsReportsByRole />
       case 'Master Data':
       case 'Location Directory':
       case 'External Institutes':
