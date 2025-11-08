@@ -22,20 +22,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Demo credentials
-const demoCredentials = {
+// Demo credentials - using Record for type safety
+const demoCredentials: Record<string, { username: string; password: string }> = {
   student: { username: '2021-1-60-001', password: 'student123' },
   acad: { username: 'academic', password: 'academic123' },
   teacher: { username: 'T001', password: 'teacher123' },
   coe: { username: 'coe', password: 'coe123' },
   finance: { username: 'finance', password: 'finance123' },
   admin: { username: 'admin', password: 'admin123' },
-  guardian: {
-    'father.cse@demo.nu': 'guardian123',
-    'guardian.bba@demo.nu': 'guardian123',
-    'mother.cse@demo.nu': 'guardian123'
-  },
   hrm: { username: 'hr@nu.edu.bd', password: 'hr123' }
+}
+
+// Guardian credentials (email-based)
+const guardianCredentials: Record<string, string> = {
+  'father.cse@demo.nu': 'guardian123',
+  'guardian.bba@demo.nu': 'guardian123',
+  'mother.cse@demo.nu': 'guardian123'
 }
 
 // Demo users
