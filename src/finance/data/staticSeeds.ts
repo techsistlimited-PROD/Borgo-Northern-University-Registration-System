@@ -2,6 +2,8 @@
 // Reset on refresh, no persistence
 import { CostHead, CostPackage, StudentBill, Payment, PaymentRefund, StudentFine, StudentHold, StudentLedgerEntry, BankStatement, WaiverPolicy, WaiverAssignment, CostPackageComponent } from './types'
 import { makeBill, makePayment, makeRefund, makeFine, makeHold, makeLedgerEntry, makeBankStatement, makeWaiverAssignment, rangeStudents, randomName } from './seedFactory'
+import { ensureMin, buildDemoBill, buildDemoPayment, buildDemoRefund, buildDemoFine, buildDemoHold, buildDemoBankStmt, buildDemoWaiverAssignment, buildDemoUnregistered } from '../utils/demoFillers'
+import { DEMO_MODE } from '@/config/demo'
 
 // 23 Cost Heads (codes 001-023) - Client's full list
 export const costHeadsStatic: CostHead[] = [
