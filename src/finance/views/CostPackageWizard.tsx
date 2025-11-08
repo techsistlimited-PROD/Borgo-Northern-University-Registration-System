@@ -10,17 +10,26 @@ import { CostPackage, CostPackageComponent, WaiverRule, FeeMode } from '../data/
 
 export default function CostPackageWizard() {
   const [packages, setPackages] = useState<CostPackage[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
+  const [anyText, setAnyText] = useState('')
+  const [campusFilter, setCampusFilter] = useState('All')
+  const [programFilter, setProgramFilter] = useState('All')
+  const [isActiveFilter, setIsActiveFilter] = useState('All')
   const [isWizardOpen, setIsWizardOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [editingPackage, setEditingPackage] = useState<CostPackage | null>(null)
 
   const [formData, setFormData] = useState<Partial<CostPackage>>({
+    programNo: '',
     name: '',
-    campus: 'Main Campus',
+    campus: 'Permanent Campus',
     program: 'CSE',
-    semesterTerm: 'Fall',
-    effectiveTerm: 'FA25',
+    semesterFrom: 'Spring 24',
+    semesterTo: '',
+    currency: 'BDT',
+    isForeign: false,
+    activeFrom: '',
+    activeTo: '',
+    remarks: '',
     components: [],
     waiverRules: [],
     status: 'Active'
@@ -37,11 +46,21 @@ export default function CostPackageWizard() {
     setPackages(data)
   }
 
-  const filteredPackages = packages.filter(pkg =>
-    pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pkg.program.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pkg.campus.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPackages = packages.filter(pkg => {
+    const matchesAnyText = anyText === '' ||
+      pkg.program.toLowerCase().includes(anyText.toLowerCase()) ||
+      pkg.campus.toLowerCase().includes(anyText.toLowerCase()) ||
+      pkg.name.toLowerCase().includes(anyText.toLowerCase()) ||
+      pkg.programNo.toLowerCase().includes(anyText.toLowerCase())
+
+    const matchesCampus = campusFilter === 'All' || pkg.campus === campusFilter
+    const matchesProgram = programFilter === 'All' || pkg.program === programFilter
+    const matchesIsActive = isActiveFilter === 'All' || 
+      (isActiveFilter === 'Yes' && pkg.status === 'Active') ||
+      (isActiveFilter === 'No' && pkg.status === 'Inactive')
+
+    return matchesAnyText && matchesCampus && matchesProgram && matchesIsActive
+  })
 
   const handleOpenWizard = (pkg?: CostPackage) => {
     if (pkg) {
@@ -49,12 +68,19 @@ export default function CostPackageWizard() {
       setFormData(pkg)
     } else {
       setEditingPackage(null)
+      const nextProgramNo = String(packages.length + 700)
       setFormData({
+        programNo: nextProgramNo,
         name: '',
-        campus: 'Main Campus',
+        campus: 'Permanent Campus',
         program: 'CSE',
-        semesterTerm: 'Fall',
-        effectiveTerm: 'FA25',
+        semesterFrom: 'Spring 24',
+        semesterTo: '',
+        currency: 'BDT',
+        isForeign: false,
+        activeFrom: new Date().toISOString().split('T')[0],
+        activeTo: '',
+        remarks: '',
         components: [],
         waiverRules: [],
         status: 'Active'
@@ -66,9 +92,11 @@ export default function CostPackageWizard() {
 
   const handleDuplicate = (pkg: CostPackage) => {
     setEditingPackage(null)
+    const nextProgramNo = String(packages.length + 700)
     setFormData({
       ...pkg,
       id: undefined,
+      programNo: nextProgramNo,
       name: `${pkg.name} (Copy)`,
       status: 'Active'
     })
@@ -84,7 +112,7 @@ export default function CostPackageWizard() {
   const handleAddComponent = () => {
     const newComponent: CostPackageComponent = {
       id: `comp-${Date.now()}`,
-      costHeadCode: 'PER_CREDIT_FEE',
+      costHeadCode: '001',
       mode: 'Flat',
       rate: 0,
       order: (formData.components?.length || 0) + 1
@@ -147,11 +175,17 @@ export default function CostPackageWizard() {
     } else {
       const newPackage: CostPackage = {
         id: `pkg-${Date.now()}`,
+        programNo: formData.programNo!,
         name: formData.name!,
         campus: formData.campus!,
         program: formData.program!,
-        semesterTerm: formData.semesterTerm!,
-        effectiveTerm: formData.effectiveTerm!,
+        semesterFrom: formData.semesterFrom!,
+        semesterTo: formData.semesterTo || '',
+        currency: formData.currency || 'BDT',
+        isForeign: formData.isForeign || false,
+        activeFrom: formData.activeFrom || '',
+        activeTo: formData.activeTo || '',
+        remarks: formData.remarks || '',
         components: formData.components || [],
         waiverRules: formData.waiverRules || [],
         status: formData.status || 'Active',
@@ -167,82 +201,123 @@ export default function CostPackageWizard() {
   const costHeads = Repo.get('finance-cost-heads')
   const waiverPolicies = Repo.get('finance-waiver-policies')
 
-  const campuses = ['Main Campus', 'Uttara Campus', 'Banasree Campus']
-  const programs = ['CSE', 'BBA', 'LLB', 'MBA', 'EEE', 'Civil', 'English']
-  const terms = ['Spring', 'Summer', 'Fall']
+  const campuses = ['All', 'Permanent Campus', 'Main Campus', 'Uttara Campus', 'Banasree Campus']
+  const programs = ['All', 'CSE', 'BBA', 'LLB', 'MBA', 'EEE', 'Civil', 'English', 'BANG', 'BPharm', 'MSCM', 'ECSE', 'ELL', 'MAB', 'CE']
+  const semesters = ['Spring 24', 'Summer 24', 'Fall 24', 'Spring 25', 'Summer 25', 'Fall 25']
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Cost Package Setup</h1>
-          <p className="text-sm text-gray-600">Program-wise fee packages with waiver rules</p>
+          <h1 className="text-2xl font-bold text-deep-plum">Cost Package</h1>
+          <p className="text-sm text-gray-600">Create and manage program-wise cost packages</p>
         </div>
-        <Button onClick={() => handleOpenWizard()} className="nu-button-primary">
-          <Plus className="w-4 h-4 mr-2" />
-          New Package
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => handleOpenWizard()} className="nu-button-primary">
+            Create Cost Package
+          </Button>
+          <Button variant="outline">
+            Cost Package List
+          </Button>
+        </div>
       </div>
 
+      {/* Horizontal Filter Bar */}
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Cost Packages ({filteredPackages.length})</CardTitle>
-            <div className="relative w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <CardContent className="pt-6">
+          <div className="flex items-end gap-3">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Any Text</label>
               <Input
-                placeholder="Search by program, campus, or package name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                value={anyText}
+                onChange={(e) => setAnyText(e.target.value)}
+                placeholder="Search by any text"
               />
             </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Campus</label>
+              <select
+                value={campusFilter}
+                onChange={(e) => setCampusFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {campuses.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Program</label>
+              <select
+                value={programFilter}
+                onChange={(e) => setProgramFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {programs.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">Is Active</label>
+              <select
+                value={isActiveFilter}
+                onChange={(e) => setIsActiveFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                <option value="All">All</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <Button className="nu-button-primary">
+              Search
+            </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Cost Package List Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Cost Package List ({filteredPackages.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Program No</th>
                   <th className="text-left p-3 text-sm font-medium text-gray-700">Program</th>
                   <th className="text-left p-3 text-sm font-medium text-gray-700">Campus</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Effective Term</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Package Name</th>
-                  <th className="text-center p-3 text-sm font-medium text-gray-700">Components</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Status</th>
-                  <th className="text-right p-3 text-sm font-medium text-gray-700">Actions</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Semester From</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Semester To</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">For Foreign Students</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Is Active</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPackages.map((pkg) => (
                   <tr key={pkg.id} className="border-b hover:bg-gray-50">
+                    <td className="p-3 text-sm">{pkg.programNo}</td>
                     <td className="p-3 text-sm font-medium">{pkg.program}</td>
                     <td className="p-3 text-sm">{pkg.campus}</td>
-                    <td className="p-3 text-sm">{pkg.effectiveTerm}</td>
-                    <td className="p-3 text-sm">{pkg.name}</td>
-                    <td className="p-3 text-center">
-                      <Badge variant="outline">{pkg.components.length} items</Badge>
-                    </td>
+                    <td className="p-3 text-sm">{pkg.semesterFrom}</td>
+                    <td className="p-3 text-sm">{pkg.semesterTo || ''}</td>
+                    <td className="p-3 text-sm">{pkg.isForeign ? 'Yes' : 'No'}</td>
+                    <td className="p-3 text-sm">{pkg.status === 'Active' ? 'Yes' : 'No'}</td>
                     <td className="p-3">
-                      <button
-                        onClick={() => handleToggleStatus(pkg.id, pkg.status)}
-                        className={`px-2 py-1 rounded text-xs font-medium ${
-                          pkg.status === 'Active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
-                      >
-                        {pkg.status}
-                      </button>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleOpenWizard(pkg)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDuplicate(pkg)}>
-                          <Copy className="w-4 h-4" />
-                        </Button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleOpenWizard(pkg)}
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                        >
+                          View
+                        </button>
+                        <span className="text-gray-400">/</span>
+                        <button
+                          onClick={() => handleOpenWizard(pkg)}
+                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                        >
+                          Edit
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -287,52 +362,118 @@ export default function CostPackageWizard() {
 
           {currentStep === 1 && (
             <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Step 1: Scope</h3>
+              <h3 className="font-semibold text-lg">Step 1: Package Details</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Campus *</label>
+                  <label className="block text-sm font-medium mb-2">Program No</label>
+                  <Input
+                    value={formData.programNo}
+                    onChange={(e) => setFormData({ ...formData, programNo: e.target.value })}
+                    placeholder="Auto-generated"
+                    disabled={!!editingPackage}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Package No *</label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Enter package name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Campus</label>
                   <select
                     value={formData.campus}
                     onChange={(e) => setFormData({ ...formData, campus: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md"
                   >
-                    {campuses.map(c => <option key={c} value={c}>{c}</option>)}
+                    {campuses.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Program *</label>
+                  <label className="block text-sm font-medium mb-2">Program</label>
                   <select
                     value={formData.program}
                     onChange={(e) => setFormData({ ...formData, program: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md"
                   >
-                    {programs.map(p => <option key={p} value={p}>{p}</option>)}
+                    {programs.filter(p => p !== 'All').map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Semester/Term *</label>
+                  <label className="block text-sm font-medium mb-2">From Semester</label>
                   <select
-                    value={formData.semesterTerm}
-                    onChange={(e) => setFormData({ ...formData, semesterTerm: e.target.value })}
+                    value={formData.semesterFrom}
+                    onChange={(e) => setFormData({ ...formData, semesterFrom: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md"
                   >
-                    {terms.map(t => <option key={t} value={t}>{t}</option>)}
+                    {semesters.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Effective Term *</label>
+                  <label className="block text-sm font-medium mb-2">To Semester</label>
+                  <select
+                    value={formData.semesterTo}
+                    onChange={(e) => setFormData({ ...formData, semesterTo: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="">Not specified</option>
+                    {semesters.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Currency</label>
                   <Input
-                    value={formData.effectiveTerm}
-                    onChange={(e) => setFormData({ ...formData, effectiveTerm: e.target.value })}
-                    placeholder="e.g., FA25, SP26"
+                    value={formData.currency}
+                    onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                    placeholder="BDT"
+                  />
+                </div>
+                <div className="flex items-center space-x-2 pt-6">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    checked={formData.status === 'Active'}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.checked ? 'Active' : 'Inactive' })}
+                    className="w-4 h-4"
+                  />
+                  <label htmlFor="isActive" className="text-sm font-medium">Is Active</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isForeign"
+                    checked={formData.isForeign}
+                    onChange={(e) => setFormData({ ...formData, isForeign: e.target.checked })}
+                    className="w-4 h-4"
+                  />
+                  <label htmlFor="isForeign" className="text-sm font-medium">Is Foreign Student</label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Active From</label>
+                  <Input
+                    type="date"
+                    value={formData.activeFrom}
+                    onChange={(e) => setFormData({ ...formData, activeFrom: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Active To</label>
+                  <Input
+                    type="date"
+                    value={formData.activeTo}
+                    onChange={(e) => setFormData({ ...formData, activeTo: e.target.value })}
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium mb-2">Package Name *</label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g., CSE - Main Campus - FA25"
+                  <label className="block text-sm font-medium mb-2">Remarks</label>
+                  <textarea
+                    value={formData.remarks}
+                    onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md"
+                    rows={3}
+                    placeholder="Optional notes"
                   />
                 </div>
               </div>
@@ -487,11 +628,14 @@ export default function CostPackageWizard() {
               <h3 className="font-semibold text-lg">Step 4: Review & Save</h3>
               <div className="bg-gray-50 rounded p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div><span className="font-medium">Program No:</span> {formData.programNo}</div>
                   <div><span className="font-medium">Campus:</span> {formData.campus}</div>
                   <div><span className="font-medium">Program:</span> {formData.program}</div>
-                  <div><span className="font-medium">Term:</span> {formData.semesterTerm}</div>
-                  <div><span className="font-medium">Effective:</span> {formData.effectiveTerm}</div>
-                  <div className="col-span-2"><span className="font-medium">Name:</span> {formData.name}</div>
+                  <div><span className="font-medium">From Semester:</span> {formData.semesterFrom}</div>
+                  <div><span className="font-medium">To Semester:</span> {formData.semesterTo || 'Not specified'}</div>
+                  <div><span className="font-medium">Currency:</span> {formData.currency}</div>
+                  <div><span className="font-medium">Is Active:</span> {formData.status === 'Active' ? 'Yes' : 'No'}</div>
+                  <div><span className="font-medium">For Foreign Students:</span> {formData.isForeign ? 'Yes' : 'No'}</div>
                 </div>
                 <div className="border-t pt-3">
                   <p className="font-medium text-sm mb-2">Components ({formData.components?.length}):</p>
