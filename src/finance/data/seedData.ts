@@ -343,3 +343,48 @@ export const bankStatementsSeed: BankStatement[] = [
   { id: 'bs3', date: '2024-11-20', reference: 'NEFT-789012', amount: 15000, matched: false, notes: 'Unmatched transfer' },
   { id: 'bs4', date: '2024-11-22', reference: 'CHQ-234567', amount: 30000, matched: false, notes: 'Pending reconciliation' }
 ]
+
+export const paymentRefundsSeed: PaymentRefund[] = [
+  {
+    id: 'refund1',
+    refundNo: 'RF-2024-00001',
+    refundDate: '2024-11-18',
+    studentId: '2021-1-60-001',
+    studentName: 'Nusrat Jahan',
+    program: 'CSE',
+    semester: 'Fall 2025',
+    originalReceiptNo: 'MR-2024-00001',
+    originalAmount: 20000,
+    refundAmount: 5000,
+    refundMethod: 'Cash',
+    remarks: 'Partial refund due to course drop',
+    inWords: 'Five Thousand Taka Only',
+    allocations: [{ billId: 'bill1', billNo: 'INV-FA25-0001', allocatedAmount: -5000 }],
+    createdAt: '2024-11-18T11:00:00',
+    createdBy: 'Accounts Officer'
+  }
+]
+
+export const studentFinesSeed: StudentFine[] = [
+  { id: 'fine1', studentId: '2021-1-60-010', studentName: 'Rakib Hasan', fineType: 'Late Fine', amount: 2000, date: '2024-11-01', remarks: 'Payment overdue by 30 days', createdBy: 'Accounts Officer' },
+  { id: 'fine2', studentId: '2021-1-60-010', studentName: 'Rakib Hasan', fineType: 'Library Fine', amount: 500, date: '2024-11-05', remarks: 'Book overdue - 10 days', createdBy: 'Library Admin' },
+  { id: 'fine3', studentId: '2021-2-50-005', studentName: 'Tahmina Akter', fineType: 'Exam Fine', amount: 300, date: '2024-10-20', remarks: 'Late exam registration', createdBy: 'Exam Controller' }
+]
+
+export const studentHoldsSeed: StudentHold[] = [
+  { id: 'hold1', studentId: '2021-1-60-010', studentName: 'Rakib Hasan', holdType: 'Finance Hold', reason: 'Outstanding dues exceeding 50,000 BDT', date: '2024-11-10', status: 'Active', createdBy: 'Accounts Officer' },
+  { id: 'hold2', studentId: '2021-1-60-010', studentName: 'Rakib Hasan', holdType: 'Registration Hold', reason: 'Finance clearance required', date: '2024-11-10', status: 'Active', createdBy: 'Registrar Office' },
+  { id: 'hold3', studentId: '2020-1-60-045', studentName: 'Ahmed Khan', holdType: 'Exam Hold', reason: 'Pending document submission', date: '2024-10-15', status: 'Removed', createdBy: 'Exam Controller', removedDate: '2024-10-25', removedBy: 'Exam Controller' }
+]
+
+export const studentLedgerEntriesSeed: StudentLedgerEntry[] = [
+  { id: 'ledger1', studentId: '2021-1-60-001', date: '2024-09-10', type: 'Bill', reference: 'INV-FA25-0001', description: 'Fall 2025 Semester Bill', debit: 40500, credit: 0, runningBalance: 40500 },
+  { id: 'ledger2', studentId: '2021-1-60-001', date: '2024-11-15', type: 'Payment', reference: 'MR-2024-00001', description: 'Installment - Cash', debit: 0, credit: 20000, runningBalance: 20500 },
+  { id: 'ledger3', studentId: '2021-1-60-001', date: '2024-11-18', type: 'Refund', reference: 'RF-2024-00001', description: 'Payment Refund - MR-2024-00001', debit: 5000, credit: 0, runningBalance: 25500 },
+  { id: 'ledger4', studentId: '2021-1-60-010', date: '2024-09-10', type: 'Bill', reference: 'INV-FA25-0002', description: 'Fall 2025 Semester Bill', debit: 81000, credit: 0, runningBalance: 81000 },
+  { id: 'ledger5', studentId: '2021-1-60-010', date: '2024-11-01', type: 'Fine', reference: 'fine1', description: 'Late Fine - Payment overdue by 30 days', debit: 2000, credit: 0, runningBalance: 83000 },
+  { id: 'ledger6', studentId: '2021-1-60-010', date: '2024-11-05', type: 'Fine', reference: 'fine2', description: 'Library Fine - Book overdue - 10 days', debit: 500, credit: 0, runningBalance: 83500 },
+  { id: 'ledger7', studentId: '2021-2-50-005', date: '2024-09-11', type: 'Bill', reference: 'INV-FA25-0003', description: 'Fall 2025 Semester Bill', debit: 61100, credit: 0, runningBalance: 61100 },
+  { id: 'ledger8', studentId: '2021-2-50-005', date: '2024-10-01', type: 'Payment', reference: 'MR-2024-00002', description: 'Full Payment - bKash', debit: 0, credit: 61100, runningBalance: 0 },
+  { id: 'ledger9', studentId: '2021-2-50-005', date: '2024-10-20', type: 'Fine', reference: 'fine3', description: 'Exam Fine - Late exam registration', debit: 300, credit: 0, runningBalance: 300 }
+]
