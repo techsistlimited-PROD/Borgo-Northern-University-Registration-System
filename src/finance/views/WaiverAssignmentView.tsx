@@ -4,9 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
-import { Search, Plus, Lock, Unlock, Eye } from 'lucide-react'
+import { Search, Plus, Lock, Unlock, Eye, Pencil, Trash2 } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { WaiverPolicy, WaiverAssignment } from '../data/types'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { waiverPoliciesStatic, waiverAssignmentsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoWaiverAssignment } from '../utils/demoFillers'
 
 export default function WaiverAssignmentView() {
   const [activeTab, setActiveTab] = useState<'policies' | 'assigned'>('policies')
@@ -46,8 +49,13 @@ export default function WaiverAssignmentView() {
   }, [])
 
   const loadData = () => {
-    setPolicies(Repo.get<WaiverPolicy>('finance-waiver-policies'))
-    setAssignments(Repo.get<WaiverAssignment>('finance-waiver-assignments'))
+    // Apply data amplification for demo mode
+    const basePolicies = DEMO_MODE ? waiverPoliciesStatic : Repo.get<WaiverPolicy>('finance-waiver-policies')
+    const baseAssignments = DEMO_MODE ? waiverAssignmentsStatic : Repo.get<WaiverAssignment>('finance-waiver-assignments')
+
+    setPolicies(basePolicies)
+    const amplifiedAssignments = ensureMinRows(baseAssignments, 80, buildDemoWaiverAssignment)
+    setAssignments(amplifiedAssignments)
   }
 
   const filteredPolicies = policies.filter(p =>
