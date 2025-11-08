@@ -44,7 +44,7 @@ export default function ReportPreview({ report, data }: ReportPreviewProps) {
 
   return (
     <div className="space-y-4">
-      <div className="border rounded-lg bg-white overflow-x-auto" style={{ minWidth: '1100px' }}>
+      <div className="border rounded-lg bg-white overflow-x-auto overflow-y-auto" style={{ minWidth: '1100px', maxHeight: '650px' }}>
         <Table>
           <TableHeader>
             <TableRow>
