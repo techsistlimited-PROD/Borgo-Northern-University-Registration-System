@@ -15,11 +15,41 @@ export interface ReportFilters {
   docType?: string
   format?: string
   year?: string
+  topCount?: string
 }
 
-export const applyFilters = (data: any[], filters: ReportFilters, columns: string[]): any[] => {
+export const applyFilters = (data: any[], filters: ReportFilters, columns: string[], reportCode?: string): any[] => {
   let filtered = [...data]
 
+  // Special handling for Top Rankers report
+  if (reportCode === 'TOP_RANKERS') {
+    // First filter by program if selected
+    if (filters.program && filters.program !== 'all') {
+      const progIdx = columns.indexOf('Program')
+      if (progIdx >= 0) {
+        filtered = filtered.filter(row => row[progIdx] === filters.program)
+      }
+    }
+
+    // Re-rank after program filtering (if program-specific)
+    if (filters.program && filters.program !== 'all') {
+      filtered = filtered.map((row, idx) => {
+        const newRow = [...row]
+        newRow[0] = idx + 1 // Update rank
+        newRow[6] = idx < 3 ? 'Top 3' : 'Top 10' // Update category
+        newRow[7] = idx === 0 ? 'Gold Medal' : idx < 3 ? 'Merit Certificate' : 'Recognition'
+        return newRow
+      })
+    }
+
+    // Apply top count filter (Top 3 or Top 10)
+    const topCount = filters.topCount === 'top3' ? 3 : 10
+    filtered = filtered.slice(0, topCount)
+
+    return filtered
+  }
+
+  // Standard filtering for other reports
   if (filters.program && filters.program !== 'all') {
     const progIdx = columns.indexOf('Program')
     if (progIdx >= 0) {
