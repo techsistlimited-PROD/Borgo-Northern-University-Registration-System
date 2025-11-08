@@ -16,6 +16,8 @@ export default function WaiverAssignmentView() {
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false)
   const [isEditPolicyOpen, setIsEditPolicyOpen] = useState(false)
   const [editingPolicy, setEditingPolicy] = useState<WaiverPolicy | null>(null)
+  const [viewAssignmentDialogOpen, setViewAssignmentDialogOpen] = useState(false)
+  const [selectedAssignment, setSelectedAssignment] = useState<WaiverAssignment | null>(null)
   const [formData, setFormData] = useState({
     studentId: '',
     studentName: '',
