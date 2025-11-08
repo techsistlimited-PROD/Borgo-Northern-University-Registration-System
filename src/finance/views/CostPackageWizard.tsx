@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Search, Plus, Edit, Copy, X, ArrowLeft, ArrowRight, Check, Trash2, GripVertical } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { CostPackage, CostPackageComponent, WaiverRule, FeeMode } from '../data/types'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { costPackagesStatic } from '../data/staticSeeds'
 
 export default function CostPackageWizard() {
   const [packages, setPackages] = useState<CostPackage[]>([])
@@ -42,7 +44,8 @@ export default function CostPackageWizard() {
   }, [])
 
   const loadPackages = () => {
-    const data = Repo.get<CostPackage>('finance-cost-packages')
+    // Use static seeds in DEMO_MODE (already has 12 packages)
+    const data = DEMO_MODE ? costPackagesStatic : Repo.get<CostPackage>('finance-cost-packages')
     setPackages(data)
   }
 
