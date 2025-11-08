@@ -827,6 +827,14 @@ export default function FinanceReportsView() {
           </div>
         </CardHeader>
         <CardContent>
+          {demoDataGenerated && DEMO_MODE && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-amber-600" />
+              <p className="text-sm text-amber-800">
+                No exact matches. Showing demo sample ({filtered.length} rows) based on current scope.
+              </p>
+            </div>
+          )}
           <div className="overflow-x-auto border rounded">
             {filtered.length > 0 ? renderTable() : (
               <div className="p-12 text-center text-gray-500">
