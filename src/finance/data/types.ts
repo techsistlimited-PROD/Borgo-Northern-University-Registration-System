@@ -119,6 +119,9 @@ export interface Payment {
   status: PaymentStatus
   transactionRef?: string
   notes?: string
+  bankName?: string
+  branchName?: string
+  purpose?: string
   createdAt: string
 }
 

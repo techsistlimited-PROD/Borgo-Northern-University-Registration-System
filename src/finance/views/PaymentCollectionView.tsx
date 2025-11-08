@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input'
 import { Repo } from '@/lib/repo'
 import { StudentBill, Payment, PaymentMethod } from '../data/types'
 import { formatCurrency, addLedgerEntry } from '../utils/financeUtils'
+import { numberToWords } from '../utils/moneyInWords'
 import { useNavigate } from 'react-router-dom'
+import MoneyReceiptPrint from '../components/MoneyReceiptPrint'
 
 export default function PaymentCollectionView() {
   const navigate = useNavigate()
@@ -20,6 +22,8 @@ export default function PaymentCollectionView() {
   const [inWords, setInWords] = useState('')
   const [purpose, setPurpose] = useState('Installment')
   const [remarks, setRemarks] = useState('')
+  const [bankName, setBankName] = useState('')
+  const [branchName, setBranchName] = useState('')
   
   const [studentInfo, setStudentInfo] = useState<any>(null)
   const [paymentSummary, setPaymentSummary] = useState({
@@ -30,6 +34,9 @@ export default function PaymentCollectionView() {
     fortyPercentPayable: 0,
     seventyPercentPayable: 0
   })
+
+  const [showReceipt, setShowReceipt] = useState(false)
+  const [createdPayment, setCreatedPayment] = useState<Payment | null>(null)
 
   useEffect(() => {
     if (studentId) {
@@ -64,39 +71,32 @@ export default function PaymentCollectionView() {
   useEffect(() => {
     if (paymentAmount) {
       const amount = parseFloat(paymentAmount)
-      if (!isNaN(amount)) {
+      if (!isNaN(amount) && amount > 0) {
         setInWords(numberToWords(amount))
+      } else {
+        setInWords('')
       }
+    } else {
+      setInWords('')
     }
   }, [paymentAmount])
 
-  const numberToWords = (num: number): string => {
-    if (num === 0) return 'Zero Taka Only'
-    
-    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
-    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
-    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
-    
-    const convert = (n: number): string => {
-      if (n < 10) return ones[n]
-      if (n < 20) return teens[n - 10]
-      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '')
-      if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convert(n % 100) : '')
-      if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '')
-      if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '')
-      return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '')
-    }
-    
-    return convert(Math.floor(num)) + ' Taka Only'
-  }
-
   const handleSubmit = () => {
     if (!studentId || !paymentAmount || !moneyReceiptNo) {
-      alert('Please fill in all required fields')
+      alert('Please fill in all required fields: Student ID, Payment Amount, and Money Receipt No')
       return
     }
 
     const amount = parseFloat(paymentAmount)
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid payment amount')
+      return
+    }
+
+    if (paymentMethod === 'Bank' && !bankName) {
+      alert('Please enter Bank Name for Bank payment method')
+      return
+    }
     
     const payment: Payment = {
       id: `pay-${Date.now()}`,
@@ -114,6 +114,9 @@ export default function PaymentCollectionView() {
       collectedBy: 'Accounts Officer',
       status: 'Completed',
       notes: remarks || `${purpose} payment`,
+      purpose,
+      bankName: paymentMethod === 'Bank' ? bankName : undefined,
+      branchName: paymentMethod === 'Bank' ? branchName : undefined,
       createdAt: new Date().toISOString()
     }
 
@@ -149,13 +152,20 @@ export default function PaymentCollectionView() {
       }
     })
 
-    alert('Payment recorded successfully!')
-    
+    setCreatedPayment(payment)
+    setShowReceipt(true)
+  }
+
+  const handleReset = () => {
     setStudentId('')
     setPaymentAmount('')
     setMoneyReceiptNo('')
     setRemarks('')
+    setBankName('')
+    setBranchName('')
     setStudentInfo(null)
+    setShowReceipt(false)
+    setCreatedPayment(null)
   }
 
   const paymentMethods: PaymentMethod[] = ['Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
@@ -163,6 +173,10 @@ export default function PaymentCollectionView() {
   const annexes = ['Permanent Campus', 'Uttara', 'Lakshmipur']
   const programs = ['CSE', 'BBA', 'LLB', 'EEE', 'English']
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
+
+  if (showReceipt && createdPayment) {
+    return <MoneyReceiptPrint payment={createdPayment} onClose={handleReset} />
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -281,7 +295,7 @@ export default function PaymentCollectionView() {
                   <Input
                     value={inWords}
                     readOnly
-                    className="bg-gray-50"
+                    className="bg-gray-50 italic"
                   />
                 </div>
 
@@ -308,8 +322,29 @@ export default function PaymentCollectionView() {
                   </div>
                 </div>
 
+                {paymentMethod === 'Bank' && (
+                  <div className="grid grid-cols-2 gap-4 p-4 bg-blue-50 rounded border border-blue-200">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Bank Name *</label>
+                      <Input
+                        placeholder="Enter bank name"
+                        value={bankName}
+                        onChange={(e) => setBankName(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Branch</label>
+                      <Input
+                        placeholder="Enter branch name (optional)"
+                        value={branchName}
+                        onChange={(e) => setBranchName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={handleReset}>
                     Reset
                   </Button>
                   <Button onClick={handleSubmit} className="nu-button-primary">
