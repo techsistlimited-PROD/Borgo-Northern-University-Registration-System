@@ -273,13 +273,24 @@ export default function FinesHoldsView() {
                         <td className="p-3 text-sm">{fine.date}</td>
                         <td className="p-3 text-sm">{fine.remarks || '-'}</td>
                         <td className="p-3 text-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteFine(fine.id)}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-600" />
-                          </Button>
+                          <div className="flex justify-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleViewFine(fine)}
+                              title="View Details"
+                            >
+                              <Eye className="w-4 h-4 text-blue-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteFine(fine.id)}
+                              title="Delete Fine"
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
