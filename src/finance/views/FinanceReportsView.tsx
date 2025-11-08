@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -40,7 +40,6 @@ export default function FinanceReportsView() {
   const [method, setMethod] = useState('All')
 
   const [reportData, setReportData] = useState<any[]>([])
-  const [demoDataGenerated, setDemoDataGenerated] = useState(false)
 
   useEffect(() => {
     generateReport()
@@ -229,8 +228,8 @@ export default function FinanceReportsView() {
     setReportData(data)
   }
 
-  const applyFilters = () => {
-    let filtered = reportData
+  const applyFilters = (data: any[]) => {
+    let filtered = data
 
     if (program !== 'All') {
       filtered = filtered.filter((row: any) => row.program === program)
@@ -255,12 +254,9 @@ export default function FinanceReportsView() {
     if (DEMO_MODE && filtered.length < 20) {
       const minRows = 20
       const builder = getReportBuilder(reportType)
-      const syntheticData = ensureMinRows(filtered, minRows, builder)
-      setDemoDataGenerated(true)
-      return syntheticData
+      return ensureMinRows(filtered, minRows, builder)
     }
 
-    setDemoDataGenerated(false)
     return filtered
   }
 
@@ -393,7 +389,6 @@ export default function FinanceReportsView() {
   }
 
   const handleExportCSV = () => {
-    const filtered = applyFilters()
     if (filtered.length === 0) {
       alert('No data to export')
       return
@@ -409,7 +404,34 @@ export default function FinanceReportsView() {
     window.print()
   }
 
-  const filtered = applyFilters()
+  // Use useMemo to prevent infinite re-renders
+  const filtered = useMemo(() => {
+    return applyFilters(reportData)
+  }, [reportData, program, semester, method, dateFrom, dateTo, reportType])
+
+  // Derive demoDataGenerated from filtered data instead of state
+  const demoDataGenerated = useMemo(() => {
+    if (!DEMO_MODE) return false
+    // Check if we had to generate demo data (original data after filters was < 20)
+    let originalFiltered = reportData
+    if (program !== 'All') {
+      originalFiltered = originalFiltered.filter((row: any) => row.program === program)
+    }
+    if (semester !== 'All') {
+      originalFiltered = originalFiltered.filter((row: any) => row.semester === semester)
+    }
+    if (method !== 'All') {
+      originalFiltered = originalFiltered.filter((row: any) => row.method === method)
+    }
+    if (dateFrom && dateTo) {
+      originalFiltered = originalFiltered.filter((row: any) => {
+        const rowDate = row.date || row.dateApplied || row.createdDate
+        return rowDate >= dateFrom && rowDate <= dateTo
+      })
+    }
+    return originalFiltered.length < 20
+  }, [reportData, program, semester, method, dateFrom, dateTo])
+
   const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
   const semesters = ['All', 'Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
   const methods = ['All', 'Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
