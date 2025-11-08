@@ -577,7 +577,10 @@ export default function FinanceReportsView() {
           >
             <option value="outstanding">Outstanding Dues Summary</option>
             <option value="collection">Collection Summary</option>
+            <option value="collectionByOfficer">Collections by Officer</option>
             <option value="refund">Refund Summary</option>
+            <option value="fines">Fines Report</option>
+            <option value="holds">Holds Report</option>
             <option value="waiver">Waiver Summary</option>
             <option value="bank">Bank Reconciliation</option>
             <option value="lateFee">Late Fee Report</option>
