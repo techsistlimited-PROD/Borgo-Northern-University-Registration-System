@@ -35,6 +35,7 @@ const sections: SidebarSection[] = [
     items: [
       'Grading Policy',
       'Mark Distribution',
+      'Upload Marks',
       'Result Correction',
       'Publish Results',
       'Block/Unblock (Student-wise)',
