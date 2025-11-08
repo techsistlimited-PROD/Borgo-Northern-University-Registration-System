@@ -56,7 +56,6 @@ export default function FinanceReportsView() {
     const holds = DEMO_MODE ? ensureMinRows(holdsStatic, 40, buildDemoHold) : Repo.get('finance-student-holds')
 
     let data: any[] = []
-    setDemoDataGenerated(false)
 
     switch (reportType) {
       case 'outstanding':
