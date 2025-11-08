@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
-import { Search, Plus, Lock, Unlock } from 'lucide-react'
+import { Search, Plus, Lock, Unlock, Eye } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { WaiverPolicy, WaiverAssignment } from '../data/types'
 
