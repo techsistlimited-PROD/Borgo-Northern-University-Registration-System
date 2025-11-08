@@ -2,9 +2,32 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Download, Printer } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Download, Printer, AlertCircle } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { formatCurrency, downloadCSV, exportTableToCSV } from '../utils/financeUtils'
+import { DEMO_MODE } from '@/config/demo'
+import {
+  studentBillsStatic,
+  paymentsStatic,
+  refundsStatic,
+  waiverAssignmentsStatic,
+  bankStatementsStatic,
+  finesStatic,
+  holdsStatic,
+  unregisteredStudentsStatic
+} from '../data/staticSeeds'
+import {
+  ensureMinRows,
+  buildDemoBill,
+  buildDemoPayment,
+  buildDemoRefund,
+  buildDemoWaiverAssignment,
+  buildDemoBankStmt,
+  buildDemoFine,
+  buildDemoHold,
+  buildDemoUnregistered
+} from '../utils/demoFillers'
 
 type ReportType = 'outstanding' | 'collection' | 'collectionByOfficer' | 'refund' | 'waiver' | 'bank' | 'lateFee' | 'dropReadmission' | 'fines' | 'holds'
 
@@ -15,23 +38,26 @@ export default function FinanceReportsView() {
   const [program, setProgram] = useState('All')
   const [semester, setSemester] = useState('All')
   const [method, setMethod] = useState('All')
-  
+
   const [reportData, setReportData] = useState<any[]>([])
+  const [demoDataGenerated, setDemoDataGenerated] = useState(false)
 
   useEffect(() => {
     generateReport()
   }, [reportType])
 
   const generateReport = () => {
-    const bills = Repo.get('finance-student-bills')
-    const payments = Repo.get('finance-payments')
-    const refunds = Repo.get('finance-payment-refunds')
-    const waivers = Repo.get('finance-waiver-assignments')
-    const bankStatements = Repo.get('finance-bank-statements')
-    const fines = Repo.get('finance-student-fines')
-    const dropPolicies = Repo.get('finance-drop-readmission-policies')
+    // Use static seeds with amplification in DEMO_MODE
+    const bills = DEMO_MODE ? ensureMinRows(studentBillsStatic, 200, buildDemoBill) : Repo.get('finance-student-bills')
+    const payments = DEMO_MODE ? ensureMinRows(paymentsStatic, 120, buildDemoPayment) : Repo.get('finance-payments')
+    const refunds = DEMO_MODE ? ensureMinRows(refundsStatic, 20, buildDemoRefund) : Repo.get('finance-payment-refunds')
+    const waivers = DEMO_MODE ? ensureMinRows(waiverAssignmentsStatic, 80, buildDemoWaiverAssignment) : Repo.get('finance-waiver-assignments')
+    const bankStatements = DEMO_MODE ? ensureMinRows(bankStatementsStatic, 120, (i) => buildDemoBankStmt(i, { matchRatio: 0.66 })) : Repo.get('finance-bank-statements')
+    const fines = DEMO_MODE ? ensureMinRows(finesStatic, 60, buildDemoFine) : Repo.get('finance-student-fines')
+    const holds = DEMO_MODE ? ensureMinRows(holdsStatic, 40, buildDemoHold) : Repo.get('finance-student-holds')
 
     let data: any[] = []
+    setDemoDataGenerated(false)
 
     switch (reportType) {
       case 'outstanding':
@@ -123,7 +149,7 @@ export default function FinanceReportsView() {
         break
 
       case 'dropReadmission':
-        const unregistered = Repo.get('finance-unregistered-students') || []
+        const unregistered = DEMO_MODE ? ensureMinRows(unregisteredStudentsStatic, 60, buildDemoUnregistered) : (Repo.get('finance-unregistered-students') || [])
         data = unregistered.map((s: any) => ({
           studentId: s.studentId,
           studentName: s.studentName,
@@ -187,7 +213,6 @@ export default function FinanceReportsView() {
         break
 
       case 'holds':
-        const holds = Repo.get('finance-student-holds')
         data = holds.map((h: any) => ({
           studentId: h.studentId,
           studentName: h.studentName,
