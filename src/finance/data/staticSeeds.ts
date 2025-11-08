@@ -56,31 +56,31 @@ export const costPackagesStatic: CostPackage[] = [
   { id: 'pkg12', programNo: '726', name: 'BANG Package', packageNo: 'PKG-726-2024', campus: 'Permanent Campus', program: 'BANG', semesterFrom: 'Fall 2024', semesterTo: 'Fall 2025', currency: 'BDT', isForeign: false, activeFrom: '2024-09-01', activeTo: '2025-12-31', remarks: 'Bangla department', components: makePackageComponents(), waiverRules: [], status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' }
 ]
 
-// Generate 120 Student Bills (35% Paid, 35% Partial, 30% Overdue)
+// Generate 300 Student Bills (35% Paid, 35% Partial, 30% Overdue)
 function generateBills(): StudentBill[] {
   const bills: StudentBill[] = []
   const programs = ['CSE', 'BBA', 'LLB', 'MBA', 'EEE', 'English', 'BPharm', 'BANG']
   const campuses = ['Permanent Campus', 'Main Campus', 'Uttara Campus', 'Banani Campus', 'Lakshmipur Campus']
-  const semesters = ['Fall 2024', 'Spring 2025', 'Fall 2025']
-  
+  const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
+
   let billIndex = 1
-  
-  for (let i = 0; i < 120; i++) {
+
+  for (let i = 0; i < 300; i++) {
     const program = programs[i % programs.length]
     const campus = campuses[i % campuses.length]
     const semester = semesters[i % semesters.length]
-    const studentIds = rangeStudents(program, 5, 2020 + Math.floor(i / 40))
-    const studentId = studentIds[i % 5]
+    const studentIds = rangeStudents(program, 10, 2020 + Math.floor(i / 100))
+    const studentId = studentIds[i % 10]
     const studentName = randomName()
-    
+
     let status: 'Paid' | 'Partial' | 'Overdue' | 'Issued'
-    if (i < 42) status = 'Paid'
-    else if (i < 84) status = 'Partial'
+    if (i < 105) status = 'Paid'
+    else if (i < 210) status = 'Partial'
     else status = 'Overdue'
-    
+
     bills.push(makeBill(studentId, studentName, semester, program, campus, status, billIndex++))
   }
-  
+
   return bills
 }
 
