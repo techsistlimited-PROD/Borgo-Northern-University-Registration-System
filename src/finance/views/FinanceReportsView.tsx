@@ -251,7 +251,145 @@ export default function FinanceReportsView() {
       })
     }
 
+    // If filtered result < 20 rows and DEMO_MODE, auto-fabricate a synthetic dataset
+    if (DEMO_MODE && filtered.length < 20) {
+      const minRows = 20
+      const builder = getReportBuilder(reportType)
+      const syntheticData = ensureMinRows(filtered, minRows, builder)
+      setDemoDataGenerated(true)
+      return syntheticData
+    }
+
+    setDemoDataGenerated(false)
     return filtered
+  }
+
+  const getReportBuilder = (type: ReportType): (i: number) => any => {
+    switch (type) {
+      case 'outstanding':
+        return (i) => ({
+          program: 'CSE',
+          semester: 'Fall 2024',
+          students: Math.floor(Math.random() * 50) + 10,
+          totalPayable: Math.floor(Math.random() * 5000000) + 1000000,
+          totalPaid: Math.floor(Math.random() * 3000000) + 500000,
+          totalDue: Math.floor(Math.random() * 2000000) + 100000
+        })
+      case 'collection':
+        return (i) => {
+          const payment = buildDemoPayment(i)
+          return {
+            date: payment.paymentDate,
+            studentId: payment.studentId,
+            studentName: payment.studentName,
+            amount: payment.totalAmount,
+            method: payment.method,
+            receiptNo: payment.receiptNo
+          }
+        }
+      case 'refund':
+        return (i) => {
+          const refund = buildDemoRefund(i)
+          return {
+            refundNo: refund.refundNo,
+            date: refund.refundDate,
+            studentId: refund.studentId,
+            studentName: refund.studentName,
+            program: refund.program,
+            refundAmount: refund.refundAmount,
+            method: refund.refundMethod,
+            originalMR: refund.originalReceiptNo
+          }
+        }
+      case 'waiver':
+        return (i) => {
+          const waiver = buildDemoWaiverAssignment(i)
+          return {
+            studentId: waiver.studentId,
+            studentName: waiver.studentName,
+            policy: waiver.policyName,
+            percent: waiver.percent,
+            effectiveTerm: waiver.effectiveTerm,
+            assignedBy: waiver.assignedBy
+          }
+        }
+      case 'bank':
+        return (i) => {
+          const stmt = buildDemoBankStmt(i, { matchRatio: 0.66 })
+          return {
+            date: stmt.date,
+            reference: stmt.reference,
+            amount: stmt.amount,
+            status: stmt.matched ? 'Matched' : 'Unmatched',
+            remarks: stmt.matchedReceiptNo || stmt.notes || '-'
+          }
+        }
+      case 'fines':
+        return (i) => {
+          const fine = buildDemoFine(i)
+          return {
+            studentId: fine.studentId,
+            studentName: fine.studentName,
+            fineType: fine.fineType,
+            amount: fine.amount,
+            date: fine.date,
+            remarks: fine.remarks || '-',
+            createdBy: fine.createdBy || '-'
+          }
+        }
+      case 'holds':
+        return (i) => {
+          const hold = buildDemoHold(i)
+          return {
+            studentId: hold.studentId,
+            studentName: hold.studentName,
+            holdType: hold.holdType,
+            reason: hold.reason,
+            date: hold.date,
+            status: hold.status,
+            createdBy: hold.createdBy || '-',
+            removedDate: hold.removedDate || '-'
+          }
+        }
+      case 'dropReadmission':
+        return (i) => {
+          const student = buildDemoUnregistered(i)
+          return {
+            studentId: student.studentId,
+            studentName: student.studentName,
+            program: student.program,
+            campus: student.campus,
+            lastRegistered: student.lastRegistered,
+            status: student.status,
+            dropDate: student.dropDate
+          }
+        }
+      case 'lateFee':
+        return (i) => {
+          const bill = buildDemoBill(i)
+          return {
+            studentId: bill.studentId,
+            studentName: bill.studentName,
+            semester: bill.semester,
+            fineAmount: Math.floor(Math.random() * 2000) + 500,
+            billNo: bill.billNo,
+            dateApplied: bill.billDate
+          }
+        }
+      case 'collectionByOfficer':
+        return (i) => ({
+          officer: ['Mahfuz Rahman', 'Faria Islam', 'Tanvir Ahmed'][i % 3],
+          totalCollected: Math.floor(Math.random() * 500000) + 100000,
+          transactionCount: Math.floor(Math.random() * 50) + 10,
+          cash: Math.floor(Math.random() * 100000),
+          bank: Math.floor(Math.random() * 200000),
+          bKash: Math.floor(Math.random() * 100000),
+          card: Math.floor(Math.random() * 50000),
+          other: Math.floor(Math.random() * 50000)
+        })
+      default:
+        return (i) => ({})
+    }
   }
 
   const handleExportCSV = () => {
