@@ -151,39 +151,47 @@ export default function PaymentCollection() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Date Range</label>
-                <select className="w-full p-2 border rounded-md text-sm">
-                  <option>Today</option>
-                  <option>Last 7 Days</option>
-                  <option>Last 30 Days</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Officer</label>
-                <select className="w-full p-2 border rounded-md text-sm">
-                  <option>All Officers</option>
-                  <option>Mahfuz Rahman</option>
-                  <option>Faria Islam</option>
+                <select
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  className="w-full p-2 border rounded-md text-sm"
+                >
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="week">Last 7 Days</option>
+                  <option value="month">Last 30 Days</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Payment Method</label>
-                <select className="w-full p-2 border rounded-md text-sm">
-                  <option>All Methods</option>
-                  <option>Cash</option>
-                  <option>bKash</option>
-                  <option>Bank</option>
+                <select
+                  value={methodFilter}
+                  onChange={(e) => setMethodFilter(e.target.value)}
+                  className="w-full p-2 border rounded-md text-sm"
+                >
+                  <option value="all">All Methods</option>
+                  <option value="Cash">Cash</option>
+                  <option value="bKash">bKash</option>
+                  <option value="Bank">Bank</option>
+                  <option value="Card">Card</option>
+                  <option value="SSLCommerz">SSLCommerz</option>
+                  <option value="DBBL Nexus">DBBL Nexus</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
-                <select className="w-full p-2 border rounded-md text-sm">
-                  <option>All Status</option>
-                  <option>Normal</option>
-                  <option>Refunded</option>
-                  <option>Void</option>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full p-2 border rounded-md text-sm"
+                >
+                  <option value="all">All Status</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Refunded">Refunded</option>
                 </select>
               </div>
             </div>
