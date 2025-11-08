@@ -84,12 +84,12 @@ function generateBills(): StudentBill[] {
   return bills
 }
 
-// Generate 160 Payments (cover all methods)
+// Generate 450 Payments (cover all methods)
 function generatePayments(bills: StudentBill[]): Payment[] {
   const payments: Payment[] = []
   const methods = ['Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
   let receiptIndex = 1
-  
+
   // Create payments for paid bills
   bills.filter(b => b.status === 'Paid').forEach((bill, idx) => {
     const method = methods[idx % methods.length]
@@ -105,7 +105,7 @@ function generatePayments(bills: StudentBill[]): Payment[] {
       receiptIndex++
     ))
   })
-  
+
   // Create payments for partial bills
   bills.filter(b => b.status === 'Partial').forEach((bill, idx) => {
     const method = methods[idx % methods.length]
@@ -121,9 +121,9 @@ function generatePayments(bills: StudentBill[]): Payment[] {
       receiptIndex++
     ))
   })
-  
-  // Add extra payments for 160 total
-  const extraCount = 160 - payments.length
+
+  // Add extra payments for 450 total
+  const extraCount = 450 - payments.length
   for (let i = 0; i < extraCount; i++) {
     const bill = bills[i % bills.length]
     const method = methods[i % methods.length]
@@ -140,7 +140,7 @@ function generatePayments(bills: StudentBill[]): Payment[] {
       receiptIndex++
     ))
   }
-  
+
   return payments
 }
 
