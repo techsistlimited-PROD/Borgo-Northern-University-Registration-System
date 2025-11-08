@@ -162,7 +162,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Check demo credentials for other roles
-    if (demoCredentials[role]?.username === username && demoCredentials[role]?.password === password) {
+    const roleCreds = demoCredentials[role]
+    if (roleCreds && roleCreds.username === username && roleCreds.password === password) {
       const userData = demoUsers[username]
       if (userData) {
         setUser(userData)
