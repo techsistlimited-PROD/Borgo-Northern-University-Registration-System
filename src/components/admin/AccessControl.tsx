@@ -128,6 +128,142 @@ export default function AccessControl() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Check User Permissions Dialog */}
+      <Dialog open={checkDialogOpen} onOpenChange={setCheckDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Check User Permissions</DialogTitle>
+            <DialogDescription>
+              Enter a User ID to view their effective permissions (roles + overrides)
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                User ID
+              </label>
+              <Input
+                placeholder="e.g., ADM-0001, REG-0102, STU-CSE-0042"
+                value={checkUserId}
+                onChange={(e) => setCheckUserId(e.target.value)}
+              />
+            </div>
+
+            <Button
+              onClick={() => {
+                if (!checkUserId) {
+                  alert('Please enter a User ID')
+                  return
+                }
+
+                // Demo: Determine role based on User ID prefix
+                let role = 'Student'
+                let permCount = 12
+                if (checkUserId.startsWith('ADM')) {
+                  role = 'System Admin'
+                  permCount = 120
+                } else if (checkUserId.startsWith('REG')) {
+                  role = 'Registrar'
+                  permCount = 85
+                } else if (checkUserId.startsWith('EXAM')) {
+                  role = 'Exam Controller'
+                  permCount = 65
+                } else if (checkUserId.startsWith('FIN')) {
+                  role = 'Finance Officer'
+                  permCount = 72
+                } else if (checkUserId.startsWith('FAC')) {
+                  role = 'Faculty'
+                  permCount = 45
+                }
+
+                setCheckedPermissions({
+                  userId: checkUserId,
+                  role,
+                  permCount,
+                  permissions: permissions.filter(p => {
+                    if (role === 'System Admin') return p.sysAdmin
+                    if (role === 'Registrar') return p.registrar
+                    if (role === 'Exam Controller') return p.examCtrl
+                    if (role === 'Finance Officer') return p.financeOff
+                    if (role === 'Faculty') return p.faculty
+                    if (role === 'Student') return p.student
+                    return false
+                  })
+                })
+              }}
+              className="nu-button-primary"
+            >
+              Check Permissions
+            </Button>
+
+            {/* Results */}
+            {checkedPermissions && (
+              <div className="border rounded-md p-4 bg-gray-50">
+                <div className="mb-4">
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">User Details</h3>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">User ID:</span>
+                      <span className="text-sm font-mono font-semibold">{checkedPermissions.userId}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">Primary Role:</span>
+                      <Badge className="bg-deep-plum/10 text-deep-plum">
+                        {checkedPermissions.role}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">Effective Permissions:</span>
+                      <Badge className="bg-blue-100 text-blue-800">
+                        {checkedPermissions.permCount} permissions
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Granted Permissions</h3>
+                  <div className="max-h-60 overflow-y-auto space-y-1">
+                    {checkedPermissions.permissions.map((perm: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-2 text-xs bg-white p-2 rounded border"
+                      >
+                        <span className="text-green-600 font-bold">✓</span>
+                        <div className="flex-1">
+                          <div className="font-mono font-semibold text-gray-800">{perm.key}</div>
+                          <div className="text-gray-600 mt-0.5">{perm.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            {checkedPermissions && (
+              <Button
+                variant="outline"
+                onClick={() => alert(showDemoToast('Export permissions list'))}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => {
+              setCheckDialogOpen(false)
+              setCheckUserId('')
+              setCheckedPermissions(null)
+            }}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
