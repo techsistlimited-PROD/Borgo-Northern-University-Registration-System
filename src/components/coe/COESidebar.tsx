@@ -35,7 +35,6 @@ const sections: SidebarSection[] = [
     items: [
       'Grading Policy',
       'Mark Distribution',
-      'Excel Upload (Marks)',
       'Result Correction',
       'Publish Results',
       'Block/Unblock (Student-wise)',
@@ -47,7 +46,6 @@ const sections: SidebarSection[] = [
     name: 'Transcripts & Certificates',
     icon: <Award className="w-4 h-4" />,
     items: [
-      'Transcript Manager',
       'Certificates Manager',
       'Document Printing'
     ]

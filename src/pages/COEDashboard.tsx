@@ -26,7 +26,6 @@ import MarkDistributionView from '@/coe/views/MarkDistributionView'
 import ResultCorrectionView from '@/coe/views/ResultCorrectionView'
 import BlockManagerView from '@/coe/views/BlockManagerView'
 import BlockSettingsView from '@/coe/views/BlockSettingsView'
-import TranscriptManagerView from '@/coe/views/TranscriptManagerView'
 import CertificatesManagerView from '@/coe/views/CertificatesManagerView'
 import DocumentPrintingHubView from '@/coe/views/DocumentPrintingHubView'
 import AdmissionActionsView from '@/coe/views/AdmissionActionsView'
@@ -78,8 +77,6 @@ export default function COEDashboard() {
         return <BlockManagerView />
       case 'Block/Unblock Settings':
         return <BlockSettingsView />
-      case 'Transcripts':
-        return <TranscriptManagerView />
       case 'Certificates Manager':
         return <CertificatesManagerView />
       case 'Document Printing':
