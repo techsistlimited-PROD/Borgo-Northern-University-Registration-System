@@ -437,6 +437,155 @@ export default function AttendanceIncidents() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={showExpulsionDialog} onOpenChange={setShowExpulsionDialog}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Expulsion Case — Generate Show-Cause Letter</DialogTitle>
+            <DialogDescription>
+              Student marked as Expelled from examination. Generate and print show-cause notice.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-red-800">Expulsion Case Initiated</p>
+                  <p className="text-red-700 mt-1">
+                    This student has been expelled from the current examination. A show-cause letter will be generated.
+                    All exam attempts for this session will be nullified and marked as "0" on grade sheets.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Candidate Code:</span>
+                <p className="font-medium font-mono">{expulsionStudent?.candidateCode}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Student Name:</span>
+                <p className="font-medium">{expulsionStudent?.name}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Seat No:</span>
+                <p className="font-medium">{expulsionStudent?.seat}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Exam Session:</span>
+                <p className="font-medium">CSE 2211 - Final Exam</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Expulsion (Required)</label>
+              <textarea
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                placeholder="Enter detailed reason (e.g., Found with unauthorized materials, Mobile phone usage, Impersonation...)"
+              />
+            </div>
+
+            <div className="border-2 border-purple-600 rounded-lg p-6 bg-white print:border-purple-800">
+              <div className="text-center mb-6 print:mb-8">
+                <h2 className="text-2xl font-bold text-deep-plum">Northern University Bangladesh</h2>
+                <p className="text-sm text-gray-600 mt-1">Controller of Examinations</p>
+                <div className="mt-4 pt-4 border-t">
+                  <h3 className="text-lg font-bold text-red-700">SHOW-CAUSE NOTICE</h3>
+                  <p className="text-sm text-gray-600 mt-1">Expulsion from Examination</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between">
+                  <div>
+                    <strong>Ref No:</strong> COE/EXP/2025/{Math.floor(Math.random() * 1000).toString().padStart(4, '0')}
+                  </div>
+                  <div>
+                    <strong>Date:</strong> {new Date().toLocaleDateString()}
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-2">
+                  <div><strong>To:</strong> {expulsionStudent?.name}</div>
+                  <div><strong>Student ID:</strong> {expulsionStudent?.candidateCode}</div>
+                  <div><strong>Examination:</strong> CSE 2211 - Data Structures (Final Exam)</div>
+                  <div><strong>Date & Session:</strong> {new Date().toLocaleDateString()} | 10:00-12:00</div>
+                </div>
+
+                <div className="mt-6 leading-relaxed">
+                  <p className="font-semibold mb-2">Subject: Show-Cause Notice for Expulsion from Examination</p>
+
+                  <p className="mt-4">Dear Student,</p>
+
+                  <p className="mt-3">
+                    This is to inform you that you have been expelled from the above-mentioned examination
+                    due to violation of examination rules and regulations. The specific reason for your
+                    expulsion is as follows:
+                  </p>
+
+                  <div className="my-4 p-3 bg-red-50 border border-red-200 rounded italic">
+                    [Reason: To be filled by invigilator]
+                  </div>
+
+                  <p className="mt-3">
+                    As per university examination policy, this incident constitutes a serious breach of
+                    academic integrity. Consequently:
+                  </p>
+
+                  <ul className="list-disc ml-6 mt-2 space-y-1">
+                    <li>Your examination script for this session has been cancelled</li>
+                    <li>You will receive a grade of "0" for this examination attempt</li>
+                    <li>This incident will be recorded in your academic file</li>
+                    <li>You may be barred from future examinations pending disciplinary review</li>
+                  </ul>
+
+                  <p className="mt-4">
+                    You are hereby required to submit a written explanation within <strong>7 (seven) days</strong>
+                    from the date of this notice, explaining why further disciplinary action should not be taken
+                    against you.
+                  </p>
+
+                  <p className="mt-3">
+                    Failure to respond within the stipulated time will result in ex-parte proceedings.
+                  </p>
+
+                  <p className="mt-6">Sincerely,</p>
+
+                  <div className="mt-12 mb-2">
+                    <div className="border-t border-gray-400 w-48"></div>
+                    <p className="font-semibold mt-1">Controller of Examinations</p>
+                    <p className="text-xs text-gray-600">Northern University Bangladesh</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t text-xs text-gray-500">
+                <p><strong>CC:</strong> Dean of Faculty, Head of Department, Disciplinary Committee</p>
+                <p className="mt-1"><strong>Note:</strong> This is an auto-generated notice. Signature and seal to be affixed before dispatch.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 print:hidden">
+              <Button variant="outline" onClick={() => setShowExpulsionDialog(false)}>Cancel</Button>
+              <Button variant="outline" onClick={handlePrintShowCauseLetter}>
+                <FileText className="w-4 h-4 mr-2" />
+                Print Show-Cause Letter
+              </Button>
+              <Button className="nu-button-primary" onClick={() => {
+                setShowExpulsionDialog(false)
+                alert('Expulsion case recorded. Show-cause letter generated. Student exam attempt nullified.')
+              }}>
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Confirm Expulsion
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
