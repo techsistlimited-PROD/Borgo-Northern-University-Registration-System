@@ -43,6 +43,17 @@ export default function AttendanceIncidents() {
       updated[index].status = newStatus
       return updated
     })
+
+    // If status changed to Expelled, prompt for expulsion case
+    if (newStatus === 'Expelled') {
+      const student = attendanceRecords[index]
+      setExpulsionStudent(student)
+      setShowExpulsionDialog(true)
+    }
+  }
+
+  const handlePrintShowCauseLetter = () => {
+    window.print()
   }
 
   const handleUpdateNotes = (index: number, notes: string) => {
