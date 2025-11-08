@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Building2, Database, FileText, Shield } from 'lucide-react'
+import { ChevronDown, ChevronRight, Building2, Database, FileText, Shield, ShieldCheck, BarChart } from 'lucide-react'
 
 interface SidebarSection {
   name: string
@@ -53,6 +53,26 @@ const sections: SidebarSection[] = [
       'Roles & Permissions',
       'User Management',
       'User List by Task'
+    ]
+  },
+  {
+    name: 'Security',
+    icon: <ShieldCheck className="w-4 h-4" />,
+    items: [
+      '2FA Settings',
+      'Login Audit',
+      'Permission Change Logs',
+      'Password Reset Logs',
+      'Email Verification Logs',
+      'IP Blocklist'
+    ]
+  },
+  {
+    name: 'Reports',
+    icon: <BarChart className="w-4 h-4" />,
+    items: [
+      'Permissions by User',
+      'Permissions by Role'
     ]
   }
 ]
