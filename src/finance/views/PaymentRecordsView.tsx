@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Search, Eye, Edit, Trash2, FileText } from 'lucide-react'
+import { Search, Eye, Edit, Trash2, FileText, Inbox } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { Payment, PaymentMethod } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
+import EmptyState from '@/components/common/EmptyState'
+import { DEMO_MODE } from '@/config/demo'
 
 export default function PaymentRecordsView() {
   const [payments, setPayments] = useState<Payment[]>([])
