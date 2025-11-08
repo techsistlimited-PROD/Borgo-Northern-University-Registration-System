@@ -20,15 +20,9 @@ import { seedFinanceData } from '@/finance/data/seedFinance'
 import { FinanceFilterProvider } from '@/contexts/FinanceFilterContext'
 
 export default function FinanceDashboard() {
-  const navigate = useNavigate()
-
   useEffect(() => {
     seedFinanceData()
-    const token = localStorage.getItem('finance-token')
-    if (!token) {
-      navigate('/finance-login')
-    }
-  }, [navigate])
+  }, [])
 
   return (
     <FinanceFilterProvider>
