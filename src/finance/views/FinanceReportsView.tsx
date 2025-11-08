@@ -123,16 +123,80 @@ export default function FinanceReportsView() {
         break
 
       case 'dropReadmission':
-        const dropBills = bills.filter((b: any) => 
-          b.lineItems.some((li: any) => li.costHeadCode === '023' || li.costHeadName.toLowerCase().includes('drop'))
-        )
-        data = dropBills.map((b: any) => ({
-          studentId: b.studentId,
-          studentName: b.studentName,
-          type: 'Drop/Readmission',
-          feeAmount: b.netTotal ?? 0,
-          semester: b.semester,
-          createdDate: b.billDate
+        const unregistered = Repo.get('finance-unregistered-students') || []
+        data = unregistered.map((s: any) => ({
+          studentId: s.studentId,
+          studentName: s.studentName,
+          program: s.program,
+          campus: s.campus,
+          lastRegistered: s.lastRegistered,
+          status: s.status,
+          dropDate: s.dropDate
+        }))
+        break
+
+      case 'collectionByOfficer':
+        const grouped2 = payments.reduce((acc: any, payment: any) => {
+          const officer = payment.collectedBy || 'Unknown'
+          if (!acc[officer]) {
+            acc[officer] = {
+              officer,
+              totalCollected: 0,
+              transactionCount: 0,
+              cash: 0,
+              bank: 0,
+              bKash: 0,
+              card: 0,
+              other: 0
+            }
+          }
+          acc[officer].totalCollected += payment.totalAmount ?? 0
+          acc[officer].transactionCount += 1
+
+          switch(payment.method) {
+            case 'Cash':
+              acc[officer].cash += payment.totalAmount ?? 0
+              break
+            case 'Bank':
+              acc[officer].bank += payment.totalAmount ?? 0
+              break
+            case 'bKash':
+              acc[officer].bKash += payment.totalAmount ?? 0
+              break
+            case 'Card':
+              acc[officer].card += payment.totalAmount ?? 0
+              break
+            default:
+              acc[officer].other += payment.totalAmount ?? 0
+          }
+          return acc
+        }, {})
+        data = Object.values(grouped2)
+        break
+
+      case 'fines':
+        data = fines.map((f: any) => ({
+          studentId: f.studentId,
+          studentName: f.studentName,
+          fineType: f.fineType,
+          amount: f.amount ?? 0,
+          date: f.date,
+          remarks: f.remarks || '-',
+          createdBy: f.createdBy || '-'
+        }))
+        break
+
+      case 'holds':
+        const holds = Repo.get('finance-student-holds')
+        data = holds.map((h: any) => ({
+          studentId: h.studentId,
+          studentName: h.studentName,
+          holdType: h.holdType,
+          reason: h.reason,
+          date: h.date,
+          status: h.status,
+          createdBy: h.createdBy || '-',
+          removedDate: h.removedDate || '-'
         }))
         break
     }
