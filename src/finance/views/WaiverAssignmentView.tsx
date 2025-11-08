@@ -241,7 +241,12 @@ export default function WaiverAssignmentView() {
                         </button>
                       </td>
                       <td className="p-3 text-right">
-                        <Button variant="ghost" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleOpenEditPolicy(policy)}
+                          className="border-accent-purple text-accent-purple hover:bg-accent-purple hover:text-white transition-colors"
+                        >
                           Edit
                         </Button>
                       </td>
