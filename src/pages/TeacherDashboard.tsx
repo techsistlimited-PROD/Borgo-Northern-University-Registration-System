@@ -424,7 +424,7 @@ export default function TeacherDashboard() {
               {(activeTab === 'results' || activeTab === 'continuous-assessment' || activeTab === 'cumulative-score' || activeTab === 'midterm-marks' || activeTab === 'final-marks') && 'Results & Grades'}
               {(activeTab === 'students' || activeTab === 'advised-students' || activeTab === 'academic-history') && 'Advising List'}
             </h1>
-            <p className="text-sm text-gray-600">Welcome to Northern University Teacher Portal</p>
+            <p className="text-sm text-gray-600">Welcome to Northern University Bangladesh Teacher Portal</p>
           </div>
 
           <div className="flex items-center space-x-4">

@@ -292,7 +292,7 @@ export default function StudentDashboard() {
               {(activeTab === 'exam-results' || activeTab === 'results') && 'Academic Results'}
               {(activeTab === 'payment-info' || activeTab === 'payable-list' || activeTab === 'payment-history' || activeTab === 'financial-summary' || activeTab === 'detailed-report') && 'Payment Information'}
             </h1>
-            <p className="text-sm text-gray-600">Welcome to Northern University Student Portal</p>
+            <p className="text-sm text-gray-600">Welcome to Northern University Bangladesh Student Portal</p>
           </div>
           
           <div className="flex items-center space-x-4">
