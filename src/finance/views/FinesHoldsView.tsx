@@ -9,6 +9,9 @@ import { Repo } from '@/lib/repo'
 import { StudentFine, StudentHold } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { addLedgerEntry } from '../utils/ledger'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { finesStatic, holdsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoFine, buildDemoHold } from '../utils/demoFillers'
 
 export default function FinesHoldsView() {
   const [tab, setTab] = useState<'fines' | 'holds'>('fines')
@@ -55,8 +58,15 @@ export default function FinesHoldsView() {
   }, [studentId])
 
   const loadData = () => {
-    setFines(Repo.get<StudentFine>('finance-fines'))
-    setHolds(Repo.get<StudentHold>('finance-holds'))
+    // Apply data amplification for demo mode
+    const baseFines = DEMO_MODE ? finesStatic : Repo.get<StudentFine>('finance-fines')
+    const baseHolds = DEMO_MODE ? holdsStatic : Repo.get<StudentHold>('finance-holds')
+
+    const amplifiedFines = ensureMinRows(baseFines, 60, buildDemoFine)
+    const amplifiedHolds = ensureMinRows(baseHolds, 40, buildDemoHold)
+
+    setFines(amplifiedFines)
+    setHolds(amplifiedHolds)
   }
 
   const handleAddFine = () => {
@@ -68,6 +78,14 @@ export default function FinesHoldsView() {
     const amount = parseFloat(fineAmount)
     if (isNaN(amount) || amount <= 0) {
       alert('Please enter a valid fine amount')
+      return
+    }
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Add fine'))
+      setStudentId('')
+      setFineAmount('')
+      setFineRemarks('')
       return
     }
 
@@ -101,6 +119,11 @@ export default function FinesHoldsView() {
   }
 
   const handleDeleteFine = (id: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Delete disabled in demo mode'))
+      return
+    }
+
     if (confirm('Delete this fine?')) {
       Repo.delete('finance-fines', id)
       alert('Fine deleted')
@@ -116,6 +139,13 @@ export default function FinesHoldsView() {
 
     if (!holdReason) {
       alert('Please enter hold reason')
+      return
+    }
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Add hold'))
+      setStudentId('')
+      setHoldReason('')
       return
     }
 
@@ -139,6 +169,11 @@ export default function FinesHoldsView() {
   }
 
   const handleToggleHold = (hold: StudentHold) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Toggle hold'))
+      return
+    }
+
     const newStatus = hold.status === 'Active' ? 'Removed' : 'Active'
     Repo.update('finance-holds', hold.id, {
       status: newStatus,
