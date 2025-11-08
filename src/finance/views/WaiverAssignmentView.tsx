@@ -116,6 +116,44 @@ export default function WaiverAssignmentView() {
     Repo.update('finance-waiver-policies', id, { active: !currentActive })
   }
 
+  const handleOpenEditPolicy = (policy: WaiverPolicy) => {
+    setEditingPolicy(policy)
+    setPolicyFormData({
+      code: policy.code,
+      name: policy.name,
+      percentCap: policy.percentCap,
+      description: policy.description || '',
+      active: policy.active
+    })
+    setIsEditPolicyOpen(true)
+  }
+
+  const handleSavePolicy = () => {
+    if (!editingPolicy) return
+
+    if (!policyFormData.code.trim() || !policyFormData.name.trim()) {
+      alert('Code and Name are required')
+      return
+    }
+
+    if (policyFormData.percentCap < 0 || policyFormData.percentCap > 100) {
+      alert('Percent Cap must be between 0 and 100')
+      return
+    }
+
+    Repo.update('finance-waiver-policies', editingPolicy.id, {
+      code: policyFormData.code,
+      name: policyFormData.name,
+      percentCap: policyFormData.percentCap,
+      description: policyFormData.description,
+      active: policyFormData.active
+    })
+
+    setIsEditPolicyOpen(false)
+    setEditingPolicy(null)
+    alert('Policy updated successfully')
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
