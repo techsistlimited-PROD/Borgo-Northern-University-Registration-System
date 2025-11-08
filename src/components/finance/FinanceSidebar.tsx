@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, LayoutDashboard, Users, FileText, Wallet, Award, AlertCircle, Building2, Settings } from 'lucide-react'
+import { ChevronDown, ChevronRight, LayoutDashboard, Users, FileText, Wallet, Award, AlertCircle, Building2, Settings, Bell, BarChart3, Calculator } from 'lucide-react'
 
 interface SidebarSection {
   name: string
@@ -22,7 +22,7 @@ const sections: SidebarSection[] = [
   {
     name: 'Billing',
     icon: <FileText className="w-4 h-4" />,
-    items: ['Student Payables', 'Bulk Late Fee Assignment']
+    items: ['Student Payables', 'Bulk Late Fee Assignment', 'Drop/Re-admission Fees']
   },
   {
     name: 'Payments',
@@ -43,6 +43,16 @@ const sections: SidebarSection[] = [
     name: 'Bank Reconciliation',
     icon: <Building2 className="w-4 h-4" />,
     path: 'Bank Reconciliation'
+  },
+  {
+    name: 'Reports',
+    icon: <BarChart3 className="w-4 h-4" />,
+    path: 'Finance Reports'
+  },
+  {
+    name: 'Employees',
+    icon: <Bell className="w-4 h-4" />,
+    items: ['Employee Notices']
   },
   {
     name: 'Setup',
