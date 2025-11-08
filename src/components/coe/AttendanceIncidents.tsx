@@ -10,6 +10,8 @@ export default function AttendanceIncidents() {
   const [selectedIncident, setSelectedIncident] = useState<any>(null)
   const [showNewIncidentModal, setShowNewIncidentModal] = useState(false)
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false)
+  const [showExpulsionDialog, setShowExpulsionDialog] = useState(false)
+  const [expulsionStudent, setExpulsionStudent] = useState<any>(null)
   const [attendanceRecords, setAttendanceRecords] = useState([
     { seat: '01', candidateCode: 'CND-2025-0001', name: 'Ayesha Rahman', status: 'Present', notes: '' },
     { seat: '02', candidateCode: 'CND-2025-0144', name: 'Nishat Sultana', status: 'Present', notes: '' },
