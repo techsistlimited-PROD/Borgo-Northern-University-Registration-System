@@ -48,9 +48,9 @@ export default function FinanceReportsView() {
             }
           }
           acc[key].students.add(bill.studentId)
-          acc[key].totalPayable += bill.netTotal
-          acc[key].totalPaid += bill.paidAmount
-          acc[key].totalDue += bill.balanceDue
+          acc[key].totalPayable += bill.netTotal ?? 0
+          acc[key].totalPaid += bill.paidAmount ?? 0
+          acc[key].totalDue += bill.balanceDue ?? 0
           return acc
         }, {})
         
