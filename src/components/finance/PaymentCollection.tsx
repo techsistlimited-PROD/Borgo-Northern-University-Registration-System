@@ -1,17 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Search, FileText, Download } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Search, FileText, Download, Eye } from 'lucide-react'
+import { Repo } from '@/lib/repo'
+import { Payment } from '@/finance/data/types'
+import { formatCurrency } from '@/finance/utils/financeUtils'
 
 export default function PaymentCollection() {
   const [activeTab, setActiveTab] = useState<'collect' | 'records'>('collect')
+  const [payments, setPayments] = useState<Payment[]>([])
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [dateFilter, setDateFilter] = useState('all')
+  const [methodFilter, setMethodFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState('all')
 
-  const paymentRecords = [
-    { mr: 'MR-2025-44112', studentId: 'CSE-25-01-0037', name: 'Md. Arif Hossain', amount: 25000, method: 'bKash', invoice: 'INV-2025-000923', time: '12-Sep-2025 11:42 AM', status: 'Normal' },
-    { mr: 'MR-2025-44098', studentId: 'MBA-23-01-0094', name: 'Tanvir Ahmed', amount: 10000, method: 'Cash', invoice: 'INV-2025-000771', time: '10-Sep-2025 02:10 PM', status: 'Refunded' }
-  ]
+  useEffect(() => {
+    loadPayments()
+    const unsub = Repo.subscribe('finance-payments', loadPayments)
+    return unsub
+  }, [])
+
+  const loadPayments = () => {
+    const data = Repo.get<Payment>('finance-payments')
+    setPayments(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
+  }
+
+  const handleViewPayment = (payment: Payment) => {
+    setSelectedPayment(payment)
+    setViewDialogOpen(true)
+  }
+
+  const filteredPayments = payments.filter(p => {
+    if (methodFilter !== 'all' && p.method !== methodFilter) return false
+    if (statusFilter !== 'all' && p.status !== statusFilter) return false
+    return true
+  })
 
   return (
     <div className="p-6 space-y-6">
