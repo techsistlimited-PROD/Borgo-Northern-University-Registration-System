@@ -37,6 +37,13 @@ import EmailLogsView from '@/components/admin/EmailLogsView'
 import IPBlocklistView from '@/components/admin/IPBlocklistView'
 import PermissionsReportsByUser from '@/components/admin/PermissionsReportsByUser'
 import PermissionsReportsByRole from '@/components/admin/PermissionsReportsByRole'
+import InstituteProfile from '@/components/admin/InstituteProfile'
+import StudyLevelTerm from '@/components/admin/StudyLevelTerm'
+import CreditTransferInstitutes from '@/components/admin/CreditTransferInstitutes'
+import GeographicSettings from '@/components/admin/GeographicSettings'
+import StudentQuotas from '@/components/admin/StudentQuotas'
+import GuardianOccupations from '@/components/admin/GuardianOccupations'
+import RelationshipList from '@/components/admin/RelationshipList'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -112,6 +119,20 @@ export default function AdminDashboard() {
         return <PermissionsReportsByUser />
       case 'Permissions by Role':
         return <PermissionsReportsByRole />
+      case 'Institute/Organization Profile':
+        return <InstituteProfile />
+      case 'Study Level & Term':
+        return <StudyLevelTerm />
+      case 'Credit Transfer Institute List':
+        return <CreditTransferInstitutes />
+      case 'Geographic Settings':
+        return <GeographicSettings />
+      case 'Student Quota Types':
+        return <StudentQuotas />
+      case 'Guardian/Parents Job & Occupation Types':
+        return <GuardianOccupations />
+      case 'Relationship List':
+        return <RelationshipList />
       case 'Master Data':
       case 'Location Directory':
       case 'External Institutes':

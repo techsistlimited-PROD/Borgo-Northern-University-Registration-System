@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Building2, Database, FileText, Shield, ShieldCheck, BarChart } from 'lucide-react'
+import { ChevronDown, ChevronRight, Building2, Database, FileText, Shield, ShieldCheck, BarChart, Settings } from 'lucide-react'
 
 interface SidebarSection {
   name: string
@@ -73,6 +73,19 @@ const sections: SidebarSection[] = [
     items: [
       'Permissions by User',
       'Permissions by Role'
+    ]
+  },
+  {
+    name: 'General Settings',
+    icon: <Settings className="w-4 h-4" />,
+    items: [
+      'Institute/Organization Profile',
+      'Study Level & Term',
+      'Credit Transfer Institute List',
+      'Geographic Settings',
+      'Student Quota Types',
+      'Guardian/Parents Job & Occupation Types',
+      'Relationship List'
     ]
   }
 ]
