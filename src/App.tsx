@@ -86,14 +86,17 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      
+      {/* Finance Routes - Wildcard to handle all subroutes */}
       <Route
-        path="/finance/dashboard"
+        path="/finance/*"
         element={
           <ProtectedRoute allowedRole="finance">
             <FinanceDashboard />
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/dashboard"
         element={

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, LayoutDashboard, Users, FileText, Wallet, Award, AlertCircle, Building2, Settings, Bell, BarChart3, Calculator } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
+import { ChevronDown, ChevronRight, LayoutDashboard, Users, FileText, Wallet, Award, AlertCircle, Building2, Settings, Bell, BarChart3 } from 'lucide-react'
 
 interface SidebarSection {
   name: string
   icon: React.ReactNode
-  items?: string[]
+  items?: { name: string; path: string }[]
   path?: string
 }
 
@@ -12,62 +13,72 @@ const sections: SidebarSection[] = [
   {
     name: 'Dashboard',
     icon: <LayoutDashboard className="w-4 h-4" />,
-    path: 'dashboard'
+    path: '/finance/dashboard'
   },
   {
     name: 'Student Accounts',
     icon: <Users className="w-4 h-4" />,
-    items: ['Search Student / Ledger']
+    items: [
+      { name: 'Search Student / Ledger', path: '/finance/student-ledger' }
+    ]
   },
   {
     name: 'Billing',
     icon: <FileText className="w-4 h-4" />,
-    items: ['Student Payables', 'Bulk Late Fee Assignment', 'Drop/Re-admission Fees']
+    items: [
+      { name: 'Student Payables', path: '/finance/payables' },
+      { name: 'Bulk Late Fee Assignment', path: '/finance/late-fee' },
+      { name: 'Drop/Re-admission Fees', path: '/finance/drop-readmission' }
+    ]
   },
   {
     name: 'Payments',
     icon: <Wallet className="w-4 h-4" />,
-    items: ['Collect Payment', 'Payment Records']
+    items: [
+      { name: 'Collect Payment', path: '/finance/collect-payment' },
+      { name: 'Payment Records', path: '/finance/payment-records' }
+    ]
   },
   {
     name: 'Waiver & Scholarship',
     icon: <Award className="w-4 h-4" />,
-    path: 'Waiver & Scholarship'
+    path: '/finance/waivers'
   },
   {
     name: 'Fines & Holds',
     icon: <AlertCircle className="w-4 h-4" />,
-    path: 'Fines & Holds'
+    path: '/finance/fines-holds'
   },
   {
     name: 'Bank Reconciliation',
     icon: <Building2 className="w-4 h-4" />,
-    path: 'Bank Reconciliation'
+    path: '/finance/bank-recon'
   },
   {
     name: 'Reports',
     icon: <BarChart3 className="w-4 h-4" />,
-    path: 'Finance Reports'
+    path: '/finance/reports'
   },
   {
     name: 'Employees',
     icon: <Bell className="w-4 h-4" />,
-    items: ['Employee Notices']
+    items: [
+      { name: 'Employee Notices', path: '/finance/employee-notices' }
+    ]
   },
   {
     name: 'Setup',
     icon: <Settings className="w-4 h-4" />,
-    items: ['Cost Heads', 'Cost Packages']
+    items: [
+      { name: 'Cost Heads', path: '/finance/setup/cost-heads' },
+      { name: 'Cost Packages', path: '/finance/setup/cost-packages' }
+    ]
   }
 ]
 
-interface FinanceSidebarProps {
-  activeSection: string
-  onSectionChange: (section: string) => void
-}
-
-export default function FinanceSidebar({ activeSection, onSectionChange }: FinanceSidebarProps) {
-  const [expandedSections, setExpandedSections] = useState<string[]>(['Dashboard'])
+export default function FinanceSidebar() {
+  const location = useLocation()
+  const [expandedSections, setExpandedSections] = useState<string[]>(['Dashboard', 'Billing', 'Payments', 'Setup'])
 
   const toggleSection = (sectionName: string) => {
     if (expandedSections.includes(sectionName)) {
@@ -76,6 +87,8 @@ export default function FinanceSidebar({ activeSection, onSectionChange }: Finan
       setExpandedSections([...expandedSections, sectionName])
     }
   }
+
+  const isActive = (path: string) => location.pathname === path
 
   return (
     <aside className="w-64 bg-gradient-to-b from-deep-plum to-accent-purple h-screen overflow-y-auto shadow-lg">
@@ -93,43 +106,55 @@ export default function FinanceSidebar({ activeSection, onSectionChange }: Finan
       <div className="p-4 space-y-1">
         {sections.map((section) => (
           <div key={section.name}>
-            <button
-              onClick={() => {
-                if (section.items) {
-                  toggleSection(section.name)
-                } else if (section.path) {
-                  onSectionChange(section.path)
-                }
-              }}
-              className={`w-full flex items-center justify-between p-2 rounded-md transition-all ${
-                activeSection === section.path ? 'bg-mint-green text-deep-plum shadow-md' : 'text-white/90 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                {section.icon}
-                <span className="font-medium text-sm">{section.name}</span>
-              </div>
-              {section.items && (
-                expandedSections.includes(section.name) ?
-                  <ChevronDown className="w-4 h-4" /> :
-                  <ChevronRight className="w-4 h-4" />
-              )}
-            </button>
+            {section.path ? (
+              <Link
+                to={section.path}
+                className={`w-full flex items-center justify-between p-2 rounded-md transition-all ${
+                  isActive(section.path) 
+                    ? 'bg-mint-green text-deep-plum shadow-md' 
+                    : 'text-white/90 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  {section.icon}
+                  <span className="font-medium text-sm">{section.name}</span>
+                </div>
+              </Link>
+            ) : (
+              <>
+                <button
+                  onClick={() => toggleSection(section.name)}
+                  className="w-full flex items-center justify-between p-2 rounded-md transition-all text-white/90 hover:bg-white/10 hover:text-white"
+                >
+                  <div className="flex items-center space-x-2">
+                    {section.icon}
+                    <span className="font-medium text-sm">{section.name}</span>
+                  </div>
+                  {expandedSections.includes(section.name) ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </button>
 
-            {section.items && expandedSections.includes(section.name) && (
-              <div className="ml-6 mt-1 space-y-1">
-                {section.items.map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => onSectionChange(item)}
-                    className={`w-full text-left p-2 text-sm rounded-md transition-all ${
-                      activeSection === item ? 'bg-mint-green text-deep-plum font-medium shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+                {section.items && expandedSections.includes(section.name) && (
+                  <div className="ml-6 mt-1 space-y-1">
+                    {section.items.map((item) => (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`block w-full text-left p-2 text-sm rounded-md transition-all ${
+                          isActive(item.path)
+                            ? 'bg-mint-green text-deep-plum font-medium shadow-md'
+                            : 'text-white/80 hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         ))}
