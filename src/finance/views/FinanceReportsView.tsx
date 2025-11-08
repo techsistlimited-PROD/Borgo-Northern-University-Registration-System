@@ -65,7 +65,7 @@ export default function FinanceReportsView() {
           date: p.paymentDate,
           studentId: p.studentId,
           studentName: p.studentName,
-          amount: p.totalAmount,
+          amount: p.totalAmount ?? 0,
           method: p.method,
           receiptNo: p.receiptNo
         }))
@@ -78,7 +78,7 @@ export default function FinanceReportsView() {
           studentId: r.studentId,
           studentName: r.studentName,
           program: r.program,
-          refundAmount: r.refundAmount,
+          refundAmount: r.refundAmount ?? 0,
           method: r.refundMethod,
           originalMR: r.originalReceiptNo
         }))
@@ -130,7 +130,7 @@ export default function FinanceReportsView() {
           studentId: b.studentId,
           studentName: b.studentName,
           type: 'Drop/Readmission',
-          feeAmount: b.netTotal,
+          feeAmount: b.netTotal ?? 0,
           semester: b.semester,
           createdDate: b.billDate
         }))
