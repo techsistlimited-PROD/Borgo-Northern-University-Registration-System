@@ -17,7 +17,8 @@ export default function ReportsFactoryView() {
     semester: 'all',
     program: 'all',
     campus: 'all',
-    status: 'all'
+    status: 'all',
+    topCount: 'top10'
   })
 
   const reportData = useMemo(() => {
@@ -31,7 +32,8 @@ export default function ReportsFactoryView() {
       semester: 'all',
       program: 'all',
       campus: 'all',
-      status: 'all'
+      status: 'all',
+      topCount: 'top10'
     })
   }
 
