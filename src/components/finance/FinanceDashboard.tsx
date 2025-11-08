@@ -172,7 +172,11 @@ export default function FinanceDashboard() {
                     <td className="p-3 text-sm text-right font-semibold">{row.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}</td>
                     <td className="p-3 text-sm">{row.lastReceipt}</td>
                     <td className="p-3">
-                      <Button variant="ghost" size="sm">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleViewDetails(row)}
+                      >
                         <Eye className="w-4 h-4 mr-1" />
                         View Details
                       </Button>
