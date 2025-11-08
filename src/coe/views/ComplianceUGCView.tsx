@@ -3,77 +3,88 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { Download, Printer } from 'lucide-react'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { Download, Printer, FileSpreadsheet } from 'lucide-react'
+import {
+  UGC_ANNUAL_RETURN,
+  UGC_PROGRAM_ENROLLMENT,
+  UGC_GRADUATION_STATS,
+  UGC_FACULTY_INFO,
+  UGC_INFRASTRUCTURE,
+  BANBAIS_STUDENT_ENROLLMENT,
+  BANBAIS_EXAM_RESULTS,
+  BANBAIS_FACULTY_STAFF,
+  BANBAIS_FINANCIAL,
+  BANBAIS_FACILITY,
+  AUDIT_TRAIL,
+  DATA_ACCESS_LOG,
+  RESULT_PUBLICATION_LOG,
+  CERTIFICATE_ISSUANCE_LOG,
+  TABULATION_APPROVAL_LOG
+} from '@/coe/data/compliance'
 
-type ReportSection = 'ugc-completion' | 'ugc-cbe' | 'ugc-graduation' | 'ugc-enrollment' | 'banbais-summary' | 'banbais-semester' | 'banbais-program' | 'result-pub-log' | 'cert-issue-log' | 'transcript-log' | 'tabulation-log'
+type TabType = 'ugc' | 'banbais' | 'logs'
 
-const REPORT_SECTIONS = [
-  { id: 'ugc-completion', name: 'UGC Completed Students Format', category: 'UGC Standards' },
-  { id: 'ugc-cbe', name: 'UGC CBE-wise Completion Format', category: 'UGC Standards' },
-  { id: 'ugc-graduation', name: 'UGC Graduation Report', category: 'UGC Standards' },
-  { id: 'ugc-enrollment', name: 'UGC Program-Wise Enrollment', category: 'UGC Standards' },
-  { id: 'banbais-summary', name: 'BANBAIS Student Summary', category: 'BANBAIS Format' },
-  { id: 'banbais-semester', name: 'BANBAIS Semester Statistics', category: 'BANBAIS Format' },
-  { id: 'banbais-program', name: 'BANBAIS Accredited Program', category: 'BANBAIS Format' },
-  { id: 'result-pub-log', name: 'Result Publication Log', category: 'Compliance Logs' },
-  { id: 'cert-issue-log', name: 'Certificate Issue Log', category: 'Compliance Logs' },
-  { id: 'transcript-log', name: 'Transcript Issue Log', category: 'Compliance Logs' },
-  { id: 'tabulation-log', name: 'Tabulation Approval Log', category: 'Compliance Logs' }
+type ReportId = 
+  | 'ugc-annual' | 'ugc-enrollment' | 'ugc-graduation' | 'ugc-faculty' | 'ugc-infrastructure'
+  | 'banbais-student' | 'banbais-exam' | 'banbais-faculty' | 'banbais-financial' | 'banbais-facility'
+  | 'audit-trail' | 'data-access' | 'result-pub' | 'cert-issue' | 'tabulation'
+
+interface ReportDefinition {
+  id: ReportId
+  name: string
+  description: string
+}
+
+const UGC_REPORTS: ReportDefinition[] = [
+  { id: 'ugc-annual', name: 'Annual Return', description: 'Complete annual statistics for UGC submission' },
+  { id: 'ugc-enrollment', name: 'Program-wise Enrollment', description: 'Enrollment breakdown by program and gender' },
+  { id: 'ugc-graduation', name: 'Graduation Statistics', description: 'Graduate distribution by classification' },
+  { id: 'ugc-faculty', name: 'Faculty Information', description: 'Faculty qualifications and experience' },
+  { id: 'ugc-infrastructure', name: 'Infrastructure Report', description: 'Facility inventory and utilization' }
 ]
 
-const UGC_COMPLETION_DATA = [
-  ['STU-2021-0012', 'Mahfuz Rahman', 'CSE', 'Male', '2021-2025', 120, 3.45, 'First Class', 'Regular', '2025-12-15'],
-  ['STU-2021-0045', 'Rahim Uddin', 'EEE', 'Male', '2021-2025', 125, 3.67, 'First Class', 'Regular', '2025-12-15'],
-  ['STU-2021-0089', 'Farhan Ahmed', 'CSE', 'Male', '2021-2025', 120, 3.52, 'First Class', 'Regular', '2025-12-15'],
-  ['STU-2021-0101', 'Tahmid Hassan', 'MBA', 'Male', '2021-2023', 48, 3.72, 'First Class', 'Evening', '2023-08-20']
+const BANBAIS_REPORTS: ReportDefinition[] = [
+  { id: 'banbais-student', name: 'Student Enrollment Data', description: 'Detailed student enrollment for BANBAIS format' },
+  { id: 'banbais-exam', name: 'Examination Results', description: 'Semester-wise examination outcomes' },
+  { id: 'banbais-faculty', name: 'Faculty and Staff Data', description: 'Employee records and qualifications' },
+  { id: 'banbais-financial', name: 'Financial Summary', description: 'Revenue, expenses, and surplus data' },
+  { id: 'banbais-facility', name: 'Facility Utilization', description: 'Infrastructure usage and maintenance' }
 ]
 
-const BANBAIS_SUMMARY_DATA = [
-  ['CSE', 450, 425, 25, 94.4, 380, 85],
-  ['BBA', 380, 360, 20, 94.7, 320, 60],
-  ['EEE', 320, 305, 15, 95.3, 270, 50],
-  ['LLB', 280, 265, 15, 94.6, 230, 50]
-]
-
-const RESULT_PUB_LOG_DATA = [
-  ['CSE101', 'A', 'Dr. Ahmed', '2025-11-25 14:30', 42, 'Published', 'No issues'],
-  ['BBA101', 'B', 'Prof. Karim', '2025-11-26 10:15', 35, 'Published', 'Late by 2 days'],
-  ['EEE201', 'A', 'Dr. Hassan', '2025-11-27 09:00', 38, 'Published', 'No issues']
+const LOG_REPORTS: ReportDefinition[] = [
+  { id: 'audit-trail', name: 'Audit Trail', description: 'Complete system action log for compliance' },
+  { id: 'data-access', name: 'Data Access Log', description: 'Record of who accessed what data and when' },
+  { id: 'result-pub', name: 'Result Publication History', description: 'History of all result publications' },
+  { id: 'cert-issue', name: 'Certificate Issuance Log', description: 'All issued certificates with serial numbers' },
+  { id: 'tabulation', name: 'Tabulation Approval Log', description: 'Board approvals and corrections' }
 ]
 
 export default function ComplianceUGCView() {
-  const [activeSection, setActiveSection] = useState<ReportSection>('ugc-completion')
+  const [activeTab, setActiveTab] = useState<TabType>('ugc')
+  const [selectedReport, setSelectedReport] = useState<ReportId>('ugc-annual')
+
+  const getCurrentReports = () => {
+    switch (activeTab) {
+      case 'ugc': return UGC_REPORTS
+      case 'banbais': return BANBAIS_REPORTS
+      case 'logs': return LOG_REPORTS
+    }
+  }
 
   const handleExportCSV = () => {
-    const reportName = REPORT_SECTIONS.find(s => s.id === activeSection)?.name || 'Report'
-    const filename = `${activeSection}_${new Date().toISOString().split('T')[0]}.csv`
+    const data = getReportData()
+    const headers = getReportHeaders()
     
-    let data: any[] = []
-    let headers: string[] = []
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => Object.values(row).join(','))
+    ].join('\n')
     
-    switch(activeSection) {
-      case 'ugc-completion':
-        headers = ['Student ID', 'Name', 'Program', 'Gender', 'Session', 'Credits', 'CGPA', 'Class', 'Shift', 'Completion Date']
-        data = UGC_COMPLETION_DATA
-        break
-      case 'banbais-summary':
-        headers = ['Program', 'Total Enrolled', 'Active', 'Inactive', 'Retention %', 'Passed', 'Failed']
-        data = BANBAIS_SUMMARY_DATA
-        break
-      case 'result-pub-log':
-        headers = ['Course', 'Section', 'Published By', 'Timestamp', 'Students', 'Status', 'Remarks']
-        data = RESULT_PUB_LOG_DATA
-        break
-      default:
-        headers = ['Data', 'Not', 'Available']
-        data = [['Sample', 'Data', 'Placeholder']]
-    }
-    
-    const csvContent = [headers.join(','), ...data.map(row => row.join(','))].join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
-    link.download = filename
+    link.download = `${selectedReport}_${new Date().toISOString().split('T')[0]}.csv`
     link.click()
   }
 
@@ -81,124 +92,70 @@ export default function ComplianceUGCView() {
     window.print()
   }
 
-  const renderTableContent = () => {
-    switch(activeSection) {
-      case 'ugc-completion':
-        return (
-          <>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Student ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Program</TableHead>
-                <TableHead>Gender</TableHead>
-                <TableHead>Session</TableHead>
-                <TableHead>Credits</TableHead>
-                <TableHead>CGPA</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead>Shift</TableHead>
-                <TableHead>Completion Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {UGC_COMPLETION_DATA.map((row, idx) => (
-                <TableRow key={idx}>
-                  {row.map((cell, cellIdx) => (
-                    <TableCell key={cellIdx}>{cell}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </>
-        )
-      
-      case 'banbais-summary':
-        return (
-          <>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Program</TableHead>
-                <TableHead>Total Enrolled</TableHead>
-                <TableHead>Active</TableHead>
-                <TableHead>Inactive</TableHead>
-                <TableHead>Retention %</TableHead>
-                <TableHead>Passed</TableHead>
-                <TableHead>Failed</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {BANBAIS_SUMMARY_DATA.map((row, idx) => (
-                <TableRow key={idx}>
-                  {row.map((cell, cellIdx) => (
-                    <TableCell key={cellIdx}>{cell}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </>
-        )
-      
-      case 'result-pub-log':
-        return (
-          <>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Course</TableHead>
-                <TableHead>Section</TableHead>
-                <TableHead>Published By</TableHead>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>Students</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Remarks</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {RESULT_PUB_LOG_DATA.map((row, idx) => (
-                <TableRow key={idx}>
-                  {row.map((cell, cellIdx) => (
-                    <TableCell key={cellIdx}>
-                      {cellIdx === 5 ? (
-                        <Badge className="bg-purple-100 text-purple-700">{cell}</Badge>
-                      ) : cell}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </>
-        )
-      
-      default:
-        return (
-          <>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Field 1</TableHead>
-                <TableHead>Field 2</TableHead>
-                <TableHead>Field 3</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell colSpan={3} className="text-center py-8 text-gray-500">
-                  Sample data for {REPORT_SECTIONS.find(s => s.id === activeSection)?.name}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </>
-        )
+  const getReportData = (): any[] => {
+    switch (selectedReport) {
+      case 'ugc-annual': return UGC_ANNUAL_RETURN
+      case 'ugc-enrollment': return UGC_PROGRAM_ENROLLMENT
+      case 'ugc-graduation': return UGC_GRADUATION_STATS
+      case 'ugc-faculty': return UGC_FACULTY_INFO
+      case 'ugc-infrastructure': return UGC_INFRASTRUCTURE
+      case 'banbais-student': return BANBAIS_STUDENT_ENROLLMENT
+      case 'banbais-exam': return BANBAIS_EXAM_RESULTS
+      case 'banbais-faculty': return BANBAIS_FACULTY_STAFF
+      case 'banbais-financial': return BANBAIS_FINANCIAL
+      case 'banbais-facility': return BANBAIS_FACILITY
+      case 'audit-trail': return AUDIT_TRAIL
+      case 'data-access': return DATA_ACCESS_LOG
+      case 'result-pub': return RESULT_PUBLICATION_LOG
+      case 'cert-issue': return CERTIFICATE_ISSUANCE_LOG
+      case 'tabulation': return TABULATION_APPROVAL_LOG
+      default: return []
     }
   }
 
-  const groupedSections = REPORT_SECTIONS.reduce((acc, section) => {
-    if (!acc[section.category]) acc[section.category] = []
-    acc[section.category].push(section)
-    return acc
-  }, {} as Record<string, typeof REPORT_SECTIONS>)
+  const getReportHeaders = (): string[] => {
+    const data = getReportData()
+    if (data.length === 0) return []
+    return Object.keys(data[0])
+  }
+
+  const renderTableHeaders = () => {
+    const headers = getReportHeaders()
+    return (
+      <TableHeader>
+        <TableRow>
+          {headers.map(header => (
+            <TableHead key={header} className="whitespace-nowrap capitalize">
+              {header.replace(/([A-Z])/g, ' $1').trim()}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+    )
+  }
+
+  const renderTableBody = () => {
+    const data = getReportData()
+    return (
+      <TableBody>
+        {data.map((row, idx) => (
+          <TableRow key={idx}>
+            {Object.values(row).map((cell, cellIdx) => (
+              <TableCell key={cellIdx} className="whitespace-nowrap">
+                {typeof cell === 'number' ? cell.toLocaleString() : cell}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    )
+  }
+
+  const selectedReportDef = getCurrentReports().find(r => r.id === selectedReport)
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-start">
+    <div className="p-6 space-y-6 print:p-0">
+      <div className="flex justify-between items-start print:hidden">
         <div>
           <h1 className="text-2xl font-bold text-deep-plum">Compliance & UGC/BANBAIS</h1>
           <p className="text-gray-600 mt-1">
@@ -217,62 +174,109 @@ export default function ComplianceUGCView() {
         </div>
       </div>
 
+      <div className="border-b border-gray-200 print:hidden">
+        <div className="flex gap-1">
+          <button
+            onClick={() => {
+              setActiveTab('ugc')
+              setSelectedReport('ugc-annual')
+            }}
+            className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+              activeTab === 'ugc'
+                ? 'border-purple-600 text-purple-700 bg-purple-50'
+                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            UGC Reports
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('banbais')
+              setSelectedReport('banbais-student')
+            }}
+            className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+              activeTab === 'banbais'
+                ? 'border-purple-600 text-purple-700 bg-purple-50'
+                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            BANBAIS Reports
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('logs')
+              setSelectedReport('audit-trail')
+            }}
+            className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+              activeTab === 'logs'
+                ? 'border-purple-600 text-purple-700 bg-purple-50'
+                : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+            }`}
+          >
+            Compliance Logs
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-4 gap-6">
-        <div className="col-span-1">
+        <div className="col-span-1 print:hidden">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Report Sections</CardTitle>
+              <CardTitle className="text-lg">
+                {activeTab === 'ugc' ? 'UGC Reports' : activeTab === 'banbais' ? 'BANBAIS Reports' : 'Compliance Logs'}
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="space-y-2 p-2">
-                {Object.entries(groupedSections).map(([category, sections]) => (
-                  <div key={category}>
-                    <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
-                      {category}
-                    </div>
-                    {sections.map(section => (
-                      <Button
-                        key={section.id}
-                        variant="ghost"
-                        className={`w-full justify-start text-sm ${
-                          activeSection === section.id
-                            ? 'bg-purple-50 text-purple-700 font-medium'
-                            : 'text-gray-700'
-                        }`}
-                        onClick={() => setActiveSection(section.id as ReportSection)}
-                      >
-                        {section.name}
-                      </Button>
-                    ))}
-                  </div>
+              <div className="space-y-1 p-2">
+                {getCurrentReports().map(report => (
+                  <button
+                    key={report.id}
+                    onClick={() => setSelectedReport(report.id)}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                      selectedReport === report.id
+                        ? 'bg-purple-50 text-purple-700 font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="font-medium">{report.name}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{report.description}</div>
+                  </button>
                 ))}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="col-span-3">
+        <div className="col-span-3 print:col-span-4">
           <Card>
-            <CardHeader className="border-b">
+            <CardHeader className="border-b print:border-purple-600 print:bg-purple-50">
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-xl">
-                    {REPORT_SECTIONS.find(s => s.id === activeSection)?.name}
+                  <CardTitle className="text-xl print:text-center">
+                    {selectedReportDef?.name}
                   </CardTitle>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Generated: {new Date().toLocaleString()}
+                  <p className="text-sm text-gray-600 mt-1 print:text-center">
+                    {selectedReportDef?.description}
                   </p>
+                  <div className="flex items-center gap-4 mt-3 text-xs text-gray-500 print:justify-center">
+                    <span><strong>Generated:</strong> {new Date().toLocaleString()}</span>
+                    <span><strong>Records:</strong> {getReportData().length}</span>
+                    <Badge className="bg-indigo-100 text-indigo-700">
+                      {activeTab === 'ugc' ? 'UGC Standard' : activeTab === 'banbais' ? 'BANBAIS Format' : 'Compliance Log'}
+                    </Badge>
+                  </div>
                 </div>
-                <Badge className="bg-indigo-100 text-indigo-700">
-                  {REPORT_SECTIONS.find(s => s.id === activeSection)?.category}
-                </Badge>
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="border rounded-lg bg-white overflow-x-auto">
+              <div className="border rounded-lg bg-white overflow-x-auto" style={{ maxHeight: '600px' }}>
                 <Table>
-                  {renderTableContent()}
+                  {renderTableHeaders()}
+                  {renderTableBody()}
                 </Table>
+              </div>
+              <div className="mt-4 pt-4 border-t text-xs text-gray-500 print:text-center">
+                Generated on {new Date().toLocaleDateString()} • Officer: COE Exam Officer • Northern University Bangladesh
               </div>
             </CardContent>
           </Card>
