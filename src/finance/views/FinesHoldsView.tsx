@@ -438,6 +438,144 @@ export default function FinesHoldsView() {
           </Card>
         </div>
       )}
+
+      <Dialog open={viewFineDialogOpen} onOpenChange={setViewFineDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Fine Details</DialogTitle>
+          </DialogHeader>
+
+          {selectedFine && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-mono font-semibold">{selectedFine.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedFine.studentName || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Fine Type</p>
+                  <p className="font-medium">
+                    <Badge variant="outline">{selectedFine.fineType}</Badge>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Amount</p>
+                  <p className="font-semibold text-red-600 text-lg">
+                    {formatCurrency(selectedFine.amount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Date</p>
+                  <p className="font-medium">{selectedFine.date}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Created By</p>
+                  <p className="font-medium">{selectedFine.createdBy || '-'}</p>
+                </div>
+                {selectedFine.remarks && (
+                  <div className="col-span-2">
+                    <p className="text-sm text-gray-600">Remarks</p>
+                    <p className="font-medium">{selectedFine.remarks}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end">
+                <Button variant="outline" onClick={() => setViewFineDialogOpen(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={viewHoldDialogOpen} onOpenChange={setViewHoldDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Hold Details</DialogTitle>
+          </DialogHeader>
+
+          {selectedHold && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-mono font-semibold">{selectedHold.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedHold.studentName || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Hold Type</p>
+                  <p className="font-medium">
+                    <Badge
+                      variant="outline"
+                      className={selectedHold.holdType === 'Finance Hold' ? 'border-red-500 text-red-600' : ''}
+                    >
+                      {selectedHold.holdType}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <p>
+                    <Badge
+                      className={selectedHold.status === 'Active' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}
+                    >
+                      {selectedHold.status}
+                    </Badge>
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600">Reason</p>
+                  <p className="font-medium">{selectedHold.reason}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Date Created</p>
+                  <p className="font-medium">{selectedHold.date}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Created By</p>
+                  <p className="font-medium">{selectedHold.createdBy || '-'}</p>
+                </div>
+                {selectedHold.status === 'Removed' && (
+                  <>
+                    <div>
+                      <p className="text-sm text-gray-600">Removed Date</p>
+                      <p className="font-medium">{selectedHold.removedDate || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Removed By</p>
+                      <p className="font-medium">{selectedHold.removedBy || '-'}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setViewHoldDialogOpen(false)}>
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleToggleHold(selectedHold)
+                    setViewHoldDialogOpen(false)
+                  }}
+                  className={selectedHold.status === 'Active' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
+                >
+                  {selectedHold.status === 'Active' ? 'Remove Hold' : 'Activate Hold'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
