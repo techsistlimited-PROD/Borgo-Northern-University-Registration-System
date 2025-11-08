@@ -362,18 +362,29 @@ function generateWaiverAssignments(bills: StudentBill[]): WaiverAssignment[] {
   return assignments
 }
 
-// Initialize all seeds
-export const studentBillsStatic = generateBills()
-export const paymentsStatic = generatePayments(studentBillsStatic)
-export const refundsStatic = generateRefunds(paymentsStatic)
-export const finesStatic = generateFines(studentBillsStatic)
-export const holdsStatic = generateHolds(studentBillsStatic)
-export const ledgerEntriesStatic = generateLedgerEntries(studentBillsStatic, paymentsStatic, finesStatic, refundsStatic)
-export const bankStatementsStatic = generateBankStatements(paymentsStatic)
-export const waiverAssignmentsStatic = generateWaiverAssignments(studentBillsStatic)
+// Initialize all seeds with guaranteed minimums (DEMO_MODE deterministic)
+const baseBills = generateBills()
+const basePayments = generatePayments(baseBills)
+const baseRefunds = generateRefunds(basePayments)
+const baseFines = generateFines(baseBills)
+const baseHolds = generateHolds(baseBills)
+const baseBankStatements = generateBankStatements(basePayments)
+const baseWaiverAssignments = generateWaiverAssignments(baseBills)
 
-// 90 Unregistered Students for Drop/Readmission report
-export const unregisteredStudentsStatic = studentBillsStatic.filter(b => b.status === 'Overdue').slice(0, 90).map((b, i) => ({
+// Apply ensureMin to guarantee data counts
+export const studentBillsStatic = ensureMin(baseBills, 200, buildDemoBill)
+export const paymentsStatic = ensureMin(basePayments, 120, buildDemoPayment)
+export const refundsStatic = ensureMin(baseRefunds, 20, buildDemoRefund)
+export const finesStatic = ensureMin(baseFines, 60, buildDemoFine)
+export const holdsStatic = ensureMin(baseHolds, 40, buildDemoHold)
+export const bankStatementsStatic = ensureMin(baseBankStatements, 120, (i) => buildDemoBankStmt(i, { matchRatio: 0.66 }))
+export const waiverAssignmentsStatic = ensureMin(baseWaiverAssignments, 80, buildDemoWaiverAssignment)
+
+// Ledger entries built from final datasets (target >= 500)
+export const ledgerEntriesStatic = generateLedgerEntries(studentBillsStatic, paymentsStatic, finesStatic, refundsStatic)
+
+// Unregistered students (target >= 60)
+const baseUnregistered = studentBillsStatic.filter(b => b.status === 'Overdue').slice(0, 60).map((b, i) => ({
   studentId: b.studentId,
   studentName: b.studentName,
   program: b.program,
@@ -382,3 +393,4 @@ export const unregisteredStudentsStatic = studentBillsStatic.filter(b => b.statu
   status: i % 2 === 0 ? 'Dropped' : 'Unregistered',
   dropDate: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0]
 }))
+export const unregisteredStudentsStatic = ensureMin(baseUnregistered, 60, buildDemoUnregistered)
