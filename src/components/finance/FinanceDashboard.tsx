@@ -1,14 +1,68 @@
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { DollarSign, Users, Lock, Award, Download, Eye } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DollarSign, Users, Lock, Award, Download, Eye, FileText } from 'lucide-react'
+
+interface OfficerCollection {
+  officer: string
+  mode: string
+  receipts: number
+  amount: number
+  lastReceipt: string
+}
+
+interface OfficerReceipt {
+  receiptNo: string
+  time: string
+  studentId: string
+  studentName: string
+  amount: number
+  method: string
+}
 
 export default function FinanceDashboard() {
-  const collectionsByOfficer = [
+  const [viewDetailsOpen, setViewDetailsOpen] = useState(false)
+  const [selectedOfficer, setSelectedOfficer] = useState<OfficerCollection | null>(null)
+
+  const collectionsByOfficer: OfficerCollection[] = [
     { officer: 'Mahfuz Rahman (Cash Counter 1)', mode: 'Cash', receipts: 84, amount: 412000, lastReceipt: '11:42 AM' },
     { officer: 'Faria Islam (Online Gateway)', mode: 'Online / SSLCommerz', receipts: 156, amount: 740500, lastReceipt: '11:47 AM' },
     { officer: 'Tanjina Akter (Bank Desk)', mode: 'Bank Deposit Slip', receipts: 72, amount: 300000, lastReceipt: '11:39 AM' }
   ]
+
+  // Generate sample receipts for selected officer
+  const getOfficerReceipts = (officer: OfficerCollection): OfficerReceipt[] => {
+    const receipts: OfficerReceipt[] = []
+    const baseReceiptNo = officer.officer.includes('Mahfuz') ? 1001 : officer.officer.includes('Faria') ? 2001 : 3001
+    const studentNames = ['Nusrat Jahan', 'Rakib Hasan', 'Tahmina Akter', 'Ahmed Khan', 'Sadia Rahman', 'Fatima Khatun', 'Mahbub Alam', 'Rifat Hossain', 'Shirin Akhter', 'Nasrin Begum']
+    const programs = ['CSE', 'BBA', 'LLB', 'MBA', 'EEE']
+
+    const count = Math.min(officer.receipts, 15) // Show max 15 for preview
+    for (let i = 0; i < count; i++) {
+      const hour = 9 + Math.floor(Math.random() * 3)
+      const minute = Math.floor(Math.random() * 60)
+      const ampm = hour < 12 ? 'AM' : 'PM'
+      const displayHour = hour > 12 ? hour - 12 : hour
+
+      receipts.push({
+        receiptNo: `MR-2024-${String(baseReceiptNo + i).padStart(5, '0')}`,
+        time: `${displayHour}:${String(minute).padStart(2, '0')} ${ampm}`,
+        studentId: `2021-${Math.floor(Math.random() * 3) + 1}-${programs[i % programs.length].toLowerCase().substring(0, 2)}-${String(Math.floor(Math.random() * 100)).padStart(3, '0')}`,
+        studentName: studentNames[i % studentNames.length],
+        amount: Math.floor(Math.random() * 50000) + 20000,
+        method: officer.mode
+      })
+    }
+
+    return receipts.sort((a, b) => b.time.localeCompare(a.time))
+  }
+
+  const handleViewDetails = (officer: OfficerCollection) => {
+    setSelectedOfficer(officer)
+    setViewDetailsOpen(true)
+  }
 
   const duesAging = [
     { range: '0–30 days', amount: 6100000, color: 'bg-green-500' },
