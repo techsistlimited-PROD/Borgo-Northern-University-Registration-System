@@ -249,6 +249,94 @@ export default function FinanceDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Officer Collection Details Modal */}
+      <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl">
+              Collection Details - {selectedOfficer?.officer}
+            </DialogTitle>
+            <p className="text-sm text-gray-600">
+              Payment Mode: {selectedOfficer?.mode} | Total Receipts: {selectedOfficer?.receipts} | Total Amount: BDT {selectedOfficer?.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}
+            </p>
+          </DialogHeader>
+
+          {selectedOfficer && (
+            <div className="mt-4">
+              <div className="mb-4 p-4 bg-gray-50 rounded-lg grid grid-cols-3 gap-4">
+                <div>
+                  <p className="text-xs text-gray-600">Total Receipts</p>
+                  <p className="text-2xl font-bold text-deep-plum">{selectedOfficer.receipts}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-600">Total Collected</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    BDT {selectedOfficer.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-600">Last Receipt</p>
+                  <p className="text-2xl font-bold text-gray-700">{selectedOfficer.lastReceipt}</p>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b">
+                      <th className="text-left p-3 text-sm font-medium text-gray-700">Receipt No</th>
+                      <th className="text-left p-3 text-sm font-medium text-gray-700">Time</th>
+                      <th className="text-left p-3 text-sm font-medium text-gray-700">Student ID</th>
+                      <th className="text-left p-3 text-sm font-medium text-gray-700">Student Name</th>
+                      <th className="text-right p-3 text-sm font-medium text-gray-700">Amount (BDT)</th>
+                      <th className="text-left p-3 text-sm font-medium text-gray-700">Method</th>
+                      <th className="text-center p-3 text-sm font-medium text-gray-700">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getOfficerReceipts(selectedOfficer).map((receipt, idx) => (
+                      <tr key={idx} className="border-b hover:bg-gray-50">
+                        <td className="p-3 text-sm font-mono">{receipt.receiptNo}</td>
+                        <td className="p-3 text-sm">{receipt.time}</td>
+                        <td className="p-3 text-sm font-mono">{receipt.studentId}</td>
+                        <td className="p-3 text-sm font-medium">{receipt.studentName}</td>
+                        <td className="p-3 text-sm text-right font-semibold text-green-600">
+                          {receipt.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td className="p-3 text-sm">
+                          <Badge variant="outline">{receipt.method}</Badge>
+                        </td>
+                        <td className="p-3 text-center">
+                          <Button variant="ghost" size="sm" title="View Receipt">
+                            <FileText className="w-4 h-4 text-blue-600" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {selectedOfficer.receipts > 15 && (
+                <p className="text-sm text-gray-600 mt-4 text-center">
+                  Showing 15 of {selectedOfficer.receipts} receipts. Use Payment Records view for complete list.
+                </p>
+              )}
+
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" onClick={() => setViewDetailsOpen(false)}>
+                  Close
+                </Button>
+                <Button className="nu-button-primary">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export to CSV
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
