@@ -46,7 +46,7 @@ export default function ReportPreview({ report, data }: ReportPreviewProps) {
     <div className="space-y-4">
       <div className="border rounded-lg bg-white overflow-x-auto overflow-y-auto" style={{ minWidth: '1100px', maxHeight: '650px' }}>
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 bg-gray-50 z-10">
             <TableRow>
               {report.columns.map((col, idx) => (
                 <TableHead
