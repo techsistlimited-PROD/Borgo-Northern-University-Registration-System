@@ -9,6 +9,7 @@ export type NoticeCategory = 'HR' | 'Accounts' | 'General'
 export interface CostHead {
   id: string
   code: string
+  serialNo: number
   name: string
   type: CostHeadType
   glAccount: string
@@ -38,11 +39,17 @@ export interface WaiverRule {
 
 export interface CostPackage {
   id: string
+  programNo: string
   name: string
   campus: string
   program: string
-  semesterTerm: string
-  effectiveTerm: string
+  semesterFrom: string
+  semesterTo: string
+  currency: string
+  isForeign: boolean
+  activeFrom: string
+  activeTo: string
+  remarks?: string
   components: CostPackageComponent[]
   waiverRules: WaiverRule[]
   status: 'Active' | 'Inactive'

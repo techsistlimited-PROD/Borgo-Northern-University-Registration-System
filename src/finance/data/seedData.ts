@@ -13,46 +13,52 @@ import {
 } from './types'
 
 export const costHeadsSeed: CostHead[] = [
-  { id: '1', code: 'PER_CREDIT_FEE', name: 'Per credit fee', type: 'Tuition', glAccount: '4010', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '2', code: 'ADMISSION_FEE', name: 'Admission fee', type: 'Admission', glAccount: '4020', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '3', code: 'RETAKE_FEE', name: 'Retake fee', type: 'Tuition', glAccount: '4030', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '4', code: 'SEMESTER_FEE', name: 'Semester fee', type: 'Registration', glAccount: '4040', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '5', code: 'FOUNDATION_COURSE', name: 'Foundation course', type: 'Tuition', glAccount: '4050', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '6', code: 'LAB_FEE', name: 'Lab fee', type: 'Lab', glAccount: '4060', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '7', code: 'LIBRARY_FEE', name: 'Library fee', type: 'Library', glAccount: '4070', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '8', code: 'EXAM_FEE', name: 'Exam fee', type: 'Exam', glAccount: '4080', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '9', code: 'SPECIAL_EXAM_FEE', name: 'Special exam fee', type: 'Exam', glAccount: '4090', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '10', code: 'LATE_FINE', name: 'Late fine', type: 'Penalty', glAccount: '4100', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '11', code: 'ID_CARD_FEE', name: 'ID card fee', type: 'Others', glAccount: '4110', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '12', code: 'TRANSCRIPT_FEE', name: 'Transcript fee', type: 'Others', glAccount: '4120', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '13', code: 'CERTIFICATE_FEE', name: 'Certificate fee', type: 'Others', glAccount: '4130', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '14', code: 'CONVOCATION_FEE', name: 'Convocation fee', type: 'Others', glAccount: '4140', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '15', code: 'MEDICAL_FEE', name: 'Medical fee', type: 'Others', glAccount: '4150', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '16', code: 'TRANSPORT_FEE', name: 'Transport fee', type: 'Others', glAccount: '4160', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '17', code: 'ACTIVITY_FEE', name: 'Activity fee', type: 'Others', glAccount: '4170', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '18', code: 'DEVELOPMENT_FEE', name: 'Development fee', type: 'Others', glAccount: '4180', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '19', code: 'DROP_FEE', name: 'Drop fee', type: 'Penalty', glAccount: '4190', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '20', code: 'READMISSION_FEE', name: 'Re-admission fee', type: 'Penalty', glAccount: '4200', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '21', code: 'LATE_REGISTRATION_FEE', name: 'Late Registration fee', type: 'Penalty', glAccount: '4210', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '22', code: 'STIPEND', name: 'Stipend', type: 'Others', glAccount: '4220', taxable: false, status: 'Active', description: 'Deduction - student stipend', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-  { id: '23', code: 'MISC_DEDUCTION', name: 'Miscellaneous deduction', type: 'Others', glAccount: '4230', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' }
+  { id: '1', code: '001', serialNo: 1, name: 'per credit fee', type: 'Tuition', glAccount: '4010', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '2', code: '002', serialNo: 2, name: 'repeat', type: 'Tuition', glAccount: '4020', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '3', code: '003', serialNo: 3, name: 'admission fee', type: 'Admission', glAccount: '4030', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '4', code: '004', serialNo: 4, name: 'semester fee', type: 'Registration', glAccount: '4040', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '5', code: '005', serialNo: 5, name: 'others', type: 'Others', glAccount: '4050', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '6', code: '006', serialNo: 6, name: 'F/Asst', type: 'Others', glAccount: '4060', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '7', code: '007', serialNo: 7, name: 'Stipend', type: 'Others', glAccount: '4070', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '8', code: '008', serialNo: 8, name: 'Other deduction', type: 'Others', glAccount: '4080', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '9', code: '009', serialNo: 9, name: 'Withdraw', type: 'Penalty', glAccount: '4090', taxable: false, status: 'Active', description: 'migrated from old database', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '10', code: '010', serialNo: 10, name: 'Lab fee', type: 'Lab', glAccount: '4100', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '11', code: '011', serialNo: 11, name: 'Library fee', type: 'Library', glAccount: '4110', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '12', code: '012', serialNo: 12, name: 'Exam fee', type: 'Exam', glAccount: '4120', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '13', code: '013', serialNo: 13, name: 'Special exam fee', type: 'Exam', glAccount: '4130', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '14', code: '014', serialNo: 14, name: 'Late fine', type: 'Penalty', glAccount: '4140', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '15', code: '015', serialNo: 15, name: 'ID card fee', type: 'Others', glAccount: '4150', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '16', code: '016', serialNo: 16, name: 'Transcript fee', type: 'Others', glAccount: '4160', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '17', code: '017', serialNo: 17, name: 'Certificate fee', type: 'Others', glAccount: '4170', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '18', code: '018', serialNo: 18, name: 'Convocation fee', type: 'Others', glAccount: '4180', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '19', code: '019', serialNo: 19, name: 'Medical fee', type: 'Others', glAccount: '4190', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '20', code: '020', serialNo: 20, name: 'Transport fee', type: 'Others', glAccount: '4200', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '21', code: '021', serialNo: 21, name: 'Activity fee', type: 'Others', glAccount: '4210', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '22', code: '022', serialNo: 22, name: 'Development fee', type: 'Others', glAccount: '4220', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+  { id: '23', code: '023', serialNo: 23, name: 'Drop fee', type: 'Penalty', glAccount: '4230', taxable: false, status: 'Active', createdAt: '2024-01-01', updatedAt: '2024-01-01' }
 ]
 
 export const costPackagesSeed: CostPackage[] = [
   {
     id: 'pkg1',
+    programNo: '674',
     name: 'CSE - Main Campus - FA25',
-    campus: 'Main Campus',
+    campus: 'Permanent Campus',
     program: 'CSE',
-    semesterTerm: 'Fall',
-    effectiveTerm: 'FA25',
+    semesterFrom: 'Spring 24',
+    semesterTo: '',
+    currency: 'BDT',
+    isForeign: false,
+    activeFrom: '2024-09-01',
+    activeTo: '',
+    remarks: '',
     components: [
-      { id: 'c1', costHeadCode: 'ADMISSION_FEE', mode: 'Flat', rate: 15000, order: 1 },
-      { id: 'c2', costHeadCode: 'PER_CREDIT_FEE', mode: 'Per Credit', rate: 4500, minCap: 9, maxCap: 18, order: 2 },
-      { id: 'c3', costHeadCode: 'SEMESTER_FEE', mode: 'Flat', rate: 3000, order: 3 },
-      { id: 'c4', costHeadCode: 'LAB_FEE', mode: 'Flat', rate: 5000, order: 4 },
-      { id: 'c5', costHeadCode: 'LIBRARY_FEE', mode: 'Flat', rate: 1500, order: 5 },
-      { id: 'c6', costHeadCode: 'EXAM_FEE', mode: 'Flat', rate: 2000, order: 6 }
+      { id: 'c1', costHeadCode: '003', mode: 'Flat', rate: 15000, order: 1 },
+      { id: 'c2', costHeadCode: '001', mode: 'Per Credit', rate: 4500, minCap: 9, maxCap: 18, order: 2 },
+      { id: 'c3', costHeadCode: '004', mode: 'Flat', rate: 3000, order: 3 },
+      { id: 'c4', costHeadCode: '010', mode: 'Flat', rate: 5000, order: 4 },
+      { id: 'c5', costHeadCode: '011', mode: 'Flat', rate: 1500, order: 5 },
+      { id: 'c6', costHeadCode: '012', mode: 'Flat', rate: 2000, order: 6 }
     ],
     waiverRules: [
       { id: 'w1', policyCode: 'MERIT50', percentCap: 50, allowBillOverride: true },
@@ -64,16 +70,22 @@ export const costPackagesSeed: CostPackage[] = [
   },
   {
     id: 'pkg2',
+    programNo: '688',
     name: 'BBA - Main Campus - FA25',
-    campus: 'Main Campus',
+    campus: 'Permanent Campus',
     program: 'BBA',
-    semesterTerm: 'Fall',
-    effectiveTerm: 'FA25',
+    semesterFrom: 'Spring 24',
+    semesterTo: '',
+    currency: 'BDT',
+    isForeign: false,
+    activeFrom: '2024-09-01',
+    activeTo: '',
+    remarks: '',
     components: [
-      { id: 'c7', costHeadCode: 'ADMISSION_FEE', mode: 'Flat', rate: 12000, order: 1 },
-      { id: 'c8', costHeadCode: 'PER_CREDIT_FEE', mode: 'Per Credit', rate: 3800, minCap: 9, maxCap: 18, order: 2 },
-      { id: 'c9', costHeadCode: 'SEMESTER_FEE', mode: 'Flat', rate: 2500, order: 3 },
-      { id: 'c10', costHeadCode: 'LIBRARY_FEE', mode: 'Flat', rate: 1200, order: 4 }
+      { id: 'c7', costHeadCode: '003', mode: 'Flat', rate: 12000, order: 1 },
+      { id: 'c8', costHeadCode: '001', mode: 'Per Credit', rate: 3800, minCap: 9, maxCap: 18, order: 2 },
+      { id: 'c9', costHeadCode: '004', mode: 'Flat', rate: 2500, order: 3 },
+      { id: 'c10', costHeadCode: '011', mode: 'Flat', rate: 1200, order: 4 }
     ],
     waiverRules: [
       { id: 'w3', policyCode: 'MERIT30', percentCap: 30, allowBillOverride: false }
@@ -84,15 +96,21 @@ export const costPackagesSeed: CostPackage[] = [
   },
   {
     id: 'pkg3',
+    programNo: '717',
     name: 'LLB - Uttara Campus - FA25',
-    campus: 'Uttara Campus',
+    campus: 'Permanent Campus',
     program: 'LLB',
-    semesterTerm: 'Fall',
-    effectiveTerm: 'FA25',
+    semesterFrom: 'Spring 25',
+    semesterTo: '',
+    currency: 'BDT',
+    isForeign: false,
+    activeFrom: '2024-09-01',
+    activeTo: '',
+    remarks: '',
     components: [
-      { id: 'c11', costHeadCode: 'ADMISSION_FEE', mode: 'Flat', rate: 10000, order: 1 },
-      { id: 'c12', costHeadCode: 'PER_CREDIT_FEE', mode: 'Per Credit', rate: 3500, minCap: 12, maxCap: 18, order: 2 },
-      { id: 'c13', costHeadCode: 'SEMESTER_FEE', mode: 'Flat', rate: 2000, order: 3 }
+      { id: 'c11', costHeadCode: '003', mode: 'Flat', rate: 10000, order: 1 },
+      { id: 'c12', costHeadCode: '001', mode: 'Per Credit', rate: 3500, minCap: 12, maxCap: 18, order: 2 },
+      { id: 'c13', costHeadCode: '004', mode: 'Flat', rate: 2000, order: 3 }
     ],
     waiverRules: [],
     status: 'Active',
@@ -119,7 +137,7 @@ export const lateFeePoliciesSeed: LateFeePolicy[] = [
   {
     id: 'lfp1',
     name: 'Standard Late Fee Tiers',
-    costHeadCode: 'LATE_FINE',
+    costHeadCode: '014',
     active: true,
     rules: [
       { id: 'r1', name: 'Less than 40% paid', threshold: 40, feeType: 'Percent', feeAmount: 10, order: 1 },
@@ -137,8 +155,8 @@ export const dropReadmissionPoliciesSeed: DropReadmissionPolicy[] = [
     dropFee: 1000,
     readmissionFee: 5000,
     absentThreshold: 2,
-    dropCostHeadCode: 'DROP_FEE',
-    readmissionCostHeadCode: 'READMISSION_FEE'
+    dropCostHeadCode: '023',
+    readmissionCostHeadCode: '023'
   },
   {
     id: 'drp2',
@@ -146,8 +164,8 @@ export const dropReadmissionPoliciesSeed: DropReadmissionPolicy[] = [
     dropFee: 1500,
     readmissionFee: 5000,
     absentThreshold: 1,
-    dropCostHeadCode: 'DROP_FEE',
-    readmissionCostHeadCode: 'READMISSION_FEE'
+    dropCostHeadCode: '023',
+    readmissionCostHeadCode: '023'
   }
 ]
 
