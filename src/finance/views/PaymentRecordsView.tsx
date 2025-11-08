@@ -182,74 +182,94 @@ export default function PaymentRecordsView() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student Id</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student Name</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Semester</th>
-                  <th className="text-right p-3 text-sm font-medium text-gray-700">Received Amount</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Date</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Method</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Purpose</th>
-                  <th className="text-center p-3 text-sm font-medium text-gray-700">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPayments.map(payment => (
-                  <tr key={payment.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3 text-sm">{payment.studentId}</td>
-                    <td className="p-3 text-sm font-medium">{payment.studentName}</td>
-                    <td className="p-3 text-sm">{payment.semester}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-green-600">
-                      {formatCurrency(payment.totalAmount)}
-                    </td>
-                    <td className="p-3 text-sm">{payment.paymentDate}</td>
-                    <td className="p-3 text-sm">
-                      <Badge variant="outline">{payment.method}</Badge>
-                    </td>
-                    <td className="p-3 text-sm">{extractPurpose(payment)}</td>
-                    <td className="p-3">
-                      <div className="flex justify-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleViewPayment(payment)}
-                          title="View"
-                        >
-                          <Eye className="w-4 h-4 text-blue-600" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditPayment(payment)}
-                          title="Edit"
-                        >
-                          <Edit className="w-4 h-4 text-green-600" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeletePayment(payment.id)}
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          title="PDF"
-                        >
-                          <FileText className="w-4 h-4 text-orange-600" />
-                        </Button>
-                      </div>
-                    </td>
+          {filteredPayments.length === 0 ? (
+            <EmptyState
+              icon={Inbox}
+              title="No payments found"
+              subtitle="No payment records match your current filters. Try adjusting your search criteria."
+              actionLabel="Clear Filters"
+              onAction={() => {
+                setPaymentMethodFilter('All')
+                setPaymentPurposeFilter('All')
+                setStudentIdFilter('')
+                setSemesterFilter('All')
+                setAnnexFilter('All')
+                setProgramFilter('All')
+                setPaymentDateFilter('')
+              }}
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Student Id</th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Student Name</th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Semester</th>
+                    <th className="text-right p-3 text-sm font-medium text-gray-700">Received Amount</th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Date</th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Method</th>
+                    <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Purpose</th>
+                    <th className="text-center p-3 text-sm font-medium text-gray-700">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {filteredPayments.map(payment => (
+                    <tr key={payment.id} className="border-b hover:bg-gray-50">
+                      <td className="p-3 text-sm">{payment.studentId}</td>
+                      <td className="p-3 text-sm font-medium">{payment.studentName}</td>
+                      <td className="p-3 text-sm">{payment.semester}</td>
+                      <td className="p-3 text-sm text-right font-semibold text-green-600">
+                        {formatCurrency(payment.totalAmount)}
+                      </td>
+                      <td className="p-3 text-sm">{payment.paymentDate}</td>
+                      <td className="p-3 text-sm">
+                        <Badge variant="outline">{payment.method}</Badge>
+                      </td>
+                      <td className="p-3 text-sm">{extractPurpose(payment)}</td>
+                      <td className="p-3">
+                        <div className="flex justify-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewPayment(payment)}
+                            title="View Receipt"
+                          >
+                            <Eye className="w-4 h-4 text-blue-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditPayment(payment)}
+                            title={DEMO_MODE ? "Disabled in demo" : "Edit"}
+                            disabled={DEMO_MODE}
+                          >
+                            <Edit className="w-4 h-4 text-green-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeletePayment(payment.id)}
+                            title={DEMO_MODE ? "Disabled in demo" : "Delete"}
+                            disabled={DEMO_MODE}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title="PDF"
+                          >
+                            <FileText className="w-4 h-4 text-orange-600" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 
