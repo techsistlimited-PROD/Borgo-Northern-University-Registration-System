@@ -44,6 +44,8 @@ import GeographicSettings from '@/components/admin/GeographicSettings'
 import StudentQuotas from '@/components/admin/StudentQuotas'
 import GuardianOccupations from '@/components/admin/GuardianOccupations'
 import RelationshipList from '@/components/admin/RelationshipList'
+import IPLoginAuditView from '@/components/admin/IPLoginAuditView'
+import DataUpdateHistoryView from '@/components/admin/DataUpdateHistoryView'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -115,6 +117,10 @@ export default function AdminDashboard() {
         return <EmailLogsView />
       case 'IP Blocklist':
         return <IPBlocklistView />
+      case 'IP Based Login Audit':
+        return <IPLoginAuditView />
+      case 'Data Update History':
+        return <DataUpdateHistoryView />
       case 'Permissions by User':
         return <PermissionsReportsByUser />
       case 'Permissions by Role':

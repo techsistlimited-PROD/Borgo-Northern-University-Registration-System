@@ -61,10 +61,12 @@ const sections: SidebarSection[] = [
     items: [
       '2FA Settings',
       'Login Audit',
+      'IP Based Login Audit',
       'Permission Change Logs',
       'Password Reset Logs',
       'Email Verification Logs',
-      'IP Blocklist'
+      'IP Blocklist',
+      'Data Update History'
     ]
   },
   {
