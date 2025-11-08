@@ -1,360 +1,390 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
-import { Search, DollarSign, Receipt, CheckCircle, AlertCircle } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { StudentBill, Payment, PaymentMethod, PaymentAllocation } from '../data/types'
-import { formatCurrency, allocatePaymentToEarliestDues, addLedgerEntry } from '../utils/financeUtils'
+import { StudentBill, Payment, PaymentMethod } from '../data/types'
+import { formatCurrency, addLedgerEntry } from '../utils/financeUtils'
+import { useNavigate } from 'react-router-dom'
 
 export default function PaymentCollectionView() {
-  const [studentSearch, setStudentSearch] = useState('')
-  const [selectedStudent, setSelectedStudent] = useState<any>(null)
-  const [studentBills, setStudentBills] = useState<StudentBill[]>([])
-  const [paymentAmount, setPaymentAmount] = useState('')
+  const navigate = useNavigate()
+  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0])
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Cash')
-  const [transactionRef, setTransactionRef] = useState('')
-  const [notes, setNotes] = useState('')
-  const [allocations, setAllocations] = useState<PaymentAllocation[]>([])
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [receiptNo, setReceiptNo] = useState('')
-  const [showReceipt, setShowReceipt] = useState(false)
+  const [annex, setAnnex] = useState('Permanent Campus')
+  const [program, setProgram] = useState('CSE')
+  const [semester, setSemester] = useState('Fall 2025')
+  const [studentId, setStudentId] = useState('')
+  const [paymentAmount, setPaymentAmount] = useState('')
+  const [moneyReceiptNo, setMoneyReceiptNo] = useState('')
+  const [inWords, setInWords] = useState('')
+  const [purpose, setPurpose] = useState('Installment')
+  const [remarks, setRemarks] = useState('')
+  
+  const [studentInfo, setStudentInfo] = useState<any>(null)
+  const [paymentSummary, setPaymentSummary] = useState({
+    chargeOfPresentSemester: 0,
+    totalReceivable: 0,
+    totalReceived: 0,
+    presentDues: 0,
+    fortyPercentPayable: 0,
+    seventyPercentPayable: 0
+  })
 
-  const handleSearchStudent = () => {
-    const bills = Repo.get<StudentBill>('finance-student-bills')
-    const studentBills = bills.filter(b => 
-      b.studentId === studentSearch || 
-      b.studentName.toLowerCase().includes(studentSearch.toLowerCase())
-    )
-
-    if (studentBills.length > 0) {
-      setSelectedStudent({
-        id: studentBills[0].studentId,
-        name: studentBills[0].studentName,
-        program: studentBills[0].program,
-        campus: studentBills[0].campus
-      })
-      setStudentBills(studentBills.filter(b => b.balanceDue > 0))
-    } else {
-      alert('Student not found or has no bills')
-      setSelectedStudent(null)
-      setStudentBills([])
+  useEffect(() => {
+    if (studentId) {
+      const bills = Repo.get<StudentBill>('finance-student-bills')
+      const studentBills = bills.filter(b => b.studentId === studentId)
+      
+      if (studentBills.length > 0) {
+        const currentSemBill = studentBills.find(b => b.semester === semester)
+        const chargeOfPresentSemester = currentSemBill?.netTotal || 0
+        const totalReceivable = studentBills.reduce((sum, b) => sum + b.netTotal, 0)
+        const totalReceived = studentBills.reduce((sum, b) => sum + b.paidAmount, 0)
+        const presentDues = totalReceivable - totalReceived
+        
+        setStudentInfo({
+          name: studentBills[0].studentName,
+          program: studentBills[0].program,
+          campus: studentBills[0].campus
+        })
+        
+        setPaymentSummary({
+          chargeOfPresentSemester,
+          totalReceivable,
+          totalReceived,
+          presentDues,
+          fortyPercentPayable: chargeOfPresentSemester * 0.4,
+          seventyPercentPayable: chargeOfPresentSemester * 0.7
+        })
+      }
     }
+  }, [studentId, semester])
+
+  useEffect(() => {
+    if (paymentAmount) {
+      const amount = parseFloat(paymentAmount)
+      if (!isNaN(amount)) {
+        setInWords(numberToWords(amount))
+      }
+    }
+  }, [paymentAmount])
+
+  const numberToWords = (num: number): string => {
+    if (num === 0) return 'Zero Taka Only'
+    
+    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
+    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
+    
+    const convert = (n: number): string => {
+      if (n < 10) return ones[n]
+      if (n < 20) return teens[n - 10]
+      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '')
+      if (n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' ' + convert(n % 100) : '')
+      if (n < 100000) return convert(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 ? ' ' + convert(n % 1000) : '')
+      if (n < 10000000) return convert(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 ? ' ' + convert(n % 100000) : '')
+      return convert(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 ? ' ' + convert(n % 10000000) : '')
+    }
+    
+    return convert(Math.floor(num)) + ' Taka Only'
   }
 
-  const handleProcessPayment = () => {
-    if (!selectedStudent || !paymentAmount || parseFloat(paymentAmount) <= 0) {
-      alert('Please enter valid payment details')
+  const handleSubmit = () => {
+    if (!studentId || !paymentAmount || !moneyReceiptNo) {
+      alert('Please fill in all required fields')
       return
     }
 
-    setIsProcessing(true)
-
     const amount = parseFloat(paymentAmount)
-    const allocs = allocatePaymentToEarliestDues(selectedStudent.id, amount)
-    setAllocations(allocs)
-
-    let receiptCounter = Repo.get<Payment>('finance-payments').length + 1
-    const year = new Date().getFullYear()
-    const receiptNumber = `MR-${year}-${String(receiptCounter).padStart(5, '0')}`
-    setReceiptNo(receiptNumber)
-
+    
     const payment: Payment = {
       id: `pay-${Date.now()}`,
-      receiptNo: receiptNumber,
-      studentId: selectedStudent.id,
-      studentName: selectedStudent.name,
-      program: selectedStudent.program,
-      campus: selectedStudent.campus,
-      semester: studentBills[0]?.semester || 'Fall 2025',
-      paymentDate: new Date().toISOString().split('T')[0],
+      receiptNo: moneyReceiptNo,
+      studentId,
+      studentName: studentInfo?.name || studentId,
+      program: studentInfo?.program || program,
+      campus: studentInfo?.campus || annex,
+      semester,
+      paymentDate,
       paymentTime: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
       totalAmount: amount,
       method: paymentMethod,
-      allocations: allocs,
+      allocations: [],
       collectedBy: 'Accounts Officer',
       status: 'Completed',
-      transactionRef: transactionRef || undefined,
-      notes: notes || undefined,
+      notes: remarks || `${purpose} payment`,
       createdAt: new Date().toISOString()
     }
 
     Repo.add('finance-payments', payment)
 
     addLedgerEntry(
-      selectedStudent.id,
+      studentId,
       'Payment',
-      receiptNumber,
-      `Payment received via ${paymentMethod}`,
+      moneyReceiptNo,
+      `${purpose} - ${paymentMethod}`,
       0,
       amount
     )
 
-    setShowReceipt(true)
-  }
+    const bills = Repo.get<StudentBill>('finance-student-bills')
+    const studentBills = bills.filter(b => b.studentId === studentId && b.balanceDue > 0)
+      .sort((a, b) => new Date(a.billDate).getTime() - new Date(b.billDate).getTime())
 
-  const handleNewPayment = () => {
-    setStudentSearch('')
-    setSelectedStudent(null)
-    setStudentBills([])
+    let remaining = amount
+    studentBills.forEach(bill => {
+      if (remaining > 0) {
+        const allocate = Math.min(remaining, bill.balanceDue)
+        const newPaid = bill.paidAmount + allocate
+        const newBalance = bill.balanceDue - allocate
+        
+        Repo.update('finance-student-bills', bill.id, {
+          paidAmount: newPaid,
+          balanceDue: newBalance,
+          status: newBalance === 0 ? 'Paid' : 'Partial'
+        })
+        
+        remaining -= allocate
+      }
+    })
+
+    alert('Payment recorded successfully!')
+    
+    setStudentId('')
     setPaymentAmount('')
-    setPaymentMethod('Cash')
-    setTransactionRef('')
-    setNotes('')
-    setAllocations([])
-    setIsProcessing(false)
-    setReceiptNo('')
-    setShowReceipt(false)
+    setMoneyReceiptNo('')
+    setRemarks('')
+    setStudentInfo(null)
   }
 
-  const totalDue = studentBills.reduce((sum, b) => sum + b.balanceDue, 0)
   const paymentMethods: PaymentMethod[] = ['Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
+  const purposes = ['Installment', 'Full Payment', 'Readmission Fee', 'Others']
+  const annexes = ['Permanent Campus', 'Uttara', 'Lakshmipur']
+  const programs = ['CSE', 'BBA', 'LLB', 'EEE', 'English']
+  const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Payment Collection</h1>
-          <p className="text-sm text-gray-600">Collect payments with earliest dues allocation</p>
-        </div>
+        <Button className="nu-button-primary">
+          Create Students Payment
+        </Button>
+        <Button 
+          variant="outline"
+          onClick={() => navigate('/finance/payment-records')}
+        >
+          Students Payment List
+        </Button>
       </div>
 
-      {!selectedStudent && !showReceipt && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Search Student</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-3">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Enter Student ID or Name..."
-                  value={studentSearch}
-                  onChange={(e) => setStudentSearch(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearchStudent()}
-                  className="pl-10"
-                />
-              </div>
-              <Button onClick={handleSearchStudent} className="nu-button-primary">
-                <Search className="w-4 h-4 mr-2" />
-                Search
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {selectedStudent && !showReceipt && (
-        <div className="space-y-6">
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2">
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>{selectedStudent.name}</CardTitle>
-                  <p className="text-sm text-gray-600">
-                    {selectedStudent.id} • {selectedStudent.program} • {selectedStudent.campus}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Total Outstanding</p>
-                  <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDue)}</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <p className="font-medium text-sm">Open Bills (sorted by earliest due):</p>
-                <div className="border rounded">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="text-left p-3 text-xs font-medium">Bill No</th>
-                        <th className="text-left p-3 text-xs font-medium">Semester</th>
-                        <th className="text-left p-3 text-xs font-medium">Bill Date</th>
-                        <th className="text-left p-3 text-xs font-medium">Due Date</th>
-                        <th className="text-right p-3 text-xs font-medium">Net Total</th>
-                        <th className="text-right p-3 text-xs font-medium">Paid</th>
-                        <th className="text-right p-3 text-xs font-medium">Balance Due</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentBills.map(bill => (
-                        <tr key={bill.id} className="border-t hover:bg-gray-50">
-                          <td className="p-3 text-sm font-mono">{bill.billNo}</td>
-                          <td className="p-3 text-sm">{bill.semester}</td>
-                          <td className="p-3 text-sm">{bill.billDate}</td>
-                          <td className="p-3 text-sm">{bill.dueDate}</td>
-                          <td className="p-3 text-sm text-right">{formatCurrency(bill.netTotal)}</td>
-                          <td className="p-3 text-sm text-right">{formatCurrency(bill.paidAmount)}</td>
-                          <td className="p-3 text-sm text-right font-semibold text-red-600">
-                            {formatCurrency(bill.balanceDue)}
-                          </td>
-                        </tr>
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Payment Date *</label>
+                    <Input
+                      type="date"
+                      value={paymentDate}
+                      onChange={(e) => setPaymentDate(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Payment Method *</label>
+                    <select
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      {paymentMethods.map(method => (
+                        <option key={method} value={method}>{method}</option>
                       ))}
-                    </tbody>
-                  </table>
+                    </select>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Payment Amount *</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Annex *</label>
+                    <select
+                      value={annex}
+                      onChange={(e) => setAnnex(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      {annexes.map(a => (
+                        <option key={a} value={a}>{a}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Program *</label>
+                    <select
+                      value={program}
+                      onChange={(e) => setProgram(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      {programs.map(p => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Semester *</label>
+                    <select
+                      value={semester}
+                      onChange={(e) => setSemester(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      {semesters.map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Student Id *</label>
+                    <Input
+                      placeholder="Enter Student ID"
+                      value={studentId}
+                      onChange={(e) => setStudentId(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Payment Amount *</label>
                     <Input
                       type="number"
+                      placeholder="0.00"
                       value={paymentAmount}
                       onChange={(e) => setPaymentAmount(e.target.value)}
-                      placeholder="0.00"
-                      className="pl-10"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Money Receipt No *</label>
+                    <Input
+                      placeholder="Enter receipt number"
+                      value={moneyReceiptNo}
+                      onChange={(e) => setMoneyReceiptNo(e.target.value)}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Payment Method *</label>
-                  <select
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  >
-                    {paymentMethods.map(method => (
-                      <option key={method} value={method}>{method}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {(paymentMethod === 'bKash' || paymentMethod === 'SSLCommerz' || paymentMethod === 'DBBL Nexus') && (
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Transaction Reference</label>
-                    <Input
-                      value={transactionRef}
-                      onChange={(e) => setTransactionRef(e.target.value)}
-                      placeholder="Enter transaction ID"
-                    />
-                  </div>
-                )}
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium mb-2">Notes (optional)</label>
-                  <textarea
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                    rows={2}
-                    placeholder="Additional notes..."
+                  <label className="block text-sm font-medium mb-1">In Words</label>
+                  <Input
+                    value={inWords}
+                    readOnly
+                    className="bg-gray-50"
                   />
                 </div>
-              </div>
 
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium mb-1">Earliest Dues Allocation</p>
-                    <p>Payment will be allocated to bills in order of bill date, then due date (earliest first). Any overflow will roll to the next bill automatically.</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Purpose *</label>
+                    <select
+                      value={purpose}
+                      onChange={(e) => setPurpose(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    >
+                      {purposes.map(p => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Remarks</label>
+                    <Input
+                      placeholder="Optional remarks"
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                    />
                   </div>
                 </div>
-              </div>
 
-              <div className="flex justify-between mt-6">
-                <Button variant="outline" onClick={() => setSelectedStudent(null)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleProcessPayment}
-                  className="nu-button-primary"
-                  disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
-                >
-                  <Receipt className="w-4 h-4 mr-2" />
-                  Process Payment
-                </Button>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline">
+                    Reset
+                  </Button>
+                  <Button onClick={handleSubmit} className="nu-button-primary">
+                    Submit Payment
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
-      )}
 
-      {showReceipt && (
-        <Card className="border-green-200 bg-green-50">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-6 h-6 text-green-600" />
-              <CardTitle className="text-green-800">Payment Successful!</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="bg-white rounded p-4 border border-green-200">
-                <p className="text-sm text-gray-600 mb-1">Receipt Number</p>
-                <p className="text-2xl font-bold text-deep-plum">{receiptNo}</p>
-              </div>
+        <div>
+          <Card className="sticky top-6">
+            <CardContent className="pt-6">
+              {studentInfo ? (
+                <div className="space-y-4">
+                  <div className="pb-3 border-b">
+                    <p className="text-sm font-medium text-gray-600">Student Information</p>
+                    <p className="font-semibold">{studentInfo.name}</p>
+                    <p className="text-sm text-gray-600">{studentId}</p>
+                  </div>
 
-              <div className="bg-white rounded p-4 border">
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <p className="text-gray-600">Student</p>
-                    <p className="font-medium">{selectedStudent.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Student ID</p>
-                    <p className="font-medium">{selectedStudent.id}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Amount Paid</p>
-                    <p className="font-medium text-green-600">{formatCurrency(parseFloat(paymentAmount))}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Payment Method</p>
-                    <p className="font-medium">{paymentMethod}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Date/Time</p>
-                    <p className="font-medium">{new Date().toLocaleString()}</p>
-                  </div>
-                  {transactionRef && (
-                    <div>
-                      <p className="text-gray-600">Transaction Ref</p>
-                      <p className="font-medium font-mono text-xs">{transactionRef}</p>
+                  <div className="space-y-3">
+                    <div className="flex justify-between p-3 bg-blue-50 rounded">
+                      <span className="text-sm font-medium">Charge of Present Semester</span>
+                      <span className="font-semibold text-blue-600">
+                        {formatCurrency(paymentSummary.chargeOfPresentSemester)}
+                      </span>
                     </div>
-                  )}
-                </div>
-              </div>
 
-              <div className="bg-white rounded p-4 border">
-                <p className="font-medium text-sm mb-2">Payment Allocation ({allocations.length} bills):</p>
-                <div className="space-y-2">
-                  {allocations.map((alloc, idx) => (
-                    <div key={idx} className="flex justify-between text-sm border-b pb-2">
-                      <span className="font-mono">{alloc.billNo}</span>
-                      <span className="font-semibold">{formatCurrency(alloc.allocatedAmount)}</span>
+                    <div className="flex justify-between p-3 bg-gray-50 rounded">
+                      <span className="text-sm font-medium">Total Receivable</span>
+                      <span className="font-semibold">
+                        {formatCurrency(paymentSummary.totalReceivable)}
+                      </span>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              <div className="flex gap-2">
-                <Button onClick={handleNewPayment} className="flex-1 nu-button-primary">
-                  New Payment
-                </Button>
-                <Button variant="outline" className="flex-1">
-                  Print Receipt
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                    <div className="flex justify-between p-3 bg-gray-50 rounded">
+                      <span className="text-sm font-medium">Total Received</span>
+                      <span className="font-semibold text-green-600">
+                        {formatCurrency(paymentSummary.totalReceived)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between p-3 bg-red-50 rounded">
+                      <span className="text-sm font-medium">Present Dues</span>
+                      <span className="font-semibold text-red-600">
+                        {formatCurrency(paymentSummary.presentDues)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between p-3 bg-yellow-50 rounded">
+                      <span className="text-sm font-medium">40% Payable</span>
+                      <span className="font-semibold text-yellow-700">
+                        {formatCurrency(paymentSummary.fortyPercentPayable)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between p-3 bg-green-50 rounded">
+                      <span className="text-sm font-medium">70% Payable</span>
+                      <span className="font-semibold text-green-700">
+                        {formatCurrency(paymentSummary.seventyPercentPayable)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-gray-500 py-8">
+                  <p className="text-sm">Enter Student ID to view payment summary</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

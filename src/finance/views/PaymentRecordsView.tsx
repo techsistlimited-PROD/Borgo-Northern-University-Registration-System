@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Search, Receipt, Download, Printer } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Search, Eye, Edit, Trash2, FileText } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { Payment } from '../data/types'
-import { formatCurrency, formatShortId } from '../utils/financeUtils'
-import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
+import { Payment, PaymentMethod } from '../data/types'
+import { formatCurrency } from '../utils/financeUtils'
 
 export default function PaymentRecordsView() {
   const [payments, setPayments] = useState<Payment[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
-  const { filters } = useFinanceFilters()
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>('All')
+  const [paymentPurposeFilter, setPaymentPurposeFilter] = useState('All')
+  const [studentIdFilter, setStudentIdFilter] = useState('')
+  const [semesterFilter, setSemesterFilter] = useState('All')
+  const [annexFilter, setAnnexFilter] = useState('All')
+  const [programFilter, setProgramFilter] = useState('All')
+  const [paymentDateFilter, setPaymentDateFilter] = useState('')
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
 
   useEffect(() => {
     loadPayments()
@@ -25,103 +32,214 @@ export default function PaymentRecordsView() {
     setPayments(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
   }
 
+  const handleSearch = () => {
+    loadPayments()
+  }
+
+  const extractPurpose = (payment: Payment): string => {
+    if (payment.notes?.includes('Installment')) return 'Installment'
+    if (payment.notes?.includes('Full Payment')) return 'Full Payment'
+    if (payment.notes?.includes('Readmission')) return 'Readmission Fee'
+    return 'Others'
+  }
+
   const filteredPayments = payments.filter(p => {
-    const matchesSearch =
-      p.receiptNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.studentName.toLowerCase().includes(searchTerm.toLowerCase())
+    const purpose = extractPurpose(p)
+    
+    const matchesMethod = paymentMethodFilter === 'All' || p.method === paymentMethodFilter
+    const matchesPurpose = paymentPurposeFilter === 'All' || purpose === paymentPurposeFilter
+    const matchesStudentId = studentIdFilter === '' || p.studentId.toLowerCase().includes(studentIdFilter.toLowerCase())
+    const matchesSemester = semesterFilter === 'All' || p.semester.includes(semesterFilter)
+    const matchesAnnex = annexFilter === 'All' || p.campus === annexFilter
+    const matchesProgram = programFilter === 'All' || p.program === programFilter
+    const matchesDate = paymentDateFilter === '' || p.paymentDate === paymentDateFilter
 
-    const matchesGlobalFilters =
-      (filters.semester === 'All' || p.semester.includes(filters.semester)) &&
-      (filters.campus === 'All' || p.campus === filters.campus) &&
-      (filters.program === 'All' || p.program === filters.program) &&
-      (filters.studentSearch === '' ||
-       p.studentId.toLowerCase().includes(filters.studentSearch.toLowerCase()) ||
-       p.studentName.toLowerCase().includes(filters.studentSearch.toLowerCase()))
-
-    return matchesSearch && matchesGlobalFilters
+    return matchesMethod && matchesPurpose && matchesStudentId && matchesSemester && 
+           matchesAnnex && matchesProgram && matchesDate
   })
 
-  const getStatusBadge = (status: string) => {
-    const colors = {
-      Completed: 'bg-green-100 text-green-800',
-      Pending: 'bg-yellow-100 text-yellow-800',
-      Failed: 'bg-red-100 text-red-800',
-      Refunded: 'bg-gray-100 text-gray-800'
-    }
-    return <Badge className={colors[status as keyof typeof colors] || colors.Completed}>{status}</Badge>
+  const handleViewPayment = (payment: Payment) => {
+    setSelectedPayment(payment)
+    setViewDialogOpen(true)
   }
+
+  const handleEditPayment = (payment: Payment) => {
+    alert('Edit functionality - to be implemented')
+  }
+
+  const handleDeletePayment = (id: string) => {
+    if (confirm('Delete this payment record?')) {
+      Repo.delete('finance-payments', id)
+      alert('Payment deleted successfully')
+    }
+  }
+
+  const paymentMethods: Array<string> = ['All', 'Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
+  const purposes = ['All', 'Installment', 'Full Payment', 'Readmission Fee', 'Others']
+  const semesters = ['All', 'Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
+  const annexes = ['All', 'Permanent Campus', 'Uttara', 'Lakshmipur']
+  const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Payment Records</h1>
-          <p className="text-sm text-gray-600">View all money receipts and payment history</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
-        </div>
+        <h1 className="text-2xl font-bold text-deep-plum">Students Payment List</h1>
       </div>
 
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Money Receipts ({filteredPayments.length})</CardTitle>
-            <div className="relative w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-4 gap-3 mb-6">
+            <div>
+              <label className="block text-sm font-medium mb-1">Payment Method</label>
+              <select
+                value={paymentMethodFilter}
+                onChange={(e) => setPaymentMethodFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {paymentMethods.map(method => (
+                  <option key={method} value={method}>{method}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Payment Purpose</label>
+              <select
+                value={paymentPurposeFilter}
+                onChange={(e) => setPaymentPurposeFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {purposes.map(purpose => (
+                  <option key={purpose} value={purpose}>{purpose}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Student ID</label>
               <Input
-                placeholder="Search by receipt no, student ID, or name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                placeholder="Student ID"
+                value={studentIdFilter}
+                onChange={(e) => setStudentIdFilter(e.target.value)}
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Semester</label>
+              <select
+                value={semesterFilter}
+                onChange={(e) => setSemesterFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {semesters.map(sem => (
+                  <option key={sem} value={sem}>{sem}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Annex</label>
+              <select
+                value={annexFilter}
+                onChange={(e) => setAnnexFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {annexes.map(annex => (
+                  <option key={annex} value={annex}>{annex}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Program</label>
+              <select
+                value={programFilter}
+                onChange={(e) => setProgramFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                {programs.map(prog => (
+                  <option key={prog} value={prog}>{prog}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Payment Date</label>
+              <Input
+                type="date"
+                value={paymentDateFilter}
+                onChange={(e) => setPaymentDateFilter(e.target.value)}
+              />
+            </div>
+
+            <div className="flex items-end">
+              <Button onClick={handleSearch} className="nu-button-primary w-full">
+                <Search className="w-4 h-4 mr-2" />
+                Search
+              </Button>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Receipt No</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Date/Time</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student ID</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student Id</th>
                   <th className="text-left p-3 text-sm font-medium text-gray-700">Student Name</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Program</th>
-                  <th className="text-right p-3 text-sm font-medium text-gray-700">Amount</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Method</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Collected By</th>
-                  <th className="text-left p-3 text-sm font-medium text-gray-700">Status</th>
-                  <th className="text-right p-3 text-sm font-medium text-gray-700">Actions</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Semester</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">Received Amount</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Date</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Method</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Payment Purpose</th>
+                  <th className="text-center p-3 text-sm font-medium text-gray-700">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPayments.map(payment => (
                   <tr key={payment.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3 text-sm font-mono font-medium text-blue-600">{payment.receiptNo}</td>
-                    <td className="p-3 text-sm">
-                      <div>{payment.paymentDate}</div>
-                      <div className="text-xs text-gray-500">{payment.paymentTime}</div>
-                    </td>
                     <td className="p-3 text-sm">{payment.studentId}</td>
                     <td className="p-3 text-sm font-medium">{payment.studentName}</td>
-                    <td className="p-3 text-sm">{payment.program}</td>
+                    <td className="p-3 text-sm">{payment.semester}</td>
                     <td className="p-3 text-sm text-right font-semibold text-green-600">
                       {formatCurrency(payment.totalAmount)}
                     </td>
+                    <td className="p-3 text-sm">{payment.paymentDate}</td>
                     <td className="p-3 text-sm">
                       <Badge variant="outline">{payment.method}</Badge>
                     </td>
-                    <td className="p-3 text-sm">{payment.collectedBy}</td>
-                    <td className="p-3">{getStatusBadge(payment.status)}</td>
+                    <td className="p-3 text-sm">{extractPurpose(payment)}</td>
                     <td className="p-3">
-                      <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="sm" title="Print Receipt">
-                          <Printer className="w-4 h-4" />
+                      <div className="flex justify-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleViewPayment(payment)}
+                          title="View"
+                        >
+                          <Eye className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditPayment(payment)}
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4 text-green-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeletePayment(payment.id)}
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          title="PDF"
+                        >
+                          <FileText className="w-4 h-4 text-orange-600" />
                         </Button>
                       </div>
                     </td>
@@ -132,6 +250,75 @@ export default function PaymentRecordsView() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Payment Details</DialogTitle>
+          </DialogHeader>
+
+          {selectedPayment && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Receipt No</p>
+                  <p className="font-mono font-semibold">{selectedPayment.receiptNo}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Payment Date</p>
+                  <p className="font-medium">{selectedPayment.paymentDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-medium">{selectedPayment.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedPayment.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Program</p>
+                  <p className="font-medium">{selectedPayment.program}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Semester</p>
+                  <p className="font-medium">{selectedPayment.semester}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Amount</p>
+                  <p className="font-semibold text-green-600 text-lg">
+                    {formatCurrency(selectedPayment.totalAmount)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Payment Method</p>
+                  <p className="font-medium">{selectedPayment.method}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Payment Purpose</p>
+                  <p className="font-medium">{extractPurpose(selectedPayment)}</p>
+                </div>
+                {selectedPayment.notes && (
+                  <div className="col-span-2">
+                    <p className="text-sm text-gray-600">Remarks</p>
+                    <p className="font-medium">{selectedPayment.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+                  Close
+                </Button>
+                <Button className="nu-button-primary">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Print Receipt
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
