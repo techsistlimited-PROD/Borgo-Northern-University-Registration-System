@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Search, Eye, Edit, Trash2, FileText, Inbox } from 'lucide-react'
+import { Search, Eye, Pencil, Trash2, FileText, Inbox } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { Payment, PaymentMethod } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import EmptyState from '@/components/common/EmptyState'
-import { DEMO_MODE } from '@/config/demo'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { paymentsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoPayment } from '../utils/demoFillers'
 
 export default function PaymentRecordsView() {
   const [payments, setPayments] = useState<Payment[]>([])
@@ -30,8 +32,10 @@ export default function PaymentRecordsView() {
   }, [])
 
   const loadPayments = () => {
-    const data = Repo.get<Payment>('finance-payments')
-    setPayments(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
+    // Apply data amplification for demo mode
+    const basePayments = DEMO_MODE ? paymentsStatic : Repo.get<Payment>('finance-payments')
+    const amplifiedPayments = ensureMinRows(basePayments, 120, buildDemoPayment)
+    setPayments(amplifiedPayments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
   }
 
   const handleSearch = () => {
@@ -66,14 +70,22 @@ export default function PaymentRecordsView() {
   }
 
   const handleEditPayment = (payment: Payment) => {
-    alert('Edit functionality - to be implemented')
+    alert(showDemoToast('Edit available in production build'))
   }
 
   const handleDeletePayment = (id: string) => {
-    if (confirm('Delete this payment record?')) {
-      Repo.delete('finance-payments', id)
-      alert('Payment deleted successfully')
+    if (DEMO_MODE) {
+      alert(showDemoToast('Delete disabled in demo mode'))
+    } else {
+      if (confirm('Delete this payment record?')) {
+        Repo.delete('finance-payments', id)
+        alert('Payment deleted successfully')
+      }
     }
+  }
+
+  const handlePrintReceipt = (payment: Payment) => {
+    alert(showDemoToast('Print receipt functionality'))
   }
 
   const paymentMethods: Array<string> = ['All', 'Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
@@ -233,7 +245,7 @@ export default function PaymentRecordsView() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleViewPayment(payment)}
-                            title="View Receipt"
+                            title="View"
                           >
                             <Eye className="w-4 h-4 text-blue-600" />
                           </Button>
@@ -241,26 +253,25 @@ export default function PaymentRecordsView() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEditPayment(payment)}
-                            title={DEMO_MODE ? "Disabled in demo" : "Edit"}
-                            disabled={DEMO_MODE}
+                            title="Edit"
                           >
-                            <Edit className="w-4 h-4 text-green-600" />
+                            <Pencil className="w-4 h-4 text-amber-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handlePrintReceipt(payment)}
+                            title="PDF"
+                          >
+                            <FileText className="w-4 h-4 text-violet-600" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDeletePayment(payment.id)}
-                            title={DEMO_MODE ? "Disabled in demo" : "Delete"}
-                            disabled={DEMO_MODE}
+                            title="Delete"
                           >
-                            <Trash2 className="w-4 h-4 text-red-600" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="PDF"
-                          >
-                            <FileText className="w-4 h-4 text-orange-600" />
+                            <Trash2 className="w-4 h-4 text-rose-600" />
                           </Button>
                         </div>
                       </td>
