@@ -1,129 +1,142 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { AlertCircle, Play, Plus, Edit, Trash2 } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { StudentBill, LateFeePolicy, BillLineItem } from '../data/types'
-import { formatCurrency, calculateLateFee } from '../utils/financeUtils'
-import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
+import { StudentBill, BillLineItem } from '../data/types'
+import { formatCurrency } from '../utils/financeUtils'
+
+interface EligibleBill extends StudentBill {
+  presentSemesterPayable: number
+  previousDues: number
+  hundredPercentPayable: number
+  totalPaid: number
+  dueAmount: number
+  paidPercent: number
+}
 
 export default function LateFeeAssignmentView() {
-  const [bills, setBills] = useState<StudentBill[]>([])
-  const [policies, setPolicies] = useState<LateFeePolicy[]>([])
-  const [activePolicy, setActivePolicy] = useState<LateFeePolicy | null>(null)
-  const [eligibleBills, setEligibleBills] = useState<Array<StudentBill & { paidPercent: number; lateFee: number }>>([])
+  const [semester, setSemester] = useState('Fall 2025')
+  const [program, setProgram] = useState('All')
+  const [duesAmount, setDuesAmount] = useState('')
+  const [fineAmount, setFineAmount] = useState('')
+  const [campus, setCampus] = useState('All')
+  const [defaulterAsDate, setDefaulterAsDate] = useState(new Date().toISOString().split('T')[0])
+  const [payablePercent, setPayablePercent] = useState<'40' | '70' | '100'>('40')
+  
+  const [eligibleBills, setEligibleBills] = useState<EligibleBill[]>([])
   const [selectedBills, setSelectedBills] = useState<Set<string>>(new Set())
-  const { filters } = useFinanceFilters()
 
   useEffect(() => {
-    loadData()
-    const unsub1 = Repo.subscribe('finance-student-bills', loadData)
-    const unsub2 = Repo.subscribe('finance-late-fee-policies', loadData)
-    return () => {
-      unsub1()
-      unsub2()
+    if (semester && payablePercent) {
+      handleSearch()
     }
-  }, [])
+  }, [semester, program, campus, payablePercent, defaulterAsDate, duesAmount])
 
-  const loadData = () => {
-    const billData = Repo.get<StudentBill>('finance-student-bills')
-    setBills(billData)
-
-    const policyData = Repo.get<LateFeePolicy>('finance-late-fee-policies')
-    setPolicies(policyData)
-
-    const active = policyData.find(p => p.active)
-    if (active) {
-      setActivePolicy(active)
-    }
-  }
-
-  const handlePreview = () => {
-    if (!activePolicy) {
-      alert('No active late fee policy')
-      return
-    }
-
+  const handleSearch = () => {
+    const bills = Repo.get<StudentBill>('finance-student-bills')
+    const payments = Repo.get('finance-payments')
+    
+    const minDues = duesAmount ? parseFloat(duesAmount) : 0
+    const thresholdPercent = parseInt(payablePercent)
+    
     const eligible = bills
-      .filter(b => {
-        const matchesGlobalFilters =
-          (filters.semester === 'All' || b.semester.includes(filters.semester)) &&
-          (filters.campus === 'All' || b.campus === filters.campus) &&
-          (filters.program === 'All' || b.program === filters.program) &&
-          (filters.studentSearch === '' ||
-           b.studentId.toLowerCase().includes(filters.studentSearch.toLowerCase()) ||
-           b.studentName.toLowerCase().includes(filters.studentSearch.toLowerCase()))
-
-        return b.balanceDue > 0 && b.status !== 'Paid' && matchesGlobalFilters
+      .filter(bill => {
+        const matchesSemester = bill.semester === semester
+        const matchesProgram = program === 'All' || bill.program === program
+        const matchesCampus = campus === 'All' || bill.campus === campus
+        const hasDues = bill.balanceDue >= minDues
+        
+        return matchesSemester && matchesProgram && matchesCampus && hasDues
       })
-      .map(b => {
-        const paidPercent = (b.paidAmount / b.netTotal) * 100
-        const lateFee = calculateLateFee(b, paidPercent, activePolicy.rules)
-        return { ...b, paidPercent, lateFee }
+      .map(bill => {
+        const studentPayments = payments.filter((p: any) => 
+          p.studentId === bill.studentId && 
+          new Date(p.paymentDate) <= new Date(defaulterAsDate)
+        )
+        const totalPaid = studentPayments.reduce((sum: number, p: any) => sum + p.totalAmount, 0)
+        const paidPercent = bill.netTotal > 0 ? (bill.paidAmount / bill.netTotal) * 100 : 0
+        
+        const previousBills = bills.filter(b => 
+          b.studentId === bill.studentId && 
+          b.semester !== semester &&
+          new Date(b.billDate) < new Date(bill.billDate)
+        )
+        const previousDues = previousBills.reduce((sum, b) => sum + b.balanceDue, 0)
+        
+        return {
+          ...bill,
+          presentSemesterPayable: bill.netTotal,
+          previousDues,
+          hundredPercentPayable: bill.netTotal,
+          totalPaid: bill.paidAmount,
+          dueAmount: bill.balanceDue,
+          paidPercent
+        }
       })
-      .filter(b => b.lateFee > 0)
-
+      .filter(bill => bill.paidPercent < thresholdPercent)
+    
     setEligibleBills(eligible)
   }
 
-  const handleApply = () => {
+  const handleAssignLateFee = () => {
     if (selectedBills.size === 0) {
-      alert('No bills selected')
+      alert('Please select at least one student')
       return
     }
 
-    if (!confirm(`Apply late fee to ${selectedBills.size} selected bills?`)) {
+    if (!fineAmount || parseFloat(fineAmount) <= 0) {
+      alert('Please enter a valid fine amount')
       return
     }
 
-    const costHeadCode = activePolicy!.costHeadCode
+    if (!confirm(`Apply late fee of ${formatCurrency(parseFloat(fineAmount))} to ${selectedBills.size} selected bills?`)) {
+      return
+    }
+
     const costHeads = Repo.get('finance-cost-heads')
-    const costHead = costHeads.find((ch: any) => ch.code === costHeadCode)
+    const lateFeeHead = costHeads.find((ch: any) => ch.code === '014' || ch.name.toLowerCase().includes('late'))
+    const costHeadCode = lateFeeHead?.code || '014'
+    const costHeadName = lateFeeHead?.name || 'Late fine'
 
-    eligibleBills.forEach(eligible => {
-      if (selectedBills.has(eligible.id)) {
-        const bill = bills.find(b => b.id === eligible.id)
-        if (!bill) return
+    eligibleBills.forEach(bill => {
+      if (!selectedBills.has(bill.id)) return
 
-        const existingLateFee = bill.lineItems.find(li => li.costHeadCode === costHeadCode)
-        if (existingLateFee) {
-          alert(`Bill ${bill.billNo} already has a late fee. Skipping.`)
-          return
-        }
-
-        const lateFeeLineItem: BillLineItem = {
-          id: `li-${Date.now()}-${Math.random()}`,
-          costHeadCode,
-          costHeadName: costHead?.name || 'Late Fine',
-          mode: 'Flat',
-          quantity: 1,
-          rate: eligible.lateFee,
-          subtotal: eligible.lateFee,
-          waiverPercent: 0,
-          scholarshipPercent: 0,
-          deduction: 0,
-          netAmount: eligible.lateFee
-        }
-
-        const updatedLineItems = [...bill.lineItems, lateFeeLineItem]
-        const grossTotal = updatedLineItems.reduce((sum, li) => sum + li.subtotal, 0)
-        const netTotal = updatedLineItems.reduce((sum, li) => sum + li.netAmount, 0)
-
-        Repo.update('finance-student-bills', bill.id, {
-          lineItems: updatedLineItems,
-          grossTotal,
-          netTotal,
-          balanceDue: netTotal - bill.paidAmount,
-          updatedAt: new Date().toISOString()
-        })
+      const existingLateFee = bill.lineItems.find(li => li.costHeadCode === costHeadCode)
+      if (existingLateFee) {
+        return
       }
+
+      const lateFeeLineItem: BillLineItem = {
+        id: `li-${Date.now()}-${Math.random()}`,
+        costHeadCode,
+        costHeadName,
+        mode: 'Flat',
+        quantity: 1,
+        rate: parseFloat(fineAmount),
+        subtotal: parseFloat(fineAmount),
+        waiverPercent: 0,
+        scholarshipPercent: 0,
+        deduction: 0,
+        netAmount: parseFloat(fineAmount)
+      }
+
+      const updatedLineItems = [...bill.lineItems, lateFeeLineItem]
+      const grossTotal = updatedLineItems.reduce((sum, li) => sum + li.subtotal, 0)
+      const netTotal = updatedLineItems.reduce((sum, li) => sum + li.netAmount, 0)
+
+      Repo.update('finance-student-bills', bill.id, {
+        lineItems: updatedLineItems,
+        grossTotal,
+        netTotal,
+        balanceDue: netTotal - bill.paidAmount,
+        updatedAt: new Date().toISOString()
+      })
     })
 
-    alert(`Late fee applied to ${selectedBills.size} bills`)
-    setEligibleBills([])
+    alert(`Late fee assigned to ${selectedBills.size} bills successfully!`)
     setSelectedBills(new Set())
+    handleSearch()
   }
 
   const handleToggleSelect = (id: string) => {
@@ -136,155 +149,163 @@ export default function LateFeeAssignmentView() {
     setSelectedBills(newSelected)
   }
 
-  const handleToggleSelectAll = () => {
-    if (selectedBills.size === eligibleBills.length) {
-      setSelectedBills(new Set())
-    } else {
-      setSelectedBills(new Set(eligibleBills.map(b => b.id)))
-    }
-  }
+  const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
+  const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
+  const campuses = ['All', 'Permanent Campus', 'Uttara', 'Lakshmipur']
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Late Fee Assignment</h1>
-          <p className="text-sm text-gray-600">Auto-tier based late fee calculation and assignment</p>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-deep-plum">Assign Late Fee</h1>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Active Late Fee Policy</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {activePolicy ? (
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-2 gap-6 mb-6">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold">{activePolicy.name}</p>
-                  <p className="text-sm text-gray-600">Cost Head: {activePolicy.costHeadCode}</p>
-                </div>
-                <Badge className="bg-green-100 text-green-800">Active</Badge>
+              <div>
+                <label className="block text-sm font-medium mb-1">Semester *</label>
+                <select
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  {semesters.map(sem => (
+                    <option key={sem} value={sem}>{sem}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="border rounded p-4 bg-gray-50">
-                <p className="font-medium text-sm mb-3">Tier Rules:</p>
-                <div className="space-y-2">
-                  {activePolicy.rules.sort((a, b) => a.order - b.order).map(rule => (
-                    <div key={rule.id} className="flex items-center justify-between bg-white p-3 rounded border">
-                      <div>
-                        <p className="font-medium text-sm">{rule.name}</p>
-                        <p className="text-xs text-gray-600">If paid amount &lt; {rule.threshold}% of total</p>
-                      </div>
-                      <div className="text-right">
-                        {rule.feeType === 'Flat' ? (
-                          <p className="font-semibold text-red-600">{formatCurrency(rule.feeAmount)}</p>
-                        ) : (
-                          <p className="font-semibold text-red-600">{rule.feeAmount}% of bill</p>
-                        )}
-                      </div>
-                    </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Program *</label>
+                <select
+                  value={program}
+                  onChange={(e) => setProgram(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  {programs.map(prog => (
+                    <option key={prog} value={prog}>{prog}</option>
                   ))}
-                </div>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Dues Amount *</label>
+                <Input
+                  type="number"
+                  placeholder="Minimum dues amount"
+                  value={duesAmount}
+                  onChange={(e) => setDuesAmount(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Fine Amount *</label>
+                <Input
+                  type="number"
+                  placeholder="Late fee amount"
+                  value={fineAmount}
+                  onChange={(e) => setFineAmount(e.target.value)}
+                />
               </div>
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No active late fee policy configured</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Annex/Campus *</label>
+                <select
+                  value={campus}
+                  onChange={(e) => setCampus(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  {campuses.map(camp => (
+                    <option key={camp} value={camp}>{camp}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Defaulter As *</label>
+                <Input
+                  type="date"
+                  value={defaulterAsDate}
+                  onChange={(e) => setDefaulterAsDate(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Payable Percent</label>
+                <select
+                  value={payablePercent}
+                  onChange={(e) => setPayablePercent(e.target.value as '40' | '70' | '100')}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  <option value="40">40</option>
+                  <option value="70">70</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
             </div>
-          )}
+          </div>
+
+          <div className="overflow-x-auto border rounded">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-center p-3 text-sm font-medium text-gray-700">#</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student ID</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Student Name</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">Present Semester Payable</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">Previous Dues</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">100.0% Payable</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">Total Paid</th>
+                  <th className="text-right p-3 text-sm font-medium text-gray-700">Due Amount</th>
+                  <th className="text-center p-3 text-sm font-medium text-gray-700">Select</th>
+                </tr>
+              </thead>
+              <tbody>
+                {eligibleBills.map((bill, index) => (
+                  <tr key={bill.id} className="border-t hover:bg-gray-50">
+                    <td className="p-3 text-sm text-center">{index + 1}</td>
+                    <td className="p-3 text-sm">{bill.studentId}</td>
+                    <td className="p-3 text-sm font-medium">{bill.studentName}</td>
+                    <td className="p-3 text-sm text-right">{formatCurrency(bill.presentSemesterPayable)}</td>
+                    <td className="p-3 text-sm text-right">{formatCurrency(bill.previousDues)}</td>
+                    <td className="p-3 text-sm text-right">{formatCurrency(bill.hundredPercentPayable)}</td>
+                    <td className="p-3 text-sm text-right">{formatCurrency(bill.totalPaid)}</td>
+                    <td className="p-3 text-sm text-right font-semibold text-red-600">
+                      {formatCurrency(bill.dueAmount)}
+                    </td>
+                    <td className="p-3 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedBills.has(bill.id)}
+                        onChange={() => handleToggleSelect(bill.id)}
+                        className="w-4 h-4"
+                      />
+                    </td>
+                  </tr>
+                ))}
+                {eligibleBills.length === 0 && (
+                  <tr>
+                    <td colSpan={9} className="p-6 text-center text-gray-500">
+                      No eligible students found. Adjust your filters and search again.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <Button
+              onClick={handleAssignLateFee}
+              disabled={selectedBills.size === 0}
+              className="nu-button-primary"
+            >
+              Assign Late Fee ({selectedBills.size} selected)
+            </Button>
+          </div>
         </CardContent>
       </Card>
-
-      {activePolicy && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Preview & Apply</CardTitle>
-              <Button onClick={handlePreview} className="nu-button-primary">
-                <Play className="w-4 h-4 mr-2" />
-                Preview Eligible Bills
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {eligibleBills.length > 0 ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
-                    Found {eligibleBills.length} eligible bills. Select bills to apply late fee.
-                  </p>
-                  {selectedBills.size > 0 && (
-                    <Button onClick={handleApply} className="nu-button-primary">
-                      Apply Late Fee ({selectedBills.size})
-                    </Button>
-                  )}
-                </div>
-
-                <div className="overflow-x-auto border rounded">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="p-3">
-                          <input
-                            type="checkbox"
-                            checked={selectedBills.size === eligibleBills.length}
-                            onChange={handleToggleSelectAll}
-                            className="w-4 h-4"
-                          />
-                        </th>
-                        <th className="text-left p-3 text-xs font-medium">Bill No</th>
-                        <th className="text-left p-3 text-xs font-medium">Student</th>
-                        <th className="text-left p-3 text-xs font-medium">Program</th>
-                        <th className="text-right p-3 text-xs font-medium">Net Total</th>
-                        <th className="text-right p-3 text-xs font-medium">Paid</th>
-                        <th className="text-right p-3 text-xs font-medium">Paid %</th>
-                        <th className="text-right p-3 text-xs font-medium">Late Fee</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {eligibleBills.map(bill => (
-                        <tr key={bill.id} className="border-t hover:bg-gray-50">
-                          <td className="p-3">
-                            <input
-                              type="checkbox"
-                              checked={selectedBills.has(bill.id)}
-                              onChange={() => handleToggleSelect(bill.id)}
-                              className="w-4 h-4"
-                            />
-                          </td>
-                          <td className="p-3 text-sm font-mono">{bill.billNo}</td>
-                          <td className="p-3 text-sm">
-                            <div className="font-medium">{bill.studentName}</div>
-                            <div className="text-xs text-gray-500">{bill.studentId}</div>
-                          </td>
-                          <td className="p-3 text-sm">{bill.program}</td>
-                          <td className="p-3 text-sm text-right">{formatCurrency(bill.netTotal)}</td>
-                          <td className="p-3 text-sm text-right">{formatCurrency(bill.paidAmount)}</td>
-                          <td className="p-3 text-sm text-right">
-                            <Badge className={bill.paidPercent < 40 ? 'bg-red-100 text-red-800' : bill.paidPercent < 70 ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}>
-                              {bill.paidPercent.toFixed(1)}%
-                            </Badge>
-                          </td>
-                          <td className="p-3 text-sm text-right font-semibold text-red-600">
-                            {formatCurrency(bill.lateFee)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                <p>Click "Preview Eligible Bills" to see bills requiring late fees</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
     </div>
   )
 }
