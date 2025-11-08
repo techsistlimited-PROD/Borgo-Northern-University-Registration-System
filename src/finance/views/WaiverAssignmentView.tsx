@@ -482,6 +482,87 @@ export default function WaiverAssignmentView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={viewAssignmentDialogOpen} onOpenChange={setViewAssignmentDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Waiver Assignment Details</DialogTitle>
+          </DialogHeader>
+
+          {selectedAssignment && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-mono font-semibold">{selectedAssignment.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedAssignment.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Policy Code</p>
+                  <p className="font-mono font-semibold">{selectedAssignment.policyCode}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Policy Name</p>
+                  <p className="font-medium">{selectedAssignment.policyName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Waiver Percent</p>
+                  <p className="font-semibold text-green-600 text-lg">{selectedAssignment.percent}%</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Effective Term</p>
+                  <p className="font-medium">{selectedAssignment.effectiveTerm}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <p>
+                    {selectedAssignment.locked ? (
+                      <Badge className="bg-purple-100 text-purple-800">
+                        <Lock className="w-3 h-3 mr-1 inline" />
+                        Locked
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-gray-100 text-gray-800">
+                        <Unlock className="w-3 h-3 mr-1 inline" />
+                        Unlocked
+                      </Badge>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Assigned Date</p>
+                  <p className="font-medium">{selectedAssignment.assignedDate || '-'}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600">Assigned By</p>
+                  <p className="font-medium">{selectedAssignment.assignedBy || '-'}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setViewAssignmentDialogOpen(false)}>
+                  Close
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleToggleLock(selectedAssignment.id, selectedAssignment.locked)
+                    setViewAssignmentDialogOpen(false)
+                  }}
+                  className={selectedAssignment.locked
+                    ? 'bg-green-600 hover:bg-green-700'
+                    : 'bg-purple-600 hover:bg-purple-700'
+                  }
+                >
+                  {selectedAssignment.locked ? 'Unlock Assignment' : 'Lock Assignment'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
