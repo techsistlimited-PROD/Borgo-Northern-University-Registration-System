@@ -10,7 +10,8 @@ import {
   ledgerEntriesStatic,
   bankStatementsStatic,
   waiverPoliciesStatic,
-  waiverAssignmentsStatic
+  waiverAssignmentsStatic,
+  unregisteredStudentsStatic
 } from './staticSeeds'
 import {
   lateFeePoliciesSeed,
@@ -31,6 +32,7 @@ export const seedFinanceData = () => {
     Repo.set('finance-bank-statements', bankStatementsStatic)
     Repo.set('finance-waiver-policies', waiverPoliciesStatic)
     Repo.set('finance-waiver-assignments', waiverAssignmentsStatic)
+    Repo.set('finance-unregistered-students', unregisteredStudentsStatic)
     Repo.set('finance-late-fee-policies', lateFeePoliciesSeed)
     Repo.set('finance-drop-readmission-policies', dropReadmissionPoliciesSeed)
     Repo.set('finance-employee-notices', employeeNoticesSeed)
