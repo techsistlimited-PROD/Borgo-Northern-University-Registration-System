@@ -1,8 +1,9 @@
 import { StudentBill, BillLineItem, CostPackage, Payment, PaymentAllocation, StudentLedgerEntry } from '../data/types'
 import { Repo } from '@/lib/repo'
 
-export const formatCurrency = (amount: number): string => {
-  return `BDT ${amount.toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+export const formatCurrency = (amount: number | undefined | null): string => {
+  const value = amount ?? 0
+  return `BDT ${value.toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 export const formatShortId = (studentId: string, program: string): string => {
