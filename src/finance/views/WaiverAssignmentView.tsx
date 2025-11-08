@@ -395,6 +395,72 @@ export default function WaiverAssignmentView() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isEditPolicyOpen} onOpenChange={setIsEditPolicyOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Waiver Policy</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Policy Code *</label>
+              <Input
+                value={policyFormData.code}
+                onChange={(e) => setPolicyFormData({ ...policyFormData, code: e.target.value })}
+                placeholder="e.g., MERIT-50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Policy Name *</label>
+              <Input
+                value={policyFormData.name}
+                onChange={(e) => setPolicyFormData({ ...policyFormData, name: e.target.value })}
+                placeholder="e.g., Merit Scholarship 50%"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Percent Cap (0-100) *</label>
+              <Input
+                type="number"
+                value={policyFormData.percentCap}
+                onChange={(e) => setPolicyFormData({ ...policyFormData, percentCap: parseFloat(e.target.value) || 0 })}
+                min={0}
+                max={100}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Description</label>
+              <Input
+                value={policyFormData.description}
+                onChange={(e) => setPolicyFormData({ ...policyFormData, description: e.target.value })}
+                placeholder="Brief description of this policy"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="policyActive"
+                checked={policyFormData.active}
+                onChange={(e) => setPolicyFormData({ ...policyFormData, active: e.target.checked })}
+                className="w-4 h-4"
+              />
+              <label htmlFor="policyActive" className="text-sm font-medium">
+                Active Policy
+              </label>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditPolicyOpen(false)}>Cancel</Button>
+            <Button onClick={handleSavePolicy} className="nu-button-primary">Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
