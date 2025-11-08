@@ -114,6 +114,11 @@ export default function WaiverAssignmentView() {
     Repo.update('finance-waiver-assignments', id, { locked: !currentLocked })
   }
 
+  const handleViewAssignment = (assignment: WaiverAssignment) => {
+    setSelectedAssignment(assignment)
+    setViewAssignmentDialogOpen(true)
+  }
+
   const handleTogglePolicyStatus = (id: string, currentActive: boolean) => {
     Repo.update('finance-waiver-policies', id, { active: !currentActive })
   }
