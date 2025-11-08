@@ -1,8 +1,17 @@
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Download, Save } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Download, Save, UserCheck } from 'lucide-react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function AccessControl() {
+  const [checkDialogOpen, setCheckDialogOpen] = useState(false)
+  const [checkUserId, setCheckUserId] = useState('')
+  const [checkedPermissions, setCheckedPermissions] = useState<any>(null)
+
   const permissions = [
     { key: 'admissions.application.view', desc: 'View applicant details', sysAdmin: true, registrar: true, examCtrl: false, financeOff: false, faculty: false, student: false },
     { key: 'admissions.application.approve', desc: 'Approve admission & generate ID', sysAdmin: true, registrar: true, examCtrl: false, financeOff: false, faculty: false, student: false },
@@ -20,6 +29,13 @@ export default function AccessControl() {
           <p className="text-sm text-gray-600 mt-1">Manage module-level permissions and role access matrix</p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setCheckDialogOpen(true)}
+          >
+            <UserCheck className="w-4 h-4 mr-2" />
+            Check User Permissions
+          </Button>
           <Button variant="outline">
             <Download className="w-4 h-4 mr-2" />
             Export Matrix
