@@ -7,6 +7,7 @@ import { Search, FileText, Eye, Edit } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { StudentBill, BillLineItem } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
+import { generatePayablePDF } from '../utils/pdfExport'
 
 export default function StudentPayablesView() {
   const [bills, setBills] = useState<StudentBill[]>([])
@@ -57,6 +58,10 @@ export default function StudentPayablesView() {
   const handleEditBill = (bill: StudentBill) => {
     setSelectedBill(bill)
     setViewDialogOpen(true)
+  }
+
+  const handleExportPDF = (bill: StudentBill) => {
+    generatePayablePDF(bill)
   }
 
   const generateCode = (index: number) => {
@@ -188,7 +193,8 @@ export default function StudentPayablesView() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          title="PDF"
+                          onClick={() => handleExportPDF(bill)}
+                          title="Export PDF"
                         >
                           <FileText className="w-4 h-4 text-red-600" />
                         </Button>
@@ -292,7 +298,10 @@ export default function StudentPayablesView() {
                 <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
                   Close
                 </Button>
-                <Button className="nu-button-primary">
+                <Button 
+                  onClick={() => handleExportPDF(selectedBill)}
+                  className="nu-button-primary"
+                >
                   <FileText className="w-4 h-4 mr-2" />
                   Download PDF
                 </Button>
