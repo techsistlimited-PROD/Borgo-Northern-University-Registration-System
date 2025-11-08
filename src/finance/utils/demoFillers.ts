@@ -88,6 +88,9 @@ export function ensureMin<T>(
   return result
 }
 
+// Alias for ensureMin (requested naming convention)
+export const ensureMinRows = ensureMin
+
 // Bill builder
 export function buildDemoBill(index: number): StudentBill {
   const programs = ['CSE', 'BBA', 'LLB', 'MBA']
