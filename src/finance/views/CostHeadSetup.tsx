@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { X, Eye } from 'lucide-react'
+import { X, Eye, Pencil } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { CostHead } from '../data/types'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { costHeadsStatic } from '../data/staticSeeds'
 
 export default function CostHeadSetup() {
   const [costHeads, setCostHeads] = useState<CostHead[]>([])
@@ -16,7 +18,7 @@ export default function CostHeadSetup() {
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [editingCostHead, setEditingCostHead] = useState<CostHead | null>(null)
   const [viewingCostHead, setViewingCostHead] = useState<CostHead | null>(null)
-  
+
   const [formData, setFormData] = useState({
     code: '',
     serialNo: '',
@@ -33,7 +35,8 @@ export default function CostHeadSetup() {
   }, [])
 
   const loadCostHeads = () => {
-    const data = Repo.get<CostHead>('finance-cost-heads')
+    // Use static seeds in DEMO_MODE (already has 23 cost heads)
+    const data = DEMO_MODE ? costHeadsStatic : Repo.get<CostHead>('finance-cost-heads')
     setCostHeads(data)
   }
 
@@ -111,6 +114,12 @@ export default function CostHeadSetup() {
 
   const handleSave = () => {
     if (!validate()) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Create/Edit Cost Head'))
+      setIsFormOpen(false)
+      return
+    }
 
     const now = new Date().toISOString().split('T')[0]
 
@@ -244,20 +253,23 @@ export default function CostHeadSetup() {
                     <td className="p-3 text-sm">{ch.status === 'Active' ? 'Yes' : 'No'}</td>
                     <td className="p-3 text-sm text-gray-600">{ch.description || ''}</td>
                     <td className="p-3">
-                      <div className="flex gap-2">
-                        <button
+                      <div className="flex justify-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleView(ch)}
-                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                          title="View"
                         >
-                          View
-                        </button>
-                        <span className="text-gray-400">/</span>
-                        <button
+                          <Eye className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleOpenForm(ch)}
-                          className="text-blue-600 hover:text-blue-800 text-sm underline"
+                          title="Edit"
                         >
-                          Edit
-                        </button>
+                          <Pencil className="w-4 h-4 text-amber-600" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
