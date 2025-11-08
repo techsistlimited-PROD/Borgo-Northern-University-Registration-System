@@ -29,15 +29,13 @@ export const applyFilters = (data: any[], filters: ReportFilters, columns: strin
       if (progIdx >= 0) {
         filtered = filtered.filter(row => row[progIdx] === filters.program)
       }
-    }
 
-    // Re-rank after program filtering (if program-specific)
-    if (filters.program && filters.program !== 'all') {
+      // Re-rank after program filtering
       filtered = filtered.map((row, idx) => {
         const newRow = [...row]
         newRow[0] = idx + 1 // Update rank
-        newRow[6] = idx < 3 ? 'Top 3' : 'Top 10' // Update category
-        newRow[7] = idx === 0 ? 'Gold Medal' : idx < 3 ? 'Merit Certificate' : 'Recognition'
+        // Update Award Eligible (now at index 6 after removing Category column)
+        newRow[6] = idx === 0 ? 'Gold Medal' : idx < 3 ? 'Merit Certificate' : 'Recognition'
         return newRow
       })
     }
