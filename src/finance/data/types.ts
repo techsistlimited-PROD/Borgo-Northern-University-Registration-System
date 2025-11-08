@@ -199,10 +199,55 @@ export interface StudentLedgerEntry {
   id: string
   studentId: string
   date: string
-  type: 'Bill' | 'Payment' | 'Adjustment'
+  type: 'Bill' | 'Payment' | 'Adjustment' | 'Refund' | 'Fine'
   reference: string
   description: string
   debit: number
   credit: number
   runningBalance: number
+}
+
+export interface PaymentRefund {
+  id: string
+  refundNo: string
+  refundDate: string
+  studentId: string
+  studentName: string
+  program: string
+  semester: string
+  originalReceiptNo: string
+  originalAmount: number
+  refundAmount: number
+  refundMethod: 'Cash' | 'Bank' | 'Mobile Banking'
+  remarks?: string
+  inWords: string
+  bankName?: string
+  branchName?: string
+  allocations: PaymentAllocation[]
+  createdAt: string
+  createdBy: string
+}
+
+export interface StudentFine {
+  id: string
+  studentId: string
+  studentName?: string
+  fineType: 'Late Fine' | 'Library Fine' | 'Exam Fine' | 'Misc Fine'
+  amount: number
+  date: string
+  remarks?: string
+  createdBy: string
+}
+
+export interface StudentHold {
+  id: string
+  studentId: string
+  studentName?: string
+  holdType: 'Finance Hold' | 'Registration Hold' | 'Exam Hold'
+  reason: string
+  date: string
+  status: 'Active' | 'Removed'
+  createdBy: string
+  removedDate?: string
+  removedBy?: string
 }
