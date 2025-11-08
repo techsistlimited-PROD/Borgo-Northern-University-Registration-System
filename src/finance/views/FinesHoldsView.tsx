@@ -399,18 +399,28 @@ export default function FinesHoldsView() {
                           </Badge>
                         </td>
                         <td className="p-3 text-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleToggleHold(hold)}
-                            title={hold.status === 'Active' ? 'Remove Hold' : 'Activate Hold'}
-                          >
-                            {hold.status === 'Active' ? (
-                              <ToggleRight className="w-5 h-5 text-red-600" />
-                            ) : (
-                              <ToggleLeft className="w-5 h-5 text-gray-400" />
-                            )}
-                          </Button>
+                          <div className="flex justify-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleViewHold(hold)}
+                              title="View Details"
+                            >
+                              <Eye className="w-4 h-4 text-blue-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleToggleHold(hold)}
+                              title={hold.status === 'Active' ? 'Remove Hold' : 'Activate Hold'}
+                            >
+                              {hold.status === 'Active' ? (
+                                <ToggleRight className="w-5 h-5 text-red-600" />
+                              ) : (
+                                <ToggleLeft className="w-5 h-5 text-gray-400" />
+                              )}
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
