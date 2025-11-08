@@ -225,17 +225,16 @@ export const REPORTS_CATALOG: ReportDefinition[] = [
     description: 'Highest performing students overall or per program',
     category: 'Graduation & Completion',
     filters: ['semester', 'program', 'topCount'],
-    columns: ['Rank', 'Student ID', 'Name', 'Program', 'CGPA', 'Credits', 'Category', 'Award Eligible'],
+    columns: ['Rank', 'Student ID', 'Name', 'Program', 'CGPA', 'Credits', 'Award Eligible'],
     getData: () => {
-      // Generate 50 students to ensure we have enough for program-wise filtering
-      const allStudents = generateStudentData(50)
+      // Generate 100 students to ensure we have enough for program-wise filtering (10+ per program)
+      const allStudents = generateStudentData(100)
       // Boost CGPA for more realistic top performers
       return allStudents.map(s => ({
         ...s,
         cgpa: 3.2 + Math.random() * 0.8 // CGPA range 3.2-4.0 for top performers
-      })).sort((a, b) => b.cgpa - a.cgpa).slice(0, 40).map((s, i) => [
+      })).sort((a, b) => b.cgpa - a.cgpa).map((s, i) => [
         i + 1, s.studentId, s.name, s.program, s.cgpa.toFixed(2), 120,
-        i < 3 ? 'Top 3' : 'Top 10',
         i === 0 ? 'Gold Medal' : i < 3 ? 'Merit Certificate' : 'Recognition'
       ])
     }
