@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import FinanceSidebar from '@/components/finance/FinanceSidebar'
 import FinanceLayout from '@/components/finance/FinanceLayout'
 import FinanceDashboardView from '@/components/finance/FinanceDashboard'
