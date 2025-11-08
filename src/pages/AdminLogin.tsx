@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Shield, ArrowLeft, AlertTriangle } from 'lucide-react'
 import OtpVerificationModal from '@/components/admin/OtpVerificationModal'
 import { ipBlocklistStatic } from '@/lib/adminSecuritySeeds'
+import { DEMO_MODE, DEMO_RELAXED_SECURITY } from '@/config/demo'
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({ username: '', password: '' })
@@ -28,10 +29,18 @@ export default function AdminLogin() {
   const [lockedAccounts, setLockedAccounts] = useState<Set<string>>(new Set())
 
   const checkIPBlocking = (): boolean => {
+    // Demo override: check session storage for manual unblock
+    const demoOverride = DEMO_MODE && window.sessionStorage.getItem('demo_ip_override') === '1'
+
+    // Skip IP blocking in relaxed demo mode or if manually overridden
+    if (DEMO_RELAXED_SECURITY || demoOverride) {
+      return false
+    }
+
     // Check if IP is in blocklist
-    const blockedIP = ipBlocklistStatic.find(ip => 
-      ip.category === 'Blocklist' && 
-      ip.status === 'Active' && 
+    const blockedIP = ipBlocklistStatic.find(ip =>
+      ip.category === 'Blocklist' &&
+      ip.status === 'Active' &&
       ip.ip === userIP
     )
 
@@ -130,10 +139,31 @@ export default function AdminLogin() {
       }
 
       // 4. Check if OTP is required
-      if (otpEnabled) {
+      const requireOtp = !DEMO_RELAXED_SECURITY && otpEnabled
+
+      if (!requireOtp) {
+        // Bypass OTP in relaxed demo mode - proceed directly to dashboard
+        console.log('EMAIL LOG LOGGED:', {
+          user: 'System Admin',
+          event: 'otp_bypass_demo',
+          username,
+          ip: userIP,
+          timestamp: new Date().toLocaleString()
+        })
+
+        console.log('LOGIN HISTORY LOGGED:', {
+          user: 'System Admin',
+          username,
+          ip: userIP,
+          result: 'Success',
+          timestamp: new Date().toLocaleString()
+        })
+
+        navigate('/admin/dashboard')
+      } else if (otpEnabled) {
         setOtpModalOpen(true)
         setPendingNavigation(true)
-        
+
         // Log successful credential validation (demo)
         console.log('LOGIN HISTORY LOGGED:', {
           user: 'System Admin',
@@ -293,9 +323,23 @@ export default function AdminLogin() {
               </div>
 
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3 flex items-start space-x-2">
-                  <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>{error}</span>
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-3">
+                  <div className="flex items-start space-x-2">
+                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                  {DEMO_MODE && error.includes('IP blocked') && (
+                    <button
+                      type="button"
+                      className="text-xs underline text-blue-600 mt-2 hover:text-blue-800"
+                      onClick={() => {
+                        window.sessionStorage.setItem('demo_ip_override', '1')
+                        setError('')
+                      }}
+                    >
+                      Unblock me (demo)
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -330,8 +374,26 @@ export default function AdminLogin() {
         </Card>
 
         {/* Debug Info (Demo Mode Only) */}
-        <div className="mt-4 text-xs text-white/60 text-center">
-          Demo Mode • IP: {userIP} • OTP: {otpEnabled ? 'Enabled' : 'Disabled'}
+        <div className="mt-4 space-y-2">
+          <div className="text-xs text-white/60 text-center">
+            Demo Mode • IP: {userIP} • OTP: {otpEnabled ? 'Enabled' : 'Disabled'}
+          </div>
+
+          {/* Toggle Relaxed Security */}
+          <div className="flex justify-center">
+            <button
+              type="button"
+              className="text-xs px-3 py-1 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors"
+              onClick={() => {
+                const current = localStorage.getItem('DEMO_RELAXED_SECURITY') ?? 'true'
+                const newValue = current === 'true' ? 'false' : 'true'
+                localStorage.setItem('DEMO_RELAXED_SECURITY', newValue)
+                window.location.reload()
+              }}
+            >
+              Demo: Relaxed Security {DEMO_RELAXED_SECURITY ? 'ON' : 'OFF'} (click to toggle)
+            </button>
+          </div>
         </div>
       </div>
 
