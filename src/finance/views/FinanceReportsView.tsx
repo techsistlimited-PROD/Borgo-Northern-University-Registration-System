@@ -2,419 +2,490 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Download, Printer, FileText, Calendar, DollarSign } from 'lucide-react'
+import { Download, Printer } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { StudentBill, Payment } from '../data/types'
-import { formatCurrency, exportTableToCSV, downloadCSV } from '../utils/financeUtils'
-import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
+import { formatCurrency, downloadCSV, exportTableToCSV } from '../utils/financeUtils'
 
-type ReportType = 'collection_summary' | 'dues_aging' | 'revenue_by_head' | 'cashier_recon' | 'waiver_impact' | 'payment_mix' | 'outstanding_by_program' | 'mr_register'
+type ReportType = 'outstanding' | 'collection' | 'refund' | 'waiver' | 'bank' | 'lateFee' | 'dropReadmission'
 
 export default function FinanceReportsView() {
-  const [selectedReport, setSelectedReport] = useState<ReportType>('collection_summary')
-  const [dateFrom, setDateFrom] = useState('2024-01-01')
-  const [dateTo, setDateTo] = useState(new Date().toISOString().split('T')[0])
-  const [selectedProgram, setSelectedProgram] = useState('All')
-  const [selectedMethod, setSelectedMethod] = useState('All')
+  const [reportType, setReportType] = useState<ReportType>('outstanding')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
+  const [program, setProgram] = useState('All')
+  const [semester, setSemester] = useState('All')
+  const [method, setMethod] = useState('All')
+  
   const [reportData, setReportData] = useState<any[]>([])
-  const { filters } = useFinanceFilters()
-
-  const reports = [
-    { id: 'collection_summary', name: 'Collection Summary', icon: DollarSign },
-    { id: 'dues_aging', name: 'Dues Aging Detail', icon: Calendar },
-    { id: 'revenue_by_head', name: 'Revenue by Cost Head', icon: FileText },
-    { id: 'cashier_recon', name: 'Cashier Reconciliation', icon: DollarSign },
-    { id: 'waiver_impact', name: 'Scholarship/Waiver Impact', icon: FileText },
-    { id: 'payment_mix', name: 'Payment Method Mix', icon: DollarSign },
-    { id: 'outstanding_by_program', name: 'Outstanding by Program/Campus', icon: FileText },
-    { id: 'mr_register', name: 'MR Register', icon: FileText }
-  ]
 
   useEffect(() => {
     generateReport()
-  }, [selectedReport, dateFrom, dateTo, selectedProgram, selectedMethod, filters])
+  }, [reportType])
 
   const generateReport = () => {
-    const bills = Repo.get<StudentBill>('finance-student-bills')
-    const payments = Repo.get<Payment>('finance-payments')
-    const waiverAssignments = Repo.get('finance-waiver-assignments')
+    const bills = Repo.get('finance-student-bills')
+    const payments = Repo.get('finance-payments')
+    const refunds = Repo.get('finance-refunds')
+    const waivers = Repo.get('finance-waiver-assignments')
+    const bankStatements = Repo.get('finance-bank-statements')
+    const fines = Repo.get('finance-fines')
+    const dropPolicies = Repo.get('finance-drop-readmission-policies')
 
-    switch (selectedReport) {
-      case 'collection_summary':
-        generateCollectionSummary(payments)
-        break
-      case 'dues_aging':
-        generateDuesAging(bills)
-        break
-      case 'revenue_by_head':
-        generateRevenueByHead(bills)
-        break
-      case 'cashier_recon':
-        generateCashierRecon(payments)
-        break
-      case 'waiver_impact':
-        generateWaiverImpact(bills, waiverAssignments)
-        break
-      case 'payment_mix':
-        generatePaymentMix(payments)
-        break
-      case 'outstanding_by_program':
-        generateOutstandingByProgram(bills)
-        break
-      case 'mr_register':
-        generateMRRegister(payments)
-        break
-    }
-  }
+    let data: any[] = []
 
-  const generateCollectionSummary = (payments: Payment[]) => {
-    const filtered = payments.filter(p => {
-      const date = new Date(p.paymentDate)
-      const matchesDateFilter = date >= new Date(dateFrom) && date <= new Date(dateTo)
-      const matchesLocalFilters = (selectedProgram === 'All' || p.program === selectedProgram) &&
-                                   (selectedMethod === 'All' || p.method === selectedMethod)
-      const matchesGlobalFilters = (filters.semester === 'All' || p.semester.includes(filters.semester)) &&
-                                    (filters.campus === 'All' || p.campus === filters.campus) &&
-                                    (filters.program === 'All' || p.program === filters.program)
-      return matchesDateFilter && matchesLocalFilters && matchesGlobalFilters
-    })
+    switch (reportType) {
+      case 'outstanding':
+        const grouped = bills.reduce((acc: any, bill: any) => {
+          const key = `${bill.program}-${bill.semester}`
+          if (!acc[key]) {
+            acc[key] = {
+              program: bill.program,
+              semester: bill.semester,
+              students: new Set(),
+              totalPayable: 0,
+              totalPaid: 0,
+              totalDue: 0
+            }
+          }
+          acc[key].students.add(bill.studentId)
+          acc[key].totalPayable += bill.netTotal
+          acc[key].totalPaid += bill.paidAmount
+          acc[key].totalDue += bill.balanceDue
+          return acc
+        }, {})
+        
+        data = Object.values(grouped).map((g: any) => ({
+          ...g,
+          students: g.students.size
+        }))
+        break
 
-    const summary = filtered.reduce((acc, p) => {
-      const key = `${p.paymentDate}-${p.method}`
-      if (!acc[key]) {
-        acc[key] = { date: p.paymentDate, method: p.method, count: 0, amount: 0 }
-      }
-      acc[key].count++
-      acc[key].amount += p.totalAmount
-      return acc
-    }, {} as Record<string, any>)
+      case 'collection':
+        data = payments.map((p: any) => ({
+          date: p.paymentDate,
+          studentId: p.studentId,
+          studentName: p.studentName,
+          amount: p.totalAmount,
+          method: p.method,
+          receiptNo: p.receiptNo
+        }))
+        break
 
-    setReportData(Object.values(summary))
-  }
+      case 'refund':
+        data = refunds.map((r: any) => ({
+          refundNo: r.refundNo,
+          date: r.refundDate,
+          studentId: r.studentId,
+          studentName: r.studentName,
+          program: r.program,
+          refundAmount: r.refundAmount,
+          method: r.refundMethod,
+          originalMR: r.originalReceiptNo
+        }))
+        break
 
-  const generateDuesAging = (bills: StudentBill[]) => {
-    const today = new Date()
-    const data = bills
-      .filter(b => b.balanceDue > 0)
-      .map(b => {
-        const dueDate = new Date(b.dueDate)
-        const daysPastDue = Math.floor((today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24))
-        const bucket = daysPastDue <= 30 ? '0-30' : daysPastDue <= 60 ? '31-60' : daysPastDue <= 90 ? '61-90' : '>90'
-        return {
+      case 'waiver':
+        data = waivers.map((w: any) => ({
+          studentId: w.studentId,
+          studentName: w.studentName,
+          policy: w.policyName,
+          percent: w.percent,
+          effectiveTerm: w.effectiveTerm,
+          assignedBy: w.assignedBy
+        }))
+        break
+
+      case 'bank':
+        data = bankStatements.map((b: any) => ({
+          date: b.date,
+          reference: b.reference,
+          amount: b.amount,
+          status: b.matched ? 'Matched' : 'Unmatched',
+          remarks: b.matchedReceiptNo || b.notes || '-'
+        }))
+        break
+
+      case 'lateFee':
+        const lateFineBills = bills.filter((b: any) => 
+          b.lineItems.some((li: any) => li.costHeadCode === '014')
+        )
+        data = lateFineBills.map((b: any) => {
+          const lateFeeItem = b.lineItems.find((li: any) => li.costHeadCode === '014')
+          return {
+            studentId: b.studentId,
+            studentName: b.studentName,
+            semester: b.semester,
+            fineAmount: lateFeeItem?.netAmount || 0,
+            billNo: b.billNo,
+            dateApplied: b.updatedAt?.split('T')[0] || b.billDate
+          }
+        })
+        break
+
+      case 'dropReadmission':
+        const dropBills = bills.filter((b: any) => 
+          b.lineItems.some((li: any) => li.costHeadCode === '023' || li.costHeadName.toLowerCase().includes('drop'))
+        )
+        data = dropBills.map((b: any) => ({
           studentId: b.studentId,
           studentName: b.studentName,
-          program: b.program,
-          billNo: b.billNo,
-          dueDate: b.dueDate,
-          balanceDue: b.balanceDue,
-          daysPastDue,
-          bucket
-        }
+          type: 'Drop/Readmission',
+          feeAmount: b.netTotal,
+          semester: b.semester,
+          createdDate: b.billDate
+        }))
+        break
+    }
+
+    setReportData(data)
+  }
+
+  const applyFilters = () => {
+    let filtered = reportData
+
+    if (program !== 'All') {
+      filtered = filtered.filter((row: any) => row.program === program)
+    }
+
+    if (semester !== 'All') {
+      filtered = filtered.filter((row: any) => row.semester === semester)
+    }
+
+    if (method !== 'All') {
+      filtered = filtered.filter((row: any) => row.method === method)
+    }
+
+    if (dateFrom && dateTo) {
+      filtered = filtered.filter((row: any) => {
+        const rowDate = row.date || row.dateApplied || row.createdDate
+        return rowDate >= dateFrom && rowDate <= dateTo
       })
-      .sort((a, b) => b.daysPastDue - a.daysPastDue)
+    }
 
-    setReportData(data.slice(0, 50))
+    return filtered
   }
 
-  const generateRevenueByHead = (bills: StudentBill[]) => {
-    const revenue: Record<string, { costHead: string; amount: number }> = {}
+  const handleExportCSV = () => {
+    const filtered = applyFilters()
+    if (filtered.length === 0) {
+      alert('No data to export')
+      return
+    }
 
-    bills.forEach(bill => {
-      bill.lineItems.forEach(li => {
-        if (!revenue[li.costHeadCode]) {
-          revenue[li.costHeadCode] = { costHead: li.costHeadName, amount: 0 }
-        }
-        revenue[li.costHeadCode].amount += li.netAmount
-      })
-    })
-
-    setReportData(Object.values(revenue).sort((a, b) => b.amount - a.amount).slice(0, 40))
-  }
-
-  const generateCashierRecon = (payments: Payment[]) => {
-    const byOfficer: Record<string, { officer: string; count: number; amount: number; matched: number }> = {}
-
-    payments.forEach(p => {
-      if (!byOfficer[p.collectedBy]) {
-        byOfficer[p.collectedBy] = { officer: p.collectedBy, count: 0, amount: 0, matched: 0 }
-      }
-      byOfficer[p.collectedBy].count++
-      byOfficer[p.collectedBy].amount += p.totalAmount
-      if (p.status === 'Completed') {
-        byOfficer[p.collectedBy].matched++
-      }
-    })
-
-    setReportData(Object.values(byOfficer))
-  }
-
-  const generateWaiverImpact = (bills: StudentBill[], assignments: any[]) => {
-    const impact: Record<string, { policy: string; students: number; amountForgone: number }> = {}
-
-    assignments.forEach(a => {
-      if (!impact[a.policyCode]) {
-        impact[a.policyCode] = { policy: a.policyName, students: 0, amountForgone: 0 }
-      }
-      impact[a.policyCode].students++
-    })
-
-    bills.forEach(bill => {
-      impact['Total'] = impact['Total'] || { policy: 'All Waivers', students: 0, amountForgone: 0 }
-      impact['Total'].amountForgone += bill.waiverTotal + bill.scholarshipTotal
-    })
-
-    setReportData(Object.values(impact))
-  }
-
-  const generatePaymentMix = (payments: Payment[]) => {
-    const mix: Record<string, { method: string; count: number; amount: number; percentage: number }> = {}
-
-    payments.forEach(p => {
-      if (!mix[p.method]) {
-        mix[p.method] = { method: p.method, count: 0, amount: 0, percentage: 0 }
-      }
-      mix[p.method].count++
-      mix[p.method].amount += p.totalAmount
-    })
-
-    const total = Object.values(mix).reduce((sum, m) => sum + m.amount, 0)
-    Object.values(mix).forEach(m => {
-      m.percentage = (m.amount / total) * 100
-    })
-
-    setReportData(Object.values(mix))
-  }
-
-  const generateOutstandingByProgram = (bills: StudentBill[]) => {
-    const outstanding: Record<string, { program: string; campus: string; students: Set<string>; balance: number }> = {}
-
-    bills
-      .filter(b => b.balanceDue > 0)
-      .forEach(b => {
-        const key = `${b.program}-${b.campus}`
-        if (!outstanding[key]) {
-          outstanding[key] = { program: b.program, campus: b.campus, students: new Set(), balance: 0 }
-        }
-        outstanding[key].students.add(b.studentId)
-        outstanding[key].balance += b.balanceDue
-      })
-
-    setReportData(
-      Object.values(outstanding)
-        .map(o => ({ ...o, studentCount: o.students.size }))
-        .sort((a, b) => b.balance - a.balance)
-    )
-  }
-
-  const generateMRRegister = (payments: Payment[]) => {
-    const filtered = payments
-      .filter(p => {
-        const date = new Date(p.paymentDate)
-        return date >= new Date(dateFrom) && date <= new Date(dateTo)
-      })
-      .sort((a, b) => a.receiptNo.localeCompare(b.receiptNo))
-
-    setReportData(filtered.slice(0, 50))
-  }
-
-  const handleExport = () => {
-    const headers = getReportHeaders()
-    const rows = getReportRows()
+    const headers = Object.keys(filtered[0])
+    const rows = filtered.map((row: any) => Object.values(row))
     const csv = exportTableToCSV(headers, rows)
-    downloadCSV(`${selectedReport}_${new Date().toISOString().split('T')[0]}.csv`, csv)
+    downloadCSV(`${reportType}-report-${new Date().toISOString().split('T')[0]}.csv`, csv)
   }
 
   const handlePrint = () => {
     window.print()
   }
 
-  const getReportHeaders = (): string[] => {
-    switch (selectedReport) {
-      case 'collection_summary':
-        return ['Date', 'Method', 'Count', 'Amount']
-      case 'dues_aging':
-        return ['Student ID', 'Student Name', 'Program', 'Bill No', 'Due Date', 'Balance Due', 'Days Past Due', 'Bucket']
-      case 'revenue_by_head':
-        return ['Cost Head', 'Amount']
-      case 'cashier_recon':
-        return ['Officer', 'MR Count', 'Total Amount', 'Matched']
-      case 'waiver_impact':
-        return ['Policy', 'Students', 'Amount Forgone']
-      case 'payment_mix':
-        return ['Method', 'Count', 'Amount', 'Percentage']
-      case 'outstanding_by_program':
-        return ['Program', 'Campus', 'Students', 'Balance']
-      case 'mr_register':
-        return ['Receipt No', 'Date', 'Student ID', 'Student Name', 'Amount', 'Method', 'Collected By']
-      default:
-        return []
-    }
-  }
+  const filtered = applyFilters()
+  const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
+  const semesters = ['All', 'Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
+  const methods = ['All', 'Cash', 'Bank', 'bKash', 'Card', 'SSLCommerz', 'DBBL Nexus']
 
-  const getReportRows = (): any[][] => {
-    switch (selectedReport) {
-      case 'collection_summary':
-        return reportData.map(r => [r.date, r.method, r.count, r.amount])
-      case 'dues_aging':
-        return reportData.map(r => [r.studentId, r.studentName, r.program, r.billNo, r.dueDate, r.balanceDue, r.daysPastDue, r.bucket])
-      case 'revenue_by_head':
-        return reportData.map(r => [r.costHead, r.amount])
-      case 'cashier_recon':
-        return reportData.map(r => [r.officer, r.count, r.amount, r.matched])
-      case 'waiver_impact':
-        return reportData.map(r => [r.policy, r.students, r.amountForgone])
-      case 'payment_mix':
-        return reportData.map(r => [r.method, r.count, r.amount, r.percentage])
-      case 'outstanding_by_program':
-        return reportData.map(r => [r.program, r.campus, r.studentCount, r.balance])
-      case 'mr_register':
-        return reportData.map((r: Payment) => [r.receiptNo, r.paymentDate, r.studentId, r.studentName, r.totalAmount, r.method, r.collectedBy])
-      default:
-        return []
-    }
-  }
-
-  const renderReportTable = () => {
-    const headers = getReportHeaders()
-
-    return (
-      <div className="overflow-x-auto border rounded" style={{ maxHeight: '650px', overflowY: 'auto' }}>
-        <table className="w-full">
-          <thead className="bg-gray-50 sticky top-0">
-            <tr>
-              {headers.map((header, idx) => (
-                <th key={idx} className={`p-3 text-xs font-medium ${header.includes('Amount') || header.includes('Balance') || header.includes('Count') ? 'text-right' : 'text-left'}`}>
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {reportData.map((row, idx) => (
-              <tr key={idx} className="border-t hover:bg-gray-50">
-                {selectedReport === 'collection_summary' && (
-                  <>
-                    <td className="p-3 text-sm">{row.date}</td>
-                    <td className="p-3 text-sm"><Badge variant="outline">{row.method}</Badge></td>
-                    <td className="p-3 text-sm text-right">{row.count}</td>
-                    <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.amount)}</td>
-                  </>
-                )}
-                {selectedReport === 'dues_aging' && (
-                  <>
-                    <td className="p-3 text-sm">{row.studentId}</td>
-                    <td className="p-3 text-sm font-medium">{row.studentName}</td>
-                    <td className="p-3 text-sm">{row.program}</td>
-                    <td className="p-3 text-sm font-mono">{row.billNo}</td>
-                    <td className="p-3 text-sm">{row.dueDate}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.balanceDue)}</td>
-                    <td className="p-3 text-sm text-right">{row.daysPastDue}</td>
-                    <td className="p-3 text-sm">
-                      <Badge className={
-                        row.bucket === '0-30' ? 'bg-green-100 text-green-800' :
-                        row.bucket === '31-60' ? 'bg-yellow-100 text-yellow-800' :
-                        row.bucket === '61-90' ? 'bg-orange-100 text-orange-800' :
-                        'bg-red-100 text-red-800'
-                      }>{row.bucket} days</Badge>
-                    </td>
-                  </>
-                )}
-                {selectedReport === 'revenue_by_head' && (
-                  <>
-                    <td className="p-3 text-sm font-medium">{row.costHead}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-green-600">{formatCurrency(row.amount)}</td>
-                  </>
-                )}
-                {selectedReport === 'cashier_recon' && (
-                  <>
-                    <td className="p-3 text-sm font-medium">{row.officer}</td>
-                    <td className="p-3 text-sm text-right">{row.count}</td>
-                    <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.amount)}</td>
-                    <td className="p-3 text-sm text-right">{row.matched}</td>
-                  </>
-                )}
-                {selectedReport === 'waiver_impact' && (
-                  <>
-                    <td className="p-3 text-sm font-medium">{row.policy}</td>
-                    <td className="p-3 text-sm text-right">{row.students}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.amountForgone)}</td>
-                  </>
-                )}
-                {selectedReport === 'payment_mix' && (
-                  <>
-                    <td className="p-3 text-sm font-medium">{row.method}</td>
-                    <td className="p-3 text-sm text-right">{row.count}</td>
-                    <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.amount)}</td>
-                    <td className="p-3 text-sm text-right">{row.percentage.toFixed(1)}%</td>
-                  </>
-                )}
-                {selectedReport === 'outstanding_by_program' && (
-                  <>
-                    <td className="p-3 text-sm font-medium">{row.program}</td>
-                    <td className="p-3 text-sm">{row.campus}</td>
-                    <td className="p-3 text-sm text-right">{row.studentCount}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.balance)}</td>
-                  </>
-                )}
-                {selectedReport === 'mr_register' && (
-                  <>
-                    <td className="p-3 text-sm font-mono font-semibold text-blue-600">{row.receiptNo}</td>
-                    <td className="p-3 text-sm">{row.paymentDate}</td>
-                    <td className="p-3 text-sm">{row.studentId}</td>
-                    <td className="p-3 text-sm font-medium">{row.studentName}</td>
-                    <td className="p-3 text-sm text-right font-semibold text-green-600">{formatCurrency(row.totalAmount)}</td>
-                    <td className="p-3 text-sm"><Badge variant="outline">{row.method}</Badge></td>
-                    <td className="p-3 text-sm">{row.collectedBy}</td>
-                  </>
-                )}
+  const renderTable = () => {
+    switch (reportType) {
+      case 'outstanding':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Program</th>
+                <th className="text-left p-3 text-sm font-medium">Semester</th>
+                <th className="text-center p-3 text-sm font-medium">Students</th>
+                <th className="text-right p-3 text-sm font-medium">Total Payable</th>
+                <th className="text-right p-3 text-sm font-medium">Total Paid</th>
+                <th className="text-right p-3 text-sm font-medium">Total Due</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm font-medium">{row.program}</td>
+                  <td className="p-3 text-sm">{row.semester}</td>
+                  <td className="p-3 text-sm text-center">{row.students}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.totalPayable)}</td>
+                  <td className="p-3 text-sm text-right text-green-600">{formatCurrency(row.totalPaid)}</td>
+                  <td className="p-3 text-sm text-right text-red-600 font-semibold">{formatCurrency(row.totalDue)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'collection':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Date</th>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-right p-3 text-sm font-medium">Amount</th>
+                <th className="text-left p-3 text-sm font-medium">Method</th>
+                <th className="text-left p-3 text-sm font-medium">MR No</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.date}</td>
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm text-right font-semibold text-green-600">{formatCurrency(row.amount)}</td>
+                  <td className="p-3 text-sm">{row.method}</td>
+                  <td className="p-3 text-sm font-mono">{row.receiptNo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'refund':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Refund No</th>
+                <th className="text-left p-3 text-sm font-medium">Date</th>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Program</th>
+                <th className="text-right p-3 text-sm font-medium">Refund Amount</th>
+                <th className="text-left p-3 text-sm font-medium">Method</th>
+                <th className="text-left p-3 text-sm font-medium">Original MR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm font-mono">{row.refundNo}</td>
+                  <td className="p-3 text-sm">{row.date}</td>
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.program}</td>
+                  <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.refundAmount)}</td>
+                  <td className="p-3 text-sm">{row.method}</td>
+                  <td className="p-3 text-sm font-mono">{row.originalMR}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'waiver':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Policy</th>
+                <th className="text-center p-3 text-sm font-medium">Percent</th>
+                <th className="text-left p-3 text-sm font-medium">Effective Term</th>
+                <th className="text-left p-3 text-sm font-medium">Assigned By</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.policy}</td>
+                  <td className="p-3 text-sm text-center font-semibold">{row.percent}%</td>
+                  <td className="p-3 text-sm">{row.effectiveTerm}</td>
+                  <td className="p-3 text-sm">{row.assignedBy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'bank':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Date</th>
+                <th className="text-left p-3 text-sm font-medium">Reference</th>
+                <th className="text-right p-3 text-sm font-medium">Amount</th>
+                <th className="text-center p-3 text-sm font-medium">Status</th>
+                <th className="text-left p-3 text-sm font-medium">Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.date}</td>
+                  <td className="p-3 text-sm font-mono">{row.reference}</td>
+                  <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.amount)}</td>
+                  <td className="p-3 text-sm text-center">
+                    <span className={`px-2 py-1 rounded text-xs ${row.status === 'Matched' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                  <td className="p-3 text-sm">{row.remarks}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'lateFee':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Semester</th>
+                <th className="text-right p-3 text-sm font-medium">Fine Amount</th>
+                <th className="text-left p-3 text-sm font-medium">Bill No</th>
+                <th className="text-left p-3 text-sm font-medium">Date Applied</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.semester}</td>
+                  <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.fineAmount)}</td>
+                  <td className="p-3 text-sm font-mono">{row.billNo}</td>
+                  <td className="p-3 text-sm">{row.dateApplied}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'dropReadmission':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Type</th>
+                <th className="text-right p-3 text-sm font-medium">Fee Amount</th>
+                <th className="text-left p-3 text-sm font-medium">Semester</th>
+                <th className="text-left p-3 text-sm font-medium">Created Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.type}</td>
+                  <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.feeAmount)}</td>
+                  <td className="p-3 text-sm">{row.semester}</td>
+                  <td className="p-3 text-sm">{row.createdDate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+    }
   }
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-deep-plum">Finance Reports</h1>
-          <p className="text-sm text-gray-600">Comprehensive reporting with exports</p>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-deep-plum">Finance Reports</h1>
 
-      <div className="grid grid-cols-4 gap-3">
-        {reports.map(report => {
-          const Icon = report.icon
-          return (
-            <button
-              key={report.id}
-              onClick={() => setSelectedReport(report.id as ReportType)}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                selectedReport === report.id
-                  ? 'border-accent-purple bg-accent-purple text-white'
-                  : 'border-gray-200 hover:border-accent-purple hover:bg-purple-50'
-              }`}
-            >
-              <Icon className="w-6 h-6 mb-2 mx-auto" />
-              <p className="text-sm font-medium text-center">{report.name}</p>
-            </button>
-          )
-        })}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Select Report Type</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <select
+            value={reportType}
+            onChange={(e) => setReportType(e.target.value as ReportType)}
+            className="w-full px-4 py-3 border rounded-md text-base font-medium"
+          >
+            <option value="outstanding">Outstanding Dues Summary</option>
+            <option value="collection">Collection Summary</option>
+            <option value="refund">Refund Summary</option>
+            <option value="waiver">Waiver Summary</option>
+            <option value="bank">Bank Reconciliation</option>
+            <option value="lateFee">Late Fee Report</option>
+            <option value="dropReadmission">Drop/Readmission Report</option>
+          </select>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-5 gap-3">
+            {reportType === 'collection' && (
+              <>
+                <Input
+                  type="date"
+                  placeholder="Date From"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                />
+                <Input
+                  type="date"
+                  placeholder="Date To"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                />
+                <select
+                  value={method}
+                  onChange={(e) => setMethod(e.target.value)}
+                  className="px-3 py-2 border rounded-md"
+                >
+                  {methods.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </>
+            )}
+            
+            {['outstanding', 'collection', 'refund', 'lateFee', 'dropReadmission'].includes(reportType) && (
+              <>
+                <select
+                  value={program}
+                  onChange={(e) => setProgram(e.target.value)}
+                  className="px-3 py-2 border rounded-md"
+                >
+                  {programs.map(p => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
+                <select
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
+                  className="px-3 py-2 border rounded-md"
+                >
+                  {semesters.map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>{reports.find(r => r.id === selectedReport)?.name}</CardTitle>
+            <CardTitle>Report Data</CardTitle>
             <div className="flex gap-2">
-              <Button onClick={handleExport} variant="outline" size="sm">
+              <Button onClick={handleExportCSV} variant="outline">
                 <Download className="w-4 h-4 mr-2" />
-                CSV
+                Export CSV
               </Button>
-              <Button onClick={handlePrint} variant="outline" size="sm">
+              <Button onClick={handlePrint} variant="outline">
                 <Printer className="w-4 h-4 mr-2" />
                 Print
               </Button>
@@ -422,62 +493,18 @@ export default function FinanceReportsView() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-4 p-4 bg-gray-50 rounded flex gap-4">
-            <div>
-              <label className="block text-xs font-medium mb-1">From Date</label>
-              <Input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">To Date</label>
-              <Input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="text-sm"
-              />
-            </div>
-            {(selectedReport === 'collection_summary' || selectedReport === 'outstanding_by_program') && (
-              <div>
-                <label className="block text-xs font-medium mb-1">Program</label>
-                <select
-                  value={selectedProgram}
-                  onChange={(e) => setSelectedProgram(e.target.value)}
-                  className="px-3 py-2 border rounded-md text-sm"
-                >
-                  <option value="All">All</option>
-                  <option value="CSE">CSE</option>
-                  <option value="BBA">BBA</option>
-                  <option value="LLB">LLB</option>
-                </select>
-              </div>
-            )}
-            {selectedReport === 'collection_summary' && (
-              <div>
-                <label className="block text-xs font-medium mb-1">Method</label>
-                <select
-                  value={selectedMethod}
-                  onChange={(e) => setSelectedMethod(e.target.value)}
-                  className="px-3 py-2 border rounded-md text-sm"
-                >
-                  <option value="All">All</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Bank">Bank</option>
-                  <option value="bKash">bKash</option>
-                </select>
+          <div className="overflow-x-auto border rounded">
+            {filtered.length > 0 ? renderTable() : (
+              <div className="p-12 text-center text-gray-500">
+                No data available for the selected filters
               </div>
             )}
           </div>
-
-          {renderReportTable()}
-
-          <div className="mt-4 text-sm text-gray-600">
-            Showing {reportData.length} records
-          </div>
+          {filtered.length > 0 && (
+            <div className="mt-4 text-sm text-gray-600">
+              Showing {filtered.length} record(s)
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
