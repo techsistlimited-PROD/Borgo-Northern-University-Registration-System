@@ -69,6 +69,44 @@ export default function CertPreviewDrawer({ request, onClose }: CertPreviewDrawe
           </Card>
         </div>
 
+        <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-y print:hidden">
+          <div className="text-xs font-medium text-gray-700 mb-3">Document Clearance Chain</div>
+          <div className="flex items-center justify-between relative">
+            <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-300 z-0"></div>
+
+            {['ACAD', 'Library', 'Accounts', 'COE'].map((dept, idx) => {
+              const isCleared = idx <= (['Requested', 'Processing', 'Ready', 'Collected'].indexOf(request.status))
+              const timestamp = idx === 0 ? request.requestDate :
+                                idx === 1 ? (request.processedDate || '') :
+                                idx === 2 ? (request.readyDate || '') :
+                                (request.readyDate || '')
+
+              return (
+                <div key={dept} className="flex flex-col items-center relative z-10">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm mb-2 ${
+                    isCleared ? 'bg-gradient-to-br from-green-500 to-green-600 shadow-lg' : 'bg-gray-300'
+                  }`}>
+                    {isCleared ? '✓' : idx + 1}
+                  </div>
+                  <div className={`text-xs font-medium ${isCleared ? 'text-gray-900' : 'text-gray-500'}`}>
+                    {dept}
+                  </div>
+                  {timestamp && isCleared && (
+                    <div className="text-xs text-gray-500 mt-0.5">{timestamp}</div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-3 text-xs text-gray-600">
+            {request.status === 'Requested' && '⏳ Awaiting ACAD clearance'}
+            {request.status === 'Processing' && '⏳ Awaiting Library clearance'}
+            {request.status === 'Ready' && '✅ All clearances complete • Ready for collection'}
+            {request.status === 'Collected' && '✅ Document collected by student'}
+            {request.status === 'Rejected' && '❌ Request rejected: ' + (request.rejectedReason || 'No reason provided')}
+          </div>
+        </div>
+
         <div className="border-b print:hidden">
           <div className="flex gap-4 px-4">
             {(['preview', 'history', 'notes'] as const).map(tab => (
