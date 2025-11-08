@@ -319,16 +319,23 @@ function generateBankStatements(payments: Payment[]): BankStatement[] {
   return statements
 }
 
-// 8 Waiver Policies
+// 15 Waiver Policies
 export const waiverPoliciesStatic: WaiverPolicy[] = [
   { id: 'wp1', code: 'MERIT-50', name: 'Merit Scholarship 50%', percentCap: 50, description: 'Top performers', active: true },
   { id: 'wp2', code: 'MERIT-25', name: 'Merit Scholarship 25%', percentCap: 25, description: 'High achievers', active: true },
-  { id: 'wp3', code: 'NEED-30', name: 'Need Based 30%', percentCap: 30, description: 'Financial need', active: true },
-  { id: 'wp4', code: 'SPORTS-20', name: 'Sports Quota 20%', percentCap: 20, description: 'Athletic achievement', active: true },
-  { id: 'wp5', code: 'SIBLING-15', name: 'Sibling Discount 15%', percentCap: 15, description: 'Family discount', active: true },
-  { id: 'wp6', code: 'STAFF-50', name: 'Staff Child 50%', percentCap: 50, description: 'University staff children', active: true },
-  { id: 'wp7', code: 'FF-100', name: 'Freedom Fighter 100%', percentCap: 100, description: 'Freedom fighter quota', active: true },
-  { id: 'wp8', code: 'TRIBAL-30', name: 'Tribal Quota 30%', percentCap: 30, description: 'Tribal community support', active: true }
+  { id: 'wp3', code: 'MERIT-100', name: 'Merit Scholarship 100%', percentCap: 100, description: 'Exceptional students', active: true },
+  { id: 'wp4', code: 'NEED-30', name: 'Need Based 30%', percentCap: 30, description: 'Financial need', active: true },
+  { id: 'wp5', code: 'NEED-50', name: 'Need Based 50%', percentCap: 50, description: 'High financial need', active: true },
+  { id: 'wp6', code: 'SPORTS-20', name: 'Sports Quota 20%', percentCap: 20, description: 'Athletic achievement', active: true },
+  { id: 'wp7', code: 'SPORTS-40', name: 'Sports Quota 40%', percentCap: 40, description: 'National level athletes', active: true },
+  { id: 'wp8', code: 'SIBLING-15', name: 'Sibling Discount 15%', percentCap: 15, description: 'Family discount', active: true },
+  { id: 'wp9', code: 'STAFF-50', name: 'Staff Child 50%', percentCap: 50, description: 'University staff children', active: true },
+  { id: 'wp10', code: 'STAFF-100', name: 'Staff Child 100%', percentCap: 100, description: 'Senior staff children', active: true },
+  { id: 'wp11', code: 'FF-100', name: 'Freedom Fighter 100%', percentCap: 100, description: 'Freedom fighter quota', active: true },
+  { id: 'wp12', code: 'TRIBAL-30', name: 'Tribal Quota 30%', percentCap: 30, description: 'Tribal community support', active: true },
+  { id: 'wp13', code: 'ORPHAN-40', name: 'Orphan Waiver 40%', percentCap: 40, description: 'Orphaned students', active: true },
+  { id: 'wp14', code: 'DISABILITY-35', name: 'Disability Waiver 35%', percentCap: 35, description: 'Students with disabilities', active: true },
+  { id: 'wp15', code: 'ALUMNI-10', name: 'Alumni Child 10%', percentCap: 10, description: 'Children of alumni', active: true }
 ]
 
 // Generate 150 Waiver Assignments
