@@ -299,9 +299,13 @@ export default function WaiverAssignmentView() {
                       </td>
                       <td className="p-3">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleToggleLock(assignment.id, assignment.locked)}
+                          className={assignment.locked
+                            ? 'border-green-500 text-green-600 hover:bg-green-50'
+                            : 'border-purple-500 text-purple-600 hover:bg-purple-50'
+                          }
                         >
                           {assignment.locked ? 'Unlock' : 'Lock'}
                         </Button>
