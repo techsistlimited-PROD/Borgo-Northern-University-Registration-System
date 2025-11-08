@@ -6,7 +6,7 @@ import { Download, Printer } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { formatCurrency, downloadCSV, exportTableToCSV } from '../utils/financeUtils'
 
-type ReportType = 'outstanding' | 'collection' | 'refund' | 'waiver' | 'bank' | 'lateFee' | 'dropReadmission'
+type ReportType = 'outstanding' | 'collection' | 'collectionByOfficer' | 'refund' | 'waiver' | 'bank' | 'lateFee' | 'dropReadmission' | 'fines' | 'holds'
 
 export default function FinanceReportsView() {
   const [reportType, setReportType] = useState<ReportType>('outstanding')
