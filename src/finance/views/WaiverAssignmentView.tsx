@@ -231,10 +231,10 @@ export default function WaiverAssignmentView() {
                       <td className="p-3">
                         <button
                           onClick={() => handleTogglePolicyStatus(policy.id, policy.active)}
-                          className={`px-2 py-1 rounded text-xs font-medium ${
+                          className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-sm hover:shadow-md ${
                             policy.active
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-600'
+                              ? 'bg-green-100 text-green-800 hover:bg-green-200 border border-green-300'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-300'
                           }`}
                         >
                           {policy.active ? 'Active' : 'Inactive'}
