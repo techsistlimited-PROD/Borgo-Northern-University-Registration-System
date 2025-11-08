@@ -162,6 +162,25 @@ export default function ReportFiltersPanel({
           </div>
         )
 
+      case 'topCount':
+        return (
+          <div key={filterType}>
+            <Label className="text-xs">Ranking</Label>
+            <Select
+              value={filters.topCount || 'top10'}
+              onValueChange={(v) => updateFilter('topCount', v)}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="top3">Top 3</SelectItem>
+                <SelectItem value="top10">Top 10</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )
+
       default:
         return null
     }
