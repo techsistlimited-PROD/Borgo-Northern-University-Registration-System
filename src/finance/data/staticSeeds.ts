@@ -144,13 +144,13 @@ function generatePayments(bills: StudentBill[]): Payment[] {
   return payments
 }
 
-// Generate 12 Refunds
+// Generate 50 Refunds
 function generateRefunds(payments: Payment[]): PaymentRefund[] {
   const refunds: PaymentRefund[] = []
-  const reasons = ['Course drop', 'Program discontinuation', 'Overpayment', 'Scholarship adjustment', 'Fee waiver', 'Duplicate payment']
-  
-  for (let i = 0; i < 12; i++) {
-    const payment = payments[i * 10]
+  const reasons = ['Course drop', 'Program discontinuation', 'Overpayment', 'Scholarship adjustment', 'Fee waiver', 'Duplicate payment', 'Semester withdrawal', 'Program transfer']
+
+  for (let i = 0; i < 50; i++) {
+    const payment = payments[i * 8]
     const refundAmount = Math.floor(payment.totalAmount * (0.1 + Math.random() * 0.3))
     refunds.push(makeRefund(
       payment.studentId,
@@ -164,39 +164,39 @@ function generateRefunds(payments: Payment[]): PaymentRefund[] {
       i + 1
     ))
   }
-  
+
   return refunds
 }
 
-// Generate 40 Fines
+// Generate 120 Fines
 function generateFines(bills: StudentBill[]): StudentFine[] {
   const fines: StudentFine[] = []
   const fineTypes: Array<'Late Fine' | 'Library Fine' | 'Exam Fine' | 'Misc Fine'> = ['Late Fine', 'Library Fine', 'Exam Fine', 'Misc Fine']
-  
-  for (let i = 0; i < 40; i++) {
+
+  for (let i = 0; i < 120; i++) {
     const bill = bills[i]
     const fineType = fineTypes[i % fineTypes.length]
     const amount = fineType === 'Late Fine' ? Math.floor(Math.random() * 2000) + 1000 :
       fineType === 'Library Fine' ? Math.floor(Math.random() * 800) + 200 :
       fineType === 'Exam Fine' ? Math.floor(Math.random() * 1500) + 500 :
       Math.floor(Math.random() * 1000) + 300
-    
+
     fines.push(makeFine(bill.studentId, bill.studentName, fineType, amount, i + 1))
   }
-  
+
   return fines
 }
 
-// Generate 24 Holds (70% Active, 30% Removed)
+// Generate 80 Holds (70% Active, 30% Removed)
 function generateHolds(bills: StudentBill[]): StudentHold[] {
   const holds: StudentHold[] = []
   const holdTypes: Array<'Finance Hold' | 'Registration Hold' | 'Exam Hold'> = ['Finance Hold', 'Registration Hold', 'Exam Hold']
-  const reasons = ['Outstanding dues', 'Clearance required', 'Document pending', 'Payment overdue', 'Finance clearance required']
-  
-  for (let i = 0; i < 24; i++) {
+  const reasons = ['Outstanding dues', 'Clearance required', 'Document pending', 'Payment overdue', 'Finance clearance required', 'Library dues', 'Incomplete documentation']
+
+  for (let i = 0; i < 80; i++) {
     const bill = bills[i]
     const holdType = holdTypes[i % holdTypes.length]
-    const isActive = i < 17 // 70% active
+    const isActive = i < 56 // 70% active
     holds.push(makeHold(
       bill.studentId,
       bill.studentName,
@@ -206,7 +206,7 @@ function generateHolds(bills: StudentBill[]): StudentHold[] {
       i + 1
     ))
   }
-  
+
   return holds
 }
 
@@ -280,13 +280,13 @@ function generateLedgerEntries(bills: StudentBill[], payments: Payment[], fines:
     balances.set(refund.studentId, prevBalance - refund.refundAmount)
   })
   
-  return entries.slice(0, 300) // Limit to 300
+  return entries.slice(0, 800) // Limit to 800
 }
 
-// Generate 120 Bank Statements (80% Matched, 20% Unmatched)
+// Generate 350 Bank Statements (80% Matched, 20% Unmatched)
 function generateBankStatements(payments: Payment[]): BankStatement[] {
   const statements: BankStatement[] = []
-  
+
   // Match 80% of payments
   const matchCount = Math.floor(payments.length * 0.8)
   for (let i = 0; i < matchCount; i++) {
@@ -301,9 +301,9 @@ function generateBankStatements(payments: Payment[]): BankStatement[] {
       i + 1
     ))
   }
-  
+
   // Add unmatched statements
-  const unmatchedCount = 120 - matchCount
+  const unmatchedCount = 350 - matchCount
   for (let i = 0; i < unmatchedCount; i++) {
     const date = new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
     statements.push(makeBankStatement(
@@ -315,7 +315,7 @@ function generateBankStatements(payments: Payment[]): BankStatement[] {
       matchCount + i + 1
     ))
   }
-  
+
   return statements
 }
 
@@ -331,12 +331,12 @@ export const waiverPoliciesStatic: WaiverPolicy[] = [
   { id: 'wp8', code: 'TRIBAL-30', name: 'Tribal Quota 30%', percentCap: 30, description: 'Tribal community support', active: true }
 ]
 
-// Generate 40 Waiver Assignments
+// Generate 150 Waiver Assignments
 function generateWaiverAssignments(bills: StudentBill[]): WaiverAssignment[] {
   const assignments: WaiverAssignment[] = []
   const policies = waiverPoliciesStatic
-  
-  for (let i = 0; i < 40; i++) {
+
+  for (let i = 0; i < 150; i++) {
     const bill = bills[i]
     const policy = policies[i % policies.length]
     assignments.push(makeWaiverAssignment(
@@ -349,7 +349,7 @@ function generateWaiverAssignments(bills: StudentBill[]): WaiverAssignment[] {
       i + 1
     ))
   }
-  
+
   return assignments
 }
 
