@@ -14,6 +14,8 @@ export default function WaiverAssignmentView() {
   const [assignments, setAssignments] = useState<WaiverAssignment[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false)
+  const [isEditPolicyOpen, setIsEditPolicyOpen] = useState(false)
+  const [editingPolicy, setEditingPolicy] = useState<WaiverPolicy | null>(null)
   const [formData, setFormData] = useState({
     studentId: '',
     studentName: '',
@@ -22,6 +24,13 @@ export default function WaiverAssignmentView() {
     percent: 0,
     effectiveTerm: 'FA25',
     locked: false
+  })
+  const [policyFormData, setPolicyFormData] = useState({
+    code: '',
+    name: '',
+    percentCap: 0,
+    description: '',
+    active: true
   })
 
   useEffect(() => {
