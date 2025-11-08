@@ -150,8 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Fallback to regular demo credentials
-      const guardianCreds = demoCredentials.guardian as Record<string, string>
-      if (guardianCreds[username] === password) {
+      if (guardianCredentials[username] === password) {
         const userData = demoUsers[username]
         if (userData) {
           setUser(userData)
