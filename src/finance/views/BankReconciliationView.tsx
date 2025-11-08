@@ -8,6 +8,9 @@ import { Link2, Unlink, Download, Settings } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { BankStatement, Payment } from '../data/types'
 import { formatCurrency, exportTableToCSV, downloadCSV } from '../utils/financeUtils'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { bankStatementsStatic, paymentsStatic } from '../data/staticSeeds'
+import { ensureMinRows, buildDemoBankStmt, buildDemoPayment } from '../utils/demoFillers'
 
 export default function BankReconciliationView() {
   const [statements, setStatements] = useState<BankStatement[]>([])
@@ -29,8 +32,15 @@ export default function BankReconciliationView() {
   }, [])
 
   const loadData = () => {
-    setStatements(Repo.get<BankStatement>('finance-bank-statements'))
-    setPayments(Repo.get<Payment>('finance-payments'))
+    // Apply data amplification for demo mode (≥120 bank statements, 80% matched)
+    const baseStatements = DEMO_MODE ? bankStatementsStatic : Repo.get<BankStatement>('finance-bank-statements')
+    const basePayments = DEMO_MODE ? paymentsStatic : Repo.get<Payment>('finance-payments')
+
+    const amplifiedStatements = ensureMinRows(baseStatements, 120, (i) => buildDemoBankStmt(i, { matchRatio: 0.80 }))
+    const amplifiedPayments = ensureMinRows(basePayments, 120, buildDemoPayment)
+
+    setStatements(amplifiedStatements)
+    setPayments(amplifiedPayments)
   }
 
   const matchedStatements = statements.filter(s => s.matched)
@@ -48,6 +58,12 @@ export default function BankReconciliationView() {
       return
     }
 
+    if (DEMO_MODE) {
+      alert(showDemoToast('Match bank statement'))
+      setIsMatchDialogOpen(false)
+      return
+    }
+
     Repo.update('finance-bank-statements', selectedStatement.id, {
       matched: true,
       matchedReceiptNo: selectedReceipt
@@ -58,6 +74,11 @@ export default function BankReconciliationView() {
   }
 
   const handleUnmatch = (id: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Unmatch bank statement'))
+      return
+    }
+
     if (confirm('Unmatch this statement?')) {
       Repo.update('finance-bank-statements', id, {
         matched: false,

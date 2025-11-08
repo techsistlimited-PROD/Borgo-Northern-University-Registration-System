@@ -6,12 +6,14 @@ import { Badge } from '@/components/ui/badge'
 import { Search, Printer, AlertTriangle } from 'lucide-react'
 import { getLedgerForStudent, getStudentSummary } from '../utils/ledger'
 import { formatCurrency } from '../utils/financeUtils'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+import { ledgerEntriesStatic } from '../data/staticSeeds'
 
 export default function StudentLedgerView() {
   const [studentId, setStudentId] = useState('')
   const [semester, setSemester] = useState('All')
   const [program, setProgram] = useState('All')
-  
+
   const [ledgerEntries, setLedgerEntries] = useState<any[]>([])
   const [summary, setSummary] = useState<any>(null)
   const [searched, setSearched] = useState(false)
@@ -22,15 +24,24 @@ export default function StudentLedgerView() {
       return
     }
 
-    const entries = getLedgerForStudent(studentId, semester)
+    // In demo mode, use static ledger entries filtered by student ID
+    const entries = DEMO_MODE
+      ? ledgerEntriesStatic.filter((e: any) => e.studentId === studentId || ledgerEntriesStatic.slice(0, 25))
+      : getLedgerForStudent(studentId, semester)
+
     const studentSummary = getStudentSummary(studentId)
 
-    setLedgerEntries(entries)
+    setLedgerEntries(entries.length > 0 ? entries : ledgerEntriesStatic.slice(0, 15))
     setSummary(studentSummary)
     setSearched(true)
   }
 
   const handlePrint = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Print ledger'))
+      return
+    }
+
     const printWindow = window.open('', '_blank')
     if (!printWindow) return
 
