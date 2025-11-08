@@ -97,7 +97,7 @@ const Sidebar = ({ activeTab, setActiveTab }: {
           </div>
           <div>
             <h2 className="font-bold text-deep-plum">Student Portal</h2>
-            <p className="text-xs text-gray-500">Northern University</p>
+            <p className="text-xs text-gray-500">Northern University Bangladesh</p>
           </div>
         </div>
       </div>

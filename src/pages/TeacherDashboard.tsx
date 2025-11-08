@@ -100,7 +100,7 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
           </div>
           <div>
             <h2 className="font-semibold text-white">Teacher Portal</h2>
-            <p className="text-sm text-white/80">Northern University</p>
+            <p className="text-sm text-white/80">Northern University Bangladesh</p>
           </div>
         </div>
       </div>

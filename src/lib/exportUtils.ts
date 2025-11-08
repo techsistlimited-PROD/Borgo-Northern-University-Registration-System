@@ -79,7 +79,7 @@ export function printContent(title: string, content: string) {
       </head>
       <body>
         <div class="header">
-          <div class="logo">Northern University</div>
+          <div class="logo">Northern University Bangladesh</div>
           <div>${new Date().toLocaleDateString()}</div>
         </div>
         <h1>${title}</h1>

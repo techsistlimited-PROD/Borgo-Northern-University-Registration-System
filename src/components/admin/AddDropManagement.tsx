@@ -263,7 +263,7 @@ export const AddDropManagement = () => {
         </head>
         <body>
           <div class="header">
-            <h1>Northern University</h1>
+            <h1>Northern University Bangladesh</h1>
             <h2>Add/Drop Applications Report</h2>
             <p>Generated on: ${new Date().toLocaleString()}</p>
           </div>
