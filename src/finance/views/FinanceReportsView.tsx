@@ -25,10 +25,10 @@ export default function FinanceReportsView() {
   const generateReport = () => {
     const bills = Repo.get('finance-student-bills')
     const payments = Repo.get('finance-payments')
-    const refunds = Repo.get('finance-refunds')
+    const refunds = Repo.get('finance-payment-refunds')
     const waivers = Repo.get('finance-waiver-assignments')
     const bankStatements = Repo.get('finance-bank-statements')
-    const fines = Repo.get('finance-fines')
+    const fines = Repo.get('finance-student-fines')
     const dropPolicies = Repo.get('finance-drop-readmission-policies')
 
     let data: any[] = []
