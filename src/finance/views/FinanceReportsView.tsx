@@ -99,7 +99,7 @@ export default function FinanceReportsView() {
         data = bankStatements.map((b: any) => ({
           date: b.date,
           reference: b.reference,
-          amount: b.amount,
+          amount: b.amount ?? 0,
           status: b.matched ? 'Matched' : 'Unmatched',
           remarks: b.matchedReceiptNo || b.notes || '-'
         }))
