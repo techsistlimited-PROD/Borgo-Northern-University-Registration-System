@@ -270,7 +270,7 @@ export const passwordResetLogsStatic: PasswordResetLog[] = Array.from({ length: 
 })
 
 // Generate IP Blocklist/Whitelist (30 total: 20 blocklist, 10 whitelist)
-export const ipBlocklistStatic: IPBlocklistEntry[] = [
+const baseBlocklist: IPBlocklistEntry[] = [
   // Blocklist entries (20)
   ...Array.from({ length: 20 }, (_, i) => {
     const daysAgo = randInt(0, 180)
