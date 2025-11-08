@@ -434,10 +434,11 @@ export default function FinanceReportsView() {
               <tr>
                 <th className="text-left p-3 text-sm font-medium">Student ID</th>
                 <th className="text-left p-3 text-sm font-medium">Student Name</th>
-                <th className="text-left p-3 text-sm font-medium">Type</th>
-                <th className="text-right p-3 text-sm font-medium">Fee Amount</th>
-                <th className="text-left p-3 text-sm font-medium">Semester</th>
-                <th className="text-left p-3 text-sm font-medium">Created Date</th>
+                <th className="text-left p-3 text-sm font-medium">Program</th>
+                <th className="text-left p-3 text-sm font-medium">Campus</th>
+                <th className="text-left p-3 text-sm font-medium">Last Registered</th>
+                <th className="text-center p-3 text-sm font-medium">Status</th>
+                <th className="text-left p-3 text-sm font-medium">Drop Date</th>
               </tr>
             </thead>
             <tbody>
@@ -445,10 +446,113 @@ export default function FinanceReportsView() {
                 <tr key={idx} className="border-t hover:bg-gray-50">
                   <td className="p-3 text-sm">{row.studentId}</td>
                   <td className="p-3 text-sm font-medium">{row.studentName}</td>
-                  <td className="p-3 text-sm">{row.type}</td>
-                  <td className="p-3 text-sm text-right font-semibold">{formatCurrency(row.feeAmount)}</td>
-                  <td className="p-3 text-sm">{row.semester}</td>
-                  <td className="p-3 text-sm">{row.createdDate}</td>
+                  <td className="p-3 text-sm">{row.program}</td>
+                  <td className="p-3 text-sm">{row.campus}</td>
+                  <td className="p-3 text-sm">{row.lastRegistered}</td>
+                  <td className="p-3 text-sm text-center">
+                    <span className={`px-2 py-1 rounded text-xs ${row.status === 'Dropped' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                  <td className="p-3 text-sm">{row.dropDate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'collectionByOfficer':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Officer</th>
+                <th className="text-center p-3 text-sm font-medium">Transactions</th>
+                <th className="text-right p-3 text-sm font-medium">Total Collected</th>
+                <th className="text-right p-3 text-sm font-medium">Cash</th>
+                <th className="text-right p-3 text-sm font-medium">Bank</th>
+                <th className="text-right p-3 text-sm font-medium">bKash</th>
+                <th className="text-right p-3 text-sm font-medium">Card</th>
+                <th className="text-right p-3 text-sm font-medium">Other</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm font-medium">{row.officer}</td>
+                  <td className="p-3 text-sm text-center">{row.transactionCount}</td>
+                  <td className="p-3 text-sm text-right font-bold text-green-600">{formatCurrency(row.totalCollected)}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.cash)}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.bank)}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.bKash)}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.card)}</td>
+                  <td className="p-3 text-sm text-right">{formatCurrency(row.other)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'fines':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Fine Type</th>
+                <th className="text-right p-3 text-sm font-medium">Amount</th>
+                <th className="text-left p-3 text-sm font-medium">Date</th>
+                <th className="text-left p-3 text-sm font-medium">Remarks</th>
+                <th className="text-left p-3 text-sm font-medium">Created By</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.fineType}</td>
+                  <td className="p-3 text-sm text-right font-semibold text-red-600">{formatCurrency(row.amount)}</td>
+                  <td className="p-3 text-sm">{row.date}</td>
+                  <td className="p-3 text-sm">{row.remarks}</td>
+                  <td className="p-3 text-sm">{row.createdBy}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+
+      case 'holds':
+        return (
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-3 text-sm font-medium">Student ID</th>
+                <th className="text-left p-3 text-sm font-medium">Student Name</th>
+                <th className="text-left p-3 text-sm font-medium">Hold Type</th>
+                <th className="text-left p-3 text-sm font-medium">Reason</th>
+                <th className="text-left p-3 text-sm font-medium">Date</th>
+                <th className="text-center p-3 text-sm font-medium">Status</th>
+                <th className="text-left p-3 text-sm font-medium">Created By</th>
+                <th className="text-left p-3 text-sm font-medium">Removed Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row, idx) => (
+                <tr key={idx} className="border-t hover:bg-gray-50">
+                  <td className="p-3 text-sm">{row.studentId}</td>
+                  <td className="p-3 text-sm font-medium">{row.studentName}</td>
+                  <td className="p-3 text-sm">{row.holdType}</td>
+                  <td className="p-3 text-sm">{row.reason}</td>
+                  <td className="p-3 text-sm">{row.date}</td>
+                  <td className="p-3 text-sm text-center">
+                    <span className={`px-2 py-1 rounded text-xs ${row.status === 'Active' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                  <td className="p-3 text-sm">{row.createdBy}</td>
+                  <td className="p-3 text-sm">{row.removedDate}</td>
                 </tr>
               ))}
             </tbody>
