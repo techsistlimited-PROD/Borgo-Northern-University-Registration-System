@@ -5,19 +5,48 @@ import { Badge } from '@/components/ui/badge'
 import { AlertTriangle, Save, Lock, FileText } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
+// Sample rosters for different course/room combinations
+const ROSTER_DATA: Record<string, any[]> = {
+  'CSE 2211 - Data Structures|Center A / Room 501': [
+    { seat: '01', candidateCode: 'CND-2025-0001', name: 'Ayesha Rahman', status: 'Present', notes: '' },
+    { seat: '02', candidateCode: 'CND-2025-0144', name: 'Nishat Sultana', status: 'Present', notes: '' },
+    { seat: '03', candidateCode: 'CND-2025-0089', name: 'Tanvir Ahmed', status: 'Late', notes: '' },
+    { seat: '04', candidateCode: 'CND-2025-0212', name: 'Arman Chowdhury', status: 'Absent', notes: '' }
+  ],
+  'LAW 302 - Constitutional Law|Center B / Room 301': [
+    { seat: '01', candidateCode: 'CND-2025-0215', name: 'Fariha Karim', status: 'Present', notes: '' },
+    { seat: '02', candidateCode: 'CND-2025-0216', name: 'Rashid Hasan', status: 'Present', notes: '' },
+    { seat: '03', candidateCode: 'CND-2025-0217', name: 'Nadia Sultana', status: 'Present', notes: '' },
+    { seat: '04', candidateCode: 'CND-2025-0218', name: 'Imran Ahmed', status: 'Late', notes: '' },
+    { seat: '05', candidateCode: 'CND-2025-0219', name: 'Sadia Rahman', status: 'Absent', notes: '' }
+  ],
+  'BBA 1102 - Management|Center B / Auditorium': [
+    { seat: '01', candidateCode: 'CND-2025-0301', name: 'Tasneem Haque', status: 'Present', notes: '' },
+    { seat: '02', candidateCode: 'CND-2025-0302', name: 'Fahim Khan', status: 'Present', notes: '' },
+    { seat: '03', candidateCode: 'CND-2025-0303', name: 'Labiba Chowdhury', status: 'Present', notes: '' },
+    { seat: '04', candidateCode: 'CND-2025-0304', name: 'Sakib Mahmud', status: 'Present', notes: '' },
+    { seat: '05', candidateCode: 'CND-2025-0305', name: 'Maliha Islam', status: 'Late', notes: '' },
+    { seat: '06', candidateCode: 'CND-2025-0306', name: 'Raihan Uddin', status: 'Absent', notes: '' }
+  ]
+}
+
 export default function AttendanceIncidents() {
+  const [selectedDate, setSelectedDate] = useState('2025-11-02')
+  const [selectedSession, setSelectedSession] = useState('10:00–12:00')
+  const [selectedRoom, setSelectedRoom] = useState('Center B / Room 301')
+  const [selectedCourse, setSelectedCourse] = useState('LAW 302 - Constitutional Law')
+
   const [showIncidentModal, setShowIncidentModal] = useState(false)
   const [selectedIncident, setSelectedIncident] = useState<any>(null)
   const [showNewIncidentModal, setShowNewIncidentModal] = useState(false)
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false)
   const [showExpulsionDialog, setShowExpulsionDialog] = useState(false)
   const [expulsionStudent, setExpulsionStudent] = useState<any>(null)
-  const [attendanceRecords, setAttendanceRecords] = useState([
-    { seat: '01', candidateCode: 'CND-2025-0001', name: 'Ayesha Rahman', status: 'Present', notes: '' },
-    { seat: '02', candidateCode: 'CND-2025-0144', name: 'Nishat Sultana', status: 'Present', notes: '' },
-    { seat: '03', candidateCode: 'CND-2025-0089', name: 'Tanvir Ahmed', status: 'Late', notes: '' },
-    { seat: '04', candidateCode: 'CND-2025-0212', name: 'Arman Chowdhury', status: 'Absent', notes: '' }
-  ])
+
+  const rosterKey = `${selectedCourse}|${selectedRoom}`
+  const baseRoster = ROSTER_DATA[rosterKey] || ROSTER_DATA['CSE 2211 - Data Structures|Center A / Room 501']
+
+  const [attendanceRecords, setAttendanceRecords] = useState(baseRoster)
 
   const handleMarkAllPresent = () => {
     setAttendanceRecords(prev => prev.map(record => ({ ...record, status: 'Present' })))
@@ -99,18 +128,36 @@ export default function AttendanceIncidents() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-          <input type="date" className="w-full p-2 border rounded-md text-sm" defaultValue="2025-11-02" />
+          <input
+            type="date"
+            className="w-full p-2 border rounded-md text-sm"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Session Time</label>
-          <select className="w-full p-2 border rounded-md text-sm">
+          <select
+            className="w-full p-2 border rounded-md text-sm"
+            value={selectedSession}
+            onChange={(e) => setSelectedSession(e.target.value)}
+          >
             <option>10:00–12:00</option>
             <option>14:00–16:00</option>
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
-          <select className="w-full p-2 border rounded-md text-sm">
+          <select
+            className="w-full p-2 border rounded-md text-sm"
+            value={selectedRoom}
+            onChange={(e) => {
+              setSelectedRoom(e.target.value)
+              const newKey = `${selectedCourse}|${e.target.value}`
+              const newRoster = ROSTER_DATA[newKey] || baseRoster
+              setAttendanceRecords(newRoster)
+            }}
+          >
             <option>Center A / Room 501</option>
             <option>Center B / Room 301</option>
             <option>Center B / Auditorium</option>
@@ -118,7 +165,16 @@ export default function AttendanceIncidents() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
-          <select className="w-full p-2 border rounded-md text-sm">
+          <select
+            className="w-full p-2 border rounded-md text-sm"
+            value={selectedCourse}
+            onChange={(e) => {
+              setSelectedCourse(e.target.value)
+              const newKey = `${e.target.value}|${selectedRoom}`
+              const newRoster = ROSTER_DATA[newKey] || baseRoster
+              setAttendanceRecords(newRoster)
+            }}
+          >
             <option>CSE 2211 - Data Structures</option>
             <option>BBA 1102 - Management</option>
             <option>LAW 302 - Constitutional Law</option>
@@ -131,7 +187,7 @@ export default function AttendanceIncidents() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Room Roster & Attendance</CardTitle>
-              <CardDescription>CSE 2211 - Data Structures | Center A / Room 501</CardDescription>
+              <CardDescription>{selectedCourse} | {selectedRoom}</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={handleMarkAllPresent}>Mark All Present</Button>
@@ -403,11 +459,15 @@ export default function AttendanceIncidents() {
             <div className="text-sm space-y-1">
               <div className="flex justify-between">
                 <span className="text-gray-600">Session:</span>
-                <span className="font-medium">CSE 2211 - Data Structures</span>
+                <span className="font-medium">{selectedCourse}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Room:</span>
-                <span className="font-medium">Center A / Room 501</span>
+                <span className="font-medium">{selectedRoom}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Date & Time:</span>
+                <span className="font-medium">{selectedDate} | {selectedSession}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Total Students:</span>
@@ -476,7 +536,7 @@ export default function AttendanceIncidents() {
               </div>
               <div>
                 <span className="text-gray-600">Exam Session:</span>
-                <p className="font-medium">CSE 2211 - Final Exam</p>
+                <p className="font-medium">{selectedCourse} - Final Exam</p>
               </div>
             </div>
 
@@ -512,8 +572,8 @@ export default function AttendanceIncidents() {
                 <div className="mt-6 space-y-2">
                   <div><strong>To:</strong> {expulsionStudent?.name}</div>
                   <div><strong>Student ID:</strong> {expulsionStudent?.candidateCode}</div>
-                  <div><strong>Examination:</strong> CSE 2211 - Data Structures (Final Exam)</div>
-                  <div><strong>Date & Session:</strong> {new Date().toLocaleDateString()} | 10:00-12:00</div>
+                  <div><strong>Examination:</strong> {selectedCourse} (Final Exam)</div>
+                  <div><strong>Date & Session:</strong> {selectedDate} | {selectedSession}</div>
                 </div>
 
                 <div className="mt-6 leading-relaxed">
