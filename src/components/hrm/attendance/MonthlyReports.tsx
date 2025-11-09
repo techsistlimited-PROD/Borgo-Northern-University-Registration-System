@@ -245,10 +245,16 @@ export default function MonthlyReports() {
   }
 
   const handleExportExcel = () => {
-    alert('Excel export functionality - Demo Mode')
+    // Use same CSV logic with .xlsx extension for demo
+    handleExportCSV()
   }
 
   const handleExportCSV = () => {
+    const deptName = selectedDept === 'all' ? 'All' : selectedDept
+    const campusName = selectedCampus === 'all' ? 'All' : selectedCampus
+    const [year, month] = selectedMonth.split('-')
+    const formattedMonth = `${month}-${year}` // MM-YYYY
+
     const headers = ['Sl', 'Employee ID', 'Employee Name', 'Designation', 'Dept.', 'Join Date', 'Total Days', 'Weekend', 'Holiday', 'Leave', 'Late In', 'Early Out', 'Absent', 'Total Present', 'Total Duty Hrs', 'Default', 'Surplus', 'Remark']
     const rows = employeeSummaries.map(s => [
       s.sl, s.employeeId, s.employeeName, s.designation, s.dept, s.joinDate,
@@ -265,7 +271,7 @@ export default function MonthlyReports() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `attendance_report_${selectedMonth}.csv`
+    a.download = `Attendance_Report_Dept-${deptName}_Campus-${campusName}_${formattedMonth}.xlsx`
     a.click()
   }
 
@@ -529,7 +535,7 @@ export default function MonthlyReports() {
               <FileDown className="w-4 h-4 mr-2" />
               Export PDF
             </Button>
-            <Button variant="outline" size="sm" onClick={() => alert('Export CSV - Demo')}>
+            <Button variant="outline" size="sm" onClick={() => handleIndividualExportCSV()}>
               <FileDown className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
