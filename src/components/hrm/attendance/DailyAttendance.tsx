@@ -172,6 +172,7 @@ export default function DailyAttendance() {
   }
 
   const getReportTitle = () => {
+    if (activeView === 'summary') return 'Daily Summary Report'
     if (selectedStatus === 'Present') return 'Daily Report : Present'
     if (selectedStatus === 'Absent') return 'Daily Report : Absent'
     if (selectedStatus === 'Late present') return 'Daily Report : Late present'
@@ -200,6 +201,26 @@ export default function DailyAttendance() {
   }
 
   const handleDownloadCSV = () => {
+    if (activeView === 'summary') {
+      const headers = ['SL', 'Status Type', 'Count', 'Remarks']
+      const rows = [
+        ['1', 'Present', summaryCounts.present.toString(), ''],
+        ['2', 'Absent', summaryCounts.absent.toString(), ''],
+        ['3', 'Late present', summaryCounts.late.toString(), '']
+      ]
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n')
+      const blob = new Blob([csvContent], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `daily_summary_${selectedDate}.csv`
+      a.click()
+      return
+    }
+
     const headers = ['SL', 'ID', 'Name', 'Designation', 'Dept.', 'Office Time', 'In', 'Out', 'Late In (M)', 'Early Out (M)', 'Duration', 'Surplus/Deficit', 'Status', 'Remarks']
     const rows = filteredRecords.map((record, index) => {
       const designation = getEmployeeDesignation(record.empId)
