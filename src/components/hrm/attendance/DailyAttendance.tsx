@@ -648,7 +648,12 @@ export default function DailyAttendance() {
                 </p>
               </div>
 
-              <div className="hidden print:block text-center mt-8 text-sm text-gray-600">
+              {/* Print Signature Block */}
+              <div className="hidden print:block">
+                <SignatureBlock type="department-summary" />
+              </div>
+
+              <div className="hidden print:block text-center mt-4 text-sm text-gray-600">
                 Page 1 of 1
               </div>
             </div>
