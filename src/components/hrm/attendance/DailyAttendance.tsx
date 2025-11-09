@@ -105,6 +105,7 @@ export default function DailyAttendance() {
   const [selectedStatus, setSelectedStatus] = useState<StatusType>('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [activeView, setActiveView] = useState<ViewType>('details')
+  const [isFullDayPrint, setIsFullDayPrint] = useState(false)
 
   const filteredRecords = useMemo(() => {
     let filtered = HRM_ATTENDANCE.filter(record => {
