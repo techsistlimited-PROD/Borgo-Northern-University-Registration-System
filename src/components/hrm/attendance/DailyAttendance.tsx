@@ -430,7 +430,7 @@ export default function DailyAttendance() {
       )}
 
       {/* Screen Header - Hide on Print */}
-      <div className="print:hidden space-y-4">
+      <div className={isFullDayPrint ? 'hidden' : 'print:hidden space-y-4'}>
         {/* Institution Header */}
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <div className="text-center space-y-1">
@@ -464,7 +464,7 @@ export default function DailyAttendance() {
       </div>
 
       {/* Filters */}
-      <Card className="print:hidden">
+      <Card className={isFullDayPrint ? 'hidden' : 'print:hidden'}>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
@@ -541,7 +541,7 @@ export default function DailyAttendance() {
       </Card>
 
       {/* Tab Navigation */}
-      <Card className="print:hidden">
+      <Card className={isFullDayPrint ? 'hidden' : 'print:hidden'}>
         <CardContent className="p-0">
           <div className="flex border-b">
             <button
@@ -589,7 +589,7 @@ export default function DailyAttendance() {
       </Card>
 
       {/* Demo Notice */}
-      {activeView === 'details' && showDemoNotice && (
+      {!isFullDayPrint && activeView === 'details' && showDemoNotice && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 print:hidden">
           <p className="text-sm text-blue-800">
             <strong>Demo Mode:</strong> No exact matches. Showing demo sample ({filteredRecords.length} rows) based on current filters.
@@ -597,7 +597,7 @@ export default function DailyAttendance() {
         </div>
       )}
 
-      {activeView === 'summary' && summaryCounts.isDemo && (
+      {!isFullDayPrint && activeView === 'summary' && summaryCounts.isDemo && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 print:hidden">
           <p className="text-sm text-blue-800">
             <strong>Demo Mode:</strong> No exact matches. Showing demo summary based on current filters.
@@ -606,7 +606,8 @@ export default function DailyAttendance() {
       )}
 
       {/* Table */}
-      <Card>
+      {!isFullDayPrint && (
+        <Card>
         <CardContent className="p-0">
           {activeView === 'summary' ? (
             /* Summary View */
@@ -730,6 +731,7 @@ export default function DailyAttendance() {
           )}
         </CardContent>
       </Card>
+      )}
     </div>
   )
 }
