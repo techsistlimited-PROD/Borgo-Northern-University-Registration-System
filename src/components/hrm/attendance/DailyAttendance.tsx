@@ -378,11 +378,67 @@ export default function DailyAttendance() {
         </CardContent>
       </Card>
 
+      {/* Tab Navigation */}
+      <Card className="print:hidden">
+        <CardContent className="p-0">
+          <div className="flex border-b">
+            <button
+              onClick={() => { setActiveView('details'); setSelectedStatus('Present') }}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeView === 'details' && selectedStatus === 'Present'
+                  ? 'border-deep-plum text-deep-plum'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Present
+            </button>
+            <button
+              onClick={() => { setActiveView('details'); setSelectedStatus('Absent') }}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeView === 'details' && selectedStatus === 'Absent'
+                  ? 'border-deep-plum text-deep-plum'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Absent
+            </button>
+            <button
+              onClick={() => { setActiveView('details'); setSelectedStatus('Late present') }}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeView === 'details' && selectedStatus === 'Late present'
+                  ? 'border-deep-plum text-deep-plum'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Late present
+            </button>
+            <button
+              onClick={() => setActiveView('summary')}
+              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeView === 'summary'
+                  ? 'border-deep-plum text-deep-plum'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Summary
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Demo Notice */}
-      {showDemoNotice && (
+      {activeView === 'details' && showDemoNotice && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 print:hidden">
           <p className="text-sm text-blue-800">
             <strong>Demo Mode:</strong> No exact matches. Showing demo sample ({filteredRecords.length} rows) based on current filters.
+          </p>
+        </div>
+      )}
+
+      {activeView === 'summary' && summaryCounts.isDemo && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 print:hidden">
+          <p className="text-sm text-blue-800">
+            <strong>Demo Mode:</strong> No exact matches. Showing demo summary based on current filters.
           </p>
         </div>
       )}
