@@ -500,12 +500,12 @@ export default function MonthlyReports() {
                     <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.holiday}</td>
                     <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.leave}</td>
                     <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.lateIn}</td>
-                    <td className="px-2 py-3 text-sm text-gray-600">{summary.earlyOut}</td>
-                    <td className="px-2 py-3 text-sm text-gray-600">{summary.absent}</td>
-                    <td className="px-2 py-3 text-sm text-gray-600">{summary.totalPresent}</td>
-                    <td className="px-2 py-3 text-sm text-gray-600">{summary.totalDutyHrs}</td>
-                    <td className="px-2 py-3 text-sm text-red-600">{summary.defaultHrs}</td>
-                    <td className="px-2 py-3 text-sm text-green-600">{summary.surplusHrs}</td>
+                    <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.earlyOut}</td>
+                    <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.absent}</td>
+                    <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.totalPresent}</td>
+                    <td className="px-2 py-3 text-sm text-right text-gray-600 print-align-right">{summary.totalDutyHrs}</td>
+                    <td className="px-2 py-3 text-sm text-right text-red-600 print-align-right print-text-red">{summary.defaultHrs}</td>
+                    <td className="px-2 py-3 text-sm text-right text-green-600 print-align-right print-text-green">{summary.surplusHrs}</td>
                     <td className="px-2 py-3 text-sm text-gray-600">{summary.remark}</td>
                     <td className="px-2 py-3 print:hidden">
                       <Button 
