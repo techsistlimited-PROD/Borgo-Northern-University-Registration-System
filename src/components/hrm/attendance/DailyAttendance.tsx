@@ -673,14 +673,14 @@ export default function DailyAttendance() {
                     <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                     <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
                     <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dept.</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Office Time</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Out</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Late In (M)</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Early Out (M)</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Surplus / Deficit</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider print-align-center">Office Time</th>
+                    <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider print-align-center">In</th>
+                    <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider print-align-center">Out</th>
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider print-align-right">Late In (M)</th>
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider print-align-right">Early Out (M)</th>
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider print-align-right">Duration</th>
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider print-align-right">Surplus / Deficit</th>
+                    <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider print-align-center">Status</th>
                     <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
                   </tr>
                 </thead>
@@ -699,15 +699,15 @@ export default function DailyAttendance() {
                         <td className="px-3 py-3 text-sm font-medium text-gray-900">{record.name}</td>
                         <td className="px-3 py-3 text-sm text-gray-600">{designation}</td>
                         <td className="px-3 py-3 text-sm text-gray-600">{record.dept}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{officeTime}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{record.inTime}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{record.outTime}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">
+                        <td className="px-3 py-3 text-sm text-center text-gray-600 print-align-center">{officeTime}</td>
+                        <td className="px-3 py-3 text-sm text-center text-gray-600 print-align-center">{record.inTime}</td>
+                        <td className="px-3 py-3 text-sm text-center text-gray-600 print-align-center">{record.outTime}</td>
+                        <td className="px-3 py-3 text-sm text-right text-gray-600 print-align-right">
                           {record.status === 'Absent' ? '-' : record.late > 0 ? record.late : '-'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{earlyOut}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{duration}</td>
-                        <td className="px-3 py-3 text-sm text-gray-600">{surplus}</td>
+                        <td className="px-3 py-3 text-sm text-right text-gray-600 print-align-right">{earlyOut}</td>
+                        <td className="px-3 py-3 text-sm text-right text-gray-600 print-align-right">{duration}</td>
+                        <td className="px-3 py-3 text-sm text-right text-gray-600 print-align-right">{surplus}</td>
                         <td className="px-3 py-3 text-sm">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                             record.status === 'Present' ? 'bg-green-100 text-green-800' :
