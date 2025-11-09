@@ -294,7 +294,8 @@ export default function MonthlyReports() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `Individual_Report_${selectedEmployee.id}_${formattedMonth}.csv`
+    const filename = generateHRMExportFilename('individual-report', selectedEmployee.department, selectedCampus, selectedMonth, 'csv', selectedEmployee.id)
+    a.download = filename
     a.click()
   }
 
