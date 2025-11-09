@@ -1,3 +1,6 @@
+// Letterhead configuration
+export const NUB_LOGO_PATH = '/assets/nub-logo.svg'
+
 export type Employee = {
   id: string
   name: string

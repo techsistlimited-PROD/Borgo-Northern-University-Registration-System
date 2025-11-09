@@ -7,7 +7,7 @@ interface SignatureBlockProps {
 export default function SignatureBlock({ type, employeeName, employeeDesignation }: SignatureBlockProps) {
   if (type === 'department-summary') {
     return (
-      <div className="mt-8 space-y-3 text-sm">
+      <div className="print-signature-block mt-8 space-y-3 text-sm">
         <div className="grid grid-cols-2 gap-8">
           <div>Prepared By ___________________</div>
           <div>Checked By ___________________</div>
@@ -21,7 +21,7 @@ export default function SignatureBlock({ type, employeeName, employeeDesignation
   }
 
   return (
-    <div className="mt-8 flex justify-between text-sm">
+    <div className="print-signature-block mt-8 flex justify-between text-sm">
       <div>
         <p className="font-medium">{employeeName}</p>
         <p className="text-gray-600">{employeeDesignation}</p>
