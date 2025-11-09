@@ -578,14 +578,14 @@ export default function MonthlyReports() {
                   <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Sl</th>
                   <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                   <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Day</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Office Time</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">In Time</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Out Time</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Late In</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Early Out</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Duration</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Surplus / Default</th>
-                  <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase print-align-center">Office Time</th>
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase print-align-center">In Time</th>
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase print-align-center">Out Time</th>
+                  <th className="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase print-align-right">Late In</th>
+                  <th className="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase print-align-right">Early Out</th>
+                  <th className="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase print-align-right">Duration</th>
+                  <th className="px-2 py-2 text-right text-xs font-medium text-gray-500 uppercase print-align-right">Surplus / Default</th>
+                  <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase print-align-center">Status</th>
                   <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">Remarks</th>
                 </tr>
               </thead>
