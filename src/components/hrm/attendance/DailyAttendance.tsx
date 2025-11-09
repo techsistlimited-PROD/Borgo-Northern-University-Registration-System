@@ -338,6 +338,10 @@ export default function DailyAttendance() {
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={handleFullDayPrint} className="flex items-center gap-2">
+            <Printer className="w-4 h-4" />
+            Print Full Day Report (All Sections)
+          </Button>
           <Button variant="outline" onClick={handleDownloadPDF} className="flex items-center gap-2">
             <FileDown className="w-4 h-4" />
             Download PDF
