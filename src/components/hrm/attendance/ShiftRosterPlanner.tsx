@@ -1,181 +1,262 @@
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Plus, Edit, Trash2, Calendar } from 'lucide-react'
-import { HRM_SHIFTS, HRM_ROSTER, HRM_EMPLOYEES, type Shift, type Roster } from '@/lib/hrmStatic'
+import { FileText, Edit2, Maximize2, Save } from 'lucide-react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
+
+interface ShiftDayRow {
+  shiftName: string
+  date: string
+  day: string
+  startTime: string
+  endTime: string
+  isHoliday: boolean
+  inTolerance: number
+  outTolerance: number
+  dayType: 'DAY' | 'NIGHT'
+}
+
+const generateShiftWeek = (template: string, employeeId: string = '5242198', employeeName: string = 'Afra ENG'): ShiftDayRow[] => {
+  const baseDate = new Date('2025-01-20')
+  const days = ['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
+  const dayAbbrev = ['SA', 'SU', 'M', 'TU', 'W', 'T', 'FR']
+  
+  const templates = {
+    'Regular': [
+      { start: '09:15', end: '15:15', holiday: false },
+      { start: '09:15', end: '16:00', holiday: true },  // Sunday Holiday
+      { start: '09:30', end: '16:00', holiday: false },
+      { start: '08:00', end: '15:00', holiday: false },
+      { start: '09:30', end: '15:00', holiday: false },
+      { start: '11:00', end: '16:00', holiday: false },
+      { start: '10:00', end: '15:30', holiday: true }   // Friday Holiday
+    ],
+    'Night': [
+      { start: '22:00', end: '06:00', holiday: false },
+      { start: '22:00', end: '06:00', holiday: true },
+      { start: '22:00', end: '06:00', holiday: false },
+      { start: '22:00', end: '06:00', holiday: false },
+      { start: '22:00', end: '06:00', holiday: false },
+      { start: '22:00', end: '06:00', holiday: false },
+      { start: '22:00', end: '06:00', holiday: true }
+    ],
+    'Flex Morning': [
+      { start: '06:00', end: '14:00', holiday: false },
+      { start: '06:00', end: '14:00', holiday: true },
+      { start: '06:00', end: '14:00', holiday: false },
+      { start: '06:00', end: '14:00', holiday: false },
+      { start: '06:00', end: '14:00', holiday: false },
+      { start: '06:00', end: '14:00', holiday: false },
+      { start: '06:00', end: '14:00', holiday: true }
+    ],
+    'Flex Evening': [
+      { start: '14:00', end: '22:00', holiday: false },
+      { start: '14:00', end: '22:00', holiday: true },
+      { start: '14:00', end: '22:00', holiday: false },
+      { start: '14:00', end: '22:00', holiday: false },
+      { start: '14:00', end: '22:00', holiday: false },
+      { start: '14:00', end: '22:00', holiday: false },
+      { start: '14:00', end: '22:00', holiday: true }
+    ]
+  }
+
+  const config = templates[template as keyof typeof templates] || templates['Regular']
+
+  return days.map((day, index) => {
+    const date = new Date(baseDate)
+    date.setDate(date.getDate() + index)
+    const dateStr = date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
+    
+    return {
+      shiftName: `${employeeId} (${employeeName}) - ${dayAbbrev[index]}`,
+      date: dateStr,
+      day,
+      startTime: config[index].start,
+      endTime: config[index].end,
+      isHoliday: config[index].holiday,
+      inTolerance: 10,
+      outTolerance: 10,
+      dayType: template === 'Night' ? 'NIGHT' : 'DAY'
+    }
+  })
+}
 
 export default function ShiftRosterPlanner() {
-  const [shifts, setShifts] = useState<Shift[]>(HRM_SHIFTS)
-  const [roster, setRoster] = useState<Roster[]>(HRM_ROSTER)
-  const [isAddShiftOpen, setIsAddShiftOpen] = useState(false)
-  const [isAssignShiftOpen, setIsAssignShiftOpen] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState('Regular')
+  const [shiftRows, setShiftRows] = useState<ShiftDayRow[]>(generateShiftWeek('Regular'))
 
-  const [newShift, setNewShift] = useState<Partial<Shift>>({
-    name: '',
-    start: '08:30',
-    end: '16:30',
-    type: 'Regular',
-    campus: 'Permanent Campus'
-  })
+  const handleTemplateChange = (template: string) => {
+    setSelectedTemplate(template)
+    setShiftRows(generateShiftWeek(template))
+  }
 
-  const handleAddShift = () => {
-    if (newShift.name && newShift.start && newShift.end) {
-      const shift: Shift = {
-        id: `S${shifts.length + 1}`,
-        name: newShift.name,
-        start: newShift.start,
-        end: newShift.end,
-        type: newShift.type as 'Regular' | 'Night' | 'Flex',
-        campus: newShift.campus || 'Permanent Campus',
-        remarks: newShift.remarks
-      }
-      setShifts([...shifts, shift])
-      setIsAddShiftOpen(false)
-      setNewShift({ name: '', start: '08:30', end: '16:30', type: 'Regular', campus: 'Permanent Campus' })
+  const handleRowChange = (index: number, field: keyof ShiftDayRow, value: any) => {
+    const updated = [...shiftRows]
+    updated[index] = { ...updated[index], [field]: value }
+    setShiftRows(updated)
+  }
+
+  const handleSaveRow = (index: number) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Shift row saved'))
     }
   }
 
-  const handleDeleteShift = (id: string) => {
-    setShifts(shifts.filter(s => s.id !== id))
+  const handleEditToggle = () => {
+    alert(showDemoToast('Edit mode toggled'))
   }
 
-  const getShiftById = (id: string) => shifts.find(s => s.id === id)
-  const getEmployeeById = (id: string) => HRM_EMPLOYEES.find(e => e.id === id)
-
-  const next7Days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date('2025-01-20')
-    date.setDate(date.getDate() + i)
-    return date.toISOString().split('T')[0]
-  })
-
-  const depts = ['CSE', 'BBA', 'HR', 'Accounts', 'IT']
+  const handleExpand = () => {
+    alert(showDemoToast('Expand/collapse view'))
+  }
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800">Shift & Roster Planner</h2>
-          <p className="text-gray-600">Manage shifts and assign rosters</p>
+      {/* Header Bar */}
+      <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-5 h-5 text-blue-600" />
+          <h2 className="text-lg font-semibold text-gray-800">Shift Details</h2>
         </div>
-        <div className="flex gap-2">
-          <Dialog open={isAddShiftOpen} onOpenChange={setIsAddShiftOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4" />
-                Add Shift
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Shift</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <label className="text-sm font-medium">Shift Name</label>
-                  <Input 
-                    value={newShift.name} 
-                    onChange={(e) => setNewShift({...newShift, name: e.target.value})}
-                    placeholder="e.g. Morning Shift"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium">Start Time</label>
-                    <Input 
-                      type="time" 
-                      value={newShift.start} 
-                      onChange={(e) => setNewShift({...newShift, start: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">End Time</label>
-                    <Input 
-                      type="time" 
-                      value={newShift.end} 
-                      onChange={(e) => setNewShift({...newShift, end: e.target.value})}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Type</label>
-                  <Select value={newShift.type} onValueChange={(val) => setNewShift({...newShift, type: val as 'Regular' | 'Night' | 'Flex'})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Regular">Regular</SelectItem>
-                      <SelectItem value="Night">Night</SelectItem>
-                      <SelectItem value="Flex">Flex</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Campus</label>
-                  <Input 
-                    value={newShift.campus} 
-                    onChange={(e) => setNewShift({...newShift, campus: e.target.value})}
-                    placeholder="Permanent Campus"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Remarks</label>
-                  <Input 
-                    value={newShift.remarks || ''} 
-                    onChange={(e) => setNewShift({...newShift, remarks: e.target.value})}
-                    placeholder="Optional notes"
-                  />
-                </div>
-                <Button onClick={handleAddShift} className="w-full">Add Shift</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Generate Roster
-          </Button>
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={handleEditToggle}
+            className="p-2 hover:bg-blue-200 rounded transition-colors"
+            title="Edit"
+          >
+            <Edit2 className="w-4 h-4 text-gray-600" />
+          </button>
+          <button 
+            onClick={handleExpand}
+            className="p-2 hover:bg-blue-200 rounded transition-colors"
+            title="Expand/Collapse"
+          >
+            <Maximize2 className="w-4 h-4 text-gray-600" />
+          </button>
         </div>
       </div>
 
+      {/* Tab (Shift Detail) */}
+      <div className="border-b border-gray-200">
+        <button className="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
+          Shift Detail
+        </button>
+      </div>
+
+      {/* Template Selector */}
       <Card>
-        <CardHeader>
-          <CardTitle>Shift List</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
+          <div className="flex items-center space-x-4">
+            <label className="text-sm font-medium">Select Shift Template:</label>
+            <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
+              <SelectTrigger className="w-64">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Regular">Regular</SelectItem>
+                <SelectItem value="Night">Night</SelectItem>
+                <SelectItem value="Flex Morning">Flex Morning</SelectItem>
+                <SelectItem value="Flex Evening">Flex Evening</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Shift Details Table */}
+      <Card>
+        <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-50 sticky top-0">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Start - End</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Campus</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Shift Name</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Date</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Day</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Start Time</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">End Time</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase border">Holiday</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">In Tolerance</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Out Tolerance</th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Day Type</th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase border">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {shifts.map((shift) => (
-                  <tr key={shift.id}>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{shift.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{shift.start} - {shift.end}</td>
-                    <td className="px-4 py-3">
-                      <Badge variant={shift.type === 'Regular' ? 'default' : shift.type === 'Night' ? 'destructive' : 'secondary'}>
-                        {shift.type}
-                      </Badge>
+              <tbody>
+                {shiftRows.map((row, index) => (
+                  <tr key={index} className={row.isHoliday ? 'bg-blue-50' : 'bg-white'}>
+                    <td className="px-3 py-2 text-sm border">{row.shiftName}</td>
+                    <td className="px-3 py-2 text-sm border">{row.date}</td>
+                    <td className="px-3 py-2 text-sm border font-medium">{row.day}</td>
+                    <td className="px-3 py-2 border">
+                      <Input 
+                        type="time" 
+                        value={row.startTime}
+                        onChange={(e) => handleRowChange(index, 'startTime', e.target.value)}
+                        disabled={row.isHoliday}
+                        className="w-32 h-8 text-sm"
+                      />
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{shift.campus}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDeleteShift(shift.id)}>
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
-                      </div>
+                    <td className="px-3 py-2 border">
+                      <Input 
+                        type="time" 
+                        value={row.endTime}
+                        onChange={(e) => handleRowChange(index, 'endTime', e.target.value)}
+                        disabled={row.isHoliday}
+                        className="w-32 h-8 text-sm"
+                      />
+                    </td>
+                    <td className="px-3 py-2 border text-center">
+                      <input 
+                        type="checkbox" 
+                        checked={row.isHoliday}
+                        onChange={(e) => handleRowChange(index, 'isHoliday', e.target.checked)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                    </td>
+                    <td className="px-3 py-2 border">
+                      <Input 
+                        type="number" 
+                        value={row.inTolerance}
+                        onChange={(e) => handleRowChange(index, 'inTolerance', parseInt(e.target.value))}
+                        className="w-20 h-8 text-sm"
+                        min="0"
+                      />
+                    </td>
+                    <td className="px-3 py-2 border">
+                      <Input 
+                        type="number" 
+                        value={row.outTolerance}
+                        onChange={(e) => handleRowChange(index, 'outTolerance', parseInt(e.target.value))}
+                        className="w-20 h-8 text-sm"
+                        min="0"
+                      />
+                    </td>
+                    <td className="px-3 py-2 border">
+                      <Select 
+                        value={row.dayType} 
+                        onValueChange={(val) => handleRowChange(index, 'dayType', val as 'DAY' | 'NIGHT')}
+                      >
+                        <SelectTrigger className="w-24 h-8 text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="DAY">DAY</SelectItem>
+                          <SelectItem value="NIGHT">NIGHT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </td>
+                    <td className="px-3 py-2 border text-center">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleSaveRow(index)}
+                        className="h-8"
+                      >
+                        <Save className="w-4 h-4" />
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -185,61 +266,13 @@ export default function ShiftRosterPlanner() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>7-Day Roster Calendar</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Department</th>
-                  {next7Days.map(date => (
-                    <th key={date} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border">
-                      {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {depts.map(dept => (
-                  <tr key={dept}>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900 border">{dept}</td>
-                    {next7Days.map(date => {
-                      const rosterEntry = roster.find(r => r.dept === dept && r.date === date)
-                      const shift = rosterEntry ? getShiftById(rosterEntry.shiftId) : null
-                      return (
-                        <td key={date} className="px-4 py-3 border">
-                          {rosterEntry ? (
-                            <div className="space-y-1">
-                              <Badge className="mb-1">{shift?.name}</Badge>
-                              <div className="flex flex-wrap gap-1">
-                                {rosterEntry.employees.map(empId => {
-                                  const emp = getEmployeeById(empId)
-                                  return (
-                                    <span key={empId} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
-                                      {emp?.name.split(' ')[0]}
-                                    </span>
-                                  )
-                                })}
-                              </div>
-                            </div>
-                          ) : (
-                            <Button variant="ghost" size="sm" className="text-xs">
-                              Assign
-                            </Button>
-                          )}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      {DEMO_MODE && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            <strong>Demo Mode:</strong> All shift changes are in-memory only. Click the save icon to simulate saving each row.
+          </p>
+        </div>
+      )}
     </div>
   )
 }
