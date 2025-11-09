@@ -312,16 +312,122 @@ export default function DailyAttendance() {
     a.click()
   }
 
-  return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* PDF Header - Print Only */}
-      <div className="hidden print:block">
+  // Helper to render a table for a specific status
+  const renderTableSection = (records: AttendanceRecord[], status: string, pageNumber: number) => {
+    const title = status === 'Present' ? 'Daily Report : Present' :
+                  status === 'Absent' ? 'Daily Report : Absent' :
+                  'Daily Report : Late present'
+
+    return (
+      <div className={pageNumber > 1 ? 'page-break' : ''}>
         <PrintableHeader
-          title={getReportTitle()}
+          title={title}
           subtitle={`${getDeptName()}, ${getCampusName()}`}
           dateLine={`Date : ${formatDate(selectedDate)}`}
         />
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">SL</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">ID</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Name</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Designation</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Dept.</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Office Time</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">In</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Out</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Late In (M)</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Early Out (M)</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Duration</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Surplus / Deficit</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Status</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border">Remarks</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {records.length === 0 ? (
+                <tr>
+                  <td colSpan={14} className="px-3 py-4 text-sm text-center text-gray-500 border">
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                records.map((record, index) => {
+                  const designation = getEmployeeDesignation(record.empId)
+                  const officeTime = getOfficeTime(record.shift)
+                  const earlyOut = record.status === 'Absent' ? '-' : '0'
+                  const duration = getDuration(record.inTime, record.outTime, record.status)
+                  const surplus = getSurplusDeficit(duration, record.status)
+
+                  return (
+                    <tr key={record.id} className={getRowClass(record.status)}>
+                      <td className="px-3 py-3 text-sm text-gray-900 border">{index + 1}</td>
+                      <td className="px-3 py-3 text-sm text-gray-900 border">{record.empId}</td>
+                      <td className="px-3 py-3 text-sm font-medium text-gray-900 border">{record.name}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{designation}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{record.dept}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{officeTime}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{record.inTime}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{record.outTime}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">
+                        {record.status === 'Absent' ? '-' : record.late > 0 ? record.late : '-'}
+                      </td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{earlyOut}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{duration}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{surplus}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{record.status}</td>
+                      <td className="px-3 py-3 text-sm text-gray-600 border">{record.remarks || ''}</td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <SignatureBlock type="department-summary" />
+
+        <div className="text-center mt-4 text-sm text-gray-600">
+          Page {pageNumber} of 3
+        </div>
       </div>
+    )
+  }
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+      {/* Full Day Consolidated Print View - Print Only */}
+      {isFullDayPrint && (
+        <div className="hidden print:block">
+          <style>{`
+            .page-break {
+              page-break-before: always;
+            }
+            @media print {
+              body {
+                margin: 0;
+                padding: 20px;
+              }
+            }
+          `}</style>
+          {renderTableSection(presentRecords, 'Present', 1)}
+          {renderTableSection(absentRecords, 'Absent', 2)}
+          {renderTableSection(lateRecords, 'Late', 3)}
+        </div>
+      )}
+
+      {/* PDF Header - Print Only (for single section prints) */}
+      {!isFullDayPrint && (
+        <div className="hidden print:block">
+          <PrintableHeader
+            title={getReportTitle()}
+            subtitle={`${getDeptName()}, ${getCampusName()}`}
+            dateLine={`Date : ${formatDate(selectedDate)}`}
+          />
+        </div>
+      )}
 
       {/* Screen Header - Hide on Print */}
       <div className="print:hidden space-y-4">
