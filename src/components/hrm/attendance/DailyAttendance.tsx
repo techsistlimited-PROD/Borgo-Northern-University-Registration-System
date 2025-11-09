@@ -115,7 +115,7 @@ export default function DailyAttendance() {
         const statusMatch = selectedStatus === 'Late present' ? 'Late' : selectedStatus
         if (record.status !== statusMatch) return false
       }
-      if (searchTerm && !record.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+      if (searchTerm && !record.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
           !record.empId.toLowerCase().includes(searchTerm.toLowerCase())) return false
       return true
     })
@@ -127,6 +127,46 @@ export default function DailyAttendance() {
 
     return filtered
   }, [selectedDate, selectedDept, selectedStatus, searchTerm])
+
+  // Separate records for full day print
+  const presentRecords = useMemo(() => {
+    let filtered = HRM_ATTENDANCE.filter(record => {
+      if (record.date !== selectedDate) return false
+      if (selectedDept !== 'all' && record.dept !== selectedDept) return false
+      if (record.status !== 'Present') return false
+      return true
+    })
+    if (filtered.length === 0) {
+      filtered = generateDemoData('Present', selectedDept, selectedDate)
+    }
+    return filtered
+  }, [selectedDate, selectedDept])
+
+  const absentRecords = useMemo(() => {
+    let filtered = HRM_ATTENDANCE.filter(record => {
+      if (record.date !== selectedDate) return false
+      if (selectedDept !== 'all' && record.dept !== selectedDept) return false
+      if (record.status !== 'Absent') return false
+      return true
+    })
+    if (filtered.length === 0) {
+      filtered = generateDemoData('Absent', selectedDept, selectedDate)
+    }
+    return filtered
+  }, [selectedDate, selectedDept])
+
+  const lateRecords = useMemo(() => {
+    let filtered = HRM_ATTENDANCE.filter(record => {
+      if (record.date !== selectedDate) return false
+      if (selectedDept !== 'all' && record.dept !== selectedDept) return false
+      if (record.status !== 'Late') return false
+      return true
+    })
+    if (filtered.length === 0) {
+      filtered = generateDemoData('Late present', selectedDept, selectedDate)
+    }
+    return filtered
+  }, [selectedDate, selectedDept])
 
   const showDemoNotice = !HRM_ATTENDANCE.some(r =>
     r.date === selectedDate &&
