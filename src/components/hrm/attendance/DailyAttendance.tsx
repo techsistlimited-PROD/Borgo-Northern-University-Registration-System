@@ -7,6 +7,7 @@ import { FileDown, Printer, Search } from 'lucide-react'
 import { HRM_ATTENDANCE, HRM_EMPLOYEES, HRM_SHIFTS, type AttendanceRecord } from '@/lib/hrmStatic'
 
 type StatusType = 'Present' | 'Absent' | 'Late present' | 'all'
+type ViewType = 'details' | 'summary'
 
 // Helper to get employee designation
 const getEmployeeDesignation = (empId: string): string => {
@@ -100,6 +101,7 @@ export default function DailyAttendance() {
   const [selectedCampus, setSelectedCampus] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState<StatusType>('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [activeView, setActiveView] = useState<ViewType>('details')
 
   const filteredRecords = useMemo(() => {
     let filtered = HRM_ATTENDANCE.filter(record => {
@@ -122,11 +124,43 @@ export default function DailyAttendance() {
     return filtered
   }, [selectedDate, selectedDept, selectedStatus, searchTerm])
 
-  const showDemoNotice = !HRM_ATTENDANCE.some(r => 
-    r.date === selectedDate && 
+  const showDemoNotice = !HRM_ATTENDANCE.some(r =>
+    r.date === selectedDate &&
     (selectedDept === 'all' || r.dept === selectedDept) &&
     (selectedStatus === 'all' || r.status === (selectedStatus === 'Late present' ? 'Late' : selectedStatus))
   )
+
+  // Summary counts
+  const summaryCounts = useMemo(() => {
+    const allRecords = HRM_ATTENDANCE.filter(record => {
+      if (record.date !== selectedDate) return false
+      if (selectedDept !== 'all' && record.dept !== selectedDept) return false
+      if (searchTerm && !record.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          !record.empId.toLowerCase().includes(searchTerm.toLowerCase())) return false
+      return true
+    })
+
+    const presentCount = allRecords.filter(r => r.status === 'Present').length
+    const absentCount = allRecords.filter(r => r.status === 'Absent').length
+    const lateCount = allRecords.filter(r => r.status === 'Late').length
+
+    // Generate demo counts if no data
+    if (allRecords.length === 0) {
+      return {
+        present: Math.floor(Math.random() * 30) + 20,
+        absent: Math.floor(Math.random() * 10),
+        late: Math.floor(Math.random() * 15),
+        isDemo: true
+      }
+    }
+
+    return {
+      present: presentCount,
+      absent: absentCount,
+      late: lateCount,
+      isDemo: false
+    }
+  }, [selectedDate, selectedDept, searchTerm])
 
   const getRowClass = (status: string) => {
     switch (status) {
