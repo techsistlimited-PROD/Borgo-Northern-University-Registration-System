@@ -251,11 +251,6 @@ export default function MonthlyReports() {
   }
 
   const handleExportCSV = () => {
-    const deptName = selectedDept === 'all' ? 'All' : selectedDept
-    const campusName = selectedCampus === 'all' ? 'All' : selectedCampus
-    const [year, month] = selectedMonth.split('-')
-    const formattedMonth = `${month}-${year}` // MM-YYYY
-
     const headers = ['Sl', 'Employee ID', 'Employee Name', 'Designation', 'Dept.', 'Join Date', 'Total Days', 'Weekend', 'Holiday', 'Leave', 'Late In', 'Early Out', 'Absent', 'Total Present', 'Total Duty Hrs', 'Default', 'Surplus', 'Remark']
     const rows = employeeSummaries.map(s => [
       s.sl, s.employeeId, s.employeeName, s.designation, s.dept, s.joinDate,
@@ -272,7 +267,8 @@ export default function MonthlyReports() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `Attendance_Report_Dept-${deptName}_Campus-${campusName}_${formattedMonth}.xlsx`
+    const filename = generateHRMExportFilename('monthly-summary', selectedDept, selectedCampus, selectedMonth, 'xlsx')
+    a.download = filename
     a.click()
   }
 
@@ -282,9 +278,6 @@ export default function MonthlyReports() {
 
   const handleIndividualExportCSV = () => {
     if (!viewDetailsEmp || !selectedEmployee) return
-
-    const [year, month] = selectedMonth.split('-')
-    const formattedMonth = `${month}-${year}` // MM-YYYY
 
     const headers = ['Sl', 'Date', 'Day', 'Office Time', 'In Time', 'Out Time', 'Late In', 'Early Out', 'Duration', 'Surplus / Default', 'Status', 'Remarks']
     const rows = individualRecords.map(r => [
