@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { FileDown, Printer, Eye, Search } from 'lucide-react'
 import { HRM_ATTENDANCE, HRM_EMPLOYEES, type AttendanceRecord } from '@/lib/hrmStatic'
+import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
+import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
 
 interface EmployeeSummary {
   sl: number
@@ -319,12 +321,12 @@ export default function MonthlyReports() {
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* PDF Header - Print Only */}
-      <div className="hidden print:block text-center mb-6">
-        <h1 className="text-xl font-bold">Northern University Bangladesh (NUB)</h1>
-        <p className="text-sm">111/2 Kawlar Jame Mosjid Road, Ashkona, (Near Haji Camp) Dakshinkhan, Dhaka-1230</p>
-        <h2 className="text-lg font-bold mt-4">Attendance Report</h2>
-        <p className="text-sm">Campus: {selectedCampus === 'all' ? 'All Campuses' : selectedCampus}</p>
-        <p className="text-sm">Date Range: {formatDate(selectedMonth)}</p>
+      <div className="hidden print:block">
+        <PrintableHeader
+          title="Attendance Report"
+          subtitle={`Campus: ${selectedCampus === 'all' ? 'All Campuses' : selectedCampus}`}
+          dateLine={`Date Range: ${formatDate(selectedMonth)}`}
+        />
       </div>
 
       {/* Screen Header */}
@@ -489,6 +491,11 @@ export default function MonthlyReports() {
             </table>
           </div>
 
+          {/* Signature Block - Print Only */}
+          <div className="hidden print:block px-6">
+            <SignatureBlock type="department-summary" />
+          </div>
+
           <div className="hidden print:block text-center mt-8 text-sm text-gray-600">
             Page 1 of 1
           </div>
@@ -499,11 +506,11 @@ export default function MonthlyReports() {
       <Dialog open={!!viewDetailsEmp} onOpenChange={() => setViewDetailsEmp(null)}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           {/* Individual Report Header */}
-          <div className="text-center mb-4 print:block">
-            <h1 className="text-xl font-bold">Northern University Bangladesh (NUB)</h1>
-            <p className="text-sm text-gray-600">111/2 Kawlar Jame Mosjid Road, Ashkona, (Near Haji Camp) Dakshinkhan, Dhaka-1230</p>
-            <h2 className="text-lg font-bold mt-3">Individual Report</h2>
-            <p className="text-sm">Date: {formatDate(selectedMonth)}</p>
+          <div className="print:block">
+            <PrintableHeader
+              title="Individual Report"
+              dateLine={`Date: ${formatDate(selectedMonth)}`}
+            />
           </div>
 
           {/* Employee Info */}
@@ -600,16 +607,12 @@ export default function MonthlyReports() {
           )}
 
           {/* Signature Section */}
-          <div className="mt-6 print:block hidden">
-            <div className="flex justify-between text-sm">
-              <div>
-                <p className="font-medium">{selectedEmployee?.name}</p>
-                <p>{selectedEmployee?.designation}</p>
-              </div>
-              <div>
-                <p>Prepared by ___________________</p>
-              </div>
-            </div>
+          <div className="hidden print:block">
+            <SignatureBlock
+              type="individual-monthly"
+              employeeName={selectedEmployee?.name}
+              employeeDesignation={selectedEmployee?.designation}
+            />
           </div>
 
           <div className="hidden print:block text-center mt-4 text-sm text-gray-600">
