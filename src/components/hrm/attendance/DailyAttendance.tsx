@@ -240,6 +240,14 @@ export default function DailyAttendance() {
     window.print()
   }
 
+  const handleFullDayPrint = () => {
+    setIsFullDayPrint(true)
+    setTimeout(() => {
+      window.print()
+      setIsFullDayPrint(false)
+    }, 100)
+  }
+
   const handleDownloadPDF = () => {
     alert('PDF download functionality - Demo Mode')
   }
