@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { FileDown, Printer, Search } from 'lucide-react'
 import { HRM_ATTENDANCE, HRM_EMPLOYEES, HRM_SHIFTS, type AttendanceRecord } from '@/lib/hrmStatic'
-import { DEMO_MODE, showDemoToast } from '@/config/demo'
 import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
 import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
 
