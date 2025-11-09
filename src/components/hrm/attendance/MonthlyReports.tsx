@@ -599,14 +599,14 @@ export default function MonthlyReports() {
                     <td className="px-2 py-2">{record.sl}</td>
                     <td className="px-2 py-2">{record.date}</td>
                     <td className="px-2 py-2">{record.day}</td>
-                    <td className="px-2 py-2 text-xs">{record.officeTime}</td>
-                    <td className="px-2 py-2">{record.inTime}</td>
-                    <td className="px-2 py-2">{record.outTime}</td>
-                    <td className="px-2 py-2">{record.lateIn || '-'}</td>
-                    <td className="px-2 py-2">{record.earlyOut || '-'}</td>
-                    <td className="px-2 py-2">{record.duration}</td>
-                    <td className="px-2 py-2">{record.surplusDefault}</td>
-                    <td className="px-2 py-2">{record.status}</td>
+                    <td className="px-2 py-2 text-center text-xs print-align-center">{record.officeTime}</td>
+                    <td className="px-2 py-2 text-center print-align-center">{record.inTime}</td>
+                    <td className="px-2 py-2 text-center print-align-center">{record.outTime}</td>
+                    <td className="px-2 py-2 text-right print-align-right">{record.lateIn || '-'}</td>
+                    <td className="px-2 py-2 text-right print-align-right">{record.earlyOut || '-'}</td>
+                    <td className="px-2 py-2 text-right print-align-right">{record.duration}</td>
+                    <td className="px-2 py-2 text-right print-align-right">{record.surplusDefault}</td>
+                    <td className="px-2 py-2 text-center print-align-center">{record.status}</td>
                     <td className="px-2 py-2 text-xs">{record.remarks}</td>
                   </tr>
                 ))}
