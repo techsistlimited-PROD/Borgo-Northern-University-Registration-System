@@ -446,79 +446,126 @@ export default function DailyAttendance() {
       {/* Table */}
       <Card>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dept.</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Office Time</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Out</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Late In (M)</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Early Out (M)</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Surplus / Deficit</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredRecords.map((record, index) => {
-                  const designation = getEmployeeDesignation(record.empId)
-                  const officeTime = getOfficeTime(record.shift)
-                  const earlyOut = record.status === 'Absent' ? '-' : '0'
-                  const duration = getDuration(record.inTime, record.outTime, record.status)
-                  const surplus = getSurplusDeficit(duration, record.status)
-                  
-                  return (
-                    <tr key={record.id} className={getRowClass(record.status)}>
-                      <td className="px-3 py-3 text-sm text-gray-900">{index + 1}</td>
-                      <td className="px-3 py-3 text-sm text-gray-900">{record.empId}</td>
-                      <td className="px-3 py-3 text-sm font-medium text-gray-900">{record.name}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{designation}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{record.dept}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{officeTime}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{record.inTime}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{record.outTime}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">
-                        {record.status === 'Absent' ? '-' : record.late > 0 ? record.late : '-'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{earlyOut}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{duration}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{surplus}</td>
-                      <td className="px-3 py-3 text-sm">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          record.status === 'Present' ? 'bg-green-100 text-green-800' :
-                          record.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
-                          record.status === 'Absent' ? 'bg-red-100 text-red-800' :
-                          'bg-blue-100 text-blue-800'
-                        }`}>
-                          {record.status}
-                        </span>
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{record.remarks || ''}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+          {activeView === 'summary' ? (
+            /* Summary View */
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Type</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  <tr className="bg-white">
+                    <td className="px-3 py-4 text-sm text-gray-900">1</td>
+                    <td className="px-3 py-4 text-sm font-medium text-gray-900">Present</td>
+                    <td className="px-3 py-4 text-sm text-gray-900">{summaryCounts.present}</td>
+                    <td className="px-3 py-4 text-sm text-gray-600"></td>
+                  </tr>
+                  <tr className="bg-red-50">
+                    <td className="px-3 py-4 text-sm text-gray-900">2</td>
+                    <td className="px-3 py-4 text-sm font-medium text-gray-900">Absent</td>
+                    <td className="px-3 py-4 text-sm text-gray-900">{summaryCounts.absent}</td>
+                    <td className="px-3 py-4 text-sm text-gray-600"></td>
+                  </tr>
+                  <tr className="bg-yellow-50">
+                    <td className="px-3 py-4 text-sm text-gray-900">3</td>
+                    <td className="px-3 py-4 text-sm font-medium text-gray-900">Late present</td>
+                    <td className="px-3 py-4 text-sm text-gray-900">{summaryCounts.late}</td>
+                    <td className="px-3 py-4 text-sm text-gray-600"></td>
+                  </tr>
+                </tbody>
+              </table>
 
-          {/* Footer */}
-          <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between print:hidden">
-            <p className="text-sm text-gray-600">
-              Showing {filteredRecords.length} record{filteredRecords.length !== 1 ? 's' : ''}
-            </p>
-          </div>
+              <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between print:hidden">
+                <p className="text-sm text-gray-600">
+                  Summary for {formatDate(selectedDate)}
+                </p>
+              </div>
 
-          {/* Print Footer */}
-          <div className="hidden print:block text-center mt-8 text-sm text-gray-600">
-            Page 1 of 1
-          </div>
+              <div className="hidden print:block text-center mt-8 text-sm text-gray-600">
+                Page 1 of 1
+              </div>
+            </div>
+          ) : (
+            /* Details View */
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SL</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dept.</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Office Time</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Out</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Late In (M)</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Early Out (M)</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Surplus / Deficit</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredRecords.map((record, index) => {
+                    const designation = getEmployeeDesignation(record.empId)
+                    const officeTime = getOfficeTime(record.shift)
+                    const earlyOut = record.status === 'Absent' ? '-' : '0'
+                    const duration = getDuration(record.inTime, record.outTime, record.status)
+                    const surplus = getSurplusDeficit(duration, record.status)
+
+                    return (
+                      <tr key={record.id} className={getRowClass(record.status)}>
+                        <td className="px-3 py-3 text-sm text-gray-900">{index + 1}</td>
+                        <td className="px-3 py-3 text-sm text-gray-900">{record.empId}</td>
+                        <td className="px-3 py-3 text-sm font-medium text-gray-900">{record.name}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{designation}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{record.dept}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{officeTime}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{record.inTime}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{record.outTime}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">
+                          {record.status === 'Absent' ? '-' : record.late > 0 ? record.late : '-'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{earlyOut}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{duration}</td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{surplus}</td>
+                        <td className="px-3 py-3 text-sm">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            record.status === 'Present' ? 'bg-green-100 text-green-800' :
+                            record.status === 'Late' ? 'bg-yellow-100 text-yellow-800' :
+                            record.status === 'Absent' ? 'bg-red-100 text-red-800' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            {record.status}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-600">{record.remarks || ''}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between print:hidden">
+                <p className="text-sm text-gray-600">
+                  Showing {filteredRecords.length} record{filteredRecords.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+
+              {/* Print Footer */}
+              <div className="hidden print:block text-center mt-8 text-sm text-gray-600">
+                Page 1 of 1
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
