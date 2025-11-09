@@ -263,12 +263,12 @@ export default function DailyAttendance() {
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* PDF Header - Print Only */}
-      <div className="hidden print:block text-center mb-6">
-        <h1 className="text-xl font-bold">Northern University Bangladesh (NUB)</h1>
-        <p className="text-sm">111/2 Kawlar Jame Mosjid Road, Ashkona, (Near Haji Camp) Dakshinkhan, Dhaka-1230</p>
-        <h2 className="text-lg font-bold mt-4">{getReportTitle()}</h2>
-        <p className="text-sm">{getDeptName()}, {getCampusName()}</p>
-        <p className="text-sm">Date : {formatDate(selectedDate)}</p>
+      <div className="hidden print:block">
+        <PrintableHeader
+          title={getReportTitle()}
+          subtitle={`${getDeptName()}, ${getCampusName()}`}
+          dateLine={`Date : ${formatDate(selectedDate)}`}
+        />
       </div>
 
       {/* Screen Header - Hide on Print */}
