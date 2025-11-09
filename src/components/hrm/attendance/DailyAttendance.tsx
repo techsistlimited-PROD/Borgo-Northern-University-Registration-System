@@ -7,6 +7,7 @@ import { FileDown, Printer, Search } from 'lucide-react'
 import { HRM_ATTENDANCE, HRM_EMPLOYEES, HRM_SHIFTS, type AttendanceRecord } from '@/lib/hrmStatic'
 import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
 import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
+import { generateHRMExportFilename } from '@/lib/hrmUtils'
 
 type StatusType = 'Present' | 'Absent' | 'Late present' | 'all'
 type ViewType = 'details' | 'summary'
@@ -252,10 +253,6 @@ export default function DailyAttendance() {
   }
 
   const handleDownloadCSV = () => {
-    const deptName = selectedDept === 'all' ? 'All' : selectedDept
-    const campusName = selectedCampus === 'all' ? 'All' : selectedCampus
-    const formattedDate = selectedDate.split('-').reverse().join('-') // DD-MM-YYYY
-
     if (activeView === 'summary') {
       const headers = ['SL', 'Status Type', 'Count', 'Remarks']
       const rows = [
@@ -271,12 +268,12 @@ export default function DailyAttendance() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `Daily_Summary_Dept-${deptName}_Campus-${campusName}_${formattedDate}.csv`
+      const filename = generateHRMExportFilename('daily-summary', selectedDept, selectedCampus, selectedDate)
+      a.download = filename
       a.click()
       return
     }
 
-    const statusLabel = selectedStatus === 'all' ? 'All' : selectedStatus
     const headers = ['SL', 'ID', 'Name', 'Designation', 'Dept.', 'Office Time', 'In', 'Out', 'Late In (M)', 'Early Out (M)', 'Duration', 'Surplus / Deficit', 'Status', 'Remarks']
     const rows = filteredRecords.map((record, index) => {
       const designation = getEmployeeDesignation(record.empId)
@@ -312,7 +309,13 @@ export default function DailyAttendance() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `Daily_Report_${statusLabel}_Dept-${deptName}_Campus-${campusName}_${formattedDate}.csv`
+
+    // Generate unified filename based on status
+    const reportType = selectedStatus === 'all' ? 'daily-all' :
+                      selectedStatus === 'Late present' ? 'daily-late-present' :
+                      `daily-${selectedStatus.toLowerCase()}`
+    const filename = generateHRMExportFilename(reportType, selectedDept, selectedCampus, selectedDate)
+    a.download = filename
     a.click()
   }
 
