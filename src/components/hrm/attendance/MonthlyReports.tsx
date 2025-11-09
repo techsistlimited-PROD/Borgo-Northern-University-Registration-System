@@ -8,6 +8,7 @@ import { FileDown, Printer, Eye, Search } from 'lucide-react'
 import { HRM_ATTENDANCE, HRM_EMPLOYEES, type AttendanceRecord } from '@/lib/hrmStatic'
 import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
 import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
+import { generateHRMExportFilename } from '@/lib/hrmUtils'
 
 interface EmployeeSummary {
   sl: number
