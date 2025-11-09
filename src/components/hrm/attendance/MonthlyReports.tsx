@@ -279,6 +279,31 @@ export default function MonthlyReports() {
     window.print()
   }
 
+  const handleIndividualExportCSV = () => {
+    if (!viewDetailsEmp || !selectedEmployee) return
+
+    const [year, month] = selectedMonth.split('-')
+    const formattedMonth = `${month}-${year}` // MM-YYYY
+
+    const headers = ['Sl', 'Date', 'Day', 'Office Time', 'In Time', 'Out Time', 'Late In', 'Early Out', 'Duration', 'Surplus / Default', 'Status', 'Remarks']
+    const rows = individualRecords.map(r => [
+      r.sl, r.date, r.day, r.officeTime, r.inTime, r.outTime,
+      r.lateIn, r.earlyOut, r.duration, r.surplusDefault, r.status, r.remarks
+    ])
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Individual_Report_${selectedEmployee.id}_${formattedMonth}.csv`
+    a.click()
+  }
+
   // Individual report data
   const individualRecords = useMemo(() => {
     if (!viewDetailsEmp) return []
