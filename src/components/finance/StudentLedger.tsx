@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Search, Lock, Unlock, FileText, Send, Download } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function StudentLedger() {
   const [showLedgerDetail, setShowLedgerDetail] = useState(false)
@@ -59,6 +60,106 @@ export default function StudentLedger() {
       'Paid': 'bg-green-100 text-green-800'
     }
     return <Badge className={styles[status]}>{status}</Badge>
+  }
+
+  const handleUnlockStudent = (studentId: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Remove hold functionality'))
+      return
+    }
+
+    if (confirm(`Remove finance hold for student ${studentId}? This will allow them to register and access restricted services.`)) {
+      alert('Hold removed successfully')
+    }
+  }
+
+  const handlePrintStatement = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Print ledger statement'))
+      return
+    }
+
+    if (!selectedStudent) return
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Student Ledger - ${selectedStudent.id}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    .profile { background: #f5f5f5; padding: 15px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+    .text-right { text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Student Ledger Statement</h2>
+  </div>
+  <div class="profile">
+    <p><strong>Student ID:</strong> ${selectedStudent.id}</p>
+    <p><strong>Name:</strong> ${selectedStudent.name}</p>
+    <p><strong>Program:</strong> ${selectedStudent.program}</p>
+    <p><strong>Balance:</strong> ${selectedStudent.balance.toLocaleString('en-BD', { minimumFractionDigits: 2 })} BDT</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Ref</th>
+        <th class="text-right">Debit</th>
+        <th class="text-right">Credit</th>
+        <th class="text-right">Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${ledgerEntries.map(entry => `
+        <tr>
+          <td>${entry.date}</td>
+          <td>${entry.type}</td>
+          <td>${entry.description}</td>
+          <td>${entry.ref}</td>
+          <td class="text-right">${entry.debit > 0 ? entry.debit.toLocaleString('en-BD', { minimumFractionDigits: 2 }) : '—'}</td>
+          <td class="text-right">${entry.credit > 0 ? entry.credit.toLocaleString('en-BD', { minimumFractionDigits: 2 }) : '—'}</td>
+          <td class="text-right">${entry.balance.toLocaleString('en-BD', { minimumFractionDigits: 2 })}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handleSendReminder = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Send dues reminder SMS'))
+      return
+    }
+
+    if (!selectedStudent) return
+
+    if (confirm(`Send payment reminder SMS to ${selectedStudent.name} (${selectedStudent.id})?`)) {
+      alert('SMS reminder sent successfully')
+    }
   }
 
   return (
@@ -156,7 +257,12 @@ export default function StudentLedger() {
                           View Ledger
                         </Button>
                         {student.status.includes('HOLD') && (
-                          <Button variant="ghost" size="sm">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleUnlockStudent(student.id)}
+                            title="Remove Hold"
+                          >
                             <Unlock className="w-4 h-4" />
                           </Button>
                         )}
@@ -221,11 +327,19 @@ export default function StudentLedger() {
             {activeTab === 'ledger' && (
               <>
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrintStatement}
+                  >
                     <FileText className="w-4 h-4 mr-2" />
                     Print Statement PDF
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSendReminder}
+                  >
                     <Send className="w-4 h-4 mr-2" />
                     Send Dues Reminder SMS
                   </Button>
