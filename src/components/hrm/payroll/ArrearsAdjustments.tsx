@@ -16,6 +16,7 @@ export default function ArrearsAdjustments() {
   const [selectedType, setSelectedType] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [isAddOpen, setIsAddOpen] = useState(false)
+  const [viewArrear, setViewArrear] = useState<Arrear | null>(null)
 
   const [newArrear, setNewArrear] = useState({
     empId: '',
@@ -265,7 +266,7 @@ export default function ArrearsAdjustments() {
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => setViewArrear(arrear)}>
                         <Eye className="w-4 h-4" />
                       </Button>
                     </td>
@@ -276,6 +277,62 @@ export default function ArrearsAdjustments() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={!!viewArrear} onOpenChange={() => setViewArrear(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Arrear/Adjustment Details</DialogTitle>
+          </DialogHeader>
+          {viewArrear && (
+            <div className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">ID</label>
+                  <p className="text-sm font-semibold">{viewArrear.id}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Type</label>
+                  <p className="text-sm">
+                    <Badge className={getTypeBadge(viewArrear.type)}>{viewArrear.type}</Badge>
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Employee ID</label>
+                  <p className="text-sm font-semibold">{viewArrear.empId}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Employee Name</label>
+                  <p className="text-sm font-semibold">{viewArrear.name}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Department</label>
+                  <p className="text-sm">{viewArrear.dept}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Period</label>
+                  <p className="text-sm">{viewArrear.month} {viewArrear.year}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Amount</label>
+                  <p className="text-sm font-bold text-green-600">৳{viewArrear.amount.toLocaleString()}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <p className="text-sm">
+                    <Badge variant={viewArrear.status === 'Approved' ? 'default' : 'secondary'}>
+                      {viewArrear.status}
+                    </Badge>
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <label className="text-sm font-medium text-gray-500">Description</label>
+                  <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{viewArrear.description}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -10,12 +10,12 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 const COLORS = ['#3b82f6', '#22c55e']
 
 export default function SalaryDisbursement() {
-  const [selectedMonth, setSelectedMonth] = useState('December')
+  const [selectedMonth, setSelectedMonth] = useState('October')
   const [selectedYear, setSelectedYear] = useState('2024')
   const [selectedDept, setSelectedDept] = useState('all')
   const [selectedMode, setSelectedMode] = useState('all')
 
-  const paidRecords = PAYROLL_RECORDS.filter(r => r.status === 'Paid')
+  const paidRecords = PAYROLL_RECORDS.filter(r => r.status === 'Paid' || r.status === 'Processed')
   
   const filteredRecords = paidRecords.filter(r => {
     if (r.month !== selectedMonth || r.year !== Number(selectedYear)) return false

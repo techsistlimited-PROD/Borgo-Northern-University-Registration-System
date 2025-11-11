@@ -16,15 +16,24 @@ export default function SalaryStructure() {
   const [selectedStatus, setSelectedStatus] = useState('all')
 
   const handleEdit = (template: SalaryTemplate) => {
-    if (DEMO_MODE) {
-      alert(showDemoToast(`Edit salary structure: ${template.name}`))
-      return
-    }
+    setEditTemplate(template)
+    setIsEditOpen(true)
+  }
 
-    alert(`Edit dialog would open for ${template.name} in production`)
+  const handleSaveEdit = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Update salary structure'))
+    }
+    if (editTemplate) {
+      setTemplates(templates.map(t => t.id === editTemplate.id ? editTemplate : t))
+      setIsEditOpen(false)
+      setEditTemplate(null)
+    }
   }
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [viewTemplate, setViewTemplate] = useState<SalaryTemplate | null>(null)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editTemplate, setEditTemplate] = useState<SalaryTemplate | null>(null)
 
   const [newTemplate, setNewTemplate] = useState({
     grade: '',
@@ -290,6 +299,106 @@ export default function SalaryStructure() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isEditOpen} onOpenChange={(open) => {
+        setIsEditOpen(open)
+        if (!open) setEditTemplate(null)
+      }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Salary Template</DialogTitle>
+          </DialogHeader>
+          {editTemplate && (
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="text-sm font-medium">Grade</label>
+                <Input
+                  value={editTemplate.grade}
+                  onChange={(e) => setEditTemplate({...editTemplate, grade: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Designation</label>
+                <Input
+                  value={editTemplate.designation}
+                  onChange={(e) => setEditTemplate({...editTemplate, designation: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Basic Salary</label>
+                <Input
+                  type="number"
+                  value={editTemplate.basic}
+                  onChange={(e) => setEditTemplate({...editTemplate, basic: Number(e.target.value)})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">House Rent</label>
+                <Input
+                  type="number"
+                  value={editTemplate.houseRent}
+                  onChange={(e) => setEditTemplate({...editTemplate, houseRent: Number(e.target.value)})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Medical Allowance</label>
+                <Input
+                  type="number"
+                  value={editTemplate.medical}
+                  onChange={(e) => setEditTemplate({...editTemplate, medical: Number(e.target.value)})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Transport Allowance</label>
+                <Input
+                  type="number"
+                  value={editTemplate.transport}
+                  onChange={(e) => setEditTemplate({...editTemplate, transport: Number(e.target.value)})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Other Allowance</label>
+                <Input
+                  type="number"
+                  value={editTemplate.other}
+                  onChange={(e) => setEditTemplate({...editTemplate, other: Number(e.target.value)})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Total (Auto-calculated)</label>
+                <Input
+                  type="number"
+                  value={editTemplate.basic + editTemplate.houseRent + editTemplate.medical + editTemplate.transport + editTemplate.other}
+                  disabled
+                  className="bg-gray-100"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Status</label>
+                <Select
+                  value={editTemplate.status}
+                  onValueChange={(val: 'Active' | 'Inactive') => setEditTemplate({...editTemplate, status: val})}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => {
+              setIsEditOpen(false)
+              setEditTemplate(null)
+            }}>Cancel</Button>
+            <Button onClick={handleSaveEdit}>Save Changes</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!viewTemplate} onOpenChange={() => setViewTemplate(null)}>
         <DialogContent>
