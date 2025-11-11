@@ -188,7 +188,7 @@ export default function HRMDashboard() {
         case 'dashboard':
           return <HRMDashboardView />
         case 'employees':
-          return selectedEmployeeId ? <EmployeeProfile employeeId={selectedEmployeeId} /> : <HRMEmployeeList />
+          return selectedEmployeeId ? <EmployeeProfile employeeId={selectedEmployeeId} onNavigate={handleNavigation} /> : <HRMEmployeeList onNavigate={handleNavigation} />
         case 'documents':
           return <HRMDocuments />
         case 'history':
