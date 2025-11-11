@@ -41,7 +41,7 @@ export default function EmployeeProfile({ employeeId, onNavigate }: EmployeeProf
               <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
               <h3 className="text-xl font-semibold text-gray-700 mb-2">Employee Not Found</h3>
               <p className="text-gray-600 mb-4">The employee with ID {employeeId} could not be found.</p>
-              <Button onClick={() => navigate('/hrm/employees')}>
+              <Button onClick={() => onNavigate?.('/hrm/employees')}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Employee List
               </Button>
@@ -87,9 +87,9 @@ export default function EmployeeProfile({ employeeId, onNavigate }: EmployeeProf
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/hrm/employees')}
+          <Button
+            variant="outline"
+            onClick={() => onNavigate?.('/hrm/employees')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
@@ -286,19 +286,19 @@ export default function EmployeeProfile({ employeeId, onNavigate }: EmployeeProf
             <CardTitle className="text-deep-plum">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/hrm/employees/documents')}>
+            <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate?.('/hrm/employees/documents')}>
               <FileText className="w-4 h-4 mr-2" />
               View Documents
             </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/hrm/employees/history')}>
+            <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate?.('/hrm/employees/history')}>
               <Calendar className="w-4 h-4 mr-2" />
               View Employment History
             </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/hrm/payroll/payslips')}>
+            <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate?.('/hrm/payroll/payslips')}>
               <FileText className="w-4 h-4 mr-2" />
               View Payslips
             </Button>
-            <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/hrm/leave/applications')}>
+            <Button variant="outline" className="w-full justify-start" onClick={() => onNavigate?.('/hrm/leave/applications')}>
               <Calendar className="w-4 h-4 mr-2" />
               View Leave Records
             </Button>
