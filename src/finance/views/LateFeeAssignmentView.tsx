@@ -151,7 +151,7 @@ export default function LateFeeAssignmentView() {
 
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
   const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
-  const campuses = ['All', 'Permanent Campus', 'Uttara', 'Lakshmipur']
+  const campuses = ['All', 'Main Campus', 'Banani Campus', 'Permanent Campus', 'Uttara', 'Lakshmipur']
 
   return (
     <div className="p-6 space-y-6">
