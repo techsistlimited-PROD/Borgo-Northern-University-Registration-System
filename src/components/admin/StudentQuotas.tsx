@@ -13,6 +13,8 @@ export default function StudentQuotasView() {
   const [search, setSearch] = useState('')
   const [viewItem, setViewItem] = useState<StudentQuota | null>(null)
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
+  const [editItem, setEditItem] = useState<StudentQuota | null>(null)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
 
   const filtered = data.filter(item => 
     item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -25,7 +27,17 @@ export default function StudentQuotasView() {
   }
 
   const handleEdit = (item: StudentQuota) => {
-    alert(showDemoToast(`Edit "${item.name}"`))
+    setEditItem(item)
+    setEditDrawerOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (editItem && DEMO_MODE) {
+      setData(data.map(d => d.id === editItem.id ? editItem : d))
+      alert(showDemoToast(`Updated "${editItem.name}"`))
+      setEditDrawerOpen(false)
+      setEditItem(null)
+    }
   }
 
   const handleDelete = (item: StudentQuota) => {
