@@ -1,10 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Lock, Unlock, Eye, AlertCircle, ShieldAlert, CheckCircle } from 'lucide-react'
+import { Lock, Unlock, Eye, AlertCircle, ShieldAlert, CheckCircle, UserX } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { useState } from 'react'
-import { getActiveBlocks } from '@/coe/data/blockSettings'
+import { useState, useEffect } from 'react'
+import { getActiveBlocks, RESULT_BLOCKS, ResultBlock } from '@/coe/data/blockSettings'
 import { showDemoToast } from '@/config/demo'
 
 interface ResultScope {
@@ -16,16 +16,20 @@ interface ResultScope {
   statusColor: string
   hasActiveBlocks: boolean
   blockTypes: string
+  programCode: string
 }
 
 export default function PublishResults() {
   const [showPublishModal, setShowPublishModal] = useState(false)
   const [showBlockModal, setShowBlockModal] = useState(false)
+  const [showViewBlocksModal, setShowViewBlocksModal] = useState(false)
   const [selectedResult, setSelectedResult] = useState<ResultScope | null>(null)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [localBlocks, setLocalBlocks] = useState<ResultBlock[]>([...RESULT_BLOCKS])
 
-  const activeBlocks = getActiveBlocks()
+  // Recalculate blocks whenever localBlocks changes
+  const activeBlocks = localBlocks.filter(b => b.status === 'Active')
   const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
   const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
   const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
@@ -39,7 +43,8 @@ export default function PublishResults() {
       blockedCount: cseBlocks.length,
       statusColor: 'bg-green-100 text-green-800',
       hasActiveBlocks: cseBlocks.length > 0,
-      blockTypes: cseBlocks.map(b => b.reason).join(', ')
+      blockTypes: cseBlocks.map(b => b.reason).join(', '),
+      programCode: 'CSE'
     },
     {
       scope: 'BBA · Fall 2025',
@@ -49,7 +54,8 @@ export default function PublishResults() {
       blockedCount: bbaBlocks.length,
       statusColor: 'bg-blue-100 text-blue-800',
       hasActiveBlocks: bbaBlocks.length > 0,
-      blockTypes: bbaBlocks.map(b => b.reason).join(', ')
+      blockTypes: bbaBlocks.map(b => b.reason).join(', '),
+      programCode: 'BBA'
     },
     {
       scope: 'LLB (Hons) · Fall 2025',
@@ -59,9 +65,32 @@ export default function PublishResults() {
       blockedCount: llbBlocks.length,
       statusColor: 'bg-gray-100 text-gray-800',
       hasActiveBlocks: llbBlocks.length > 0,
-      blockTypes: llbBlocks.map(b => b.reason).join(', ')
+      blockTypes: llbBlocks.map(b => b.reason).join(', '),
+      programCode: 'LLB'
     }
   ])
+
+  // Update results when blocks change
+  useEffect(() => {
+    const activeBlocks = localBlocks.filter(b => b.status === 'Active')
+    const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
+    const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
+    const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
+
+    setResults(prev => prev.map(r => {
+      let blocks: ResultBlock[] = []
+      if (r.programCode === 'CSE') blocks = cseBlocks
+      else if (r.programCode === 'BBA') blocks = bbaBlocks
+      else if (r.programCode === 'LLB') blocks = llbBlocks
+
+      return {
+        ...r,
+        blockedCount: blocks.length,
+        hasActiveBlocks: blocks.length > 0,
+        blockTypes: blocks.map(b => b.reason).join(', ')
+      }
+    }))
+  }, [localBlocks])
 
   const handlePublish = (result: ResultScope) => {
     if (result.hasActiveBlocks) {
@@ -70,6 +99,68 @@ export default function PublishResults() {
     }
     setSelectedResult(result)
     setShowPublishModal(true)
+  }
+
+  const handleViewBlocks = (result: ResultScope) => {
+    setSelectedResult(result)
+    setShowViewBlocksModal(true)
+  }
+
+  const handleUnblock = (blockId: string) => {
+    if (confirm('Are you sure you want to remove this block? The student will be able to view their result.')) {
+      setLocalBlocks(prev => prev.map(b => 
+        b.id === blockId
+          ? {
+              ...b,
+              status: 'Removed' as const,
+              removedBy: 'COE Officer',
+              removeDate: new Date().toISOString(),
+              auditLog: [
+                ...b.auditLog,
+                {
+                  action: 'Unblocked',
+                  by: 'COE Officer',
+                  date: new Date().toLocaleString(),
+                  remarks: 'Block removed from Publish Results page'
+                }
+              ]
+            }
+          : b
+      ))
+      alert(showDemoToast('Block removed successfully'))
+    }
+  }
+
+  const handleUnblockAll = (programCode: string) => {
+    const blocksToRemove = activeBlocks.filter(b => b.programCode === programCode)
+    if (blocksToRemove.length === 0) {
+      alert('No active blocks to remove')
+      return
+    }
+
+    if (confirm(`Are you sure you want to remove ALL ${blocksToRemove.length} blocks for this program? All blocked students will be able to view their results.`)) {
+      setLocalBlocks(prev => prev.map(b => 
+        b.programCode === programCode && b.status === 'Active'
+          ? {
+              ...b,
+              status: 'Removed' as const,
+              removedBy: 'COE Officer',
+              removeDate: new Date().toISOString(),
+              auditLog: [
+                ...b.auditLog,
+                {
+                  action: 'Unblocked',
+                  by: 'COE Officer',
+                  date: new Date().toLocaleString(),
+                  remarks: 'Bulk unblock from Publish Results page'
+                }
+              ]
+            }
+          : b
+      ))
+      setShowViewBlocksModal(false)
+      alert(showDemoToast(`Removed ${blocksToRemove.length} block(s)`))
+    }
   }
 
   const confirmPublish = () => {
@@ -99,6 +190,10 @@ export default function PublishResults() {
     // Close publish modal and show success modal
     setShowPublishModal(false)
     setShowSuccessModal(true)
+  }
+
+  const getProgramBlocks = (programCode: string) => {
+    return activeBlocks.filter(b => b.programCode === programCode)
   }
 
   return (
@@ -167,7 +262,7 @@ export default function PublishResults() {
                     <td className="p-3 text-sm text-gray-600">{result.lastPublish}</td>
                     <td className="p-3">
                       {result.blockedCount > 0 ? (
-                        <Badge className="bg-red-100 text-red-800">
+                        <Badge className="bg-red-100 text-red-800 cursor-pointer hover:bg-red-200" onClick={() => handleViewBlocks(result)}>
                           <AlertCircle className="w-3 h-3 mr-1" />
                           {result.blockedCount} blocked
                         </Badge>
@@ -181,7 +276,16 @@ export default function PublishResults() {
                           <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
                           <div>
                             <div className="font-semibold">Publishing Blocked</div>
-                            <div>Active holds: {result.blockTypes}. Clear in Block Manager.</div>
+                            <div>Active holds: {result.blockTypes}.</div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-2 text-xs h-7"
+                              onClick={() => handleViewBlocks(result)}
+                            >
+                              <UserX className="w-3 h-3 mr-1" />
+                              View & Unblock
+                            </Button>
                           </div>
                         </div>
                       )}
@@ -195,7 +299,7 @@ export default function PublishResults() {
                             size="sm"
                             onClick={() => handlePublish(result)}
                             disabled={result.hasActiveBlocks}
-                            title={result.hasActiveBlocks ? 'Publishing blocked due to active holds (Finance/TER/Disciplinary/Custom). Clear holds in Block Manager.' : ''}
+                            title={result.hasActiveBlocks ? 'Publishing blocked due to active holds (Finance/TER/Disciplinary/Custom). Clear holds first.' : ''}
                           >
                             Publish Now
                           </Button>
@@ -240,6 +344,96 @@ export default function PublishResults() {
           </div>
         </CardContent>
       </Card>
+
+      {/* View Blocks Dialog */}
+      <Dialog open={showViewBlocksModal} onOpenChange={setShowViewBlocksModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Active Result Blocks - {selectedResult?.scope}</DialogTitle>
+            <DialogDescription>
+              View and manage students with blocked results for this program
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedResult && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <div className="text-sm">
+                  <span className="font-medium">{getProgramBlocks(selectedResult.programCode).length}</span> student(s) currently blocked
+                </div>
+                {getProgramBlocks(selectedResult.programCode).length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleUnblockAll(selectedResult.programCode)}
+                  >
+                    <Unlock className="w-4 h-4 mr-2" />
+                    Unblock All
+                  </Button>
+                )}
+              </div>
+
+              {getProgramBlocks(selectedResult.programCode).length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No active blocks for this program. You can publish results now.
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b">
+                      <tr>
+                        <th className="p-3 text-left text-sm font-semibold">Student ID</th>
+                        <th className="p-3 text-left text-sm font-semibold">Student Name</th>
+                        <th className="p-3 text-left text-sm font-semibold">Reason</th>
+                        <th className="p-3 text-left text-sm font-semibold">Blocked Date</th>
+                        <th className="p-3 text-left text-sm font-semibold">Blocked By</th>
+                        <th className="p-3 text-left text-sm font-semibold">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {getProgramBlocks(selectedResult.programCode).map(block => (
+                        <tr key={block.id} className="hover:bg-gray-50">
+                          <td className="p-3 text-sm font-mono">{block.studentId}</td>
+                          <td className="p-3 text-sm">{block.studentName}</td>
+                          <td className="p-3 text-sm">
+                            <Badge variant="destructive">{block.reason}</Badge>
+                            {block.customReason && (
+                              <div className="text-xs text-gray-600 mt-1">{block.customReason}</div>
+                            )}
+                          </td>
+                          <td className="p-3 text-sm">{block.blockDate}</td>
+                          <td className="p-3 text-sm">{block.blockedBy}</td>
+                          <td className="p-3">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleUnblock(block.id)}
+                            >
+                              <Unlock className="w-3 h-3 mr-1" />
+                              Unblock
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-md">
+                <strong>Note:</strong> Unblocking a student will allow them to view their result. Make sure all financial dues, 
+                TER submissions, or disciplinary matters are resolved before unblocking.
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowViewBlocksModal(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Publish Confirmation Dialog */}
       <Dialog open={showPublishModal} onOpenChange={setShowPublishModal}>
@@ -389,13 +583,13 @@ export default function PublishResults() {
         </DialogContent>
       </Dialog>
 
-      {/* Block/Unblock Dialog */}
+      {/* Block/Unblock Dialog (for creating new blocks) */}
       <Dialog open={showBlockModal} onOpenChange={setShowBlockModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Block / Unblock Student Result</DialogTitle>
+            <DialogTitle>Block Student Result</DialogTitle>
             <DialogDescription>
-              Prevent specific students from viewing their results
+              Prevent a specific student from viewing their result
             </DialogDescription>
           </DialogHeader>
           
@@ -414,9 +608,10 @@ export default function PublishResults() {
               <select className="w-full p-2 border rounded-md">
                 <option>Select reason...</option>
                 <option>Finance Dues</option>
-                <option>Malpractice Hold</option>
-                <option>Registrar Hold</option>
-                <option>Other</option>
+                <option>TER Not Submitted</option>
+                <option>Disciplinary Action</option>
+                <option>Incomplete Documents</option>
+                <option>Custom</option>
               </select>
             </div>
 
