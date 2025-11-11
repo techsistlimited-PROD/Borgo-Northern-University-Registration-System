@@ -96,10 +96,10 @@ export default function GeographicSettingsView() {
               <td className="p-3 text-sm font-medium">{item.name}</td>
               {activeTab !== 'country' && (
                 <td className="p-3 text-sm text-gray-600">
-                  {activeTab === 'division' && item.countryCode}
-                  {activeTab === 'district' && item.divisionCode}
-                  {activeTab === 'policeStation' && item.districtCode}
-                  {activeTab === 'postOffice' && item.policeStationCode}
+                  {activeTab === 'division' && (item as any).countryCode}
+                  {activeTab === 'district' && (item as any).divisionCode}
+                  {activeTab === 'policeStation' && (item as any).districtCode}
+                  {activeTab === 'postOffice' && (item as any).policeStationCode}
                 </td>
               )}
               <td className="p-3">
