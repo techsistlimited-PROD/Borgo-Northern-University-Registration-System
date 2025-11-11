@@ -1,11 +1,30 @@
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Plus, Download, Upload, Eye, Edit, Lock, AlertTriangle, Unlock } from 'lucide-react'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function UserManagement() {
+  const [viewUser, setViewUser] = useState<any>(null)
+  const [editUser, setEditUser] = useState<any>(null)
+
+  const handleViewUser = (user: any) => {
+    setViewUser(user)
+  }
+
+  const handleEditUser = (user: any) => {
+    setEditUser(user)
+  }
+
+  const handleSaveUser = () => {
+    alert(showDemoToast('User details updated successfully'))
+    setEditUser(null)
+  }
+
   const users = [
     { id: 'ADM-0001', name: 'Md. Imran Hossain', role: 'System Admin', email: 'imran.hossain@nub.ac.bd', mobile: '01711-000111', status: 'Active', lastLogin: '03 Nov 2025 10:14 AM' },
     { id: 'REG-0102', name: 'Tania Sultana', role: 'Registrar', email: 'registrar.office@nub.ac.bd', mobile: '01722-111222', status: 'Active', lastLogin: '03 Nov 2025 09:50 AM' },
@@ -116,10 +135,10 @@ export default function UserManagement() {
                       <td className="p-3 text-sm">{user.lastLogin}</td>
                       <td className="p-3">
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => handleViewUser(user)} title="View Details">
                             <Eye className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => handleEditUser(user)} title="Edit User">
                             <Edit className="w-4 h-4" />
                           </Button>
                           {user.status === 'Active' && (
