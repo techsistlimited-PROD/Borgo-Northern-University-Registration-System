@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Eye, FileText, Download, CheckCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function CertificatesQueue() {
   const [showReqPreview, setShowReqPreview] = useState(false)
@@ -41,6 +42,93 @@ export default function CertificatesQueue() {
       statusColor: 'bg-blue-100 text-blue-800'
     }
   ]
+
+  const handleViewGazettePDF = (gazette: any) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`View ${gazette.semester} ${gazette.program} Gazette PDF`))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Result Gazette - ${gazette.semester} ${gazette.program}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; text-transform: uppercase; }
+    .header h2 { font-size: 14pt; margin: 5px 0; color: #666; }
+    .official-seal { text-align: center; margin: 30px 0; font-style: italic; color: #666; }
+    .meta-info { margin: 20px 0; }
+    .meta-info p { margin: 5px 0; }
+    .signatures { display: flex; justify-content: space-around; margin-top: 80px; }
+    .sig-line { text-align: center; border-top: 1px solid #333; padding-top: 5px; width: 200px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Official Result Gazette</h2>
+  </div>
+  <div class="meta-info">
+    <p><strong>Semester:</strong> ${gazette.semester}</p>
+    <p><strong>Program:</strong> ${gazette.program}</p>
+    <p><strong>Publication Date:</strong> ${gazette.publishTime}</p>
+    <p><strong>Approved By:</strong> ${gazette.approvedBy}</p>
+  </div>
+  <div class="official-seal">
+    <p>[OFFICIAL SEAL]</p>
+    <p>This gazette contains the official examination results as approved by the Board of Studies.</p>
+  </div>
+  <div class="signatures">
+    <div class="sig-line">Exam Controller</div>
+    <div class="sig-line">Registrar</div>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handleExportGazetteExcel = (gazette: any) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Export ${gazette.semester} ${gazette.program} Gazette as Excel`))
+      return
+    }
+
+    alert(`Exporting ${gazette.semester} ${gazette.program} gazette as Excel...`)
+  }
+
+  const handleDownloadDocument = () => {
+    if (!selectedReq) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Download ${selectedReq.type} for ${selectedReq.name}`))
+      return
+    }
+
+    alert(`Downloading ${selectedReq.type} document...`)
+  }
+
+  const handleMarkCollected = (req: any) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Mark as collected for ${req.name}`))
+      return
+    }
+
+    if (confirm(`Mark document as collected for ${req.name}?`)) {
+      alert('Document marked as collected successfully')
+    }
+  }
 
   const gazettes = [
     { semester: 'Fall 2025', program: 'BSc CSE', publishTime: '02 Dec 2025 11:14 AM', approvedBy: 'Exam Controller, Registrar', status: 'Published' },
@@ -128,7 +216,7 @@ export default function CertificatesQueue() {
                           <FileText className="w-4 h-4" />
                         </Button>
                         {req.status === 'Ready for Pickup' && (
-                          <Button variant="ghost" size="sm" onClick={() => alert('Marked as collected for ' + req.name)}>
+                          <Button variant="ghost" size="sm" onClick={() => handleMarkCollected(req)}>
                             <CheckCircle className="w-4 h-4" />
                           </Button>
                         )}
@@ -172,11 +260,11 @@ export default function CertificatesQueue() {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleViewGazettePDF(gazette)}>
                           <FileText className="w-4 h-4 mr-1" />
                           View PDF
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleExportGazetteExcel(gazette)}>
                           <Download className="w-4 h-4 mr-1" />
                           Excel
                         </Button>
@@ -218,7 +306,7 @@ export default function CertificatesQueue() {
           <div className="p-4 bg-gray-50 rounded-md border">[Document preview would appear here in production]</div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDocModal(false)}>Close</Button>
-            <Button className="nu-button-primary">Download</Button>
+            <Button className="nu-button-primary" onClick={handleDownloadDocument}>Download</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
