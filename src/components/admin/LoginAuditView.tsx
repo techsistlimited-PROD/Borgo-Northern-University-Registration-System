@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Download, Printer, Eye } from 'lucide-react'
 import { loginHistoryStatic, invalidAttemptsStatic } from '@/lib/adminSecuritySeeds'
 
@@ -10,6 +11,11 @@ export default function LoginAuditView() {
   const [activeTab, setActiveTab] = useState<'history' | 'invalid'>('history')
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
+  const [viewLoginDetails, setViewLoginDetails] = useState<any>(null)
+
+  const handleViewDetails = (entry: any) => {
+    setViewLoginDetails(entry)
+  }
 
   const loginHistory = loginHistoryStatic
   const invalidAttempts = invalidAttemptsStatic
@@ -176,7 +182,7 @@ export default function LoginAuditView() {
                         {entry.otpAttempts ? `${entry.otpAttempts}/3` : '-'}
                       </td>
                       <td className="p-3">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewDetails(entry)} title="View Details">
                           <Eye className="w-4 h-4" />
                         </Button>
                       </td>
