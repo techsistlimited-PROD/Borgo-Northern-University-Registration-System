@@ -224,11 +224,16 @@ export default function StudyLevelTermView() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700">Term Name</label>
-                  <Input
+                  <select
+                    className="w-full p-2 border rounded-md mt-1"
                     value={editItem.termName}
-                    onChange={(e) => setEditItem({...editItem, termName: e.target.value})}
-                    className="mt-1"
-                  />
+                    onChange={(e) => setEditItem({...editItem, termName: e.target.value as 'Semester' | 'Trimester' | 'Bi-semester' | 'Quarter'})}
+                  >
+                    <option value="Semester">Semester</option>
+                    <option value="Trimester">Trimester</option>
+                    <option value="Bi-semester">Bi-semester</option>
+                    <option value="Quarter">Quarter</option>
+                  </select>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700">Terms Per Year</label>
