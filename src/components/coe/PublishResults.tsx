@@ -1,23 +1,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Lock, Unlock, Eye, AlertCircle, ShieldAlert } from 'lucide-react'
+import { Lock, Unlock, Eye, AlertCircle, ShieldAlert, CheckCircle } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { useState } from 'react'
 import { getActiveBlocks } from '@/coe/data/blockSettings'
+import { showDemoToast } from '@/config/demo'
+
+interface ResultScope {
+  scope: string
+  sections: number
+  status: 'Ready' | 'Published' | 'Draft'
+  lastPublish: string
+  blockedCount: number
+  statusColor: string
+  hasActiveBlocks: boolean
+  blockTypes: string
+}
 
 export default function PublishResults() {
   const [showPublishModal, setShowPublishModal] = useState(false)
   const [showBlockModal, setShowBlockModal] = useState(false)
-  const [selectedResult, setSelectedResult] = useState<any>(null)
+  const [selectedResult, setSelectedResult] = useState<ResultScope | null>(null)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const activeBlocks = getActiveBlocks()
   const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
   const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
   const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
 
-  const results = [
+  const [results, setResults] = useState<ResultScope[]>([
     {
       scope: 'BSc CSE · Fall 2025',
       sections: 24,
@@ -48,9 +61,9 @@ export default function PublishResults() {
       hasActiveBlocks: llbBlocks.length > 0,
       blockTypes: llbBlocks.map(b => b.reason).join(', ')
     }
-  ]
+  ])
 
-  const handlePublish = (result: any) => {
+  const handlePublish = (result: ResultScope) => {
     if (result.hasActiveBlocks) {
       alert('Cannot publish: Active result blocks exist for this program. Clear blocks in Block Manager first.')
       return
@@ -60,8 +73,32 @@ export default function PublishResults() {
   }
 
   const confirmPublish = () => {
+    if (!selectedResult) return
+
+    // Update the result status to Published
+    setResults(prevResults => 
+      prevResults.map(r => 
+        r.scope === selectedResult.scope
+          ? {
+              ...r,
+              status: 'Published' as const,
+              lastPublish: new Date().toLocaleString('en-US', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }),
+              statusColor: 'bg-blue-100 text-blue-800'
+            }
+          : r
+      )
+    )
+
+    // Close publish modal and show success modal
     setShowPublishModal(false)
-    alert('Results published successfully! Faculty editing has been frozen and timestamp logged.')
+    setShowSuccessModal(true)
   }
 
   return (
@@ -163,6 +200,27 @@ export default function PublishResults() {
                             Publish Now
                           </Button>
                         )}
+                        {result.status === 'Published' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            className="opacity-50"
+                          >
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Published
+                          </Button>
+                        )}
+                        {result.status === 'Draft' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            className="opacity-50"
+                          >
+                            Not Ready
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -183,6 +241,7 @@ export default function PublishResults() {
         </CardContent>
       </Card>
 
+      {/* Publish Confirmation Dialog */}
       <Dialog open={showPublishModal} onOpenChange={setShowPublishModal}>
         <DialogContent>
           <DialogHeader>
@@ -240,6 +299,66 @@ export default function PublishResults() {
         </DialogContent>
       </Dialog>
 
+      {/* Success Dialog */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <DialogTitle>Results Published Successfully!</DialogTitle>
+                <DialogDescription>
+                  The results have been published and are now visible to students
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-sm text-green-900 font-medium mb-2">Publication Complete</p>
+              <ul className="text-sm text-green-800 space-y-1">
+                <li>✓ Results published for: <strong>{selectedResult?.scope}</strong></li>
+                <li>✓ Faculty editing has been frozen</li>
+                <li>✓ Publish timestamp logged for compliance</li>
+                <li>✓ Students can now view their results</li>
+                <li>✓ Guardians will be notified via ERP/SMS/Email</li>
+              </ul>
+            </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md text-sm">
+              <p className="text-blue-900">
+                <strong>Published at:</strong> {new Date().toLocaleString('en-US', {
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: true
+                })}
+              </p>
+            </div>
+
+            <div className="text-xs text-gray-500 border-t pt-3">
+              Note: Individual student results may still be blocked based on Finance dues, TER submission status, or disciplinary holds. Manage individual blocks in the "Block/Unblock (Student-wise)" section.
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              className="nu-button-primary w-full"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Dialog */}
       <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
         <DialogContent>
           <DialogHeader>
@@ -252,6 +371,16 @@ export default function PublishResults() {
             <div><strong>Sections:</strong> {selectedResult?.sections}</div>
             <div><strong>Status:</strong> <Badge className={selectedResult?.statusColor}>{selectedResult?.status}</Badge></div>
             <div><strong>Last Publish:</strong> {selectedResult?.lastPublish}</div>
+            {selectedResult && selectedResult.blockedCount > 0 && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-900 font-medium">
+                  ⚠️ {selectedResult.blockedCount} student(s) have active blocks
+                </p>
+                <p className="text-xs text-red-700 mt-1">
+                  Block types: {selectedResult.blockTypes}
+                </p>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
@@ -260,6 +389,7 @@ export default function PublishResults() {
         </DialogContent>
       </Dialog>
 
+      {/* Block/Unblock Dialog */}
       <Dialog open={showBlockModal} onOpenChange={setShowBlockModal}>
         <DialogContent>
           <DialogHeader>
@@ -308,7 +438,10 @@ export default function PublishResults() {
             <Button variant="outline" onClick={() => setShowBlockModal(false)}>
               Cancel
             </Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white">
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => {
+              setShowBlockModal(false)
+              alert(showDemoToast('Result block applied'))
+            }}>
               Block Result
             </Button>
           </DialogFooter>
