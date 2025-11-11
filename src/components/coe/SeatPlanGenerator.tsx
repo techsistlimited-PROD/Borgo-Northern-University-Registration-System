@@ -3,10 +3,223 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Shuffle, Download } from 'lucide-react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function SeatPlanGenerator() {
   const [generated, setGenerated] = useState(false)
   const [activeTab, setActiveTab] = useState<'room' | 'student' | 'invigilator'>('room')
+
+  const handleExportXLSX = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export seat plan as XLSX'))
+      return
+    }
+
+    alert('Exporting seat plan as XLSX...')
+  }
+
+  const handleAttendanceSheet = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Download attendance sheet PDF'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Sheet</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+    .sig-column { width: 150px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Examination Attendance Sheet</h2>
+    <p>Room: [Room Name] | Date: [Date] | Time: [Time Slot]</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 40px;">No.</th>
+        <th>Seat No</th>
+        <th>Candidate Code</th>
+        <th>Student Name</th>
+        <th>Program</th>
+        <th class="sig-column">Signature</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${roomViewData.map((row, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${row.seat}</td>
+          <td>${row.candidateCode}</td>
+          <td>[Student Name]</td>
+          <td>${row.program}</td>
+          <td class="sig-column"></td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  <div style="margin-top: 40px;">
+    <p><strong>Invigilator Signature: ________________</strong></p>
+    <p><strong>Date/Time: ________________</strong></p>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handleRoomList = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Download room list PDF'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Room List</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Examination Room List</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Seat No</th>
+        <th>Candidate Code</th>
+        <th>Program</th>
+        <th>Section</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${roomViewData.map(row => `
+        <tr>
+          <td>${row.seat}</td>
+          <td>${row.candidateCode}</td>
+          <td>${row.program}</td>
+          <td>${row.section}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handleIncidentReport = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Download incident report template'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Incident Report Template</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    .field { margin: 15px 0; }
+    .field label { font-weight: bold; display: block; margin-bottom: 5px; }
+    .field-line { border-bottom: 1px solid #333; min-height: 20px; }
+    .field-area { border: 1px solid #333; min-height: 100px; padding: 5px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Examination Incident Report</h2>
+  </div>
+  <div class="field">
+    <label>Date:</label>
+    <div class="field-line"></div>
+  </div>
+  <div class="field">
+    <label>Exam Session:</label>
+    <div class="field-line"></div>
+  </div>
+  <div class="field">
+    <label>Room:</label>
+    <div class="field-line"></div>
+  </div>
+  <div class="field">
+    <label>Reported By (Invigilator):</label>
+    <div class="field-line"></div>
+  </div>
+  <div class="field">
+    <label>Nature of Incident:</label>
+    <div class="field-area"></div>
+  </div>
+  <div class="field">
+    <label>Student(s) Involved (if applicable):</label>
+    <div class="field-area"></div>
+  </div>
+  <div class="field">
+    <label>Action Taken:</label>
+    <div class="field-area"></div>
+  </div>
+  <div style="margin-top: 60px;">
+    <p><strong>Invigilator Signature: ________________ Date: ________</strong></p>
+    <p><strong>Exam Controller Signature: ________________ Date: ________</strong></p>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
 
   const generateSeatPlan = () => {
     setGenerated(true)
@@ -94,7 +307,7 @@ export default function SeatPlanGenerator() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Generated Seat Plan</CardTitle>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleExportXLSX}>
                 <Download className="w-4 h-4 mr-2" />
                 Export XLSX
               </Button>
@@ -186,15 +399,15 @@ export default function SeatPlanGenerator() {
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">Download invigilator packs for examination sessions</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button variant="outline" className="justify-start">
+                  <Button variant="outline" className="justify-start" onClick={handleAttendanceSheet}>
                     <Download className="w-4 h-4 mr-2" />
                     Attendance Sheet PDF
                   </Button>
-                  <Button variant="outline" className="justify-start">
+                  <Button variant="outline" className="justify-start" onClick={handleRoomList}>
                     <Download className="w-4 h-4 mr-2" />
                     Room List PDF
                   </Button>
-                  <Button variant="outline" className="justify-start">
+                  <Button variant="outline" className="justify-start" onClick={handleIncidentReport}>
                     <Download className="w-4 h-4 mr-2" />
                     Incident Report Template
                   </Button>
