@@ -101,6 +101,66 @@ export default function AccessLog() {
           </div>
         </CardContent>
       </Card>
+
+      {/* View Access Log Dialog */}
+      <Dialog open={!!viewLog} onOpenChange={() => setViewLog(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Access Log Details</DialogTitle>
+            <DialogDescription>Complete information about this access attempt</DialogDescription>
+          </DialogHeader>
+          {viewLog && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Timestamp</p>
+                  <p className="text-base">{viewLog.timestamp}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">User</p>
+                  <p className="text-base font-semibold">{viewLog.user}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Role</p>
+                  <p className="text-base">{viewLog.role}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Module Accessed</p>
+                  <p className="text-base">{viewLog.module}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">IP Address</p>
+                  <p className="text-base font-mono">{viewLog.ip}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Device/Browser</p>
+                  <p className="text-base">{viewLog.device}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <Badge className={viewLog.status.includes('Failed') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                    {viewLog.status}
+                  </Badge>
+                </div>
+              </div>
+
+              {viewLog.status.includes('Failed') && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm font-medium text-red-800">Access Failed</p>
+                  <p className="text-sm text-red-700 mt-1">This access attempt was unsuccessful. User may lack required permissions.</p>
+                </div>
+              )}
+
+              {viewLog.status === 'Success' && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm font-medium text-green-800">Access Successful</p>
+                  <p className="text-sm text-green-700 mt-1">User successfully accessed the module with proper authorization.</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
