@@ -168,6 +168,107 @@ export default function OrganizationSetup() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Organization Dialog */}
+      <Dialog open={!!viewOrg} onOpenChange={() => setViewOrg(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Organization Details</DialogTitle>
+            <DialogDescription>{viewOrg?.name}</DialogDescription>
+          </DialogHeader>
+          {viewOrg && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Organization Code</p>
+                  <p className="text-base font-mono font-semibold">{viewOrg.code}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Organization Name</p>
+                  <p className="text-base font-semibold">{viewOrg.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Contact Person</p>
+                  <p className="text-base">{viewOrg.contact}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Phone</p>
+                  <p className="text-base">{viewOrg.phone}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-gray-600">Email</p>
+                  <p className="text-base">{viewOrg.email}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-gray-600">Address</p>
+                  <p className="text-base">{viewOrg.address}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <Badge className={viewOrg.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                    {viewOrg.status}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Last Updated</p>
+                  <p className="text-base">{viewOrg.updated}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Organization Dialog */}
+      <Dialog open={!!editOrg} onOpenChange={() => setEditOrg(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Organization</DialogTitle>
+            <DialogDescription>Update organization details</DialogDescription>
+          </DialogHeader>
+          {editOrg && (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Organization Code</label>
+                <Input value={editOrg.code} disabled className="font-mono" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
+                <Input value={editOrg.name} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <textarea className="w-full p-2 border rounded-md" rows={3} defaultValue={editOrg.address} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person</label>
+                  <Input value={editOrg.contact} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
+                  <Input value={editOrg.phone} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                <Input type="email" value={editOrg.email} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select className="w-full p-2 border rounded-md" defaultValue={editOrg.status}>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditOrg(null)}>Cancel</Button>
+                <Button onClick={handleSaveOrg} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
