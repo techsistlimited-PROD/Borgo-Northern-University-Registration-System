@@ -26,6 +26,10 @@ export default function FinanceDashboard() {
   const [viewDetailsOpen, setViewDetailsOpen] = useState(false)
   const [selectedOfficer, setSelectedOfficer] = useState<OfficerCollection | null>(null)
 
+  const handleViewReceipt = (receipt: OfficerReceipt) => {
+    alert(`View Receipt: ${receipt.receiptNo}\n\nThis would open a detailed receipt view or print preview.\n\nStudent: ${receipt.studentName}\nAmount: BDT ${receipt.amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })}\nMethod: ${receipt.method}`)
+  }
+
   const collectionsByOfficer: OfficerCollection[] = [
     { officer: 'Mahfuz Rahman (Cash Counter 1)', mode: 'Cash', receipts: 84, amount: 412000, lastReceipt: '11:42 AM' },
     { officer: 'Faria Islam (Online Gateway)', mode: 'Online / SSLCommerz', receipts: 156, amount: 740500, lastReceipt: '11:47 AM' },
@@ -308,7 +312,7 @@ export default function FinanceDashboard() {
                           <Badge variant="outline">{receipt.method}</Badge>
                         </td>
                         <td className="p-3 text-center">
-                          <Button variant="ghost" size="sm" title="View Receipt">
+                          <Button variant="ghost" size="sm" title="View Receipt" onClick={() => handleViewReceipt(receipt)}>
                             <FileText className="w-4 h-4 text-blue-600" />
                           </Button>
                         </td>
