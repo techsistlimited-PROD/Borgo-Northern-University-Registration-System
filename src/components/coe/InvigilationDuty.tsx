@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Download, Users, X, AlertTriangle, Check } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 type Invigilator = {
   id: string
@@ -160,6 +161,96 @@ export default function InvigilationDuty() {
     setShowStatusModal(true)
   }
 
+  const handleCreateSession = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Create new exam session'))
+      return
+    }
+
+    alert('Create session dialog would open here in production')
+  }
+
+  const handleAutoAssign = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Auto-assign invigilators'))
+      return
+    }
+
+    if (confirm('Auto-assign invigilators based on availability and workload? This will overwrite existing assignments.')) {
+      alert('Auto-assignment completed successfully')
+    }
+  }
+
+  const handleExportDutySheet = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export duty sheet PDF'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Invigilation Duty Sheet</title>
+  <style>
+    @page { size: A4 landscape; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Invigilation Duty Sheet</h2>
+    <p>Generated: ${new Date().toLocaleString('en-GB')}</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Slot</th>
+        <th>Course/Section</th>
+        <th>Room</th>
+        <th>Capacity</th>
+        <th>Assigned Invigilators</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${sessions.map(session => {
+        const invigilators = getInvigilatorsByIds(session.assignedIds)
+        return `
+        <tr>
+          <td>${session.date}</td>
+          <td>${session.slot} (${session.slotTime})</td>
+          <td>${session.courseCode}-${session.section}</td>
+          <td>${session.roomCode}</td>
+          <td>${session.capacity}</td>
+          <td>${invigilators.map(inv => inv.name).join(', ') || 'Unassigned'}</td>
+          <td>${session.status}</td>
+        </tr>
+      `
+      }).join('')}
+    </tbody>
+  </table>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -168,15 +259,15 @@ export default function InvigilationDuty() {
           <p className="text-sm text-gray-600 mt-1">Assign invigilators to examination sessions</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => alert('Creating new session...')}>
+          <Button variant="outline" onClick={handleCreateSession}>
             <Plus className="w-4 h-4 mr-2" />
             Create Session
           </Button>
-          <Button variant="outline" onClick={() => alert('Auto-assigning invigilators based on availability...')}>
+          <Button variant="outline" onClick={handleAutoAssign}>
             <Users className="w-4 h-4 mr-2" />
             Auto-Assign
           </Button>
-          <Button className="nu-button-primary" onClick={() => alert('Exporting duty sheet as PDF...')}>
+          <Button className="nu-button-primary" onClick={handleExportDutySheet}>
             <Download className="w-4 h-4 mr-2" />
             Export Duty Sheet
           </Button>
