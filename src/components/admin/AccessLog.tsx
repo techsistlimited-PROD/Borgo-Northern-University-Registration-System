@@ -1,9 +1,17 @@
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Download, Eye } from 'lucide-react'
 
 export default function AccessLog() {
+  const [viewLog, setViewLog] = useState<any>(null)
+
+  const handleViewLog = (log: any) => {
+    setViewLog(log)
+  }
+
   const logs = [
     { timestamp: '03 Nov 2025 10:14 AM', user: 'Md. Imran Hossain', role: 'System Admin', module: 'Admin → Code Generator', ip: '103.102.xx.1', device: 'Chrome / Windows 11', status: 'Success' },
     { timestamp: '03 Nov 2025 10:12 AM', user: 'Sharmin Akter', role: 'Finance Officer', module: 'Finance → Student Ledger', ip: '203.91.xx.77', device: 'Chrome / MacOS', status: 'Success' },
@@ -82,7 +90,7 @@ export default function AccessLog() {
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => handleViewLog(log)} title="View Details">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </td>
