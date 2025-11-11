@@ -8,6 +8,21 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 
 export default function OrganizationSetup() {
   const [showAddModal, setShowAddModal] = useState(false)
+  const [viewOrg, setViewOrg] = useState<any>(null)
+  const [editOrg, setEditOrg] = useState<any>(null)
+
+  const handleViewOrg = (org: any) => {
+    setViewOrg(org)
+  }
+
+  const handleEditOrg = (org: any) => {
+    setEditOrg(org)
+  }
+
+  const handleSaveOrg = () => {
+    alert('Organization updated successfully (Demo)')
+    setEditOrg(null)
+  }
 
   const organizations = [
     { code: 'SOB', name: 'School of Business & Economics', contact: 'Prof. Nazmul Karim', phone: '01711-223344', email: 'sob@nub.ac.bd', address: 'Dhaka Campus, Banani', status: 'Active', updated: '02 Nov 2025 14:22' },
@@ -87,10 +102,10 @@ export default function OrganizationSetup() {
                     <td className="p-3 text-sm">{org.updated}</td>
                     <td className="p-3">
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewOrg(org)} title="View Details">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleEditOrg(org)} title="Edit Organization">
                           <Edit className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="sm">
