@@ -4,19 +4,73 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { FileDown, FileText } from 'lucide-react'
+import { HRM_EMPLOYEES } from '@/lib/hrmStatic'
+import { PAYROLL_RECORDS } from '@/lib/payrollPerformanceStatic'
 
 export default function CustomReports() {
   const [reportType, setReportType] = useState('active-staff')
 
+  const activeStaff = HRM_EMPLOYEES.filter(e => e.status === 'Active').map(e => ({
+    id: e.id,
+    name: e.name,
+    dept: e.department,
+    designation: e.designation,
+    email: e.email,
+    joiningDate: e.joiningDate
+  }))
+
+  const inactiveStaff = HRM_EMPLOYEES.filter(e => e.status !== 'Active').map(e => ({
+    id: e.id,
+    name: e.name,
+    dept: e.department,
+    designation: e.designation,
+    status: e.status,
+    email: e.email
+  }))
+
+  const salaryReport = PAYROLL_RECORDS.filter(r => r.month === 'December' && r.year === 2024).map(r => ({
+    id: r.empId,
+    name: r.name,
+    dept: r.dept,
+    designation: r.designation,
+    gross: `৳${r.gross.toLocaleString()}`,
+    deductions: `৳${(r.pf + r.tax + r.loanDeduction).toLocaleString()}`,
+    net: `৳${r.netPay.toLocaleString()}`
+  }))
+
+  const leaveSummary = HRM_EMPLOYEES.filter(e => e.status === 'Active').slice(0, 8).map((e, idx) => ({
+    id: e.id,
+    name: e.name,
+    dept: e.department,
+    totalLeave: 20,
+    taken: [5, 8, 3, 12, 6, 4, 10, 7][idx],
+    pending: [2, 1, 0, 0, 1, 2, 0, 1][idx],
+    balance: 20 - [5, 8, 3, 12, 6, 4, 10, 7][idx] - [2, 1, 0, 0, 1, 2, 0, 1][idx]
+  }))
+
+  const recruitment = [
+    { position: 'Associate Professor - CSE', applicants: 45, shortlisted: 12, interviewed: 5, offered: 2, status: 'In Progress' },
+    { position: 'Lecturer - BBA', applicants: 67, shortlisted: 18, interviewed: 8, offered: 3, status: 'In Progress' },
+    { position: 'Assistant Professor - EEE', applicants: 32, shortlisted: 10, interviewed: 4, offered: 1, status: 'Completed' },
+    { position: 'Lab Instructor - CSE', applicants: 28, shortlisted: 8, interviewed: 3, offered: 2, status: 'Offer Stage' },
+    { position: 'Senior Officer - HR', applicants: 55, shortlisted: 15, interviewed: 6, offered: 1, status: 'Completed' }
+  ]
+
+  const training = [
+    { program: 'Digital Teaching Methods', department: 'CSE', participants: 8, completed: 8, avgRating: 4.5, date: '2024-11-15' },
+    { program: 'Research Methodology', department: 'BBA', participants: 6, completed: 5, avgRating: 4.2, date: '2024-11-20' },
+    { program: 'HR Management Systems', department: 'HR', participants: 4, completed: 4, avgRating: 4.8, date: '2024-12-01' },
+    { program: 'Academic Administration', department: 'All', participants: 12, completed: 11, avgRating: 4.3, date: '2024-12-10' },
+    { program: 'Student Counseling', department: 'All', participants: 10, completed: 9, avgRating: 4.6, date: '2024-12-15' }
+  ]
+
   const reportData: Record<string, any[]> = {
-    'active-staff': [
-      { id: 'EMP-001', name: 'Md. Imran Hossain', dept: 'CSE', designation: 'Assistant Professor' },
-      { id: 'EMP-002', name: 'Dr. Ayesha Karim', dept: 'CSE', designation: 'Associate Professor' }
-    ],
-    'salary-report': [
-      { id: 'EMP-001', name: 'Md. Imran Hossain', gross: 82000, net: 63960 },
-      { id: 'EMP-002', name: 'Dr. Ayesha Karim', gross: 108000, net: 85200 }
-    ]
+    'active-staff': activeStaff,
+    'inactive-staff': inactiveStaff,
+    'salary-report': salaryReport,
+    'leave-summary': leaveSummary,
+    'recruitment': recruitment,
+    'training': training
   }
 
   const currentData = reportData[reportType] || []
