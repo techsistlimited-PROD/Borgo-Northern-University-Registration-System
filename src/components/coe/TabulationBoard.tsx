@@ -5,11 +5,135 @@ import { Eye, Download, CheckCircle, XCircle, AlertTriangle, Edit3 } from 'lucid
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useState } from 'react'
 import { RESULT_CORRECTION_QUEUE } from '@/coe/data/resultCorrectionQueue'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function TabulationBoard() {
   const [showSheetModal, setShowSheetModal] = useState(false)
   const [selectedProgram, setSelectedProgram] = useState<any>(null)
   const [showOnlyCorrected, setShowOnlyCorrected] = useState(false)
+
+  const handleApprove = (program: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Approve tabulation for ${program}`))
+      return
+    }
+
+    if (confirm(`Approve tabulation for ${program}? This action will finalize the results for board approval.`)) {
+      alert('Tabulation approved successfully')
+    }
+  }
+
+  const handleSendBack = (program: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Send back tabulation for ${program}`))
+      return
+    }
+
+    const reason = prompt('Enter reason for sending back:')
+    if (reason) {
+      alert(`Tabulation for ${program} sent back: ${reason}`)
+    }
+  }
+
+  const handleExportXLSX = () => {
+    if (!selectedProgram) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export tabulation sheet as XLSX'))
+      return
+    }
+
+    alert(`Exporting ${selectedProgram.program} tabulation sheet as XLSX...`)
+  }
+
+  const handleExportPDF = () => {
+    if (!selectedProgram) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export tabulation sheet PDF for board signature'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tabulation Sheet - ${selectedProgram.program} ${selectedProgram.semester}</title>
+  <style>
+    @page { size: A4 landscape; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: center; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+    .signatures { display: flex; justify-content: space-around; margin-top: 60px; }
+    .sig-line { text-align: center; border-top: 1px solid #333; padding-top: 5px; width: 200px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Tabulation Sheet</h2>
+    <p>${selectedProgram.program} - ${selectedProgram.semester}</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Student ID</th>
+        <th>Name</th>
+        <th>CSE2211</th>
+        <th>CSE2203</th>
+        <th>MAT1101</th>
+        <th>Total</th>
+        <th>GPA</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${filteredSheetData.map(row => `
+        <tr>
+          <td>${row.id}</td>
+          <td style="text-align: left;">${row.name}</td>
+          <td>${row.cse2211}</td>
+          <td>${row.cse2203}</td>
+          <td>${row.mat1101}</td>
+          <td>${row.totalMarks}</td>
+          <td>${row.gpa}</td>
+          <td>${row.result}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  <div class="signatures">
+    <div class="sig-line">Prepared By</div>
+    <div class="sig-line">Exam Controller</div>
+    <div class="sig-line">Registrar</div>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handleShowDistribution = () => {
+    if (!selectedProgram) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Show grade distribution'))
+      return
+    }
+
+    alert('Grade distribution view would open here in production')
+  }
 
   const appliedCorrections = RESULT_CORRECTION_QUEUE.filter(c => c.status === 'Approved' || c.auditTrail.some(a => a.action === 'Applied'))
   const correctedStudentIds = new Set(appliedCorrections.map(c => c.studentId))
@@ -152,12 +276,12 @@ export default function TabulationBoard() {
                           <Eye className="w-4 h-4" />
                         </Button>
                         {item.status === 'Pending Board Approval' && (
-                          <Button className="nu-button-primary" size="sm" onClick={() => alert('Approved tabulation for ' + item.program)}>
+                          <Button className="nu-button-primary" size="sm" onClick={() => handleApprove(item.program)}>
                             <CheckCircle className="w-4 h-4 mr-1" />
                             Approve
                           </Button>
                         )}
-                        <Button variant="outline" size="sm" onClick={() => alert('Sent back tabulation for ' + item.program)}>
+                        <Button variant="outline" size="sm" onClick={() => handleSendBack(item.program)}>
                           <XCircle className="w-4 h-4 mr-1" />
                           Send Back
                         </Button>
@@ -183,15 +307,15 @@ export default function TabulationBoard() {
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex gap-2">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleExportXLSX}>
                   <Download className="w-4 h-4 mr-2" />
                   Export XLSX
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleExportPDF}>
                   <Download className="w-4 h-4 mr-2" />
                   Export PDF (Board Signature)
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleShowDistribution}>
                   Show Distribution
                 </Button>
               </div>
