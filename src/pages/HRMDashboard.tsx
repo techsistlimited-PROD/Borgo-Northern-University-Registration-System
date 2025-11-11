@@ -85,14 +85,23 @@ export default function HRMDashboard() {
     }
     else if (path === '/hrm/employees') {
       setActiveView('employees')
+      setSelectedEmployeeId(null)
       setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'Employee List' }])
+    }
+    else if (path.startsWith('/hrm/employees/view/')) {
+      const empId = path.replace('/hrm/employees/view/', '')
+      setActiveView('employees')
+      setSelectedEmployeeId(empId)
+      setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'Employee Profile' }])
     }
     else if (path === '/hrm/employees/documents') {
       setActiveView('documents')
+      setSelectedEmployeeId(null)
       setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'Documents' }])
     }
     else if (path === '/hrm/employees/history') {
       setActiveView('history')
+      setSelectedEmployeeId(null)
       setBreadcrumbs([{ label: 'Employee Information', path: '/hrm/employees' }, { label: 'History' }])
     }
     else if (path.startsWith('/hrm/recruitment')) {
