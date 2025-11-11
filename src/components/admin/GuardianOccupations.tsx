@@ -226,7 +226,7 @@ export default function GuardianOccupationsView() {
                   <select
                     className="w-full p-2 border rounded-md mt-1"
                     value={editItem.category}
-                    onChange={(e) => setEditItem({...editItem, category: e.target.value})}
+                    onChange={(e) => setEditItem({...editItem, category: e.target.value as 'Government' | 'Private' | 'Self-Employed' | 'Other'})}
                   >
                     <option value="Government">Government</option>
                     <option value="Private">Private</option>

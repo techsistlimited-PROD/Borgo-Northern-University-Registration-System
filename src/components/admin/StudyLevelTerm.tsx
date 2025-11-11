@@ -215,7 +215,7 @@ export default function StudyLevelTermView() {
                   <select
                     className="w-full p-2 border rounded-md mt-1"
                     value={editItem.level}
-                    onChange={(e) => setEditItem({...editItem, level: e.target.value})}
+                    onChange={(e) => setEditItem({...editItem, level: e.target.value as 'Undergraduate' | 'Postgraduate' | 'Diploma'})}
                   >
                     <option value="Undergraduate">Undergraduate</option>
                     <option value="Postgraduate">Postgraduate</option>
@@ -234,8 +234,8 @@ export default function StudyLevelTermView() {
                   <label className="text-sm font-medium text-gray-700">Terms Per Year</label>
                   <Input
                     type="number"
-                    value={editItem.termsPerYear}
-                    onChange={(e) => setEditItem({...editItem, termsPerYear: parseInt(e.target.value)})}
+                    value={editItem.termsPerYear.toString()}
+                    onChange={(e) => setEditItem({...editItem, termsPerYear: parseInt(e.target.value) || 0})}
                     className="mt-1"
                   />
                 </div>
@@ -243,8 +243,8 @@ export default function StudyLevelTermView() {
                   <label className="text-sm font-medium text-gray-700">Credits Per Term</label>
                   <Input
                     type="number"
-                    value={editItem.creditsPerTerm}
-                    onChange={(e) => setEditItem({...editItem, creditsPerTerm: parseInt(e.target.value)})}
+                    value={editItem.creditsPerTerm.toString()}
+                    onChange={(e) => setEditItem({...editItem, creditsPerTerm: parseInt(e.target.value) || 0})}
                     className="mt-1"
                   />
                 </div>

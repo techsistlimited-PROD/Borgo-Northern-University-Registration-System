@@ -247,7 +247,7 @@ export default function CreditTransferInstitutesView() {
                   <select
                     className="w-full p-2 border rounded-md mt-1"
                     value={editItem.type}
-                    onChange={(e) => setEditItem({...editItem, type: e.target.value})}
+                    onChange={(e) => setEditItem({...editItem, type: e.target.value as 'Public' | 'Private' | 'International Partner'})}
                   >
                     <option value="Public">Public</option>
                     <option value="Private">Private</option>
@@ -259,7 +259,7 @@ export default function CreditTransferInstitutesView() {
                   <select
                     className="w-full p-2 border rounded-md mt-1"
                     value={editItem.status}
-                    onChange={(e) => setEditItem({...editItem, status: e.target.value})}
+                    onChange={(e) => setEditItem({...editItem, status: e.target.value as 'Active' | 'Inactive' | 'Pending'})}
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
