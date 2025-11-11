@@ -79,14 +79,17 @@ export default function RecruitmentInterviews() {
           <h2 className="text-2xl font-bold text-deep-plum">Interview Management</h2>
           <p className="text-gray-600 text-sm mt-1">Schedule and manage candidate interviews</p>
         </div>
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger onClick={() => setShowCreateDialog(true)} asChild>
-            <Button className="bg-deep-plum hover:bg-deep-plum/90">
-              <Plus className="w-4 h-4 mr-2" />
-              Schedule Interview
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <Button
+          onClick={() => setShowCreateDialog(true)}
+          className="bg-deep-plum hover:bg-deep-plum/90"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Schedule Interview
+        </Button>
+      </div>
+
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Schedule New Interview</DialogTitle>
             </DialogHeader>
@@ -274,8 +277,7 @@ export default function RecruitmentInterviews() {
               </div>
             </div>
           </DialogContent>
-        </Dialog>
-      </div>
+      </Dialog>
 
       <div className="grid grid-cols-3 gap-4">
         <Card>
