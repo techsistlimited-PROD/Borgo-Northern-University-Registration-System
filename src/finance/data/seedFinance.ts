@@ -2,7 +2,6 @@ import { Repo } from '@/lib/repo'
 import {
   costHeadsStatic,
   costPackagesStatic,
-  studentBillsStatic,
   paymentsStatic,
   refundsStatic,
   finesStatic,
@@ -14,6 +13,7 @@ import {
   unregisteredStudentsStatic
 } from './staticSeeds'
 import {
+  studentBillsSeed,
   lateFeePoliciesSeed,
   dropReadmissionPoliciesSeed,
   employeeNoticesSeed
@@ -23,7 +23,7 @@ export const seedFinanceData = () => {
   Repo.seedOnceDemo('finance-all', () => {
     Repo.set('finance-cost-heads', costHeadsStatic)
     Repo.set('finance-cost-packages', costPackagesStatic)
-    Repo.set('finance-student-bills', studentBillsStatic)
+    Repo.set('finance-student-bills', studentBillsSeed)
     Repo.set('finance-payments', paymentsStatic)
     Repo.set('finance-payment-refunds', refundsStatic)
     Repo.set('finance-student-fines', finesStatic)
@@ -40,7 +40,7 @@ export const seedFinanceData = () => {
     console.log('✅ Finance data seeded with expanded datasets:')
     console.log(`   - Cost Heads: ${costHeadsStatic.length}`)
     console.log(`   - Cost Packages: ${costPackagesStatic.length}`)
-    console.log(`   - Student Bills: ${studentBillsStatic.length}`)
+    console.log(`   - Student Bills: ${studentBillsSeed.length}`)
     console.log(`   - Payments: ${paymentsStatic.length}`)
     console.log(`   - Refunds: ${refundsStatic.length}`)
     console.log(`   - Fines: ${finesStatic.length}`)
