@@ -25,6 +25,8 @@ export default function GeographicSettingsView() {
 
   const [viewItem, setViewItem] = useState<any>(null)
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
+  const [editItem, setEditItem] = useState<any>(null)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
 
   const getCurrentData = () => {
     switch (activeTab) {
@@ -47,7 +49,16 @@ export default function GeographicSettingsView() {
   }
 
   const handleEdit = (item: any) => {
-    alert(showDemoToast(`Edit "${item.name}"`))
+    setEditItem(item)
+    setEditDrawerOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (editItem && DEMO_MODE) {
+      alert(showDemoToast(`Updated "${editItem.name}"`))
+      setEditDrawerOpen(false)
+      setEditItem(null)
+    }
   }
 
   const handleDelete = (item: any) => {
