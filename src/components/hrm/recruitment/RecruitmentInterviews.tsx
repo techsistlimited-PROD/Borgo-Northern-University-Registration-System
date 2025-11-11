@@ -80,7 +80,7 @@ export default function RecruitmentInterviews() {
           <p className="text-gray-600 text-sm mt-1">Schedule and manage candidate interviews</p>
         </div>
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger asChild>
+          <DialogTrigger onClick={() => setShowCreateDialog(true)} asChild>
             <Button className="bg-deep-plum hover:bg-deep-plum/90">
               <Plus className="w-4 h-4 mr-2" />
               Schedule Interview
