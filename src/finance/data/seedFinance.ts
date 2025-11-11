@@ -20,6 +20,9 @@ import {
 } from './seedData'
 
 export const seedFinanceData = () => {
+  // Force clear old seed flag to allow re-seeding with updated data
+  localStorage.removeItem('nu-erp-demo-seeded-finance-all')
+
   Repo.seedOnceDemo('finance-all', () => {
     Repo.set('finance-cost-heads', costHeadsStatic)
     Repo.set('finance-cost-packages', costPackagesStatic)
