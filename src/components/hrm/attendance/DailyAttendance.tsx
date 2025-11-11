@@ -249,7 +249,12 @@ export default function DailyAttendance() {
   }
 
   const handleDownloadPDF = () => {
-    alert('PDF download functionality - Demo Mode')
+    if (DEMO_MODE) {
+      alert(showDemoToast('Download attendance report as PDF'))
+      return
+    }
+
+    alert('PDF generation would trigger in production')
   }
 
   const handleDownloadCSV = () => {
