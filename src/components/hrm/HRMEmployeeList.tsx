@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Search, Eye, Download, Users, UserCheck, UserX } from 'lucide-react'
 import { HRM_EMPLOYEES } from '@/lib/hrmStatic'
-import { useNavigate } from 'react-router-dom'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
-export default function HRMEmployeeList() {
-  const navigate = useNavigate()
+interface HRMEmployeeListProps {
+  onNavigate?: (path: string) => void
+}
+
+export default function HRMEmployeeList({ onNavigate }: HRMEmployeeListProps = {}) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterDept, setFilterDept] = useState('')
   const [filterType, setFilterType] = useState('')
