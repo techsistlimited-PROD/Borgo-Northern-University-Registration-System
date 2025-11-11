@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +42,8 @@ export const ClassRoutineManagement = () => {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadErrors, setUploadErrors] = useState<string[]>([])
+  const [viewRoom, setViewRoom] = useState<any>(null)
+  const [editRoom, setEditRoom] = useState<any>(null)
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -208,6 +211,19 @@ export const ClassRoutineManagement = () => {
 
   const generateRoomReport = () => {
     alert('Room utilization report generated and downloaded.')
+  }
+
+  const handleViewRoom = (room: any) => {
+    setViewRoom(room)
+  }
+
+  const handleEditRoom = (room: any) => {
+    setEditRoom(room)
+  }
+
+  const handleSaveRoom = () => {
+    alert('Room details saved successfully (Demo)')
+    setEditRoom(null)
   }
 
   const timeSlots = [
@@ -683,10 +699,10 @@ export const ClassRoutineManagement = () => {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" title="View Details">
+                    <Button size="sm" variant="outline" title="View Details" onClick={() => handleViewRoom(room)}>
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="outline" title="Edit Room">
+                    <Button size="sm" variant="outline" title="Edit Room" onClick={() => handleEditRoom(room)}>
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
