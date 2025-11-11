@@ -1,278 +1,649 @@
 import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { FileText, Edit2, Maximize2, Save } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Badge } from '@/components/ui/badge'
+import { 
+  Clock, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Users, 
+  Calendar,
+  Save,
+  X,
+  CalendarDays
+} from 'lucide-react'
+import { HRM_SHIFTS, HRM_ROSTER, HRM_EMPLOYEES, type Shift, type Roster } from '@/lib/hrmStatic'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
-interface ShiftDayRow {
-  shiftName: string
-  date: string
-  day: string
-  startTime: string
-  endTime: string
-  isHoliday: boolean
-  inTolerance: number
-  outTolerance: number
-  dayType: 'DAY' | 'NIGHT'
-}
-
-const generateShiftWeek = (template: string, employeeId: string = '5242198', employeeName: string = 'Afra ENG'): ShiftDayRow[] => {
-  const baseDate = new Date('2025-01-20')
-  const days = ['SATURDAY', 'SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY']
-  const dayAbbrev = ['SA', 'SU', 'M', 'TU', 'W', 'T', 'FR']
-  
-  const templates = {
-    'Regular': [
-      { start: '09:15', end: '15:15', holiday: false },
-      { start: '09:15', end: '16:00', holiday: true },  // Sunday Holiday
-      { start: '09:30', end: '16:00', holiday: false },
-      { start: '08:00', end: '15:00', holiday: false },
-      { start: '09:30', end: '15:00', holiday: false },
-      { start: '11:00', end: '16:00', holiday: false },
-      { start: '10:00', end: '15:30', holiday: true }   // Friday Holiday
-    ],
-    'Night': [
-      { start: '22:00', end: '06:00', holiday: false },
-      { start: '22:00', end: '06:00', holiday: true },
-      { start: '22:00', end: '06:00', holiday: false },
-      { start: '22:00', end: '06:00', holiday: false },
-      { start: '22:00', end: '06:00', holiday: false },
-      { start: '22:00', end: '06:00', holiday: false },
-      { start: '22:00', end: '06:00', holiday: true }
-    ],
-    'Flex Morning': [
-      { start: '06:00', end: '14:00', holiday: false },
-      { start: '06:00', end: '14:00', holiday: true },
-      { start: '06:00', end: '14:00', holiday: false },
-      { start: '06:00', end: '14:00', holiday: false },
-      { start: '06:00', end: '14:00', holiday: false },
-      { start: '06:00', end: '14:00', holiday: false },
-      { start: '06:00', end: '14:00', holiday: true }
-    ],
-    'Flex Evening': [
-      { start: '14:00', end: '22:00', holiday: false },
-      { start: '14:00', end: '22:00', holiday: true },
-      { start: '14:00', end: '22:00', holiday: false },
-      { start: '14:00', end: '22:00', holiday: false },
-      { start: '14:00', end: '22:00', holiday: false },
-      { start: '14:00', end: '22:00', holiday: false },
-      { start: '14:00', end: '22:00', holiday: true }
-    ]
-  }
-
-  const config = templates[template as keyof typeof templates] || templates['Regular']
-
-  return days.map((day, index) => {
-    const date = new Date(baseDate)
-    date.setDate(date.getDate() + index)
-    const dateStr = date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
-    
-    return {
-      shiftName: `${employeeId} (${employeeName}) - ${dayAbbrev[index]}`,
-      date: dateStr,
-      day,
-      startTime: config[index].start,
-      endTime: config[index].end,
-      isHoliday: config[index].holiday,
-      inTolerance: 10,
-      outTolerance: 10,
-      dayType: template === 'Night' ? 'NIGHT' : 'DAY'
-    }
-  })
-}
+type ViewMode = 'shifts' | 'roster'
 
 export default function ShiftRosterPlanner() {
-  const [selectedTemplate, setSelectedTemplate] = useState('Regular')
-  const [shiftRows, setShiftRows] = useState<ShiftDayRow[]>(generateShiftWeek('Regular'))
+  const [viewMode, setViewMode] = useState<ViewMode>('shifts')
+  
+  // Shift Management State
+  const [shifts, setShifts] = useState<Shift[]>(HRM_SHIFTS)
+  const [showShiftDialog, setShowShiftDialog] = useState(false)
+  const [editingShift, setEditingShift] = useState<Shift | null>(null)
+  const [shiftForm, setShiftForm] = useState({
+    id: '',
+    name: '',
+    start: '',
+    end: '',
+    type: 'Regular' as 'Regular' | 'Night' | 'Flex',
+    campus: '',
+    remarks: ''
+  })
 
-  const handleTemplateChange = (template: string) => {
-    setSelectedTemplate(template)
-    setShiftRows(generateShiftWeek(template))
+  // Roster Management State
+  const [rosters, setRosters] = useState<Roster[]>(HRM_ROSTER)
+  const [showRosterDialog, setShowRosterDialog] = useState(false)
+  const [editingRoster, setEditingRoster] = useState<Roster | null>(null)
+  const [rosterForm, setRosterForm] = useState({
+    dept: '',
+    date: '',
+    shiftId: '',
+    employees: [] as string[]
+  })
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedDept, setSelectedDept] = useState('')
+
+  // Get unique departments
+  const departments = Array.from(new Set(HRM_EMPLOYEES.map(e => e.department)))
+
+  // Get employees by department
+  const getEmployeesByDept = (dept: string) => {
+    return HRM_EMPLOYEES.filter(e => e.department === dept)
   }
 
-  const handleRowChange = (index: number, field: keyof ShiftDayRow, value: any) => {
-    const updated = [...shiftRows]
-    updated[index] = { ...updated[index], [field]: value }
-    setShiftRows(updated)
+  // Shift CRUD Operations
+  const handleCreateShift = () => {
+    setEditingShift(null)
+    setShiftForm({
+      id: `S${Date.now()}`,
+      name: '',
+      start: '',
+      end: '',
+      type: 'Regular',
+      campus: '',
+      remarks: ''
+    })
+    setShowShiftDialog(true)
   }
 
-  const handleSaveRow = (index: number) => {
+  const handleEditShift = (shift: Shift) => {
+    setEditingShift(shift)
+    setShiftForm({
+      id: shift.id,
+      name: shift.name,
+      start: shift.start,
+      end: shift.end,
+      type: shift.type,
+      campus: shift.campus,
+      remarks: shift.remarks || ''
+    })
+    setShowShiftDialog(true)
+  }
+
+  const handleSaveShift = () => {
     if (DEMO_MODE) {
-      alert(showDemoToast('Shift row saved'))
+      if (editingShift) {
+        const updated = shifts.map(s => s.id === shiftForm.id ? { ...shiftForm } : s)
+        setShifts(updated)
+        alert(showDemoToast('Shift updated successfully'))
+      } else {
+        setShifts([...shifts, { ...shiftForm }])
+        alert(showDemoToast('Shift created successfully'))
+      }
+      setShowShiftDialog(false)
+      return
     }
   }
 
-  const handleEditToggle = () => {
-    alert(showDemoToast('Edit mode toggled'))
+  const handleDeleteShift = (shiftId: string) => {
+    if (DEMO_MODE) {
+      if (confirm('Are you sure you want to delete this shift?')) {
+        setShifts(shifts.filter(s => s.id !== shiftId))
+        alert(showDemoToast('Shift deleted successfully'))
+      }
+    }
   }
 
-  const handleExpand = () => {
-    alert(showDemoToast('Expand/collapse view'))
+  // Roster CRUD Operations
+  const handleCreateRoster = () => {
+    setEditingRoster(null)
+    setRosterForm({
+      dept: '',
+      date: '',
+      shiftId: '',
+      employees: []
+    })
+    setShowRosterDialog(true)
   }
+
+  const handleEditRoster = (roster: Roster) => {
+    setEditingRoster(roster)
+    setRosterForm({
+      dept: roster.dept,
+      date: roster.date,
+      shiftId: roster.shiftId,
+      employees: roster.employees
+    })
+    setShowRosterDialog(true)
+  }
+
+  const handleSaveRoster = () => {
+    if (DEMO_MODE) {
+      if (editingRoster) {
+        const updated = rosters.map(r => 
+          r.dept === editingRoster.dept && r.date === editingRoster.date 
+            ? { ...rosterForm } 
+            : r
+        )
+        setRosters(updated)
+        alert(showDemoToast('Roster updated successfully'))
+      } else {
+        setRosters([...rosters, { ...rosterForm }])
+        alert(showDemoToast('Roster created successfully'))
+      }
+      setShowRosterDialog(false)
+      return
+    }
+  }
+
+  const handleDeleteRoster = (dept: string, date: string) => {
+    if (DEMO_MODE) {
+      if (confirm('Are you sure you want to delete this roster?')) {
+        setRosters(rosters.filter(r => !(r.dept === dept && r.date === date)))
+        alert(showDemoToast('Roster deleted successfully'))
+      }
+    }
+  }
+
+  const toggleEmployeeInRoster = (empId: string) => {
+    setRosterForm(prev => ({
+      ...prev,
+      employees: prev.employees.includes(empId)
+        ? prev.employees.filter(id => id !== empId)
+        : [...prev.employees, empId]
+    }))
+  }
+
+  // Filter rosters
+  const filteredRosters = rosters.filter(r => {
+    if (selectedDate && r.date !== selectedDate) return false
+    if (selectedDept && r.dept !== selectedDept) return false
+    return true
+  })
+
+  // Get shift by ID
+  const getShiftById = (id: string) => shifts.find(s => s.id === id)
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Header Bar */}
-      <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <FileText className="w-5 h-5 text-blue-600" />
-          <h2 className="text-lg font-semibold text-gray-800">Shift Details</h2>
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-deep-plum">Shift & Roster Planner</h1>
+          <p className="text-gray-600 text-sm mt-1">Manage employee shifts and roster assignments</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <button 
-            onClick={handleEditToggle}
-            className="p-2 hover:bg-blue-200 rounded transition-colors"
-            title="Edit"
+        <div className="flex space-x-2">
+          <Button
+            variant={viewMode === 'shifts' ? 'default' : 'outline'}
+            onClick={() => setViewMode('shifts')}
           >
-            <Edit2 className="w-4 h-4 text-gray-600" />
-          </button>
-          <button 
-            onClick={handleExpand}
-            className="p-2 hover:bg-blue-200 rounded transition-colors"
-            title="Expand/Collapse"
+            <Clock className="w-4 h-4 mr-2" />
+            Shifts
+          </Button>
+          <Button
+            variant={viewMode === 'roster' ? 'default' : 'outline'}
+            onClick={() => setViewMode('roster')}
           >
-            <Maximize2 className="w-4 h-4 text-gray-600" />
-          </button>
+            <CalendarDays className="w-4 h-4 mr-2" />
+            Roster
+          </Button>
         </div>
       </div>
 
-      {/* Tab (Shift Detail) */}
-      <div className="border-b border-gray-200">
-        <button className="px-4 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
-          Shift Detail
-        </button>
-      </div>
-
-      {/* Template Selector */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium">Select Shift Template:</label>
-            <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
-              <SelectTrigger className="w-64">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Regular">Regular</SelectItem>
-                <SelectItem value="Night">Night</SelectItem>
-                <SelectItem value="Flex Morning">Flex Morning</SelectItem>
-                <SelectItem value="Flex Evening">Flex Evening</SelectItem>
-              </SelectContent>
-            </Select>
+      {/* Shift Management View */}
+      {viewMode === 'shifts' && (
+        <>
+          <div className="flex justify-between items-center">
+            <div className="grid grid-cols-3 gap-4 flex-1">
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-blue-600">{shifts.length}</p>
+                  <p className="text-sm">Total Shifts</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-green-600">
+                    {shifts.filter(s => s.type === 'Regular').length}
+                  </p>
+                  <p className="text-sm">Regular Shifts</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-purple-600">
+                    {shifts.filter(s => s.type === 'Night').length}
+                  </p>
+                  <p className="text-sm">Night Shifts</p>
+                </CardContent>
+              </Card>
+            </div>
+            <Button onClick={handleCreateShift} className="ml-4 bg-deep-plum hover:bg-deep-plum/90">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Shift
+            </Button>
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Shift Details Table */}
-      <Card>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Shift Name</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Date</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Day</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Start Time</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">End Time</th>
-                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase border">Holiday</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">In Tolerance</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Out Tolerance</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase border">Day Type</th>
-                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase border">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shiftRows.map((row, index) => (
-                  <tr key={index} className={row.isHoliday ? 'bg-blue-50' : 'bg-white'}>
-                    <td className="px-3 py-2 text-sm border">{row.shiftName}</td>
-                    <td className="px-3 py-2 text-sm border">{row.date}</td>
-                    <td className="px-3 py-2 text-sm border font-medium">{row.day}</td>
-                    <td className="px-3 py-2 border">
-                      <Input 
-                        type="time" 
-                        value={row.startTime}
-                        onChange={(e) => handleRowChange(index, 'startTime', e.target.value)}
-                        disabled={row.isHoliday}
-                        className="w-32 h-8 text-sm"
-                      />
-                    </td>
-                    <td className="px-3 py-2 border">
-                      <Input 
-                        type="time" 
-                        value={row.endTime}
-                        onChange={(e) => handleRowChange(index, 'endTime', e.target.value)}
-                        disabled={row.isHoliday}
-                        className="w-32 h-8 text-sm"
-                      />
-                    </td>
-                    <td className="px-3 py-2 border text-center">
-                      <input 
-                        type="checkbox" 
-                        checked={row.isHoliday}
-                        onChange={(e) => handleRowChange(index, 'isHoliday', e.target.checked)}
-                        className="w-4 h-4 cursor-pointer"
-                      />
-                    </td>
-                    <td className="px-3 py-2 border">
-                      <Input 
-                        type="number" 
-                        value={row.inTolerance}
-                        onChange={(e) => handleRowChange(index, 'inTolerance', parseInt(e.target.value))}
-                        className="w-20 h-8 text-sm"
-                        min="0"
-                      />
-                    </td>
-                    <td className="px-3 py-2 border">
-                      <Input 
-                        type="number" 
-                        value={row.outTolerance}
-                        onChange={(e) => handleRowChange(index, 'outTolerance', parseInt(e.target.value))}
-                        className="w-20 h-8 text-sm"
-                        min="0"
-                      />
-                    </td>
-                    <td className="px-3 py-2 border">
-                      <Select 
-                        value={row.dayType} 
-                        onValueChange={(val) => handleRowChange(index, 'dayType', val as 'DAY' | 'NIGHT')}
-                      >
-                        <SelectTrigger className="w-24 h-8 text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="DAY">DAY</SelectItem>
-                          <SelectItem value="NIGHT">NIGHT</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </td>
-                    <td className="px-3 py-2 border text-center">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => handleSaveRow(index)}
-                        className="h-8"
-                      >
-                        <Save className="w-4 h-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Shift Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Shift ID</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Type</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Start Time</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">End Time</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Duration</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Campus</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {shifts.map(shift => {
+                      const startHour = parseInt(shift.start.split(':')[0])
+                      const startMin = parseInt(shift.start.split(':')[1])
+                      const endHour = parseInt(shift.end.split(':')[0])
+                      const endMin = parseInt(shift.end.split(':')[1])
+                      const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin)
+                      const durationHours = Math.floor(Math.abs(duration) / 60)
+                      const durationMins = Math.abs(duration) % 60
 
-      {DEMO_MODE && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
-            <strong>Demo Mode:</strong> All shift changes are in-memory only. Click the save icon to simulate saving each row.
-          </p>
-        </div>
+                      return (
+                        <tr key={shift.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium">{shift.id}</td>
+                          <td className="px-4 py-3 text-sm">{shift.name}</td>
+                          <td className="px-4 py-3 text-sm">
+                            <Badge variant={
+                              shift.type === 'Regular' ? 'default' : 
+                              shift.type === 'Night' ? 'secondary' : 'outline'
+                            }>
+                              {shift.type}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm">{shift.start}</td>
+                          <td className="px-4 py-3 text-sm">{shift.end}</td>
+                          <td className="px-4 py-3 text-sm">
+                            {durationHours}h {durationMins}m
+                          </td>
+                          <td className="px-4 py-3 text-sm">{shift.campus}</td>
+                          <td className="px-4 py-3 text-sm">
+                            <div className="flex space-x-1">
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => handleEditShift(shift)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => handleDeleteShift(shift.id)}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </>
       )}
+
+      {/* Roster Management View */}
+      {viewMode === 'roster' && (
+        <>
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Filter by Date</label>
+                <Input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="w-48"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Filter by Department</label>
+                <select
+                  value={selectedDept}
+                  onChange={(e) => setSelectedDept(e.target.value)}
+                  className="w-48 p-2 border rounded-md"
+                >
+                  <option value="">All Departments</option>
+                  {departments.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <Button onClick={handleCreateRoster} className="bg-deep-plum hover:bg-deep-plum/90">
+              <Plus className="w-4 h-4 mr-2" />
+              Create Roster
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <p className="text-3xl font-bold text-blue-600">{rosters.length}</p>
+                <p className="text-sm">Total Rosters</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <p className="text-3xl font-bold text-green-600">
+                  {Array.from(new Set(rosters.map(r => r.date))).length}
+                </p>
+                <p className="text-sm">Scheduled Days</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <p className="text-3xl font-bold text-purple-600">
+                  {rosters.reduce((acc, r) => acc + r.employees.length, 0)}
+                </p>
+                <p className="text-sm">Total Assignments</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Roster Assignments</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Date</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Department</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Shift</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Time</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Assigned Employees</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Count</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {filteredRosters.map((roster, idx) => {
+                      const shift = getShiftById(roster.shiftId)
+                      const assignedEmps = roster.employees.map(empId => 
+                        HRM_EMPLOYEES.find(e => e.id === empId)
+                      ).filter(Boolean)
+
+                      return (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium">
+                            {new Date(roster.date).toLocaleDateString('en-GB')}
+                          </td>
+                          <td className="px-4 py-3 text-sm">{roster.dept}</td>
+                          <td className="px-4 py-3 text-sm">
+                            <Badge>{shift?.name || roster.shiftId}</Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {shift ? `${shift.start} - ${shift.end}` : '-'}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <div className="flex flex-wrap gap-1">
+                              {assignedEmps.map(emp => emp && (
+                                <Badge key={emp.id} variant="outline" className="text-xs">
+                                  {emp.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <Badge variant="secondary">{roster.employees.length}</Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <div className="flex space-x-1">
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => handleEditRoster(roster)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => handleDeleteRoster(roster.dept, roster.date)}
+                                className="text-red-600"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {/* Shift Dialog */}
+      <Dialog open={showShiftDialog} onOpenChange={setShowShiftDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {editingShift ? 'Edit Shift' : 'Create New Shift'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Shift Name *</label>
+                <Input
+                  value={shiftForm.name}
+                  onChange={(e) => setShiftForm({ ...shiftForm, name: e.target.value })}
+                  placeholder="e.g., Morning Shift"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Shift Type *</label>
+                <select
+                  value={shiftForm.type}
+                  onChange={(e) => setShiftForm({ ...shiftForm, type: e.target.value as any })}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="Regular">Regular</option>
+                  <option value="Night">Night</option>
+                  <option value="Flex">Flex</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Start Time *</label>
+                <Input
+                  type="time"
+                  value={shiftForm.start}
+                  onChange={(e) => setShiftForm({ ...shiftForm, start: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">End Time *</label>
+                <Input
+                  type="time"
+                  value={shiftForm.end}
+                  onChange={(e) => setShiftForm({ ...shiftForm, end: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Campus *</label>
+              <select
+                value={shiftForm.campus}
+                onChange={(e) => setShiftForm({ ...shiftForm, campus: e.target.value })}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select campus</option>
+                <option value="Permanent Campus">Permanent Campus</option>
+                <option value="Banani Campus">Banani Campus</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Remarks</label>
+              <Input
+                value={shiftForm.remarks}
+                onChange={(e) => setShiftForm({ ...shiftForm, remarks: e.target.value })}
+                placeholder="Optional notes"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowShiftDialog(false)}>
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveShift}
+                disabled={!shiftForm.name || !shiftForm.start || !shiftForm.end || !shiftForm.campus}
+                className="bg-deep-plum hover:bg-deep-plum/90"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {editingShift ? 'Update' : 'Create'} Shift
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Roster Dialog */}
+      <Dialog open={showRosterDialog} onOpenChange={setShowRosterDialog}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingRoster ? 'Edit Roster' : 'Create New Roster'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Date *</label>
+                <Input
+                  type="date"
+                  value={rosterForm.date}
+                  onChange={(e) => setRosterForm({ ...rosterForm, date: e.target.value })}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Department *</label>
+                <select
+                  value={rosterForm.dept}
+                  onChange={(e) => setRosterForm({ ...rosterForm, dept: e.target.value, employees: [] })}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="">Select department</option>
+                  {departments.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Shift *</label>
+              <select
+                value={rosterForm.shiftId}
+                onChange={(e) => setRosterForm({ ...rosterForm, shiftId: e.target.value })}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Select shift</option>
+                {shifts.map(shift => (
+                  <option key={shift.id} value={shift.id}>
+                    {shift.name} ({shift.start} - {shift.end})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {rosterForm.dept && (
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Assign Employees ({rosterForm.employees.length} selected)
+                </label>
+                <div className="border rounded-md p-3 max-h-64 overflow-y-auto space-y-2">
+                  {getEmployeesByDept(rosterForm.dept).map(emp => (
+                    <label 
+                      key={emp.id} 
+                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={rosterForm.employees.includes(emp.id)}
+                        onChange={() => toggleEmployeeInRoster(emp.id)}
+                        className="rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{emp.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {emp.designation} - {emp.id}
+                        </p>
+                      </div>
+                      <Badge variant="outline">{emp.status}</Badge>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowRosterDialog(false)}>
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveRoster}
+                disabled={!rosterForm.date || !rosterForm.dept || !rosterForm.shiftId || rosterForm.employees.length === 0}
+                className="bg-deep-plum hover:bg-deep-plum/90"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {editingRoster ? 'Update' : 'Create'} Roster
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
