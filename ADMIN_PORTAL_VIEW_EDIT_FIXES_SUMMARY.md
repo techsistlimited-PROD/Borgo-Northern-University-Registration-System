@@ -116,55 +116,102 @@ These components had View/Edit buttons with NO onClick handlers at all.
 
 ---
 
-## Category B: Demo-Only Edit Handlers 🔄 **PENDING**
+## Category B: Demo-Only Edit Handlers ✅ **COMPLETE**
 
-These components have Edit buttons that only show an alert/toast, with no actual edit form.
+These components had Edit buttons that only showed an alert/toast. Now all have full edit forms.
 
-### 6. ⏳ StudyLevelTerm.tsx - PENDING
+### 6. ✅ StudyLevelTerm.tsx - FIXED
 
-**Issue:** Edit button shows `alert(showDemoToast(...))` only  
-**Current:** View works (Dialog), Edit shows alert  
-**Needed:** Add Edit Dialog with form for Study Level/Term properties
+**Issue:** Edit button showed `alert(showDemoToast(...))` only
+**Fix Applied:**
+- Added `editItem` and `editDrawerOpen` state
+- Implemented `handleEdit()` to open dialog
+- Added Edit Dialog with:
+  - Level dropdown (Undergraduate/Postgraduate/Diploma)
+  - Term Name dropdown (Semester/Trimester/Bi-semester/Quarter)
+  - Terms Per Year input (number)
+  - Credits Per Term input (string)
+  - Status dropdown (Active/Inactive)
+  - Save/Cancel buttons
+- `handleSaveEdit()` updates data in demo mode
 
----
-
-### 7. ⏳ StudentQuotas.tsx - PENDING
-
-**Issue:** Edit button shows alert only  
-**Current:** View works, Edit shows alert  
-**Needed:** Add Edit Dialog for quota properties (code, name, %, status)
-
----
-
-### 8. ⏳ CreditTransferInstitutes.tsx - PENDING
-
-**Issue:** Edit button shows alert only  
-**Current:** View works, Edit shows alert  
-**Needed:** Add Edit Dialog for institute properties (name, country, type)
+**Test:** Click Edit (pencil icon) on any study level/term → Dialog opens with editable fields
 
 ---
 
-### 9. ⏳ RelationshipList.tsx - PENDING
+### 7. ✅ StudentQuotas.tsx - FIXED
 
-**Issue:** Edit button shows alert only  
-**Current:** View works, Edit shows alert  
-**Needed:** Add Edit Dialog for relationship properties (code, label)
+**Issue:** Edit button showed alert only
+**Fix Applied:**
+- Added Edit Dialog with:
+  - Code input (font-mono)
+  - Quota Name input
+  - Percentage Cap input (number)
+  - Status dropdown (Active/Inactive)
+  - Save/Cancel buttons
+
+**Test:** Click Edit icon on any quota → Dialog opens with editable fields
 
 ---
 
-### 10. ⏳ GeographicSettings.tsx - PENDING
+### 8. ✅ CreditTransferInstitutes.tsx - FIXED
 
-**Issue:** Edit button shows alert only  
-**Current:** View works (multiple tabs: Countries/Divisions/Districts/etc.), Edit shows alert  
-**Needed:** Add Edit Dialogs for each geographic entity type
+**Issue:** Edit button showed alert only
+**Fix Applied:**
+- Added Edit Dialog with:
+  - Institute Name input (full width)
+  - Country input
+  - Type dropdown (Public/Private/International Partner)
+  - Status dropdown (Active/Inactive/Pending)
+  - Contact Email input
+  - Save/Cancel buttons
+
+**Test:** Click Edit icon on any institute → Dialog opens with editable fields
 
 ---
 
-### 11. ⏳ GuardianOccupations.tsx - PENDING
+### 9. ✅ RelationshipList.tsx - FIXED
 
-**Issue:** Edit button shows alert only  
-**Current:** View works, Edit shows alert  
-**Needed:** Add Edit Dialog for occupation properties
+**Issue:** Edit button showed alert only
+**Fix Applied:**
+- Added Edit Dialog with:
+  - Code input (font-mono)
+  - Relationship input
+  - Status dropdown (Active/Inactive)
+  - Save/Cancel buttons
+
+**Test:** Click Edit icon on any relationship → Dialog opens with editable fields
+
+---
+
+### 10. ✅ GeographicSettings.tsx - FIXED
+
+**Issue:** Edit button showed alert only
+**Current:** View works (multiple tabs: Countries/Divisions/Districts/Police Stations/Post Offices)
+**Fix Applied:**
+- Added Edit Dialog with dynamic fields based on entity type:
+  - Code input (always)
+  - Name input (always)
+  - Parent code inputs (conditional: countryCode, divisionCode, districtCode, policeStationCode)
+  - Status dropdown (Active/Inactive)
+  - Save/Cancel buttons
+
+**Test:** Click Edit icon on any geographic entry → Dialog opens with relevant fields
+
+---
+
+### 11. ✅ GuardianOccupations.tsx - FIXED
+
+**Issue:** Edit button showed alert only
+**Fix Applied:**
+- Added Edit Dialog with:
+  - Code input (font-mono)
+  - Occupation Name input
+  - Category dropdown (Government/Private/Self-Employed/Other)
+  - Status dropdown (Active/Inactive)
+  - Save/Cancel buttons
+
+**Test:** Click Edit icon on any occupation → Dialog opens with editable fields
 
 ---
 
