@@ -4,12 +4,102 @@ import { Badge } from '@/components/ui/badge'
 import { Eye, Users, FileText, Download, AlertTriangle } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
 import { useState } from 'react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function SessionsTimetable() {
   const [showSessionPreview, setShowSessionPreview] = useState(false)
   const [showInvigilatorModal, setShowInvigilatorModal] = useState(false)
   const [showPaperModal, setShowPaperModal] = useState(false)
   const [selectedSession, setSelectedSession] = useState<any>(null)
+
+  const handleExportDutySheet = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export Duty Sheet PDF'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Duty Sheet</title>
+  <style>
+    @page { size: A4 landscape; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Examination Duty Sheet</h2>
+    <p>Generated: ${new Date().toLocaleString('en-GB')}</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time Slot</th>
+        <th>Course</th>
+        <th>Sections</th>
+        <th>Room(s)</th>
+        <th>Invigilators</th>
+        <th>Paper Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${sessions.map(session => `
+        <tr>
+          <td>${session.date}</td>
+          <td>${session.time}</td>
+          <td>${session.code} - ${session.title}</td>
+          <td>${session.sections}</td>
+          <td>${session.rooms}</td>
+          <td>${session.invigilatorsAssigned ? 'Assigned' : 'Not Assigned'}</td>
+          <td>${session.paperStatus}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
+
+  const handlePublishSession = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Publish session to portal'))
+      return
+    }
+
+    if (confirm('Publish this session to the student portal? Students will be able to view exam details.')) {
+      alert('Session published successfully')
+    }
+  }
+
+  const handleDownloadPaper = () => {
+    if (!selectedSession) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Download exam paper'))
+      return
+    }
+
+    alert(`Downloading exam paper for ${selectedSession.code}`)
+  }
 
   const sessions = [
     { 
@@ -56,7 +146,7 @@ export default function SessionsTimetable() {
           <h1 className="text-2xl font-bold text-deep-plum">Sessions & Timetable</h1>
           <p className="text-sm text-gray-600 mt-1">Build the master exam timetable</p>
         </div>
-        <Button className="nu-button-primary">
+        <Button className="nu-button-primary" onClick={handleExportDutySheet}>
           <Download className="w-4 h-4 mr-2" />
           Export Duty Sheet PDF
         </Button>
@@ -174,10 +264,20 @@ export default function SessionsTimetable() {
                 ))}
               </div>
               <div className="mt-4 space-y-2">
-                <Button variant="outline" className="w-full" size="sm">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                  onClick={handlePublishSession}
+                >
                   Publish Session to Portal
                 </Button>
-                <Button variant="outline" className="w-full" size="sm">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                  onClick={handleExportDutySheet}
+                >
                   <Download className="w-4 h-4 mr-2" />
                   Export Duty Sheet
                 </Button>
@@ -240,7 +340,7 @@ export default function SessionsTimetable() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPaperModal(false)}>Close</Button>
-            <Button className="nu-button-primary">Download Paper</Button>
+            <Button className="nu-button-primary" onClick={handleDownloadPaper}>Download Paper</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
