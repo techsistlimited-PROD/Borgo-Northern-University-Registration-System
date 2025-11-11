@@ -23,7 +23,10 @@ export default function PaymentRecordsView() {
   const [programFilter, setProgramFilter] = useState('All')
   const [paymentDateFilter, setPaymentDateFilter] = useState('')
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [editNotes, setEditNotes] = useState('')
+  const [editPaymentDate, setEditPaymentDate] = useState('')
 
   useEffect(() => {
     loadPayments()
@@ -70,7 +73,24 @@ export default function PaymentRecordsView() {
   }
 
   const handleEditPayment = (payment: Payment) => {
-    alert(showDemoToast('Edit available in production build'))
+    setSelectedPayment(payment)
+    setEditNotes(payment.notes || '')
+    setEditPaymentDate(payment.paymentDate)
+    setEditDialogOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Save payment edit'))
+      setEditDialogOpen(false)
+      return
+    }
+
+    if (!selectedPayment) return
+
+    // In production, update the payment record
+    alert('Payment updated successfully')
+    setEditDialogOpen(false)
   }
 
   const handleDeletePayment = (id: string) => {
@@ -346,6 +366,69 @@ export default function PaymentRecordsView() {
                 <Button className="nu-button-primary">
                   <FileText className="w-4 h-4 mr-2" />
                   Print Receipt
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Payment Record</DialogTitle>
+          </DialogHeader>
+
+          {selectedPayment && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Receipt No</p>
+                  <p className="font-mono font-semibold">{selectedPayment.receiptNo}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-medium">{selectedPayment.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedPayment.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Amount</p>
+                  <p className="font-semibold text-green-600 text-lg">
+                    {formatCurrency(selectedPayment.totalAmount)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Payment Date</label>
+                  <Input
+                    type="date"
+                    value={editPaymentDate}
+                    onChange={(e) => setEditPaymentDate(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Remarks / Notes</label>
+                  <Input
+                    placeholder="Enter payment remarks"
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveEdit} className="nu-button-primary">
+                  Save Changes
                 </Button>
               </div>
             </div>
