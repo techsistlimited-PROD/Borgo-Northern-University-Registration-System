@@ -12,9 +12,10 @@ import { Student, AttendanceRecord, Receipt, Section, Offering, Course } from '@
 interface Props {
   wardId: string
   termId: string
+  onNavigate?: (section: 'attendance' | 'academics' | 'finance' | 'notifications' | 'profile') => void
 }
 
-export default function GuardianDashboardView({ wardId, termId }: Props) {
+export default function GuardianDashboardView({ wardId, termId, onNavigate }: Props) {
   const [student, setStudent] = useState<any>(null)
   const [attendanceStats, setAttendanceStats] = useState({ present: 0, absent: 0, late: 0, percentage: 0 })
   const [financeStats, setFinanceStats] = useState({ totalDue: 0, lastPaymentDate: '' })
@@ -134,7 +135,12 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
                   <div className="text-sm text-red-700 mt-1">
                     Result access locked due to outstanding dues of <span className="font-bold">{financeStats.totalDue.toFixed(2)} BDT</span> for {termId}.
                   </div>
-                  <Button size="sm" variant="outline" className="mt-2 border-red-600 text-red-600 hover:bg-red-50">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="mt-2 border-red-600 text-red-600 hover:bg-red-50"
+                    onClick={() => onNavigate?.('finance')}
+                  >
                     View Finance
                   </Button>
                 </div>
@@ -213,7 +219,13 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Recent Attendance</span>
-            <Button variant="outline" size="sm">View All</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onNavigate?.('attendance')}
+            >
+              View All
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -268,7 +280,13 @@ export default function GuardianDashboardView({ wardId, termId }: Props) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Recent Payments</span>
-            <Button variant="outline" size="sm">View All</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onNavigate?.('finance')}
+            >
+              View All
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
