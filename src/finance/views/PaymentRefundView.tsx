@@ -551,6 +551,76 @@ export default function PaymentRefundView() {
           </div>
         </CardContent>
       </Card>
+
+      {/* View Refund Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Refund Details</DialogTitle>
+          </DialogHeader>
+          {viewRefund && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Refund No</p>
+                  <p className="text-base font-mono">{viewRefund.refundNo}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Date</p>
+                  <p className="text-base">{viewRefund.refundDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Student ID</p>
+                  <p className="text-base font-mono">{viewRefund.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Student Name</p>
+                  <p className="text-base font-semibold">{viewRefund.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Program</p>
+                  <p className="text-base">{viewRefund.program}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Semester</p>
+                  <p className="text-base">{viewRefund.semester}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Refund Amount</p>
+                  <p className="text-base font-semibold text-red-600">{formatCurrency(viewRefund.refundAmount)}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Method</p>
+                  <p className="text-base">{viewRefund.refundMethod}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Original Receipt No</p>
+                  <p className="text-base font-mono">{viewRefund.originalReceiptNo}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <Badge className={viewRefund.status === 'Processed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                    {viewRefund.status}
+                  </Badge>
+                </div>
+                {viewRefund.remarks && (
+                  <div className="col-span-2">
+                    <p className="text-sm font-medium text-gray-600">Remarks</p>
+                    <p className="text-base">{viewRefund.remarks}</p>
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setViewDialogOpen(false)}>Close</Button>
+                <Button onClick={() => handleExportRefundPDF(viewRefund)} className="nu-button-primary">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Print/Export PDF
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
