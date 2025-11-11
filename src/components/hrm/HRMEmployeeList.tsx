@@ -11,7 +11,7 @@ interface HRMEmployeeListProps {
   onNavigate?: (path: string) => void
 }
 
-export default function HRMEmployeeList({ onNavigate }: HRMEmployeeListProps = {}) {
+export default function HRMEmployeeList({ onNavigate }: HRMEmployeeListProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterDept, setFilterDept] = useState('')
   const [filterType, setFilterType] = useState('')
