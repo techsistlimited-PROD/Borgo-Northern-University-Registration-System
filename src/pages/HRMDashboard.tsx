@@ -70,6 +70,7 @@ export default function HRMDashboard() {
   const [complianceView, setComplianceView] = useState<ComplianceView>('tax-pf')
   const [activePath, setActivePath] = useState('/hrm/dashboard')
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([{ label: 'Dashboard' }])
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null)
 
   const handleNavigation = (path: string) => {
     setActivePath(path)
