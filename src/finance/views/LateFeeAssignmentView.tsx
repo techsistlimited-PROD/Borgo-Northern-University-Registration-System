@@ -149,6 +149,17 @@ export default function LateFeeAssignmentView() {
     setSelectedBills(newSelected)
   }
 
+  const handleSelectAll = () => {
+    if (selectedBills.size === eligibleBills.length) {
+      // If all are selected, deselect all
+      setSelectedBills(new Set())
+    } else {
+      // Select all eligible bills
+      const allIds = new Set(eligibleBills.map(bill => bill.id))
+      setSelectedBills(allIds)
+    }
+  }
+
   const semesters = ['Fall 2024', 'Spring 2025', 'Summer 2025', 'Fall 2025']
   const programs = ['All', 'CSE', 'BBA', 'LLB', 'EEE', 'English']
   const campuses = ['All', 'Main Campus', 'Banani Campus', 'Permanent Campus', 'Uttara', 'Lakshmipur']
@@ -258,7 +269,18 @@ export default function LateFeeAssignmentView() {
                   <th className="text-right p-3 text-sm font-medium text-gray-700">100.0% Payable</th>
                   <th className="text-right p-3 text-sm font-medium text-gray-700">Total Paid</th>
                   <th className="text-right p-3 text-sm font-medium text-gray-700">Due Amount</th>
-                  <th className="text-center p-3 text-sm font-medium text-gray-700">Select</th>
+                  <th className="text-center p-3 text-sm font-medium text-gray-700">
+                    <div className="flex items-center justify-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={eligibleBills.length > 0 && selectedBills.size === eligibleBills.length}
+                        onChange={handleSelectAll}
+                        className="w-4 h-4 cursor-pointer"
+                        title="Select All"
+                      />
+                      <span>Select All</span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody>
