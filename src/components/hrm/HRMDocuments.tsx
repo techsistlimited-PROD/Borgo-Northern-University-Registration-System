@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Search, Download, FileText, Eye } from 'lucide-react'
 import { HRM_DOCUMENTS, HRM_EMPLOYEES } from '@/lib/hrmStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function HRMDocuments() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -31,7 +32,43 @@ export default function HRMDocuments() {
   }
 
   const handleDownloadDoc = (doc: any) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Download ${doc.fileName}`))
+      return
+    }
+
     alert(`Downloading: ${doc.fileName}`)
+  }
+
+  const handleExportList = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export document list as CSV'))
+      return
+    }
+
+    const csvHeaders = ['File Name', 'Employee', 'Department', 'Type', 'Uploaded', 'Size']
+    const csvRows = filteredDocs.map(doc => {
+      const employee = HRM_EMPLOYEES.find(e => e.id === doc.employeeId)
+      return [
+        doc.fileName,
+        employee?.name || 'Unknown',
+        employee?.department || 'Unknown',
+        doc.type,
+        doc.uploadDate,
+        doc.size
+      ]
+    })
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `documents-list-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
   }
 
   return (
@@ -78,7 +115,7 @@ export default function HRMDocuments() {
               ))}
             </select>
 
-            <Button variant="outline" className="flex items-center space-x-2">
+            <Button variant="outline" className="flex items-center space-x-2" onClick={handleExportList}>
               <Download className="w-4 h-4" />
               <span>Export List</span>
             </Button>
