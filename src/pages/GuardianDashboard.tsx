@@ -235,7 +235,7 @@ export default function GuardianDashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} />
+        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} onNavigate={handleSectionChange} />
       case 'attendance':
         return <GuardianAttendance wardId={activeWard!.id} termId={activeTerm} />
       case 'academics':
@@ -247,7 +247,7 @@ export default function GuardianDashboard() {
       case 'profile':
         return <GuardianProfile guardianId={user!.id} />
       default:
-        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} />
+        return <GuardianDashboardView wardId={activeWard!.id} termId={activeTerm} onNavigate={handleSectionChange} />
     }
   }
 
