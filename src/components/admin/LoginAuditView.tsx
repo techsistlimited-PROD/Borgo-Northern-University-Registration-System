@@ -254,6 +254,80 @@ export default function LoginAuditView() {
           </CardContent>
         </Card>
       )}
+
+      {/* View Login Details Dialog */}
+      <Dialog open={!!viewLoginDetails} onOpenChange={() => setViewLoginDetails(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Login Attempt Details</DialogTitle>
+            <DialogDescription>Complete information about this login attempt</DialogDescription>
+          </DialogHeader>
+          {viewLoginDetails && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Timestamp</p>
+                  <p className="text-base">{viewLoginDetails.timestamp}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">User</p>
+                  <p className="text-base font-semibold">{viewLoginDetails.user}</p>
+                  <p className="text-xs text-gray-500">{viewLoginDetails.userId}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Role</p>
+                  <p className="text-base">{viewLoginDetails.role}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">IP Address</p>
+                  <p className="text-base font-mono">{viewLoginDetails.ip}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Device/Browser</p>
+                  <p className="text-base">{viewLoginDetails.device}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Result</p>
+                  <Badge className={
+                    viewLoginDetails.result === 'Success' ? 'bg-green-100 text-green-800' :
+                    viewLoginDetails.result === 'Failed' ? 'bg-red-100 text-red-800' :
+                    viewLoginDetails.result === 'Locked' ? 'bg-orange-100 text-orange-800' :
+                    'bg-amber-100 text-amber-800'
+                  }>
+                    {viewLoginDetails.result}
+                  </Badge>
+                </div>
+                {viewLoginDetails.otpAttempts !== undefined && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">OTP Attempts</p>
+                    <p className="text-base">{viewLoginDetails.otpAttempts} / 3</p>
+                  </div>
+                )}
+                {viewLoginDetails.id && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Log ID</p>
+                    <p className="text-base font-mono text-xs">{viewLoginDetails.id}</p>
+                  </div>
+                )}
+              </div>
+
+              {viewLoginDetails.result === 'Failed' && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm font-medium text-red-800">Failed Login Attempt</p>
+                  <p className="text-sm text-red-700 mt-1">This login attempt was unsuccessful. Check for potential security issues.</p>
+                </div>
+              )}
+
+              {viewLoginDetails.result === 'Locked' && (
+                <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                  <p className="text-sm font-medium text-orange-800">Account Locked</p>
+                  <p className="text-sm text-orange-700 mt-1">The account was locked due to multiple failed attempts.</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
