@@ -175,6 +175,52 @@ export default function RelationshipListView() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDrawerOpen} onOpenChange={setEditDrawerOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Relationship</DialogTitle>
+          </DialogHeader>
+          {editItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Code</label>
+                  <Input
+                    value={editItem.code}
+                    onChange={(e) => setEditItem({...editItem, code: e.target.value})}
+                    className="mt-1 font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Relationship</label>
+                  <Input
+                    value={editItem.relationship}
+                    onChange={(e) => setEditItem({...editItem, relationship: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Status</label>
+                  <select
+                    className="w-full p-2 border rounded-md mt-1"
+                    value={editItem.active ? 'Active' : 'Inactive'}
+                    onChange={(e) => setEditItem({...editItem, active: e.target.value === 'Active'})}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditDrawerOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveEdit} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
