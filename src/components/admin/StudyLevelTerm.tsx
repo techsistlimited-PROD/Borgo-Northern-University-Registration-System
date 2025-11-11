@@ -247,9 +247,8 @@ export default function StudyLevelTermView() {
                 <div>
                   <label className="text-sm font-medium text-gray-700">Credits Per Term</label>
                   <Input
-                    type="number"
-                    value={editItem.creditsPerTerm.toString()}
-                    onChange={(e) => setEditItem({...editItem, creditsPerTerm: parseInt(e.target.value) || 0})}
+                    value={editItem.creditsPerTerm}
+                    onChange={(e) => setEditItem({...editItem, creditsPerTerm: e.target.value})}
                     className="mt-1"
                   />
                 </div>
