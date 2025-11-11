@@ -216,6 +216,74 @@ export default function CreditTransferInstitutesView() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDrawerOpen} onOpenChange={setEditDrawerOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Credit Transfer Institute</DialogTitle>
+          </DialogHeader>
+          {editItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="text-sm font-medium text-gray-700">Institute Name</label>
+                  <Input
+                    value={editItem.instituteName}
+                    onChange={(e) => setEditItem({...editItem, instituteName: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Country</label>
+                  <Input
+                    value={editItem.country}
+                    onChange={(e) => setEditItem({...editItem, country: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Type</label>
+                  <select
+                    className="w-full p-2 border rounded-md mt-1"
+                    value={editItem.type}
+                    onChange={(e) => setEditItem({...editItem, type: e.target.value})}
+                  >
+                    <option value="Public">Public</option>
+                    <option value="Private">Private</option>
+                    <option value="International Partner">International Partner</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Status</label>
+                  <select
+                    className="w-full p-2 border rounded-md mt-1"
+                    value={editItem.status}
+                    onChange={(e) => setEditItem({...editItem, status: e.target.value})}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Contact Email</label>
+                  <Input
+                    type="email"
+                    value={editItem.contactEmail}
+                    onChange={(e) => setEditItem({...editItem, contactEmail: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditDrawerOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveEdit} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
