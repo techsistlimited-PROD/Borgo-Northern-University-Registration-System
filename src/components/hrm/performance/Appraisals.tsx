@@ -8,11 +8,30 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Eye, FileDown } from 'lucide-react'
 import { APPRAISALS, FEEDBACK_ENTRIES, type Appraisal } from '@/lib/payrollPerformanceStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function Appraisals() {
   const [appraisals, setAppraisals] = useState<Appraisal[]>(APPRAISALS)
   const [selectedDept, setSelectedDept] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
+
+  const handleDownload = (appraisal: Appraisal) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Download appraisal report for ${appraisal.empName}`))
+      return
+    }
+
+    alert(`Downloading appraisal report for ${appraisal.empName}`)
+  }
+
+  const handleSaveRecommendation = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Save recommendation'))
+      return
+    }
+
+    alert('Recommendation saved successfully')
+  }
   const [viewAppraisal, setViewAppraisal] = useState<Appraisal | null>(null)
   const [newRecommendation, setNewRecommendation] = useState('')
 
@@ -145,7 +164,7 @@ export default function Appraisals() {
                         <Button variant="ghost" size="sm" onClick={() => setViewAppraisal(appraisal)}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleDownload(appraisal)}>
                           <FileDown className="w-4 h-4" />
                         </Button>
                       </div>
@@ -276,7 +295,7 @@ export default function Appraisals() {
                     placeholder="Enter remarks..."
                   />
                 </div>
-                <Button className="w-full">Save Recommendation</Button>
+                <Button className="w-full" onClick={handleSaveRecommendation}>Save Recommendation</Button>
               </TabsContent>
 
               <TabsContent value="history" className="space-y-3 mt-4">

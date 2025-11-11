@@ -5,11 +5,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { Plus, Eye } from 'lucide-react'
 import { NOTICES, type Notice } from '@/lib/hrmDemoSeed'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function HRNotices() {
   const [notices, setNotices] = useState<Notice[]>(NOTICES)
   const [selectedType, setSelectedType] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
+
+  const handleCreateNotice = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Create new HR notice'))
+      return
+    }
+
+    alert('Create notice dialog would open in production')
+  }
+
+  const handleViewNotice = (notice: Notice) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`View notice: ${notice.title}`))
+      return
+    }
+
+    alert(`View notice dialog would open for ${notice.title}`)
+  }
 
   const filteredNotices = notices.filter(n => {
     if (selectedType !== 'all' && n.type !== selectedType) return false
@@ -27,7 +46,7 @@ export default function HRNotices() {
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-gray-800">HR Notices</h2>
-        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700" onClick={handleCreateNotice}>
           <Plus className="w-4 h-4" />
           Create Notice
         </Button>
@@ -106,7 +125,7 @@ export default function HRNotices() {
                     </Badge>
                   </td>
                   <td className="px-3 py-2">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => handleViewNotice(notice)}>
                       <Eye className="w-4 h-4" />
                     </Button>
                   </td>
