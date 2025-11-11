@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RECRUITMENT_CANDIDATES, SHORTLIST_RULES } from '@/lib/recruitmentStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function RecruitmentShortlisting() {
   const [selected, setSelected] = useState<string[]>([])
@@ -28,7 +29,40 @@ export default function RecruitmentShortlisting() {
   const handleAutoShortlist = () => {
     const autoSelected = candidates.filter(c => getEligibility(c).label === 'Eligible').map(c => c.id)
     setSelected(autoSelected)
-    alert(`Auto-shortlisted ${autoSelected.length} eligible candidates`)
+
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Auto-shortlisted ${autoSelected.length} candidates`))
+    } else {
+      alert(`Auto-shortlisted ${autoSelected.length} eligible candidates`)
+    }
+  }
+
+  const handleShortlistSelected = () => {
+    if (selected.length === 0) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Shortlist ${selected.length} candidates`))
+      return
+    }
+
+    if (confirm(`Shortlist ${selected.length} selected candidates?`)) {
+      alert('Candidates shortlisted successfully')
+      setSelected([])
+    }
+  }
+
+  const handleRejectSelected = () => {
+    if (selected.length === 0) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Reject ${selected.length} candidates`))
+      return
+    }
+
+    if (confirm(`Reject ${selected.length} selected candidates? This action cannot be undone.`)) {
+      alert('Candidates rejected successfully')
+      setSelected([])
+    }
   }
 
   return (
@@ -39,8 +73,8 @@ export default function RecruitmentShortlisting() {
             <CardTitle>Bulk Shortlisting</CardTitle>
             <div className="flex gap-2">
               <Button onClick={handleAutoShortlist} variant="outline">Auto Shortlist</Button>
-              <Button disabled={selected.length === 0}>Shortlist Selected ({selected.length})</Button>
-              <Button disabled={selected.length === 0} variant="destructive">Reject Selected</Button>
+              <Button disabled={selected.length === 0} onClick={handleShortlistSelected}>Shortlist Selected ({selected.length})</Button>
+              <Button disabled={selected.length === 0} variant="destructive" onClick={handleRejectSelected}>Reject Selected</Button>
             </div>
           </div>
         </CardHeader>
