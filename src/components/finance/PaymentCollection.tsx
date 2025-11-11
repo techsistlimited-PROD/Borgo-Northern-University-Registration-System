@@ -34,6 +34,12 @@ export default function PaymentCollection() {
     setViewDialogOpen(true)
   }
 
+  const handlePrintReceipt = (payment: Payment) => {
+    alert(`Print Receipt: ${payment.receiptNo}\n\nThis would open a print preview or generate a PDF receipt.\n\nStudent: ${payment.studentName}\nAmount: ${formatCurrency(payment.amount)}\nMethod: ${payment.method}`)
+    // In production, this would call a print utility or open a print dialog
+    // window.print() or navigate to a receipt print page
+  }
+
   const filteredPayments = payments.filter(p => {
     if (methodFilter !== 'all' && p.method !== methodFilter) return false
     if (statusFilter !== 'all' && p.status !== statusFilter) return false
@@ -266,6 +272,7 @@ export default function PaymentCollection() {
                               variant="ghost"
                               size="sm"
                               title="Print Receipt"
+                              onClick={() => handlePrintReceipt(payment)}
                             >
                               <FileText className="w-4 h-4 text-orange-600" />
                             </Button>
@@ -359,7 +366,7 @@ export default function PaymentCollection() {
                 <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
                   Close
                 </Button>
-                <Button className="nu-button-primary">
+                <Button className="nu-button-primary" onClick={() => selectedPayment && handlePrintReceipt(selectedPayment)}>
                   <FileText className="w-4 h-4 mr-2" />
                   Print Receipt
                 </Button>
