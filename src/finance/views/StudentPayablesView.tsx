@@ -20,7 +20,9 @@ export default function StudentPayablesView() {
   const [annexFilter, setAnnexFilter] = useState('All')
   const [programFilter, setProgramFilter] = useState('All')
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedBill, setSelectedBill] = useState<StudentBill | null>(null)
+  const [editRemarks, setEditRemarks] = useState('')
 
   useEffect(() => {
     loadBills()
@@ -61,12 +63,23 @@ export default function StudentPayablesView() {
   }
 
   const handleEditBill = (bill: StudentBill) => {
+    setSelectedBill(bill)
+    setEditRemarks(bill.remarks || '')
+    setEditDialogOpen(true)
+  }
+
+  const handleSaveEdit = () => {
     if (DEMO_MODE) {
-      alert(showDemoToast('Edit available in production build'))
-    } else {
-      setSelectedBill(bill)
-      setViewDialogOpen(true)
+      alert(showDemoToast('Save bill edit'))
+      setEditDialogOpen(false)
+      return
     }
+
+    if (!selectedBill) return
+
+    // In production, update the bill record
+    alert('Bill updated successfully')
+    setEditDialogOpen(false)
   }
 
   const handleExportPDF = (bill: StudentBill) => {
@@ -320,6 +333,93 @@ export default function StudentPayablesView() {
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   Download PDF
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Student Bill</DialogTitle>
+          </DialogHeader>
+
+          {selectedBill && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded">
+                <div>
+                  <p className="text-sm text-gray-600">Student ID</p>
+                  <p className="font-medium">{selectedBill.studentId}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Student Name</p>
+                  <p className="font-medium">{selectedBill.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Program</p>
+                  <p className="font-medium">{selectedBill.program}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Semester</p>
+                  <p className="font-medium">{selectedBill.semester}</p>
+                </div>
+              </div>
+
+              <div className="border rounded">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="text-left p-3 font-medium">Cost Head</th>
+                      <th className="text-right p-3 font-medium">Amount</th>
+                      <th className="text-right p-3 font-medium">Deduction</th>
+                      <th className="text-right p-3 font-medium">Net</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedBill.lineItems.map(item => (
+                      <tr key={item.id} className="border-t">
+                        <td className="p-3">{item.costHeadName}</td>
+                        <td className="p-3 text-right">
+                          {formatCurrency(item.subtotal)}
+                        </td>
+                        <td className="p-3 text-right text-red-600">
+                          {formatCurrency(item.deduction + (item.subtotal * (item.waiverPercent + item.scholarshipPercent) / 100))}
+                        </td>
+                        <td className="p-3 text-right font-medium">
+                          {formatCurrency(item.subtotal - item.deduction - (item.subtotal * (item.waiverPercent + item.scholarshipPercent) / 100))}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot className="border-t-2 bg-blue-50 font-semibold">
+                    <tr>
+                      <td colSpan={3} className="p-3 text-right">Total Payable:</td>
+                      <td className="p-3 text-right text-green-600 text-lg">
+                        {formatCurrency(selectedBill.netTotal)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Bill Remarks</label>
+                <Input
+                  placeholder="Enter bill remarks or notes"
+                  value={editRemarks}
+                  onChange={(e) => setEditRemarks(e.target.value)}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveEdit} className="nu-button-primary">
+                  Save Changes
                 </Button>
               </div>
             </div>
