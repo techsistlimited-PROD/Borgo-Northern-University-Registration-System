@@ -13,6 +13,8 @@ export default function RelationshipListView() {
   const [search, setSearch] = useState('')
   const [viewItem, setViewItem] = useState<Relationship | null>(null)
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
+  const [editItem, setEditItem] = useState<Relationship | null>(null)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
 
   const filtered = data.filter(item => 
     item.relationship.toLowerCase().includes(search.toLowerCase()) ||
@@ -25,7 +27,17 @@ export default function RelationshipListView() {
   }
 
   const handleEdit = (item: Relationship) => {
-    alert(showDemoToast(`Edit "${item.relationship}"`))
+    setEditItem(item)
+    setEditDrawerOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (editItem && DEMO_MODE) {
+      setData(data.map(d => d.id === editItem.id ? editItem : d))
+      alert(showDemoToast(`Updated "${editItem.relationship}"`))
+      setEditDrawerOpen(false)
+      setEditItem(null)
+    }
   }
 
   const handleDelete = (item: Relationship) => {
