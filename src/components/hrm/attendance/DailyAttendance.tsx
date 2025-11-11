@@ -8,6 +8,7 @@ import { HRM_ATTENDANCE, HRM_EMPLOYEES, HRM_SHIFTS, type AttendanceRecord } from
 import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
 import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
 import { generateHRMExportFilename } from '@/lib/hrmUtils'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 type StatusType = 'Present' | 'Absent' | 'Late present' | 'all'
 type ViewType = 'details' | 'summary'
