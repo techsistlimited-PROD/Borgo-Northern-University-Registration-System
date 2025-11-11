@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  MapPin, 
-  Briefcase, 
-  Users, 
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  Calendar,
+  MapPin,
+  Briefcase,
+  Users,
   FileText,
   Edit,
   Trash2,
@@ -22,10 +21,10 @@ import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 interface EmployeeProfileProps {
   employeeId: string
+  onNavigate?: (path: string) => void
 }
 
-export default function EmployeeProfile({ employeeId }: EmployeeProfileProps) {
-  const navigate = useNavigate()
+export default function EmployeeProfile({ employeeId, onNavigate }: EmployeeProfileProps) {
   const [employee, setEmployee] = useState<Employee | null>(null)
 
   useEffect(() => {
