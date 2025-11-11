@@ -63,7 +63,9 @@ export default function HRMEmployeeList({ onNavigate }: HRMEmployeeListProps = {
   const departments = [...new Set(HRM_EMPLOYEES.map(e => e.department))]
 
   const handleViewProfile = (empId: string) => {
-    navigate(`/hrm/employees/view/${empId}`)
+    if (onNavigate) {
+      onNavigate(`/hrm/employees/view/${empId}`)
+    }
   }
 
   const getStatusColor = (status: string) => {
