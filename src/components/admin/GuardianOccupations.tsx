@@ -14,6 +14,8 @@ export default function GuardianOccupationsView() {
   const [categoryFilter, setCategoryFilter] = useState<string>('All')
   const [viewItem, setViewItem] = useState<GuardianOccupation | null>(null)
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
+  const [editItem, setEditItem] = useState<GuardianOccupation | null>(null)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
 
   const filtered = data.filter(item => {
     const matchesSearch = item.occupationName.toLowerCase().includes(search.toLowerCase()) ||
@@ -28,7 +30,17 @@ export default function GuardianOccupationsView() {
   }
 
   const handleEdit = (item: GuardianOccupation) => {
-    alert(showDemoToast(`Edit "${item.occupationName}"`))
+    setEditItem(item)
+    setEditDrawerOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (editItem && DEMO_MODE) {
+      setData(data.map(d => d.id === editItem.id ? editItem : d))
+      alert(showDemoToast(`Updated "${editItem.occupationName}"`))
+      setEditDrawerOpen(false)
+      setEditItem(null)
+    }
   }
 
   const handleDelete = (item: GuardianOccupation) => {
