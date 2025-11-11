@@ -9,6 +9,7 @@ import { HRM_ATTENDANCE, HRM_EMPLOYEES, type AttendanceRecord } from '@/lib/hrmS
 import PrintableHeader from '@/components/hrm/reports/PrintableHeader'
 import SignatureBlock from '@/components/hrm/reports/SignatureBlock'
 import { generateHRMExportFilename } from '@/lib/hrmUtils'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 interface EmployeeSummary {
   sl: number
@@ -242,7 +243,12 @@ export default function MonthlyReports() {
   }
 
   const handleExportPDF = () => {
-    alert('PDF export functionality - Demo Mode')
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export monthly report as PDF'))
+      return
+    }
+
+    alert('PDF generation would trigger in production')
   }
 
   const handleExportExcel = () => {
@@ -551,7 +557,13 @@ export default function MonthlyReports() {
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-2 mb-4 print:hidden">
-            <Button variant="outline" size="sm" onClick={() => alert('Export PDF - Demo')}>
+            <Button variant="outline" size="sm" onClick={() => {
+              if (DEMO_MODE) {
+                alert(showDemoToast('Export individual report as PDF'))
+              } else {
+                alert('PDF generation would trigger in production')
+              }
+            }}>
               <FileDown className="w-4 h-4 mr-2" />
               Export PDF
             </Button>
