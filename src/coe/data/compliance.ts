@@ -204,3 +204,39 @@ export const TABULATION_APPROVAL_LOG = Array.from({ length: 32 }, (_, i) => ({
   remarks: i % 8 === 0 ? 'Corrections Applied' : 'No Issues',
   meetingNo: `TB-202${4 + Math.floor(i / 10)}-${String(i + 1).padStart(2, '0')}`
 }))
+
+// UGC Graduated Students Registry (50 records)
+export const UGC_GRADUATED_STUDENTS = Array.from({ length: 50 }, (_, i) => ({
+  sl: i + 1,
+  ugcId: `UGC-NU-202${Math.floor(i / 20) + 2}-${String((i % 20) + 1).padStart(4, '0')}`,
+  studentId: `STU-202${Math.floor(i / 20) + 2}-${String((i % 100) + 1).padStart(4, '0')}`,
+  studentName: `${['Nishat', 'Arif', 'Tahmina', 'Raihan', 'Sabrina', 'Farzana', 'Tanvir', 'Ahmed', 'Sadia', 'Mahfuz'][i % 10]} ${['Sultana', 'Hossain', 'Khan', 'Ahmed', 'Akter', 'Kabir', 'Rahman', 'Karim', 'Hassan', 'Ali'][i % 10]}`,
+  program: ['BSc in Computer Science & Engineering', 'BBA', 'BSc in Electrical & Electronic Engineering', 'LLB (Hons)', 'MBA'][i % 5],
+  programCode: ['CSE', 'BBA', 'EEE', 'LLB', 'MBA'][i % 5],
+  session: `${2019 + Math.floor(i / 12)}-${2020 + Math.floor(i / 12)}`,
+  passingYear: 2022 + Math.floor(i / 15),
+  cgpa: (3.0 + Math.random() * 1.0).toFixed(2),
+  classification: i % 10 < 2 ? 'First Class (Distinction)' : i % 10 < 6 ? 'First Class' : i % 10 < 8 ? 'Second Class (Upper)' : 'Second Class (Lower)',
+  totalCredits: 120 + (i % 3) * 12,
+  gender: i % 3 === 0 ? 'Female' : 'Male',
+  dateOfBirth: `199${4 + (i % 5)}-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`,
+  graduationDate: `202${2 + Math.floor(i / 15)}-12-${String(15 + (i % 10)).padStart(2, '0')}`
+}))
+
+// BANBAIS Graduated Students Registry (50 records)
+export const BANBAIS_GRADUATED_STUDENTS = Array.from({ length: 50 }, (_, i) => ({
+  sl: i + 1,
+  banbaisId: `BAN-NU-202${Math.floor(i / 20) + 2}-${String((i % 20) + 1).padStart(4, '0')}`,
+  studentId: `STU-202${Math.floor(i / 20) + 2}-${String((i % 100) + 1).padStart(4, '0')}`,
+  studentName: `${['Nishat', 'Arif', 'Tahmina', 'Raihan', 'Sabrina', 'Farzana', 'Tanvir', 'Ahmed', 'Sadia', 'Mahfuz'][i % 10]} ${['Sultana', 'Hossain', 'Khan', 'Ahmed', 'Akter', 'Kabir', 'Rahman', 'Karim', 'Hassan', 'Ali'][i % 10]}`,
+  program: ['BSc in Computer Science & Engineering', 'BBA', 'BSc in Electrical & Electronic Engineering', 'LLB (Hons)', 'MBA'][i % 5],
+  programCode: ['CSE', 'BBA', 'EEE', 'LLB', 'MBA'][i % 5],
+  session: `${2019 + Math.floor(i / 12)}-${2020 + Math.floor(i / 12)}`,
+  passingYear: 2022 + Math.floor(i / 15),
+  cgpa: (3.0 + Math.random() * 1.0).toFixed(2),
+  classification: i % 10 < 2 ? 'First Class (Distinction)' : i % 10 < 6 ? 'First Class' : i % 10 < 8 ? 'Second Class (Upper)' : 'Second Class (Lower)',
+  totalCredits: 120 + (i % 3) * 12,
+  gender: i % 3 === 0 ? 'Female' : 'Male',
+  dateOfBirth: `199${4 + (i % 5)}-${String(1 + (i % 12)).padStart(2, '0')}-${String(1 + (i % 28)).padStart(2, '0')}`,
+  graduationDate: `202${2 + Math.floor(i / 15)}-12-${String(15 + (i % 10)).padStart(2, '0')}`
+}))
