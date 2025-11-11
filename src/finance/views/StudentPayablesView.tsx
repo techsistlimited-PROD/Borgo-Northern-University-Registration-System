@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Search, FileText, Eye, Pencil, Trash2 } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { StudentBill, BillLineItem } from '../data/types'
+import { StudentBill } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { generatePayablePDF } from '../utils/pdfExport'
 import { studentBillsStatic } from '../data/staticSeeds'
@@ -22,7 +22,7 @@ export default function StudentPayablesView() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [selectedBill, setSelectedBill] = useState<StudentBill | null>(null)
-  const [editRemarks, setEditRemarks] = useState('')
+  const [editNotes, setEditNotes] = useState('')
 
   useEffect(() => {
     loadBills()
@@ -64,7 +64,7 @@ export default function StudentPayablesView() {
 
   const handleEditBill = (bill: StudentBill) => {
     setSelectedBill(bill)
-    setEditRemarks(bill.remarks || '')
+    setEditNotes('')
     setEditDialogOpen(true)
   }
 
@@ -406,12 +406,13 @@ export default function StudentPayablesView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Bill Remarks</label>
+                <label className="block text-sm font-medium mb-1">Additional Notes</label>
                 <Input
-                  placeholder="Enter bill remarks or notes"
-                  value={editRemarks}
-                  onChange={(e) => setEditRemarks(e.target.value)}
+                  placeholder="Enter notes about this edit"
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
                 />
+                <p className="text-xs text-gray-500 mt-1">Note: Bill line items are managed through the cost package system</p>
               </div>
 
               <div className="flex justify-end gap-2">

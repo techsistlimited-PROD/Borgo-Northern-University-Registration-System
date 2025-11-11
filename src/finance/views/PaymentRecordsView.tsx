@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Search, Eye, Pencil, Trash2, FileText, Inbox } from 'lucide-react'
 import { Repo } from '@/lib/repo'
-import { Payment, PaymentMethod } from '../data/types'
+import { Payment } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import EmptyState from '@/components/common/EmptyState'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
@@ -104,7 +104,7 @@ export default function PaymentRecordsView() {
     }
   }
 
-  const handlePrintReceipt = (payment: Payment) => {
+  const handlePrintReceipt = () => {
     alert(showDemoToast('Print receipt functionality'))
   }
 

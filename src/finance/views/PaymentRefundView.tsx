@@ -6,13 +6,13 @@ import { Badge } from '@/components/ui/badge'
 import { FileText, Search, Eye } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Repo } from '@/lib/repo'
-import { Payment, PaymentRefund, PaymentAllocation } from '../data/types'
+import { Payment, PaymentRefund } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { numberToWords } from '../utils/moneyInWords'
 import { addLedgerEntry, reverseRefundAlloca } from '../utils/ledger'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
 import { refundsStatic, paymentsStatic } from '../data/staticSeeds'
-import { ensureMinRows, buildDemoRefund, buildDemoPayment } from '../utils/demoFillers'
+import { ensureMinRows, buildDemoRefund } from '../utils/demoFillers'
 
 export default function PaymentRefundView() {
   const [mode, setMode] = useState<'list' | 'new'>('list')
@@ -598,10 +598,8 @@ export default function PaymentRefundView() {
                   <p className="text-base font-mono">{viewRefund.originalReceiptNo}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Status</p>
-                  <Badge className={viewRefund.status === 'Processed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                    {viewRefund.status}
-                  </Badge>
+                  <p className="text-sm font-medium text-gray-600">Created By</p>
+                  <p className="text-base">{viewRefund.createdBy}</p>
                 </div>
                 {viewRefund.remarks && (
                   <div className="col-span-2">
