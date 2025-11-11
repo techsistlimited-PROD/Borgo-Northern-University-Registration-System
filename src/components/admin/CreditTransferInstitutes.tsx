@@ -15,6 +15,8 @@ export default function CreditTransferInstitutesView() {
   const [statusFilter, setStatusFilter] = useState<string>('All')
   const [viewItem, setViewItem] = useState<CreditTransferInstitute | null>(null)
   const [viewDrawerOpen, setViewDrawerOpen] = useState(false)
+  const [editItem, setEditItem] = useState<CreditTransferInstitute | null>(null)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
 
   const filtered = data.filter(item => {
     const matchesSearch = item.instituteName.toLowerCase().includes(search.toLowerCase()) ||
@@ -30,7 +32,17 @@ export default function CreditTransferInstitutesView() {
   }
 
   const handleEdit = (item: CreditTransferInstitute) => {
-    alert(showDemoToast(`Edit "${item.instituteName}"`))
+    setEditItem(item)
+    setEditDrawerOpen(true)
+  }
+
+  const handleSaveEdit = () => {
+    if (editItem && DEMO_MODE) {
+      setData(data.map(d => d.id === editItem.id ? editItem : d))
+      alert(showDemoToast(`Updated "${editItem.instituteName}"`))
+      setEditDrawerOpen(false)
+      setEditItem(null)
+    }
   }
 
   const handleDelete = (item: CreditTransferInstitute) => {
