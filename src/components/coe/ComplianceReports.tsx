@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Download, FileText, TrendingUp, Eye } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function ComplianceReports() {
   const [showReportPreview, setShowReportPreview] = useState(false)
@@ -134,7 +135,81 @@ export default function ComplianceReports() {
   ]
 
   const handleDownloadReport = (report: any, format: string) => {
-    alert(`Downloading "${report.name}" as ${format}...`)
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Download "${report.name}" as ${format}`))
+      return
+    }
+
+    if (format === 'PDF') {
+      const printWindow = window.open('', '_blank')
+      if (!printWindow) return
+
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${report.name}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .header h2 { font-size: 12pt; margin: 5px 0; color: #666; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { border: 1px solid #333; padding: 6px; text-align: left; font-size: 9pt; }
+    th { background: #e0e0e0; font-weight: bold; }
+    .footer { margin-top: 30px; text-align: center; font-size: 8pt; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>${report.name}</h2>
+    <p>${report.description}</p>
+    <p>Generated: ${new Date().toLocaleString('en-GB')}</p>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        ${report.sampleData && report.sampleData.length > 0 ? Object.keys(report.sampleData[0]).map((key: string) => `
+          <th>${key.replace(/([A-Z])/g, ' $1').trim()}</th>
+        `).join('') : ''}
+      </tr>
+    </thead>
+    <tbody>
+      ${report.sampleData ? report.sampleData.map((row: any) => `
+        <tr>
+          ${Object.values(row).map((value: any) => `<td>${value}</td>`).join('')}
+        </tr>
+      `).join('') : ''}
+    </tbody>
+  </table>
+  <div class="footer">
+    <p>This document is computer generated and requires no signature.</p>
+    <p>Northern University Bangladesh - Office of the Controller of Examinations</p>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+      `
+
+      printWindow.document.write(html)
+      printWindow.document.close()
+    } else if (format === 'XLSX') {
+      alert(`Exporting "${report.name}" as XLSX...`)
+    }
+  }
+
+  const handleExportAnalytics = () => {
+    if (!selectedAnalytic) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export detailed analytics report'))
+      return
+    }
+
+    alert('Exporting detailed analytics report...')
   }
 
   return (
@@ -421,7 +496,7 @@ export default function ComplianceReports() {
 
             <div className="flex justify-end gap-2 pt-4 border-t">
               <Button variant="outline" onClick={() => setShowAnalyticsDetail(false)}>Close</Button>
-              <Button className="nu-button-primary" onClick={() => alert('Exporting detailed analytics report...')}>
+              <Button className="nu-button-primary" onClick={handleExportAnalytics}>
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
               </Button>
