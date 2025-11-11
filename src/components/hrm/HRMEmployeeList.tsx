@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Search, Eye, Download, Users, UserCheck, UserX } from 'lucide-react'
 import { HRM_EMPLOYEES } from '@/lib/hrmStatic'
 import { useNavigate } from 'react-router-dom'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function HRMEmployeeList() {
   const navigate = useNavigate()
@@ -13,6 +14,35 @@ export default function HRMEmployeeList() {
   const [filterDept, setFilterDept] = useState('')
   const [filterType, setFilterType] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
+
+  const handleExportCSV = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export employee list as CSV'))
+      return
+    }
+
+    const csvHeaders = ['Employee ID', 'Name', 'Department', 'Designation', 'Type', 'Grade', 'Status']
+    const csvRows = filteredEmployees.map(emp => [
+      emp.id,
+      emp.name,
+      emp.department,
+      emp.designation,
+      emp.type,
+      emp.grade,
+      emp.status
+    ])
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `employee-list-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+  }
 
   const filteredEmployees = HRM_EMPLOYEES.filter(emp => {
     const matchesSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -146,7 +176,7 @@ export default function HRMEmployeeList() {
               <option value="Retired">Retired</option>
             </select>
 
-            <Button variant="outline" className="flex items-center space-x-2">
+            <Button variant="outline" className="flex items-center space-x-2" onClick={handleExportCSV}>
               <Download className="w-4 h-4" />
               <span>Export CSV</span>
             </Button>
