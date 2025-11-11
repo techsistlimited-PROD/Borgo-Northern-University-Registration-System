@@ -3,9 +3,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { AlertCircle, Lock, Unlock } from 'lucide-react'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function FinesHolds() {
   const [activeTab, setActiveTab] = useState<'fines' | 'holds'>('fines')
+
+  const handleReverseFine = (studentId: string, fineType: string, amount: number) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Reverse fine'))
+      return
+    }
+
+    if (confirm(`Reverse ${fineType} of ${amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })} BDT for student ${studentId}?`)) {
+      alert('Fine reversed successfully')
+    }
+  }
+
+  const handleAddToInvoice = (studentId: string, fineType: string, amount: number) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Add fine to invoice'))
+      return
+    }
+
+    if (confirm(`Add ${fineType} of ${amount.toLocaleString('en-BD', { minimumFractionDigits: 2 })} BDT to student ${studentId}'s invoice?`)) {
+      alert('Fine added to invoice successfully')
+    }
+  }
+
+  const handleRemoveHold = (studentId: string, reason: string) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Remove hold'))
+      return
+    }
+
+    if (confirm(`Remove hold for student ${studentId}? Reason: ${reason}`)) {
+      alert('Hold removed successfully')
+    }
+  }
 
   const fines = [
     { studentId: 'CSE-25-01-0037', name: 'Md. Arif Hossain', type: 'Late Fee (<70% payment)', amount: 2000, reason: 'Outstanding >30% after 30-Sep-2025', assessedAt: '01-Oct-2025 10:10 AM', status: 'Active' },
@@ -125,9 +159,21 @@ export default function FinesHolds() {
                         <td className="p-3">
                           <div className="flex gap-2">
                             {fine.status === 'Active' && (
-                              <Button variant="ghost" size="sm">🔒 Reverse</Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleReverseFine(fine.studentId, fine.type, fine.amount)}
+                              >
+                                🔒 Reverse
+                              </Button>
                             )}
-                            <Button variant="ghost" size="sm">Add to Invoice</Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleAddToInvoice(fine.studentId, fine.type, fine.amount)}
+                            >
+                              Add to Invoice
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -178,7 +224,11 @@ export default function FinesHolds() {
                       </td>
                       <td className="p-3">
                         {hold.active && (
-                          <Button variant="ghost" size="sm">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveHold(hold.studentId, hold.reason)}
+                          >
                             <Unlock className="w-4 h-4 mr-1" />
                             Remove Hold
                           </Button>
