@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Search, Eye, Download, Tag, X } from 'lucide-react'
 import { RECRUITMENT_CANDIDATES, type Candidate, SHORTLIST_RULES } from '@/lib/recruitmentStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function RecruitmentCandidates() {
   const [candidates, setCandidates] = useState<Candidate[]>(RECRUITMENT_CANDIDATES)
@@ -13,6 +14,35 @@ export default function RecruitmentCandidates() {
   const [filterStatus, setFilterStatus] = useState('')
   const [viewCandidate, setViewCandidate] = useState<Candidate | null>(null)
   const [activeTab, setActiveTab] = useState<'profile' | 'resume' | 'history'>('profile')
+
+  const handleExportCSV = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export candidates as CSV'))
+      return
+    }
+
+    const csvHeaders = ['Tracking No', 'Name', 'Applied For', 'Degree', 'University', 'Experience', 'Status']
+    const csvRows = filteredCandidates.map(cand => [
+      cand.trackingNo,
+      cand.name,
+      cand.appliedFor,
+      cand.degree,
+      cand.university,
+      cand.experience,
+      cand.status
+    ])
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `recruitment-candidates-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+  }
 
   const filtered = candidates.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -123,7 +153,7 @@ export default function RecruitmentCandidates() {
               <option value="Offered">Offered</option>
               <option value="Rejected">Rejected</option>
             </select>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleExportCSV}>
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>

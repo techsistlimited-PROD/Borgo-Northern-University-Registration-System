@@ -8,11 +8,21 @@ import { Badge } from '@/components/ui/badge'
 import { Plus, Edit, Eye, Archive } from 'lucide-react'
 import { SALARY_TEMPLATES, type SalaryTemplate } from '@/lib/payrollPerformanceStatic'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function SalaryStructure() {
   const [templates, setTemplates] = useState<SalaryTemplate[]>(SALARY_TEMPLATES)
   const [selectedGrade, setSelectedGrade] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
+
+  const handleEdit = (template: SalaryTemplate) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Edit salary structure: ${template.name}`))
+      return
+    }
+
+    alert(`Edit dialog would open for ${template.name} in production`)
+  }
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [viewTemplate, setViewTemplate] = useState<SalaryTemplate | null>(null)
 
@@ -263,7 +273,7 @@ export default function SalaryStructure() {
                         <Button variant="ghost" size="sm" onClick={() => setViewTemplate(template)}>
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(template)}>
                           <Edit className="w-4 h-4" />
                         </Button>
                         {template.status === 'Active' && (

@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { FileDown } from 'lucide-react'
 import { PAYROLL_RECORDS, SALARY_TEMPLATES, type PayrollRecord } from '@/lib/payrollPerformanceStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function PayslipGenerator() {
   const [selectedMonth, setSelectedMonth] = useState('December')
@@ -12,6 +13,17 @@ export default function PayslipGenerator() {
   const [selectedDept, setSelectedDept] = useState('all')
   const [selectedEmployee, setSelectedEmployee] = useState('all')
   const [viewPayslip, setViewPayslip] = useState<PayrollRecord | null>(null)
+
+  const handleDownloadPDF = () => {
+    if (!viewPayslip) return
+
+    if (DEMO_MODE) {
+      alert(showDemoToast(`Download payslip for ${viewPayslip.empName}`))
+      return
+    }
+
+    alert(`Downloading payslip PDF for ${viewPayslip.empName}`)
+  }
 
   const filteredRecords = PAYROLL_RECORDS.filter(r => {
     if (r.month !== selectedMonth || r.year !== Number(selectedYear)) return false
@@ -262,7 +274,7 @@ export default function PayslipGenerator() {
                 </div>
 
                 <div className="mt-4 flex justify-center">
-                  <Button className="flex items-center gap-2">
+                  <Button className="flex items-center gap-2" onClick={handleDownloadPDF}>
                     <FileDown className="w-4 h-4" />
                     Download PDF
                   </Button>

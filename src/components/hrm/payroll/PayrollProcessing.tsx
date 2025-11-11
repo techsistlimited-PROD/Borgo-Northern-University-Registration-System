@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Badge } from '@/components/ui/badge'
 import { Eye, CheckCircle, FileDown, FileText } from 'lucide-react'
 import { PAYROLL_RECORDS, SALARY_TEMPLATES, type PayrollRecord } from '@/lib/payrollPerformanceStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function PayrollProcessing() {
   const [records, setRecords] = useState<PayrollRecord[]>(PAYROLL_RECORDS)
@@ -13,6 +14,45 @@ export default function PayrollProcessing() {
   const [selectedYear, setSelectedYear] = useState('2024')
   const [selectedDept, setSelectedDept] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
+
+  const handleExportCSV = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Export payroll data as CSV'))
+      return
+    }
+
+    const csvHeaders = ['Emp ID', 'Name', 'Department', 'Basic', 'Allowances', 'Deductions', 'Net Salary', 'Status']
+    const csvRows = filteredRecords.map(rec => [
+      rec.empId,
+      rec.empName,
+      rec.dept,
+      rec.basic,
+      rec.allowances,
+      rec.deductions,
+      rec.netSalary,
+      rec.status
+    ])
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map(row => row.join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `payroll-${selectedMonth}-${selectedYear}.csv`
+    link.click()
+  }
+
+  const handleBankStatement = () => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Generate bank statement'))
+      return
+    }
+
+    alert('Generating bank statement...')
+  }
   const [viewRecord, setViewRecord] = useState<PayrollRecord | null>(null)
 
   const filteredRecords = records.filter(r => {
@@ -58,11 +98,11 @@ export default function PayrollProcessing() {
           <p className="text-gray-600">Process monthly salary and manage payments</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2" onClick={handleExportCSV}>
             <FileText className="w-4 h-4" />
             Export CSV
           </Button>
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="outline" className="flex items-center gap-2" onClick={handleBankStatement}>
             <FileDown className="w-4 h-4" />
             Bank Statement
           </Button>

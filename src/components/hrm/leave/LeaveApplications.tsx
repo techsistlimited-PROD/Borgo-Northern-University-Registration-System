@@ -8,11 +8,64 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Eye, CheckCircle, XCircle, Ban, Printer, Search } from 'lucide-react'
 import { HRM_LEAVE_APPLICATIONS, type LeaveApplication } from '@/lib/hrmStatic'
+import { DEMO_MODE, showDemoToast } from '@/config/demo'
 
 export default function LeaveApplications() {
   const [applications, setApplications] = useState<LeaveApplication[]>(HRM_LEAVE_APPLICATIONS)
   const [selectedDept, setSelectedDept] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
+
+  const handlePrint = (app: LeaveApplication) => {
+    if (DEMO_MODE) {
+      alert(showDemoToast('Print leave application'))
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Leave Application - ${app.empId}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 10pt; padding: 15px; }
+    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+    .header h1 { font-size: 18pt; font-weight: bold; margin: 5px 0; }
+    .field { margin: 10px 0; }
+    .field label { font-weight: bold; display: inline-block; width: 150px; }
+    .signatures { display: flex; justify-content: space-around; margin-top: 60px; }
+    .sig-line { text-align: center; border-top: 1px solid #333; padding-top: 5px; width: 200px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Northern University Bangladesh</h1>
+    <h2>Leave Application</h2>
+  </div>
+  <div class="field"><label>Employee ID:</label> ${app.empId}</div>
+  <div class="field"><label>Employee Name:</label> ${app.name}</div>
+  <div class="field"><label>Leave Type:</label> ${app.type}</div>
+  <div class="field"><label>From Date:</label> ${app.from}</div>
+  <div class="field"><label>To Date:</label> ${app.to}</div>
+  <div class="field"><label>Days:</label> ${app.days}</div>
+  <div class="field"><label>Reason:</label> ${app.reason}</div>
+  <div class="field"><label>Status:</label> ${app.status}</div>
+  <div class="signatures">
+    <div class="sig-line">Employee Signature</div>
+    <div class="sig-line">Approved By</div>
+  </div>
+  <script>window.onload = function() { window.print(); }</script>
+</body>
+</html>
+    `
+
+    printWindow.document.write(html)
+    printWindow.document.close()
+  }
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedApp, setSelectedApp] = useState<LeaveApplication | null>(null)
@@ -241,7 +294,7 @@ export default function LeaveApplications() {
                         <Button variant="ghost" size="sm" onClick={() => handleCancel(app.id)}>
                           <Ban className="w-4 h-4 text-gray-600" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => handlePrint(app)}>
                           <Printer className="w-4 h-4" />
                         </Button>
                       </div>
