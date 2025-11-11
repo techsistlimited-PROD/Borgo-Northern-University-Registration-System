@@ -274,13 +274,13 @@ const handleSaveItem = () => {
 - [x] OrganizationSetup - Edit Organization works
 - [x] AccessLog - View Access Log works
 
-### Category B (PENDING)
-- [ ] StudyLevelTerm - Edit works (currently alert only)
-- [ ] StudentQuotas - Edit works (currently alert only)
-- [ ] CreditTransferInstitutes - Edit works (currently alert only)
-- [ ] RelationshipList - Edit works (currently alert only)
-- [ ] GeographicSettings - Edit works (currently alert only)
-- [ ] GuardianOccupations - Edit works (currently alert only)
+### Category B (COMPLETE)
+- [x] StudyLevelTerm - Edit works (dialog with full form)
+- [x] StudentQuotas - Edit works (dialog with full form)
+- [x] CreditTransferInstitutes - Edit works (dialog with full form)
+- [x] RelationshipList - Edit works (dialog with full form)
+- [x] GeographicSettings - Edit works (dialog with dynamic fields)
+- [x] GuardianOccupations - Edit works (dialog with full form)
 
 ---
 
