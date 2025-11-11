@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { FileText, Search, Eye } from 'lucide-react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Repo } from '@/lib/repo'
 import { Payment, PaymentRefund, PaymentAllocation } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
@@ -16,6 +17,8 @@ import { ensureMinRows, buildDemoRefund, buildDemoPayment } from '../utils/demoF
 export default function PaymentRefundView() {
   const [mode, setMode] = useState<'list' | 'new'>('list')
   const [refunds, setRefunds] = useState<PaymentRefund[]>([])
+  const [viewRefund, setViewRefund] = useState<PaymentRefund | null>(null)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
 
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0])
   const [studentId, setStudentId] = useState('')
@@ -519,7 +522,7 @@ export default function PaymentRefundView() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {/* Could add a view dialog here */}}
+                          onClick={() => { setViewRefund(refund); setViewDialogOpen(true); }}
                           title="View"
                         >
                           <Eye className="w-4 h-4 text-blue-600" />
