@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Printer } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Printer, Edit2, Save, X } from 'lucide-react'
 import { Repo } from '@/lib/repo'
 import { DropReadmissionPolicy } from '../data/types'
 import { formatCurrency } from '../utils/financeUtils'
 import { generateUnregisteredReportPDF } from '../utils/pdfExport'
 import { useFinanceFilters } from '@/contexts/FinanceFilterContext'
+import { showDemoToast } from '@/config/demo'
 
 interface UnregisteredStudent {
   studentId: string
@@ -21,8 +24,10 @@ export default function DropReadmissionView() {
   const [mode, setMode] = useState<'fees' | 'report'>('report')
   const [policies, setPolicies] = useState<DropReadmissionPolicy[]>([])
   const { filters } = useFinanceFilters()
-  
+
   const [unregisteredStudents, setUnregisteredStudents] = useState<UnregisteredStudent[]>([])
+  const [editingPolicy, setEditingPolicy] = useState<DropReadmissionPolicy | null>(null)
+  const [editForm, setEditForm] = useState({ dropFee: 0, readmissionFee: 0, absentThreshold: 1 })
 
   useEffect(() => {
     loadPolicies()
@@ -166,6 +171,43 @@ export default function DropReadmissionView() {
     )
   }
 
+  const handleEditPolicy = (policy: DropReadmissionPolicy) => {
+    setEditingPolicy(policy)
+    setEditForm({
+      dropFee: policy.dropFee,
+      readmissionFee: policy.readmissionFee,
+      absentThreshold: policy.absentThreshold
+    })
+  }
+
+  const handleSavePolicy = () => {
+    if (!editingPolicy) return
+
+    if (editForm.dropFee < 0 || editForm.readmissionFee < 0) {
+      alert('Fees cannot be negative')
+      return
+    }
+
+    if (editForm.absentThreshold < 1) {
+      alert('Absent threshold must be at least 1')
+      return
+    }
+
+    Repo.update('finance-drop-readmission-policies', editingPolicy.id, {
+      dropFee: editForm.dropFee,
+      readmissionFee: editForm.readmissionFee,
+      absentThreshold: editForm.absentThreshold
+    })
+
+    alert(showDemoToast('Policy updated successfully'))
+    setEditingPolicy(null)
+    loadPolicies()
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPolicy(null)
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -256,30 +298,121 @@ export default function DropReadmissionView() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
-          {policies.map(policy => (
-            <Card key={policy.id}>
-              <CardHeader>
-                <CardTitle>{policy.systemType}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Drop Fee:</span>
-                    <span className="font-semibold">{formatCurrency(policy.dropFee)}</span>
+        <>
+          <div className="grid grid-cols-2 gap-6">
+            {policies.map(policy => (
+              <Card key={policy.id}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>{policy.systemType}</CardTitle>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEditPolicy(policy)}
+                    >
+                      <Edit2 className="w-4 h-4 mr-2" />
+                      Edit
+                    </Button>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Re-admission Fee:</span>
-                    <span className="font-semibold">{formatCurrency(policy.readmissionFee)}</span>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Drop Fee:</span>
+                      <span className="font-semibold">{formatCurrency(policy.dropFee)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Re-admission Fee:</span>
+                      <span className="font-semibold">{formatCurrency(policy.readmissionFee)}</span>
+                    </div>
+                    <div className="pt-2 border-t text-xs text-gray-600">
+                      Applies if absent/unregistered &gt; {policy.absentThreshold} semester(s)
+                    </div>
                   </div>
-                  <div className="pt-2 border-t text-xs text-gray-600">
-                    Applies if absent/unregistered &gt; {policy.absentThreshold} semester(s)
-                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Edit Policy Dialog */}
+          <Dialog open={editingPolicy !== null} onOpenChange={(open) => !open && handleCancelEdit()}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit {editingPolicy?.systemType} Policy</DialogTitle>
+                <DialogDescription>
+                  Update drop and re-admission fee amounts and threshold
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 py-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Drop Fee (BDT) <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="100"
+                    value={editForm.dropFee}
+                    onChange={(e) => setEditForm({ ...editForm, dropFee: parseFloat(e.target.value) || 0 })}
+                    placeholder="Enter drop fee amount"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Re-admission Fee (BDT) <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    step="100"
+                    value={editForm.readmissionFee}
+                    onChange={(e) => setEditForm({ ...editForm, readmissionFee: parseFloat(e.target.value) || 0 })}
+                    placeholder="Enter re-admission fee amount"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Absent Threshold (Semesters) <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={editForm.absentThreshold}
+                    onChange={(e) => setEditForm({ ...editForm, absentThreshold: parseInt(e.target.value) || 1 })}
+                    placeholder="Number of semesters"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Policy applies if student is absent/unregistered for more than this many semesters
+                  </p>
+                </div>
+
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                  <p className="font-medium text-blue-900">Preview:</p>
+                  <ul className="mt-2 space-y-1 text-blue-800">
+                    <li>• Drop Fee: <strong>{formatCurrency(editForm.dropFee)}</strong></li>
+                    <li>• Re-admission Fee: <strong>{formatCurrency(editForm.readmissionFee)}</strong></li>
+                    <li>• Threshold: <strong>{editForm.absentThreshold} semester(s)</strong></li>
+                  </ul>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" onClick={handleCancelEdit}>
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
+                <Button className="nu-button-primary" onClick={handleSavePolicy}>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </div>
   )
