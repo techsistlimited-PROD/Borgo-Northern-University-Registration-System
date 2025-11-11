@@ -258,6 +258,92 @@ export default function GeographicSettingsView() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDrawerOpen} onOpenChange={setEditDrawerOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Geographic Entry</DialogTitle>
+          </DialogHeader>
+          {editItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Code</label>
+                  <Input
+                    value={editItem.code}
+                    onChange={(e) => setEditItem({...editItem, code: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Name</label>
+                  <Input
+                    value={editItem.name}
+                    onChange={(e) => setEditItem({...editItem, name: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+                {editItem.countryCode !== undefined && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Country Code</label>
+                    <Input
+                      value={editItem.countryCode}
+                      onChange={(e) => setEditItem({...editItem, countryCode: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+                {editItem.divisionCode !== undefined && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Division Code</label>
+                    <Input
+                      value={editItem.divisionCode}
+                      onChange={(e) => setEditItem({...editItem, divisionCode: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+                {editItem.districtCode !== undefined && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">District Code</label>
+                    <Input
+                      value={editItem.districtCode}
+                      onChange={(e) => setEditItem({...editItem, districtCode: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+                {editItem.policeStationCode !== undefined && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Police Station Code</label>
+                    <Input
+                      value={editItem.policeStationCode}
+                      onChange={(e) => setEditItem({...editItem, policeStationCode: e.target.value})}
+                      className="mt-1"
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Status</label>
+                  <select
+                    className="w-full p-2 border rounded-md mt-1"
+                    value={editItem.active ? 'Active' : 'Inactive'}
+                    onChange={(e) => setEditItem({...editItem, active: e.target.value === 'Active'})}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditDrawerOpen(false)}>Cancel</Button>
+                <Button onClick={handleSaveEdit} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
