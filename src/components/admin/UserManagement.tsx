@@ -195,6 +195,114 @@ export default function UserManagement() {
           </div>
         </CardContent>
       </Card>
+
+      {/* View User Dialog */}
+      <Dialog open={!!viewUser} onOpenChange={() => setViewUser(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>User Details</DialogTitle>
+            <DialogDescription>{viewUser?.name} - {viewUser?.role}</DialogDescription>
+          </DialogHeader>
+          {viewUser && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">User ID</p>
+                  <p className="text-base font-mono">{viewUser.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Full Name</p>
+                  <p className="text-base font-semibold">{viewUser.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Primary Role</p>
+                  <p className="text-base">{viewUser.role}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Email</p>
+                  <p className="text-base">{viewUser.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Mobile</p>
+                  <p className="text-base">{viewUser.mobile}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <Badge className={
+                    viewUser.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    viewUser.status === 'Locked' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                  }>
+                    {viewUser.status}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Last Login</p>
+                  <p className="text-base">{viewUser.lastLogin}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+            <DialogDescription>Update user details and permissions</DialogDescription>
+          </DialogHeader>
+          {editUser && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>User ID</Label>
+                  <Input value={editUser.id} disabled className="font-mono" />
+                </div>
+                <div>
+                  <Label>Full Name</Label>
+                  <Input value={editUser.name} />
+                </div>
+                <div>
+                  <Label>Email</Label>
+                  <Input type="email" value={editUser.email} />
+                </div>
+                <div>
+                  <Label>Mobile</Label>
+                  <Input value={editUser.mobile} />
+                </div>
+                <div>
+                  <Label>Primary Role</Label>
+                  <select className="w-full p-2 border rounded-md">
+                    <option value={editUser.role}>{editUser.role}</option>
+                    <option value="System Admin">System Admin</option>
+                    <option value="Registrar">Registrar</option>
+                    <option value="Exam Controller">Exam Controller</option>
+                    <option value="Finance Officer">Finance Officer</option>
+                    <option value="Faculty">Faculty</option>
+                    <option value="Student">Student</option>
+                  </select>
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <select className="w-full p-2 border rounded-md">
+                    <option value={editUser.status}>{editUser.status}</option>
+                    <option value="Active">Active</option>
+                    <option value="Deactivated">Deactivated</option>
+                    <option value="Locked">Locked</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
+                <Button onClick={handleSaveUser} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
