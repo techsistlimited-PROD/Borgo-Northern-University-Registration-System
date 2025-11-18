@@ -139,15 +139,6 @@ export default function AdminDashboard() {
         return <GuardianOccupations />
       case 'Relationship List':
         return <RelationshipList />
-      case 'Master Data':
-      case 'Location Directory':
-      case 'External Institutes':
-      case 'Currency & Rates':
-      case 'Code Generator':
-        return <PlaceholderView title={activeSection} description="Master data management" />
-      case 'Roles & Permissions':
-      case 'User List by Task':
-        return <PlaceholderView title={activeSection} description="User and role management" />
       default:
         return <OrganizationSetup />
     }
