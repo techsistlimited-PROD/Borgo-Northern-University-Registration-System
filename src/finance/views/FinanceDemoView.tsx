@@ -347,7 +347,7 @@ export default function FinanceDemoView() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Input placeholder="Student ID" className="w-full" />
                   <Input placeholder="Student Name" className="w-full" />
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Search Ledger - Demo Feature: In production, this will search for student accounts and display detailed transaction history')}>
                     <Search className="w-4 h-4 mr-2" />
                     Search Ledger
                   </Button>
@@ -413,11 +413,11 @@ export default function FinanceDemoView() {
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => alert('Export PDF - Demo Feature: In production, this will generate a PDF of the student ledger')}>
                     <Download className="w-4 h-4 mr-2" />
                     Export PDF
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => alert('Export Excel - Demo Feature: In production, this will export ledger data to Excel format')}>
                     <Download className="w-4 h-4 mr-2" />
                     Export Excel
                   </Button>
@@ -433,7 +433,7 @@ export default function FinanceDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Student Payables / Bills Management</CardTitle>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Create Bill - Demo Feature: In production, this will open a form to create a new student bill')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Create Bill
                 </Button>
@@ -522,7 +522,7 @@ export default function FinanceDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Bulk Late Fee Assignment</CardTitle>
-                <Button className="bg-orange-600 hover:bg-orange-700">
+                <Button className="bg-orange-600 hover:bg-orange-700" onClick={() => alert('Assign Late Fees - Demo Feature: In production, this will bulk assign late fees to selected bills')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Assign Late Fees
                 </Button>
@@ -558,7 +558,7 @@ export default function FinanceDemoView() {
                     </select>
                   </div>
                   <div className="flex items-end">
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => alert('Calculate Fees - Demo Feature: In production, this will calculate late fees based on selected criteria')}>
                       Calculate Fees
                     </Button>
                   </div>
