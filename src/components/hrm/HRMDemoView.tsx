@@ -708,7 +708,7 @@ export default function HRMDemoView() {
                       <p className="text-2xl font-bold text-green-600">{stats.totalPayslips}</p>
                     </div>
                   </div>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => alert('Process Monthly Payroll - Demo Feature: In production, this will process monthly payroll for all employees and generate payslips')}>
                     Process Monthly Payroll
                   </Button>
                 </div>
