@@ -240,6 +240,8 @@ export default function HRMDashboard() {
           if (complianceView === 'analytics') return <HRAnalytics />
           if (complianceView === 'reports') return <CustomReports />
           return <TaxPFGratuity />
+        case 'demo':
+          return <HRMDemoView />
         case 'other':
           return (
             <div className="p-8 text-center">
