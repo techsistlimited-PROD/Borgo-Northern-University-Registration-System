@@ -881,7 +881,7 @@ export default function HRMDemoView() {
                         <p className="font-semibold text-sm">{emp.firstName} {emp.lastName}</p>
                         <p className="text-xs text-gray-600">Leadership Skills - Jan 2025</p>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => alert(`Download Certificate - Demo Feature: In production, this will download the training certificate for ${emp.firstName} ${emp.lastName}`)}>
                         <Download className="w-4 h-4" />
                       </Button>
                     </div>
