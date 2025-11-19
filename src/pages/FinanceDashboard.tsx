@@ -124,6 +124,13 @@ export default function FinanceDashboard() {
             </FinanceLayout>
           } />
 
+          {/* Demo */}
+          <Route path="demo" element={
+            <FinanceLayout>
+              <FinanceDemoView />
+            </FinanceLayout>
+          } />
+
           {/* Default redirect */}
           <Route path="*" element={<Navigate to="/finance/dashboard" replace />} />
         </Routes>
