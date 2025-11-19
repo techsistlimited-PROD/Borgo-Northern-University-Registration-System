@@ -174,6 +174,10 @@ export default function HRMDashboard() {
       else if (path.includes('/reports')) { setComplianceView('reports'); updateBreadcrumbs('Compliance & Reports', 'Custom Reports') }
       else { setComplianceView('tax-pf'); updateBreadcrumbs('Compliance & Reports', 'Tax & PF/Gratuity') }
     }
+    else if (path === '/hrm/demo') {
+      setActiveView('demo')
+      setBreadcrumbs([{ label: 'Demo', path: '/hrm/demo' }, { label: 'Full Module Demo' }])
+    }
     else setActiveView('other')
   }
 
