@@ -163,6 +163,10 @@ function AppRoutes() {
 }
 
 function App() {
+  useEffect(() => {
+    initializeDemoData()
+  }, [])
+
   return (
     <AuthProvider>
       <Router>
