@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/contexts/RegistrationAuthContext'
+import { initializeDemoData } from '@/lib/initializeDemoData'
 import Index from '@/pages/Index'
 import StudentLogin from '@/pages/StudentLogin'
 import ACADLogin from '@/pages/ACADLogin'
