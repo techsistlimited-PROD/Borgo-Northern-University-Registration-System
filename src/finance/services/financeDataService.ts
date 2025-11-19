@@ -301,14 +301,10 @@ class FinanceDataService {
         return this.getLateFeesFro mStorage()
       }
     }
-    return this.getLateFeesFr omStorage()
+    return this.getLateFeesFro mStorage()
   }
 
   private getLateFeesFro mStorage(): FinanceLateFee[] {
-    return Repo.get<FinanceLateFee>(this.STORAGE_KEYS.LATE_FEES)
-  }
-
-  private getLateFeesFr omStorage(): FinanceLateFee[] {
     return Repo.get<FinanceLateFee>(this.STORAGE_KEYS.LATE_FEES)
   }
 
@@ -453,7 +449,7 @@ class FinanceDataService {
     const bills = await this.getBillsForStudent(studentId)
     const totalDue = bills
       .filter(b => ['Issued', 'Partial', 'Overdue'].includes(b.status))
-      .reduce((sum, b) => sum + (b.amount - (b as any).paidAmount || 0), 0)
+      .reduce((sum, b) => sum + (b.amount - ((b as any).paidAmount || 0)), 0)
     return totalDue
   }
 
