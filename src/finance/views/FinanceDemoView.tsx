@@ -732,11 +732,11 @@ export default function FinanceDemoView() {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                  <Button className="flex-1 bg-green-600 hover:bg-green-700" onClick={() => alert('Confirm Payment - Demo Feature: In production, this will process the payment and update student account')}>
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Confirm Payment
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={() => alert('Print Receipt - Demo Feature: In production, this will generate and print a payment receipt')}>
                     <Download className="w-4 h-4 mr-2" />
                     Print Receipt
                   </Button>
@@ -776,7 +776,7 @@ export default function FinanceDemoView() {
                         <td className="py-3 px-4 text-gray-600">{payment.paymentMethod || 'Cash'}</td>
                         <td className="py-3 px-4 text-gray-600">{payment.paymentDate}</td>
                         <td className="py-3 px-4">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => alert(`View Payment Details for ${payment.receiptNo}`)}>
                             <Eye className="w-4 h-4" />
                           </Button>
                         </td>
@@ -795,7 +795,7 @@ export default function FinanceDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Fee Waivers & Scholarships</CardTitle>
-                <Button className="bg-purple-600 hover:bg-purple-700">
+                <Button className="bg-purple-600 hover:bg-purple-700" onClick={() => alert('Create Waiver - Demo Feature: In production, this will open a form to create a new fee waiver application')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Create Waiver
                 </Button>
