@@ -936,7 +936,7 @@ export default function HRMDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>HR Notices & Announcements</CardTitle>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Post Notice - Demo Feature: In production, this will open a form to create and publish a new HR notice')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Post Notice
                 </Button>
@@ -965,7 +965,7 @@ export default function HRMDemoView() {
                         </div>
                         <p className="text-sm text-gray-600 mt-1">Posted on {notice.date}</p>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => alert(`View Notice Details: ${notice.title}`)}>
                         <Eye className="w-4 h-4" />
                       </Button>
                     </div>
