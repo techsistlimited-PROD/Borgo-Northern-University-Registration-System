@@ -372,7 +372,7 @@ export default function HRMDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Employee Directory</CardTitle>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Add Employee - Demo Feature: In production, this will open a form to add a new employee to the system')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Employee
                 </Button>
@@ -472,7 +472,7 @@ export default function HRMDemoView() {
                     </div>
                   ))}
                 </div>
-                <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700" onClick={() => alert('Post Vacancy - Demo Feature: In production, this will open a form to create a new job vacancy posting')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Post Vacancy
                 </Button>
