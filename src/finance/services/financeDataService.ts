@@ -36,7 +36,6 @@ class FinanceDataService {
     }
   }
 
-  // Configuration Methods
   setConfig(config: DataServiceConfig): void {
     this.config = { ...this.config, ...config }
   }
@@ -77,7 +76,6 @@ class FinanceDataService {
     return response.json()
   }
 
-  // Bills Methods
   async getBills(filters?: {
     studentId?: string
     status?: string
@@ -162,7 +160,6 @@ class FinanceDataService {
     return true
   }
 
-  // Payments Methods
   async getPayments(filters?: {
     studentId?: string
     billId?: string
@@ -213,7 +210,6 @@ class FinanceDataService {
     return newPayment
   }
 
-  // Cost Heads Methods
   async getCostHeads(): Promise<FinanceCostHead[]> {
     if (this.config.useOracle) {
       try {
@@ -252,7 +248,6 @@ class FinanceDataService {
     return newCostHead
   }
 
-  // Cost Packages Methods
   async getCostPackages(filters?: {
     program?: string
     campus?: string
@@ -281,7 +276,6 @@ class FinanceDataService {
     return Repo.get<FinanceCostPackage>(this.STORAGE_KEYS.COST_PACKAGES)
   }
 
-  // Late Fees Methods
   async getLateFees(filters?: {
     studentId?: string
     status?: string
@@ -298,13 +292,13 @@ class FinanceDataService {
         return await this.fetchFromOracle<FinanceLateFee>(endpoint)
       } catch (error) {
         console.error('Error fetching late fees from Oracle:', error)
-        return this.getLateFeesFro mStorage()
+        return this.getLateFeesFromStorage()
       }
     }
-    return this.getLateFeesFro mStorage()
+    return this.getLateFeesFromStorage()
   }
 
-  private getLateFeesFro mStorage(): FinanceLateFee[] {
+  private getLateFeesFromStorage(): FinanceLateFee[] {
     return Repo.get<FinanceLateFee>(this.STORAGE_KEYS.LATE_FEES)
   }
 
@@ -330,7 +324,6 @@ class FinanceDataService {
     return newLateFee
   }
 
-  // Waivers Methods
   async getWaivers(): Promise<FinanceWaiver[]> {
     if (this.config.useOracle) {
       try {
@@ -347,7 +340,6 @@ class FinanceDataService {
     return Repo.get<FinanceWaiver>(this.STORAGE_KEYS.WAIVERS)
   }
 
-  // Waiver Assignments Methods
   async getWaiverAssignments(filters?: {
     studentId?: string
     status?: string
@@ -396,7 +388,6 @@ class FinanceDataService {
     return newAssignment
   }
 
-  // Students Methods
   async getStudents(filters?: {
     campus?: string
     program?: string
@@ -430,7 +421,6 @@ class FinanceDataService {
     return students.find(s => s.studentId === studentId) || null
   }
 
-  // Subscription Methods
   subscribeToBills(callback: (bills: FinanceBill[]) => void): () => void {
     return Repo.subscribe(this.STORAGE_KEYS.BILLS, callback)
   }
@@ -439,7 +429,6 @@ class FinanceDataService {
     return Repo.subscribe(this.STORAGE_KEYS.PAYMENTS, callback)
   }
 
-  // Utility Methods
   async getBillsForStudent(studentId: string): Promise<FinanceBill[]> {
     const bills = await this.getBills({ studentId })
     return bills
@@ -458,7 +447,6 @@ class FinanceDataService {
     return payments
   }
 
-  // Bulk Operations
   async createBulkBills(bills: Array<Omit<FinanceBill, 'id' | 'createdAt' | 'updatedAt'>>): Promise<FinanceBill[]> {
     const createdBills: FinanceBill[] = []
     for (const bill of bills) {
