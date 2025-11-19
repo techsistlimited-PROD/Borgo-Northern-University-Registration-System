@@ -898,7 +898,7 @@ export default function FinanceDemoView() {
                           <td className="py-3 px-4 font-semibold text-red-600">{formatCurrency(15000 + i * 1000)}</td>
                           <td className="py-3 px-4 text-gray-600">2025-01-{String(i * 5).padStart(2, '0')}</td>
                           <td className="py-3 px-4">
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => alert(`Release Hold - Demo Feature: In production, this will release the financial hold for student STU${String(i).padStart(5, '0')}`)}>
                               Release Hold
                             </Button>
                           </td>
