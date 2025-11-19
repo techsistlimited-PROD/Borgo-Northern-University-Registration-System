@@ -194,6 +194,10 @@ export class FinanceDataServiceHelper {
     return Repo.get('finance-late-fees')
   }
 
+  static async getLateFeesWithFallback(): Promise<any[]> {
+    return this.getLateFeeWithFallback()
+  }
+
   static async getWaiverWithFallback(): Promise<any[]> {
     try {
       const waivers = await financeDataService.getWaivers()
@@ -205,6 +209,10 @@ export class FinanceDataServiceHelper {
     }
 
     return Repo.get('finance-waivers')
+  }
+
+  static async getWaiversWithFallback(): Promise<any[]> {
+    return this.getWaiverWithFallback()
   }
 
   static async getWaiverAssignmentWithFallback(): Promise<any[]> {
