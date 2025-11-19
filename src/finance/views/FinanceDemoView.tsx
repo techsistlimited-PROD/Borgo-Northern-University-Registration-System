@@ -1048,7 +1048,7 @@ export default function FinanceDemoView() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Cost Heads</CardTitle>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Add Cost Head - Demo Feature: In production, this will open a form to add a new cost head')}>
                     <Plus className="w-4 h-4 mr-2" />
                     Add
                   </Button>
@@ -1076,7 +1076,7 @@ export default function FinanceDemoView() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Cost Packages</CardTitle>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Create Cost Package - Demo Feature: In production, this will open a wizard to create a new cost package')}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create
                   </Button>
@@ -1136,7 +1136,7 @@ export default function FinanceDemoView() {
                   <p className="font-semibold">{selectedBill.dueDate}</p>
                 </div>
               </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => alert(`Download PDF - Demo Feature: In production, this will download the bill ${selectedBill.billNo} as PDF`)}>
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </Button>
