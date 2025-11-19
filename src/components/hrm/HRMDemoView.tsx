@@ -624,7 +624,7 @@ export default function HRMDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Leave Management</CardTitle>
-                <Button className="bg-green-600 hover:bg-green-700">
+                <Button className="bg-green-600 hover:bg-green-700" onClick={() => alert('Apply Leave - Demo Feature: In production, this will open a form to submit a new leave application')}>
                   <Plus className="w-4 h-4 mr-2" />
                   Apply Leave
                 </Button>
@@ -676,7 +676,7 @@ export default function HRMDemoView() {
                           </span>
                         </td>
                         <td className="py-3 px-4">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => alert(`View Leave Details for ${leave.empId} - ${leave.leaveType}`)}>
                             <Eye className="w-4 h-4" />
                           </Button>
                         </td>
