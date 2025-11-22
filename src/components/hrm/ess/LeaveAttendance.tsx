@@ -152,6 +152,80 @@ export default function LeaveAttendance() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Apply Leave Dialog */}
+      <Dialog open={applyLeaveOpen} onOpenChange={setApplyLeaveOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Apply for Leave</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Leave Type</label>
+              <Select value={newLeave.type} onValueChange={(val) => setNewLeave({...newLeave, type: val})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Casual">Casual Leave</SelectItem>
+                  <SelectItem value="Medical">Medical Leave</SelectItem>
+                  <SelectItem value="Earn">Earn Leave</SelectItem>
+                  <SelectItem value="Study">Study Leave</SelectItem>
+                  <SelectItem value="Special">Special Leave</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">From Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.from}
+                  onChange={(e) => setNewLeave({...newLeave, from: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">To Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.to}
+                  onChange={(e) => setNewLeave({...newLeave, to: e.target.value})}
+                />
+              </div>
+            </div>
+            {newLeave.from && newLeave.to && (
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm font-medium text-blue-900">
+                  Total Days: <span className="text-lg font-bold">{calculateDays()}</span>
+                </p>
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium mb-1 block">Reason for Leave</label>
+              <Textarea
+                placeholder="Please provide reason for your leave application..."
+                rows={4}
+                value={newLeave.reason}
+                onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Emergency Contact (Optional)</label>
+              <Input
+                placeholder="Phone number or email for emergency contact"
+                value={newLeave.emergencyContact}
+                onChange={(e) => setNewLeave({...newLeave, emergencyContact: e.target.value})}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setApplyLeaveOpen(false)}>Cancel</Button>
+              <Button onClick={handleSubmitLeave} disabled={!newLeave.from || !newLeave.to || !newLeave.reason}>
+                Submit Application
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
