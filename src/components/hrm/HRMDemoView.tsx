@@ -1119,6 +1119,152 @@ export default function HRMDemoView() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Apply Leave Dialog */}
+      <Dialog open={applyLeaveOpen} onOpenChange={setApplyLeaveOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Apply for Leave</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Leave Type</label>
+              <Select value={newLeave.type} onValueChange={(val) => setNewLeave({...newLeave, type: val})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Casual">Casual Leave</SelectItem>
+                  <SelectItem value="Medical">Medical Leave</SelectItem>
+                  <SelectItem value="Earn">Earn Leave</SelectItem>
+                  <SelectItem value="Study">Study Leave</SelectItem>
+                  <SelectItem value="Special">Special Leave</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">From Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.from}
+                  onChange={(e) => setNewLeave({...newLeave, from: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">To Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.to}
+                  onChange={(e) => setNewLeave({...newLeave, to: e.target.value})}
+                />
+              </div>
+            </div>
+            {newLeave.from && newLeave.to && (
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm font-medium text-blue-900">
+                  Total Days: <span className="text-lg font-bold">
+                    {Math.ceil((new Date(newLeave.to).getTime() - new Date(newLeave.from).getTime()) / (1000 * 60 * 60 * 24)) + 1}
+                  </span>
+                </p>
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium mb-1 block">Reason for Leave</label>
+              <Textarea
+                placeholder="Please provide reason for your leave application..."
+                rows={4}
+                value={newLeave.reason}
+                onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setApplyLeaveOpen(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  alert('Leave application submitted successfully!')
+                  setApplyLeaveOpen(false)
+                  setNewLeave({type: 'Casual', from: '', to: '', reason: ''})
+                }}
+                disabled={!newLeave.from || !newLeave.to || !newLeave.reason}
+              >
+                Submit Application
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Post Notice Dialog */}
+      <Dialog open={postNoticeOpen} onOpenChange={setPostNoticeOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Post New Notice</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Notice Title</label>
+              <Input
+                placeholder="Enter notice title"
+                value={newNotice.title}
+                onChange={(e) => setNewNotice({...newNotice, title: e.target.value})}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Type</label>
+                <Select value={newNotice.type} onValueChange={(val) => setNewNotice({...newNotice, type: val})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HR">HR</SelectItem>
+                    <SelectItem value="Holiday">Holiday</SelectItem>
+                    <SelectItem value="Exam">Exam</SelectItem>
+                    <SelectItem value="Academic">Academic</SelectItem>
+                    <SelectItem value="Accounts">Accounts</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Priority</label>
+                <Select value={newNotice.priority} onValueChange={(val) => setNewNotice({...newNotice, priority: val})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Notice Content</label>
+              <Textarea
+                placeholder="Enter notice content..."
+                rows={6}
+                value={newNotice.content}
+                onChange={(e) => setNewNotice({...newNotice, content: e.target.value})}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setPostNoticeOpen(false)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  alert('Notice posted successfully!')
+                  setPostNoticeOpen(false)
+                  setNewNotice({title: '', type: 'HR', content: '', priority: 'Medium'})
+                }}
+                disabled={!newNotice.title || !newNotice.content}
+              >
+                Publish Notice
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
