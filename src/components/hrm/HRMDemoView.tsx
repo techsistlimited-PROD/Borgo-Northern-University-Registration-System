@@ -640,7 +640,7 @@ export default function HRMDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Leave Management</CardTitle>
-                <Button className="bg-green-600 hover:bg-green-700" onClick={() => alert('Apply Leave - Demo Feature: In production, this will open a form to submit a new leave application')}>
+                <Button className="bg-green-600 hover:bg-green-700" onClick={() => setApplyLeaveOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Apply Leave
                 </Button>
