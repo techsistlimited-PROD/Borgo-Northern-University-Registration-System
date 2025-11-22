@@ -952,7 +952,7 @@ export default function HRMDemoView() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>HR Notices & Announcements</CardTitle>
-                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert('Post Notice - Demo Feature: In production, this will open a form to create and publish a new HR notice')}>
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setPostNoticeOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Post Notice
                 </Button>
