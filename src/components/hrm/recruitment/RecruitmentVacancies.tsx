@@ -209,6 +209,83 @@ export default function RecruitmentVacancies() {
         </CardContent>
       </Card>
 
+      {/* New Vacancy Modal */}
+      <Dialog open={showNewModal} onOpenChange={setShowNewModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Vacancy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Reference Number</label>
+                <Input placeholder="VAC/2025/001" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Job Title</label>
+                <Input placeholder="e.g., Associate Professor" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Department</label>
+                <select className="w-full border rounded-md px-3 py-2">
+                  <option value="">Select Department</option>
+                  {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Employment Type</label>
+                <select className="w-full border rounded-md px-3 py-2">
+                  <option value="">Select Type</option>
+                  <option value="Permanent">Permanent</option>
+                  <option value="Contract">Contract</option>
+                  <option value="Part-Time">Part-Time</option>
+                  <option value="Visiting">Visiting</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Grade/Scale</label>
+                <Input placeholder="e.g., Grade 5" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Number of Openings</label>
+                <Input type="number" placeholder="1" min="1" />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-1">Application Deadline</label>
+                <Input type="date" />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-1">Job Description</label>
+                <textarea
+                  className="w-full border rounded-md px-3 py-2 min-h-[100px]"
+                  placeholder="Enter detailed job description..."
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-1">Requirements</label>
+                <textarea
+                  className="w-full border rounded-md px-3 py-2 min-h-[80px]"
+                  placeholder="Enter requirements (one per line)..."
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-1">Desired Skills</label>
+                <Input placeholder="Enter skills separated by commas" />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowNewModal(false)}>Cancel</Button>
+              <Button onClick={() => {
+                alert('Vacancy Created Successfully! In production, this will save the vacancy as draft and add it to the list.')
+                setShowNewModal(false)
+              }}>
+                Save as Draft
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* View Drawer */}
       {viewVacancy && (
         <Dialog open={!!viewVacancy} onOpenChange={() => setViewVacancy(null)}>
