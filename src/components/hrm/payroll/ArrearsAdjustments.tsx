@@ -292,9 +292,9 @@ export default function ArrearsAdjustments() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Type</label>
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <Badge className={getTypeBadge(viewArrear.type)}>{viewArrear.type}</Badge>
-                  </p>
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Employee ID</label>
@@ -318,11 +318,11 @@ export default function ArrearsAdjustments() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Status</label>
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <Badge variant={viewArrear.status === 'Approved' ? 'default' : 'secondary'}>
                       {viewArrear.status}
                     </Badge>
-                  </p>
+                  </div>
                 </div>
                 <div className="col-span-2">
                   <label className="text-sm font-medium text-gray-500">Description</label>
