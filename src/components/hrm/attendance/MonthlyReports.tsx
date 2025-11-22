@@ -488,8 +488,8 @@ export default function MonthlyReports() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {employeeSummaries.map((summary) => (
-                  <tr key={summary.employeeId}>
+                {employeeSummaries.map((summary, index) => (
+                  <tr key={`${summary.employeeId}-${index}`}>
                     <td className="px-2 py-3 text-sm text-gray-900">{summary.sl}</td>
                     <td className="px-2 py-3 text-sm text-gray-900">{summary.employeeId}</td>
                     <td className="px-2 py-3 text-sm font-medium text-gray-900">{summary.employeeName}</td>
