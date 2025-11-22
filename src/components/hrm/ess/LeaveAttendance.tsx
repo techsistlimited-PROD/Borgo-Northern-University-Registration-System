@@ -37,7 +37,9 @@ export default function LeaveAttendance() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Leave Requests</CardTitle>
-                <Button>Apply Leave</Button>
+                <Button onClick={() => alert('Apply Leave - Demo Feature: In production, this will open a form to submit a new leave application with leave type, dates, reason, and supporting documents.')}>
+                  Apply Leave
+                </Button>
               </div>
             </CardHeader>
             <CardContent>
