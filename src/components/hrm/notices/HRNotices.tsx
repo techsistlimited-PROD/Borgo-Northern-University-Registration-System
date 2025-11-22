@@ -254,7 +254,7 @@ export default function HRNotices() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Type</label>
-                  <p className="text-sm"><Badge variant="outline">{viewNotice.type}</Badge></p>
+                  <div className="text-sm"><Badge variant="outline">{viewNotice.type}</Badge></div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Audience</label>
@@ -262,11 +262,11 @@ export default function HRNotices() {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Status</label>
-                  <p className="text-sm">
+                  <div className="text-sm">
                     <Badge variant={viewNotice.status === 'Published' ? 'default' : 'secondary'}>
                       {viewNotice.status}
                     </Badge>
-                  </p>
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Published On</label>
