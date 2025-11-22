@@ -95,7 +95,7 @@ export default function LeaveAttendance() {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {ESS_LEAVE_REQUESTS.map(req => (
+                  {leaveRequests.map(req => (
                     <tr key={req.id}>
                       <td className="px-3 py-2">{req.type}</td>
                       <td className="px-3 py-2">{req.from} to {req.to}</td>
