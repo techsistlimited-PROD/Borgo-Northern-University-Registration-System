@@ -157,6 +157,136 @@ export default function HRNotices() {
           </table>
         </CardContent>
       </Card>
+
+      {/* Create Notice Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Notice</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Title</label>
+              <Input
+                placeholder="Enter notice title"
+                value={newNotice.title}
+                onChange={(e) => setNewNotice({...newNotice, title: e.target.value})}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Type</label>
+                <Select value={newNotice.type} onValueChange={(val: Notice['type']) => setNewNotice({...newNotice, type: val})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Holiday">Holiday</SelectItem>
+                    <SelectItem value="Exam">Exam</SelectItem>
+                    <SelectItem value="Academic">Academic</SelectItem>
+                    <SelectItem value="HR">HR</SelectItem>
+                    <SelectItem value="Accounts">Accounts</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Audience</label>
+                <Select value={newNotice.audience} onValueChange={(val) => setNewNotice({...newNotice, audience: val})}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">All</SelectItem>
+                    <SelectItem value="Faculty">Faculty</SelectItem>
+                    <SelectItem value="Staff">Staff</SelectItem>
+                    <SelectItem value="Students">Students</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">Publish Date</label>
+                <Input
+                  type="date"
+                  value={newNotice.publishedOn}
+                  onChange={(e) => setNewNotice({...newNotice, publishedOn: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Expiry Date</label>
+                <Input
+                  type="date"
+                  value={newNotice.expiry}
+                  onChange={(e) => setNewNotice({...newNotice, expiry: e.target.value})}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Content</label>
+              <Textarea
+                placeholder="Enter notice content..."
+                rows={6}
+                value={newNotice.content}
+                onChange={(e) => setNewNotice({...newNotice, content: e.target.value})}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
+              <Button onClick={handleSubmitNotice}>Publish Notice</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Notice Dialog */}
+      <Dialog open={!!viewNotice} onOpenChange={() => setViewNotice(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{viewNotice?.title}</DialogTitle>
+          </DialogHeader>
+          {viewNotice && (
+            <div className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Notice ID</label>
+                  <p className="text-sm font-semibold">{viewNotice.id}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Type</label>
+                  <p className="text-sm"><Badge variant="outline">{viewNotice.type}</Badge></p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Audience</label>
+                  <p className="text-sm">{viewNotice.audience}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <p className="text-sm">
+                    <Badge variant={viewNotice.status === 'Published' ? 'default' : 'secondary'}>
+                      {viewNotice.status}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Published On</label>
+                  <p className="text-sm">{viewNotice.publishedOn || '-'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Expires On</label>
+                  <p className="text-sm">{viewNotice.expiry}</p>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">Content</label>
+                <div className="mt-2 p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm whitespace-pre-wrap">{viewNotice.content}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
