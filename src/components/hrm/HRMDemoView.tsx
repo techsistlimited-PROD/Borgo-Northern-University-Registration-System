@@ -67,6 +67,20 @@ export default function HRMDemoView() {
   const [filterDepartment, setFilterDepartment] = useState('All')
   const [selectedEmployee, setSelectedEmployee] = useState<HrmEiEmp | null>(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [applyLeaveOpen, setApplyLeaveOpen] = useState(false)
+  const [postNoticeOpen, setPostNoticeOpen] = useState(false)
+  const [newLeave, setNewLeave] = useState({
+    type: 'Casual',
+    from: '',
+    to: '',
+    reason: ''
+  })
+  const [newNotice, setNewNotice] = useState({
+    title: '',
+    type: 'HR',
+    content: '',
+    priority: 'Medium'
+  })
 
   useEffect(() => {
     loadDemoData()
