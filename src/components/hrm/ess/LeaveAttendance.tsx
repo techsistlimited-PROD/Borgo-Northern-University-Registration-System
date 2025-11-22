@@ -1,11 +1,52 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { ESS_LEAVE_BALANCE, ESS_LEAVE_REQUESTS, ESS_ATTENDANCE } from '@/lib/hrmDemoSeed'
 
 export default function LeaveAttendance() {
+  const [applyLeaveOpen, setApplyLeaveOpen] = useState(false)
+  const [leaveRequests, setLeaveRequests] = useState(ESS_LEAVE_REQUESTS)
+  const [newLeave, setNewLeave] = useState({
+    type: 'Casual',
+    from: '',
+    to: '',
+    reason: '',
+    emergencyContact: ''
+  })
+
+  const calculateDays = () => {
+    if (!newLeave.from || !newLeave.to) return 0
+    const start = new Date(newLeave.from)
+    const end = new Date(newLeave.to)
+    const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+    return diff + 1
+  }
+
+  const handleSubmitLeave = () => {
+    const leave = {
+      id: `L-${(leaveRequests.length + 1).toString().padStart(3, '0')}`,
+      ...newLeave,
+      days: calculateDays(),
+      status: 'Pending' as const,
+      approver: 'Pending'
+    }
+    setLeaveRequests([leave, ...leaveRequests])
+    setApplyLeaveOpen(false)
+    setNewLeave({
+      type: 'Casual',
+      from: '',
+      to: '',
+      reason: '',
+      emergencyContact: ''
+    })
+  }
+
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       <h2 className="text-3xl font-bold text-gray-800">Leave & Attendance</h2>
@@ -37,7 +78,7 @@ export default function LeaveAttendance() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Leave Requests</CardTitle>
-                <Button onClick={() => alert('Apply Leave - Demo Feature: In production, this will open a form to submit a new leave application with leave type, dates, reason, and supporting documents.')}>
+                <Button onClick={() => setApplyLeaveOpen(true)}>
                   Apply Leave
                 </Button>
               </div>
