@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Plus, Eye } from 'lucide-react'
 import { NOTICES, type Notice } from '@/lib/hrmDemoSeed'
 import { DEMO_MODE, showDemoToast } from '@/config/demo'
@@ -11,23 +14,42 @@ export default function HRNotices() {
   const [notices, setNotices] = useState<Notice[]>(NOTICES)
   const [selectedType, setSelectedType] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
+  const [viewNotice, setViewNotice] = useState<Notice | null>(null)
+  const [newNotice, setNewNotice] = useState({
+    title: '',
+    type: 'Academic' as Notice['type'],
+    audience: 'All',
+    content: '',
+    publishedOn: new Date().toISOString().split('T')[0],
+    expiry: ''
+  })
 
   const handleCreateNotice = () => {
-    if (DEMO_MODE) {
-      alert(showDemoToast('Create new HR notice'))
-      return
-    }
+    setCreateDialogOpen(true)
+  }
 
-    alert('Create notice dialog would open in production')
+  const handleSubmitNotice = () => {
+    const notice: Notice = {
+      id: `NOT-${(notices.length + 1).toString().padStart(3, '0')}`,
+      ...newNotice,
+      status: 'Published',
+      pinned: false
+    }
+    setNotices([notice, ...notices])
+    setCreateDialogOpen(false)
+    setNewNotice({
+      title: '',
+      type: 'Academic',
+      audience: 'All',
+      content: '',
+      publishedOn: new Date().toISOString().split('T')[0],
+      expiry: ''
+    })
   }
 
   const handleViewNotice = (notice: Notice) => {
-    if (DEMO_MODE) {
-      alert(showDemoToast(`View notice: ${notice.title}`))
-      return
-    }
-
-    alert(`View notice dialog would open for ${notice.title}`)
+    setViewNotice(notice)
   }
 
   const filteredNotices = notices.filter(n => {
