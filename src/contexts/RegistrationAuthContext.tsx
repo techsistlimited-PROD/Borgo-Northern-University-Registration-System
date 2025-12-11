@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { DEMO_MODE, DEMO_STATIC_GUARDIAN } from '@/config/demo'
+import { DEMO_GUARDIANS, DEMO_WARDS } from '@/lib/guardianStatic'
 
-export type UserRole = 'student' | 'acad' | 'teacher'
+export type UserRole = 'student' | 'acad' | 'teacher' | 'coe' | 'finance' | 'admin' | 'guardian' | 'hrm'
 
 export interface User {
   id: string
@@ -20,11 +22,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Demo credentials
-const demoCredentials = {
+// Demo credentials - using Record for type safety
+const demoCredentials: Record<string, { username: string; password: string }> = {
   student: { username: '2021-1-60-001', password: 'student123' },
-  acad: { username: 'acad', password: 'acad123' },
-  teacher: { username: 'T001', password: 'teacher123' }
+  acad: { username: 'academic', password: 'academic123' },
+  teacher: { username: 'T001', password: 'teacher123' },
+  coe: { username: 'coe', password: 'coe123' },
+  finance: { username: 'finance', password: 'finance123' },
+  admin: { username: 'admin', password: 'admin123' },
+  hrm: { username: 'hr@nu.edu.bd', password: 'hr123' }
+}
+
+// Guardian credentials (email-based)
+const guardianCredentials: Record<string, string> = {
+  'father.cse@demo.nu': 'guardian123',
+  'guardian.bba@demo.nu': 'guardian123',
+  'mother.cse@demo.nu': 'guardian123'
 }
 
 // Demo users
@@ -37,8 +50,8 @@ const demoUsers: Record<string, User> = {
     program: 'Computer Science & Engineering',
     semester: 'Fall 2024'
   },
-  'acad': {
-    id: 'acad',
+  'academic': {
+    id: 'academic',
     name: 'Academic Affairs Officer',
     role: 'acad',
     email: 'acad@nu.edu.bd'
@@ -49,6 +62,48 @@ const demoUsers: Record<string, User> = {
     role: 'teacher',
     email: 'abdul.rahman@nu.edu.bd',
     program: 'Computer Science & Engineering'
+  },
+  'coe': {
+    id: 'coe',
+    name: 'Md. Arif Hossain',
+    role: 'coe',
+    email: 'exam.controller@nu.edu.bd'
+  },
+  'finance': {
+    id: 'finance',
+    name: 'Mahfuz Rahman',
+    role: 'finance',
+    email: 'finance@nu.edu.bd'
+  },
+  'admin': {
+    id: 'admin',
+    name: 'Md. Imran Hossain',
+    role: 'admin',
+    email: 'admin@nu.edu.bd'
+  },
+  'father.cse@demo.nu': {
+    id: 'g_father_01',
+    name: 'Abdul Karim',
+    role: 'guardian',
+    email: 'father.cse@demo.nu'
+  },
+  'guardian.bba@demo.nu': {
+    id: 'g_guardian_02',
+    name: 'Shahidul Islam',
+    role: 'guardian',
+    email: 'guardian.bba@demo.nu'
+  },
+  'mother.cse@demo.nu': {
+    id: 'g_mother_01',
+    name: 'Rokia Begum',
+    role: 'guardian',
+    email: 'mother.cse@demo.nu'
+  },
+  'hr@nu.edu.bd': {
+    id: 'hrm_001',
+    name: 'Sadia Rahman',
+    role: 'hrm',
+    email: 'hr@nu.edu.bd'
   }
 }
 
@@ -64,10 +119,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (credentials: { username: string; password: string; role: UserRole }): Promise<boolean> => {
-    const { username, password, role } = credentials
-    
-    // Check demo credentials
-    if (demoCredentials[role]?.username === username && demoCredentials[role]?.password === password) {
+    const role = credentials.role
+    const username = credentials.username.trim()
+    const password = credentials.password.trim()
+
+    // Special handling for guardian role (email-based)
+    if (role === 'guardian') {
+      // Static guardian demo mode
+      if (DEMO_MODE && DEMO_STATIC_GUARDIAN && password === 'guardian123') {
+        const guardian = DEMO_GUARDIANS.find(g => g.email.toLowerCase() === username.toLowerCase())
+        if (guardian) {
+          const userData: User = {
+            id: guardian.id,
+            name: guardian.name,
+            role: 'guardian',
+            email: guardian.email
+          }
+          setUser(userData)
+          localStorage.setItem('nu-user', JSON.stringify(userData))
+
+          // Auto-set first ward as active
+          const wards = DEMO_WARDS[guardian.id]
+          if (wards && wards.length > 0) {
+            localStorage.setItem('guardian.activeWard', wards[0].id)
+          }
+
+          console.log('✅ Static guardian login:', guardian.id, '→', guardian.email)
+          return true
+        }
+      }
+
+      // Fallback to regular demo credentials
+      if (guardianCredentials[username] === password) {
+        const userData = demoUsers[username]
+        if (userData) {
+          setUser(userData)
+          localStorage.setItem('nu-user', JSON.stringify(userData))
+          return true
+        }
+      }
+      return false
+    }
+
+    // Check demo credentials for other roles
+    const roleCreds = demoCredentials[role]
+    if (roleCreds && roleCreds.username === username && roleCreds.password === password) {
       const userData = demoUsers[username]
       if (userData) {
         setUser(userData)
@@ -75,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return true
       }
     }
-    
+
     return false
   }
 

@@ -1,0 +1,231 @@
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { ESS_LEAVE_BALANCE, ESS_LEAVE_REQUESTS, ESS_ATTENDANCE } from '@/lib/hrmDemoSeed'
+
+export default function LeaveAttendance() {
+  const [applyLeaveOpen, setApplyLeaveOpen] = useState(false)
+  const [leaveRequests, setLeaveRequests] = useState(ESS_LEAVE_REQUESTS)
+  const [newLeave, setNewLeave] = useState({
+    type: 'Casual',
+    from: '',
+    to: '',
+    reason: '',
+    emergencyContact: ''
+  })
+
+  const calculateDays = () => {
+    if (!newLeave.from || !newLeave.to) return 0
+    const start = new Date(newLeave.from)
+    const end = new Date(newLeave.to)
+    const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+    return diff + 1
+  }
+
+  const handleSubmitLeave = () => {
+    const leave = {
+      id: `L-${(leaveRequests.length + 1).toString().padStart(3, '0')}`,
+      ...newLeave,
+      days: calculateDays(),
+      status: 'Pending' as const,
+      approver: 'Pending'
+    }
+    setLeaveRequests([leave, ...leaveRequests])
+    setApplyLeaveOpen(false)
+    setNewLeave({
+      type: 'Casual',
+      from: '',
+      to: '',
+      reason: '',
+      emergencyContact: ''
+    })
+  }
+
+  return (
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+      <h2 className="text-3xl font-bold text-gray-800">Leave & Attendance</h2>
+
+      <Tabs defaultValue="leave">
+        <TabsList>
+          <TabsTrigger value="leave">Leave</TabsTrigger>
+          <TabsTrigger value="attendance">Attendance</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="leave" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Leave Balances</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(ESS_LEAVE_BALANCE).map(([key, value]) => (
+                  <div key={key} className="text-center p-4 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-gray-600 capitalize">{key}</p>
+                    <p className="text-2xl font-bold text-blue-600">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Leave Requests</CardTitle>
+                <Button onClick={() => setApplyLeaveOpen(true)}>
+                  Apply Leave
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 py-2 text-left">Type</th>
+                    <th className="px-3 py-2 text-left">From - To</th>
+                    <th className="px-3 py-2 text-left">Days</th>
+                    <th className="px-3 py-2 text-left">Status</th>
+                    <th className="px-3 py-2 text-left">Approver</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {leaveRequests.map(req => (
+                    <tr key={req.id}>
+                      <td className="px-3 py-2">{req.type}</td>
+                      <td className="px-3 py-2">{req.from} to {req.to}</td>
+                      <td className="px-3 py-2">{req.days}</td>
+                      <td className="px-3 py-2">
+                        <Badge variant={req.status === 'Approved' ? 'default' : req.status === 'Rejected' ? 'destructive' : 'secondary'}>
+                          {req.status}
+                        </Badge>
+                      </td>
+                      <td className="px-3 py-2">{req.approver}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="attendance" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Attendance Records (Last 30 Days)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto max-h-96">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 sticky top-0">
+                    <tr>
+                      <th className="px-3 py-2 text-left">Date</th>
+                      <th className="px-3 py-2 text-left">In Time</th>
+                      <th className="px-3 py-2 text-left">Out Time</th>
+                      <th className="px-3 py-2 text-left">Status</th>
+                      <th className="px-3 py-2 text-left">Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {ESS_ATTENDANCE.map(att => (
+                      <tr key={att.date}>
+                        <td className="px-3 py-2">{att.date}</td>
+                        <td className="px-3 py-2">{att.inTime}</td>
+                        <td className="px-3 py-2">{att.outTime}</td>
+                        <td className="px-3 py-2">
+                          <Badge variant={att.status === 'Present' ? 'default' : 'secondary'}>
+                            {att.status}
+                          </Badge>
+                        </td>
+                        <td className="px-3 py-2">{att.remarks || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Apply Leave Dialog */}
+      <Dialog open={applyLeaveOpen} onOpenChange={setApplyLeaveOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Apply for Leave</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Leave Type</label>
+              <Select value={newLeave.type} onValueChange={(val) => setNewLeave({...newLeave, type: val})}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Casual">Casual Leave</SelectItem>
+                  <SelectItem value="Medical">Medical Leave</SelectItem>
+                  <SelectItem value="Earn">Earn Leave</SelectItem>
+                  <SelectItem value="Study">Study Leave</SelectItem>
+                  <SelectItem value="Special">Special Leave</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-1 block">From Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.from}
+                  onChange={(e) => setNewLeave({...newLeave, from: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">To Date</label>
+                <Input
+                  type="date"
+                  value={newLeave.to}
+                  onChange={(e) => setNewLeave({...newLeave, to: e.target.value})}
+                />
+              </div>
+            </div>
+            {newLeave.from && newLeave.to && (
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm font-medium text-blue-900">
+                  Total Days: <span className="text-lg font-bold">{calculateDays()}</span>
+                </p>
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium mb-1 block">Reason for Leave</label>
+              <Textarea
+                placeholder="Please provide reason for your leave application..."
+                rows={4}
+                value={newLeave.reason}
+                onChange={(e) => setNewLeave({...newLeave, reason: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Emergency Contact (Optional)</label>
+              <Input
+                placeholder="Phone number or email for emergency contact"
+                value={newLeave.emergencyContact}
+                onChange={(e) => setNewLeave({...newLeave, emergencyContact: e.target.value})}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setApplyLeaveOpen(false)}>Cancel</Button>
+              <Button onClick={handleSubmitLeave} disabled={!newLeave.from || !newLeave.to || !newLeave.reason}>
+                Submit Application
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}

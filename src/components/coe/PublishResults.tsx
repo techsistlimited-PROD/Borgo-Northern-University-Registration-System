@@ -1,0 +1,647 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Lock, Unlock, Eye, AlertCircle, ShieldAlert, CheckCircle, UserX } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { useState, useEffect } from 'react'
+import { getActiveBlocks, RESULT_BLOCKS, ResultBlock } from '@/coe/data/blockSettings'
+import { showDemoToast } from '@/config/demo'
+
+interface ResultScope {
+  scope: string
+  sections: number
+  status: 'Ready' | 'Published' | 'Draft'
+  lastPublish: string
+  blockedCount: number
+  statusColor: string
+  hasActiveBlocks: boolean
+  blockTypes: string
+  programCode: string
+}
+
+export default function PublishResults() {
+  const [showPublishModal, setShowPublishModal] = useState(false)
+  const [showBlockModal, setShowBlockModal] = useState(false)
+  const [showViewBlocksModal, setShowViewBlocksModal] = useState(false)
+  const [selectedResult, setSelectedResult] = useState<ResultScope | null>(null)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [localBlocks, setLocalBlocks] = useState<ResultBlock[]>([...RESULT_BLOCKS])
+
+  // Recalculate blocks whenever localBlocks changes
+  const activeBlocks = localBlocks.filter(b => b.status === 'Active')
+  const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
+  const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
+  const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
+
+  const [results, setResults] = useState<ResultScope[]>([
+    {
+      scope: 'BSc CSE · Fall 2025',
+      sections: 24,
+      status: 'Ready',
+      lastPublish: '-',
+      blockedCount: cseBlocks.length,
+      statusColor: 'bg-green-100 text-green-800',
+      hasActiveBlocks: cseBlocks.length > 0,
+      blockTypes: cseBlocks.map(b => b.reason).join(', '),
+      programCode: 'CSE'
+    },
+    {
+      scope: 'BBA · Fall 2025',
+      sections: 14,
+      status: 'Published',
+      lastPublish: '02 Dec 2025 · 11:14 AM',
+      blockedCount: bbaBlocks.length,
+      statusColor: 'bg-blue-100 text-blue-800',
+      hasActiveBlocks: bbaBlocks.length > 0,
+      blockTypes: bbaBlocks.map(b => b.reason).join(', '),
+      programCode: 'BBA'
+    },
+    {
+      scope: 'LLB (Hons) · Fall 2025',
+      sections: 12,
+      status: 'Draft',
+      lastPublish: '-',
+      blockedCount: llbBlocks.length,
+      statusColor: 'bg-gray-100 text-gray-800',
+      hasActiveBlocks: llbBlocks.length > 0,
+      blockTypes: llbBlocks.map(b => b.reason).join(', '),
+      programCode: 'LLB'
+    }
+  ])
+
+  // Update results when blocks change
+  useEffect(() => {
+    const activeBlocks = localBlocks.filter(b => b.status === 'Active')
+    const cseBlocks = activeBlocks.filter(b => b.programCode === 'CSE')
+    const bbaBlocks = activeBlocks.filter(b => b.programCode === 'BBA')
+    const llbBlocks = activeBlocks.filter(b => b.programCode === 'LLB')
+
+    setResults(prev => prev.map(r => {
+      let blocks: ResultBlock[] = []
+      if (r.programCode === 'CSE') blocks = cseBlocks
+      else if (r.programCode === 'BBA') blocks = bbaBlocks
+      else if (r.programCode === 'LLB') blocks = llbBlocks
+
+      return {
+        ...r,
+        blockedCount: blocks.length,
+        hasActiveBlocks: blocks.length > 0,
+        blockTypes: blocks.map(b => b.reason).join(', ')
+      }
+    }))
+  }, [localBlocks])
+
+  const handlePublish = (result: ResultScope) => {
+    if (result.hasActiveBlocks) {
+      alert('Cannot publish: Active result blocks exist for this program. Clear blocks in Block Manager first.')
+      return
+    }
+    setSelectedResult(result)
+    setShowPublishModal(true)
+  }
+
+  const handleViewBlocks = (result: ResultScope) => {
+    setSelectedResult(result)
+    setShowViewBlocksModal(true)
+  }
+
+  const handleUnblock = (blockId: string) => {
+    if (confirm('Are you sure you want to remove this block? The student will be able to view their result.')) {
+      setLocalBlocks(prev => prev.map(b => 
+        b.id === blockId
+          ? {
+              ...b,
+              status: 'Removed' as const,
+              removedBy: 'COE Officer',
+              removeDate: new Date().toISOString(),
+              auditLog: [
+                ...b.auditLog,
+                {
+                  action: 'Unblocked',
+                  by: 'COE Officer',
+                  date: new Date().toLocaleString(),
+                  remarks: 'Block removed from Publish Results page'
+                }
+              ]
+            }
+          : b
+      ))
+      alert(showDemoToast('Block removed successfully'))
+    }
+  }
+
+  const handleUnblockAll = (programCode: string) => {
+    const blocksToRemove = activeBlocks.filter(b => b.programCode === programCode)
+    if (blocksToRemove.length === 0) {
+      alert('No active blocks to remove')
+      return
+    }
+
+    if (confirm(`Are you sure you want to remove ALL ${blocksToRemove.length} blocks for this program? All blocked students will be able to view their results.`)) {
+      setLocalBlocks(prev => prev.map(b => 
+        b.programCode === programCode && b.status === 'Active'
+          ? {
+              ...b,
+              status: 'Removed' as const,
+              removedBy: 'COE Officer',
+              removeDate: new Date().toISOString(),
+              auditLog: [
+                ...b.auditLog,
+                {
+                  action: 'Unblocked',
+                  by: 'COE Officer',
+                  date: new Date().toLocaleString(),
+                  remarks: 'Bulk unblock from Publish Results page'
+                }
+              ]
+            }
+          : b
+      ))
+      setShowViewBlocksModal(false)
+      alert(showDemoToast(`Removed ${blocksToRemove.length} block(s)`))
+    }
+  }
+
+  const confirmPublish = () => {
+    if (!selectedResult) return
+
+    // Update the result status to Published
+    setResults(prevResults => 
+      prevResults.map(r => 
+        r.scope === selectedResult.scope
+          ? {
+              ...r,
+              status: 'Published' as const,
+              lastPublish: new Date().toLocaleString('en-US', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              }),
+              statusColor: 'bg-blue-100 text-blue-800'
+            }
+          : r
+      )
+    )
+
+    // Close publish modal and show success modal
+    setShowPublishModal(false)
+    setShowSuccessModal(true)
+  }
+
+  const getProgramBlocks = (programCode: string) => {
+    return activeBlocks.filter(b => b.programCode === programCode)
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-deep-plum">Publish Results</h1>
+          <p className="text-sm text-gray-600 mt-1">Publish examination results and manage student result blocks</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Semester</label>
+          <select className="w-full p-2 border rounded-md">
+            <option>Fall 2025</option>
+            <option>Summer 2025</option>
+            <option>Spring 2025</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Program</label>
+          <select className="w-full p-2 border rounded-md">
+            <option>All Programs</option>
+            <option>BSc CSE</option>
+            <option>BBA</option>
+            <option>LLB</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Publish Scope</label>
+          <select className="w-full p-2 border rounded-md">
+            <option>Full Program</option>
+            <option>Single Section</option>
+            <option>Single Course</option>
+          </select>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Result Publication Overview</CardTitle>
+          <CardDescription>Manage result publication status and student blocks</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Scope</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Sections</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Publish Status</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Last Publish Time</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Result Blocks</th>
+                  <th className="text-left p-3 text-sm font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result, idx) => (
+                  <tr key={idx} className="border-b hover:bg-gray-50">
+                    <td className="p-3 text-sm font-medium">{result.scope}</td>
+                    <td className="p-3 text-sm">{result.sections}</td>
+                    <td className="p-3">
+                      <Badge className={result.statusColor}>{result.status}</Badge>
+                    </td>
+                    <td className="p-3 text-sm text-gray-600">{result.lastPublish}</td>
+                    <td className="p-3">
+                      {result.blockedCount > 0 ? (
+                        <Badge className="bg-red-100 text-red-800 cursor-pointer hover:bg-red-200" onClick={() => handleViewBlocks(result)}>
+                          <AlertCircle className="w-3 h-3 mr-1" />
+                          {result.blockedCount} blocked
+                        </Badge>
+                      ) : (
+                        <span className="text-sm text-gray-500">None</span>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      {result.hasActiveBlocks && (
+                        <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded text-xs text-red-800 flex items-start gap-2">
+                          <ShieldAlert className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-semibold">Publishing Blocked</div>
+                            <div>Active holds: {result.blockTypes}.</div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-2 text-xs h-7"
+                              onClick={() => handleViewBlocks(result)}
+                            >
+                              <UserX className="w-3 h-3 mr-1" />
+                              View & Unblock
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => { setSelectedResult(result); setShowPreviewModal(true) }}>
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        {result.status === 'Ready' && (
+                          <Button
+                            className="nu-button-primary"
+                            size="sm"
+                            onClick={() => handlePublish(result)}
+                            disabled={result.hasActiveBlocks}
+                            title={result.hasActiveBlocks ? 'Publishing blocked due to active holds (Finance/TER/Disciplinary/Custom). Clear holds first.' : ''}
+                          >
+                            Publish Now
+                          </Button>
+                        )}
+                        {result.status === 'Published' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            className="opacity-50"
+                          >
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Published
+                          </Button>
+                        )}
+                        {result.status === 'Draft' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled
+                            className="opacity-50"
+                          >
+                            Not Ready
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedResult(result)
+                            setShowBlockModal(true)
+                          }}
+                        >
+                          <Lock className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* View Blocks Dialog */}
+      <Dialog open={showViewBlocksModal} onOpenChange={setShowViewBlocksModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Active Result Blocks - {selectedResult?.scope}</DialogTitle>
+            <DialogDescription>
+              View and manage students with blocked results for this program
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedResult && (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200 rounded-md">
+                <div className="text-sm">
+                  <span className="font-medium">{getProgramBlocks(selectedResult.programCode).length}</span> student(s) currently blocked
+                </div>
+                {getProgramBlocks(selectedResult.programCode).length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleUnblockAll(selectedResult.programCode)}
+                  >
+                    <Unlock className="w-4 h-4 mr-2" />
+                    Unblock All
+                  </Button>
+                )}
+              </div>
+
+              {getProgramBlocks(selectedResult.programCode).length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No active blocks for this program. You can publish results now.
+                </div>
+              ) : (
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b">
+                      <tr>
+                        <th className="p-3 text-left text-sm font-semibold">Student ID</th>
+                        <th className="p-3 text-left text-sm font-semibold">Student Name</th>
+                        <th className="p-3 text-left text-sm font-semibold">Reason</th>
+                        <th className="p-3 text-left text-sm font-semibold">Blocked Date</th>
+                        <th className="p-3 text-left text-sm font-semibold">Blocked By</th>
+                        <th className="p-3 text-left text-sm font-semibold">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {getProgramBlocks(selectedResult.programCode).map(block => (
+                        <tr key={block.id} className="hover:bg-gray-50">
+                          <td className="p-3 text-sm font-mono">{block.studentId}</td>
+                          <td className="p-3 text-sm">{block.studentName}</td>
+                          <td className="p-3 text-sm">
+                            <Badge variant="destructive">{block.reason}</Badge>
+                            {block.customReason && (
+                              <div className="text-xs text-gray-600 mt-1">{block.customReason}</div>
+                            )}
+                          </td>
+                          <td className="p-3 text-sm">{block.blockDate}</td>
+                          <td className="p-3 text-sm">{block.blockedBy}</td>
+                          <td className="p-3">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleUnblock(block.id)}
+                            >
+                              <Unlock className="w-3 h-3 mr-1" />
+                              Unblock
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-md">
+                <strong>Note:</strong> Unblocking a student will allow them to view their result. Make sure all financial dues, 
+                TER submissions, or disciplinary matters are resolved before unblocking.
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowViewBlocksModal(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Publish Confirmation Dialog */}
+      <Dialog open={showPublishModal} onOpenChange={setShowPublishModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Publish Results</DialogTitle>
+            <DialogDescription>
+              Confirm publication of examination results
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-md">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-amber-900">Important Notice</p>
+                  <p className="text-amber-700 mt-1">
+                    This will freeze teacher edit rights for these sections and log the publish timestamp for compliance.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Scope:</span>
+                <span className="font-medium">{selectedResult?.scope}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total Sections:</span>
+                <span className="font-medium">{selectedResult?.sections}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Current Status:</span>
+                <Badge className={selectedResult?.statusColor}>{selectedResult?.status}</Badge>
+              </div>
+            </div>
+
+            <div className="p-3 bg-mint-green/20 rounded-md">
+              <p className="text-sm text-gray-700">
+                ✓ Freeze Faculty Editing<br />
+                ✓ Log Publish Timestamp<br />
+                ✓ Make Results Visible to Students
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPublishModal(false)}>
+              Cancel
+            </Button>
+            <Button className="nu-button-primary" onClick={confirmPublish}>
+              Confirm & Publish
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent>
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <DialogTitle>Results Published Successfully!</DialogTitle>
+                <DialogDescription>
+                  The results have been published and are now visible to students
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-sm text-green-900 font-medium mb-2">Publication Complete</p>
+              <ul className="text-sm text-green-800 space-y-1">
+                <li>✓ Results published for: <strong>{selectedResult?.scope}</strong></li>
+                <li>✓ Faculty editing has been frozen</li>
+                <li>✓ Publish timestamp logged for compliance</li>
+                <li>✓ Students can now view their results</li>
+                <li>✓ Guardians will be notified via ERP/SMS/Email</li>
+              </ul>
+            </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-md text-sm">
+              <p className="text-blue-900">
+                <strong>Published at:</strong> {new Date().toLocaleString('en-US', {
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: true
+                })}
+              </p>
+            </div>
+
+            <div className="text-xs text-gray-500 border-t pt-3">
+              Note: Individual student results may still be blocked based on Finance dues, TER submission status, or disciplinary holds. Manage individual blocks in the "Block/Unblock (Student-wise)" section.
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              className="nu-button-primary w-full"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Preview Dialog */}
+      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Result Preview</DialogTitle>
+            <DialogDescription>Quick preview of result publication details</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            <div><strong>Scope:</strong> {selectedResult?.scope}</div>
+            <div><strong>Sections:</strong> {selectedResult?.sections}</div>
+            <div><strong>Status:</strong> <Badge className={selectedResult?.statusColor}>{selectedResult?.status}</Badge></div>
+            <div><strong>Last Publish:</strong> {selectedResult?.lastPublish}</div>
+            {selectedResult && selectedResult.blockedCount > 0 && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-900 font-medium">
+                  ⚠️ {selectedResult.blockedCount} student(s) have active blocks
+                </p>
+                <p className="text-xs text-red-700 mt-1">
+                  Block types: {selectedResult.blockTypes}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPreviewModal(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Block/Unblock Dialog (for creating new blocks) */}
+      <Dialog open={showBlockModal} onOpenChange={setShowBlockModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Block Student Result</DialogTitle>
+            <DialogDescription>
+              Prevent a specific student from viewing their result
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+              <input 
+                type="text" 
+                placeholder="Enter student ID..." 
+                className="w-full p-2 border rounded-md"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Block Reason</label>
+              <select className="w-full p-2 border rounded-md">
+                <option>Select reason...</option>
+                <option>Finance Dues</option>
+                <option>TER Not Submitted</option>
+                <option>Disciplinary Action</option>
+                <option>Incomplete Documents</option>
+                <option>Custom</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+              <textarea 
+                className="w-full p-2 border rounded-md" 
+                rows={3}
+                placeholder="Enter additional notes..."
+              />
+            </div>
+
+            <div className="p-3 bg-gray-50 rounded-md text-xs text-gray-600">
+              This action will be logged: "Result blocked for [Student ID] by Controller on [Timestamp]. Reason: [Selected Reason]."
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowBlockModal(false)}>
+              Cancel
+            </Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => {
+              setShowBlockModal(false)
+              alert(showDemoToast('Result block applied'))
+            }}>
+              Block Result
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}

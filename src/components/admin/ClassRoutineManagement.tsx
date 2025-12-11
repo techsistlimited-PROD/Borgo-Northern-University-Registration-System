@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +42,8 @@ export const ClassRoutineManagement = () => {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadErrors, setUploadErrors] = useState<string[]>([])
+  const [viewRoom, setViewRoom] = useState<any>(null)
+  const [editRoom, setEditRoom] = useState<any>(null)
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -208,6 +211,19 @@ export const ClassRoutineManagement = () => {
 
   const generateRoomReport = () => {
     alert('Room utilization report generated and downloaded.')
+  }
+
+  const handleViewRoom = (room: any) => {
+    setViewRoom(room)
+  }
+
+  const handleEditRoom = (room: any) => {
+    setEditRoom(room)
+  }
+
+  const handleSaveRoom = () => {
+    alert('Room details saved successfully (Demo)')
+    setEditRoom(null)
   }
 
   const timeSlots = [
@@ -683,10 +699,10 @@ export const ClassRoutineManagement = () => {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" title="View Details">
+                    <Button size="sm" variant="outline" title="View Details" onClick={() => handleViewRoom(room)}>
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button size="sm" variant="outline" title="Edit Room">
+                    <Button size="sm" variant="outline" title="Edit Room" onClick={() => handleEditRoom(room)}>
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
@@ -918,6 +934,135 @@ export const ClassRoutineManagement = () => {
       {activeTab === 'rooms' && renderRoomManagement()}
       {activeTab === 'schedule' && renderScheduleView()}
       {activeTab === 'attendance' && renderAttendanceTracking()}
+
+      {/* View Room Dialog */}
+      <Dialog open={!!viewRoom} onOpenChange={() => setViewRoom(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Room Details - {viewRoom?.name}</DialogTitle>
+            <DialogDescription>Complete room information and schedule</DialogDescription>
+          </DialogHeader>
+          {viewRoom && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Room ID</p>
+                  <p className="text-base font-semibold">{viewRoom.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Room Name</p>
+                  <p className="text-base font-semibold">{viewRoom.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Capacity</p>
+                  <p className="text-base">{viewRoom.capacity} students</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Type</p>
+                  <p className="text-base">{viewRoom.type}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Building</p>
+                  <p className="text-base">{viewRoom.building}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Floor</p>
+                  <p className="text-base">{viewRoom.floor}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Status</p>
+                  <p className="text-base font-semibold">{viewRoom.status}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Utilization</p>
+                  <p className="text-base">{viewRoom.utilization}%</p>
+                </div>
+              </div>
+
+              {viewRoom.todaySchedule && viewRoom.todaySchedule.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-700 mb-2">Today's Schedule</h4>
+                  <div className="border rounded">
+                    {viewRoom.todaySchedule.map((schedule: any, idx: number) => (
+                      <div key={idx} className="p-2 border-b last:border-b-0 flex justify-between">
+                        <span className="font-medium">{schedule.time}</span>
+                        <span>{schedule.course} - Section {schedule.section}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Room Dialog */}
+      <Dialog open={!!editRoom} onOpenChange={() => setEditRoom(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Room - {editRoom?.name}</DialogTitle>
+            <DialogDescription>Update room details and configuration</DialogDescription>
+          </DialogHeader>
+          {editRoom && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Room ID</Label>
+                  <Input value={editRoom.id} disabled />
+                </div>
+                <div>
+                  <Label>Room Name</Label>
+                  <Input value={editRoom.name} />
+                </div>
+                <div>
+                  <Label>Capacity</Label>
+                  <Input type="number" value={editRoom.capacity} />
+                </div>
+                <div>
+                  <Label>Type</Label>
+                  <Select value={editRoom.type}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Classroom">Classroom</SelectItem>
+                      <SelectItem value="Laboratory">Laboratory</SelectItem>
+                      <SelectItem value="Auditorium">Auditorium</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Building</Label>
+                  <Input value={editRoom.building} />
+                </div>
+                <div>
+                  <Label>Floor</Label>
+                  <Input value={editRoom.floor} />
+                </div>
+                <div>
+                  <Label>Status</Label>
+                  <Select value={editRoom.status}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Available">Available</SelectItem>
+                      <SelectItem value="Occupied">Occupied</SelectItem>
+                      <SelectItem value="Maintenance">Maintenance</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setEditRoom(null)}>Cancel</Button>
+                <Button onClick={handleSaveRoom} className="nu-button-primary">Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

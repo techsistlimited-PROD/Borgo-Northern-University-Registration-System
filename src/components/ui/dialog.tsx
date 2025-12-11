@@ -29,6 +29,29 @@ interface DialogFooterProps {
   children: React.ReactNode
 }
 
+interface DialogTriggerProps {
+  asChild?: boolean
+  children: React.ReactNode
+  onClick?: () => void
+}
+
+export function DialogTrigger({ asChild, children, onClick }: DialogTriggerProps) {
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children, {
+      onClick: (e: React.MouseEvent) => {
+        onClick?.()
+        children.props.onClick?.(e)
+      }
+    } as any)
+  }
+
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
   if (!open) return null
 

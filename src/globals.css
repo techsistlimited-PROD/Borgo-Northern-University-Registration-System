@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import './styles/print.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,16 +64,41 @@
   .nu-gradient {
     background: linear-gradient(135deg, #4A1D4A 0%, #8B4B9B 100%);
   }
-  
+
   .nu-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
-  
+
   .nu-button-primary {
-    @apply bg-deep-plum text-white hover:bg-accent-purple transition-colors duration-200 font-medium;
+    @apply bg-deep-plum text-white hover:bg-accent-purple transition-colors duration-200 font-medium rounded-xl;
   }
-  
+
   .nu-button-secondary {
-    @apply bg-white text-deep-plum border border-deep-plum hover:bg-lavender-bg transition-colors duration-200 font-medium;
+    @apply bg-white text-deep-plum border border-deep-plum hover:bg-lavender-bg transition-colors duration-200 font-medium rounded-xl;
+  }
+
+  .hrm-card {
+    @apply bg-white rounded-xl border border-gray-200 transition-all duration-200;
+    box-shadow: 0 2px 6px rgba(107, 39, 118, 0.1);
+  }
+
+  .hrm-card:hover {
+    box-shadow: 0 4px 12px rgba(107, 39, 118, 0.15);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
   }
 }

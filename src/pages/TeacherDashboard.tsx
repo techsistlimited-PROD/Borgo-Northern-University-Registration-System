@@ -14,6 +14,7 @@ import FinalMarks from '@/components/teacher/FinalMarks'
 import AdvisedStudents from '@/components/teacher/AdvisedStudents'
 import AcademicHistory from '@/components/teacher/AcademicHistory'
 import ExamSchedule from '@/components/teacher/ExamSchedule'
+import TeacherExtrasManagement from '@/components/teacher/TeacherExtrasManagement'
 import {
   Calendar,
   Users,
@@ -74,7 +75,10 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
         { id: 'advised-students', label: 'Advised Students' },
         { id: 'academic-history', label: 'Academic History' }
       ]
-    }
+    },
+    { id: 'materials', label: 'Course Materials', icon: BookOpen },
+    { id: 'announcements', label: 'Announcements', icon: Bell },
+    { id: 'invigilation', label: 'Invigilation Duty', icon: ClipboardCheck }
   ]
 
   const [expandedItems, setExpandedItems] = useState<string[]>(['dashboard'])
@@ -88,15 +92,15 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
   }
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
-      <div className="p-6 border-b border-gray-200">
+    <div className="w-64 bg-gradient-to-b from-deep-plum to-accent-purple h-screen flex flex-col shadow-lg">
+      <div className="p-6 border-b border-white/20">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-deep-plum to-accent-purple rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="font-semibold text-deep-plum">Teacher Portal</h2>
-            <p className="text-sm text-gray-500">Northern University</p>
+            <h2 className="font-semibold text-white">Teacher Portal</h2>
+            <p className="text-sm text-white/80">Northern University Bangladesh</p>
           </div>
         </div>
       </div>
@@ -112,10 +116,10 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
                   setActiveTab(item.id)
                 }
               }}
-              className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg transition-colors ${
+              className={`w-full flex items-center justify-between px-3 py-2 text-left rounded-lg transition-all ${
                 activeTab === item.id
-                  ? 'bg-deep-plum text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-mint-green text-deep-plum shadow-md'
+                  : 'text-white/90 hover:bg-white/10 hover:text-white'
               }`}
             >
               <div className="flex items-center space-x-3">
@@ -123,24 +127,24 @@ function TeacherSidebar({ activeTab, setActiveTab }: {
                 <span className="font-medium">{item.label}</span>
               </div>
               {item.subItems && (
-                <ChevronRight 
+                <ChevronRight
                   className={`w-4 h-4 transition-transform ${
                     expandedItems.includes(item.id) ? 'rotate-90' : ''
-                  }`} 
+                  }`}
                 />
               )}
             </button>
-            
+
             {item.subItems && expandedItems.includes(item.id) && (
               <div className="ml-8 mt-2 space-y-1">
                 {item.subItems.map((subItem) => (
                   <button
                     key={subItem.id}
                     onClick={() => setActiveTab(subItem.id)}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                    className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-all ${
                       activeTab === subItem.id
-                        ? 'bg-accent-purple text-white'
-                        : 'text-gray-600 hover:bg-gray-50'
+                        ? 'bg-mint-green text-deep-plum font-medium shadow-md'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                   >
                     {subItem.label}
@@ -386,6 +390,12 @@ export default function TeacherDashboard() {
         return <AdvisedStudents />
       case 'academic-history':
         return <AcademicHistory />
+      case 'materials':
+        return <TeacherExtrasManagement type="materials" />
+      case 'announcements':
+        return <TeacherExtrasManagement type="announcements" />
+      case 'invigilation':
+        return <TeacherExtrasManagement type="invigilation" />
       default:
         return (
           <div className="text-center py-20">
@@ -414,7 +424,7 @@ export default function TeacherDashboard() {
               {(activeTab === 'results' || activeTab === 'continuous-assessment' || activeTab === 'cumulative-score' || activeTab === 'midterm-marks' || activeTab === 'final-marks') && 'Results & Grades'}
               {(activeTab === 'students' || activeTab === 'advised-students' || activeTab === 'academic-history') && 'Advising List'}
             </h1>
-            <p className="text-sm text-gray-600">Welcome to Northern University Teacher Portal</p>
+            <p className="text-sm text-gray-600">Welcome to Northern University Bangladesh Teacher Portal</p>
           </div>
 
           <div className="flex items-center space-x-4">
